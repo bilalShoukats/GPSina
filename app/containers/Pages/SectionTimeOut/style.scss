@@ -1,0 +1,18 @@
+@import '../../../../docs/css/mixin.scss';
+
+.sectionTimeOut {
+    ul {
+        li {
+            line-height: 33px;
+        }
+    }
+
+    p {
+        margin-bottom: 0;
+
+        strong {
+            color: $baseColor;
+            margin-right: 5px;
+        }
+    }
+}

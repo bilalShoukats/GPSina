@@ -1,0 +1,100 @@
+@import "../../../docs/css/mixin.scss";
+
+.sidebarSettingWrap {
+  width: 300px;
+  background: linear-gradient(45deg, #9dadff, #5d72e8);
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 111;
+  min-height: 100%;
+  box-shadow: 0 1px 30px 1px rgba(0, 0, 0, 0.11);
+  padding: 30px;
+  visibility: hidden;
+  opacity: 0;
+  transform: matrix3d(1, 0, 0, -0.0005, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  transform-origin: right;
+  transition: all 0.4s ease-in-out 0s;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(45deg, #e2e2e4, #217db3);
+    opacity: 0.9;
+  }
+
+  &.open {
+    visibility: visible;
+    opacity: 1;
+    transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  }
+
+  .closeBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 0px;
+    min-width: 30px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #fff;
+    font-size: 24px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h2 {
+    color: #fff;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: #fff;
+    font-size: 13px;
+    line-height: 22px;
+    margin-bottom: 40px;
+  }
+}
+
+.colupsSidebarMenu {
+  li {
+    color: #fff;
+    margin-bottom: 5px;
+
+    .switchStyle {
+      font-size: 14px;
+
+      .MuiTypography-body1 {
+        font-size: 14px;
+      }
+
+      .switch {
+        .MuiSwitch-switchBase {
+          &.Mui-checked {
+            color: $baseColor;
+
+            &:hover {
+              background-color: rgba(96, 75, 254, 0.1);
+            }
+
+            + .MuiSwitch-track {
+              background-color: $baseColor;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.settingScrollbar{
+  height: calc(100vh - 460px);
+}

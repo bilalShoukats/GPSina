@@ -1,0 +1,55 @@
+.crmFeatured {
+  display: flex;
+  margin: 0 - 10px;
+  flex-wrap: wrap;
+
+  .crmFeaturedItem {
+    margin: 0 10px;
+    flex-basis: calc(100% * (1 / 5) - 20px);
+    background: #ffffff;
+    padding: 30px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+
+    @media (min-width: 768px) and (max-width: 1200px) {
+      flex-basis: calc(50% - 20px);
+      margin-bottom: 20px;
+    }
+    @media (max-width: 767px) {
+      flex-basis: 100%;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      letter-spacing: 0.1px;
+      color: #878AA0;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 28px;
+      line-height: 34px;
+      letter-spacing: 0.116667px;
+      color: #111026;
+
+      @media (min-width: 992px) and (max-width: 1500px) {
+        font-size: 21px;
+      }
+
+      @media (max-width: 767px) {
+        font-size: 23px;
+      }
+
+      img {
+        margin-left: 10px;
+      }
+    }
+  }
+}

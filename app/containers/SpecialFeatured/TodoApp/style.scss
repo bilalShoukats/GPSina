@@ -1,0 +1,104 @@
+@import '../../../../docs/css/mixin.scss';
+
+.todoCard {
+  min-height: unset !important;
+}
+
+.todoListItems {
+  display: flex;
+  flex-wrap: wrap-reverse;
+
+  li {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    min-height: 80px;
+    align-items: center;
+    padding: 30px;
+    background: #fafafa;
+    border: 1px solid #EAEAF5;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+
+    @media (max-width: 767px) {
+      padding: 15px;
+    }
+
+  }
+}
+
+.editForm {
+  input {
+    height: 40px;
+    width: 350px;
+    padding: 0px 10px;
+    border-radius: 3px;
+    border: 1px solid #EAEAF5;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $baseColor;
+    }
+  }
+}
+
+.addTodo {
+  position: relative;
+  margin-bottom: 40px;
+
+  input {
+    padding: 0px 15px;
+    height: 60px;
+    width: 100%;
+    padding-right: 250px;
+
+    @media (max-width: 767px) {
+      padding-right: 135px;
+      height: 50px;
+    }
+
+    &:focus {
+      outline: none;
+      border: 2px solid #6362da !important;
+    }
+  }
+
+  button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 240px;
+    height: 100%;
+    background: linear-gradient(45deg, #6e5ad8, #139aea);
+    color: #fff;
+    border-radius: 0px;
+
+    @media (max-width: 767px) {
+      width: 130px;
+    }
+
+    &:hover {
+      background: $baseColor;
+    }
+  }
+}
+
+.todoBtns {
+  button {
+    margin-left: 10px;
+    padding: 7px 15px !important;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.todoText {
+  font-size: 17px;
+}

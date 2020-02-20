@@ -1,0 +1,200 @@
+@import '../../../../docs/css/mixin.scss';
+
+.buttonGrid
+{
+    ul {
+        text-align: center;
+        margin-top: 30px;
+
+        li {
+            a {
+                color: $textColor;
+
+                &:hover {
+                    text-decoration: none;
+                    color: $baseColor;
+                }
+            }
+        }
+    }
+}
+
+.viewCompaniesApp {
+    background: #fff;
+    //display: flex;
+    flex-wrap: wrap;
+    box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
+
+    .viewCompaniesLeft {
+        //width: 300px;
+
+        @media (max-width:767px) {
+            width: 100%;
+        }
+
+        .searchCompanies {
+            background: #ebedfb;
+
+            div {
+                min-height: 70px;
+
+                &::before,
+                &::after {
+                    display: none;
+                }
+
+                input {
+                    padding: 0 20px;
+
+                    &::placeholder {
+                        opacity: 1;
+
+                    }
+                }
+            }
+
+            .companiesScrollBar {
+                height: 770px;
+              
+                .scrollbar-container.vertical {
+                  width: 7px;
+                  opacity: .05;
+              
+                  &:hover {
+                    opacity: .1;
+                  }
+                }
+              }
+
+            .searchCompaniesIcon {
+                width: 70px;
+                margin-left: 0;
+                justify-content: center;
+                cursor: pointer;
+            }
+        }
+
+        .companiesList {
+            .companiesLink {
+              display: flex;
+              align-items: center;
+              padding: 20px;
+              border-top: 1px solid #EAEAF5;
+              border-bottom: 1px solid #EAEAF5;
+              border-right: 1px solid #EAEAF5;
+              border-left: 1px solid #EAEAF5;
+              margin-top: -1px;
+              padding-right: 80px;
+              position: relative;
+              transition: all .4s ease;
+              cursor: pointer;
+      
+              @media (max-width: 1600px) {
+                display: block;
+              }
+      
+              @media (max-width: 767px) {
+                padding: 20px 0px;
+              }
+      
+              &:hover {
+                box-shadow: 1px 0px 15px rgba(0, 0, 0, .1);
+              }
+      
+              .companiesAutorImg {
+                width: 150px;
+      
+                img {
+                  width: 80px;
+                  height: 80px;
+                  border-radius: 50%;
+                }
+              }
+      
+              .companiesAutorContent {
+                h4 {
+                  font-size: 18px;
+                  margin-bottom: 0;
+                  display: flex;
+                  align-items: center;
+                  line-height: 35px;
+                  text-transform: capitalize;
+                  justify-content: space-between;
+      
+                  @media (max-width: 1600px) {
+                    font-size: 16px;
+                    line-height: 22px;
+                    margin-bottom: 10px;
+                    margin-top: 20px;
+                  }
+      
+                  @media (max-width: 767px) {
+                    display: block;
+                  }
+      
+                }
+      
+                h5 {
+                  color: $headingColor;
+                  font-weight: 400;
+                  margin-bottom: 0;
+                  font-size: 12px;
+                  line-height: 18px;
+      
+                  span {
+                    display: inline-block;
+                    margin-left: 15px;
+                  }
+                }
+      
+                p {
+                  font-size: 14px;
+                  line-height: 24px;
+                  margin-bottom: 0;
+                  margin-top: 5px;
+                  color: $textColor;
+                }
+      
+                .commentsWrap {
+                  font-size: 14px;
+                  font-weight: 400;
+                  color: #98a6ad;
+      
+                  @media (max-width: 767px) {
+                    top: 75px;
+                    transform: translateY(0);
+                  }
+      
+                  i {
+                    margin-right: 3px;
+                  }
+                }
+              }
+            }
+      
+            &:last-child {
+              a {
+                border-bottom: none;
+              }
+            }
+          }
+    }
+}
+
+.chatAppHead {
+    min-height: 71px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 30px;
+
+    @media (max-width:767px) {
+        border-left: none;
+    }
+
+    h3 {
+        text-transform: capitalize;
+    }
+}

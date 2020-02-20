@@ -1,0 +1,220 @@
+@import '../../../../docs/css/mixin.scss';
+
+.scrumBoardArea {
+    .react-trello-board {
+        background: transparent;
+        padding: 0px;
+        height: unset;
+
+        .smooth-dnd-container {
+            display: flex;
+            flex-wrap: wrap;
+
+            .react-trello-lane {
+                margin: 0;
+                width: 20%;
+                flex: 0 0 20%;
+                padding-top: 0;
+                background: transparent;
+
+                @media (max-width:1600px) {
+                    flex: 0 0 33.33%;
+                    width: 33.33%;
+                }
+
+                @media (max-width:1279px) {
+                    flex: 0 0 50%;
+                    width: 50%;
+                }
+
+                @media (max-width:767px) {
+                    flex: 0 0 100%;
+                    width: 100%;
+                    padding: 0;
+                    margin-bottom: 15px;
+                }
+
+                &:first-child {
+                    padding-left: 0;
+                }
+
+                &:last-child {
+                    padding-right: 0;
+                }
+
+                header.irBJgk,
+                .edkpGl {
+                    background: #6b80f6;
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 15px;
+                    align-items: center;
+                    box-shadow: 1px 0px 5px rgba(0, 0, 0, .05);
+                    text-transform: capitalize;
+                    color: rgba(255, 255, 255, .95);
+
+                    span {
+                        width: unset;
+                        padding: 0;
+                    }
+
+                    textarea {
+                        color: rgba(255, 255, 255, .95);
+
+                        &:focus {
+                            outline: none;
+                            background: transparent;
+                        }
+                    }
+                }
+
+                .sc-iwsKbI {
+                    border-top: none;
+                    width: 100%;
+                    background: #fafafa;
+                    padding: 10px;
+                    margin-top: 0;
+
+                    .smooth-dnd-container {
+                        width: 100%;
+
+                        .smooth-dnd-draggable-wrapper {
+                            width: 100%;
+
+                            article {
+                                box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.05);
+                                width: 100%;
+                                max-width: 100%;
+                                border-bottom: none;
+
+                                &:hover {
+                                    box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.1);
+                                    background: #fff;
+                                }
+
+                                header {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+
+                                    span {
+                                        width: unset;
+                                        color: $headingColor;
+                                    }
+
+                                }
+
+                                .sc-kAzzGY {
+                                    color: $textColor;
+                                    font-size: 13px;
+                                    line-height: 21px;
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    &.scrumBoardDragableArea {
+        .react-trello-board {
+            .smooth-dnd-container {
+                .smooth-dnd-draggable-wrapper {
+                    margin: 0;
+                    width: 20%;
+                    flex: 0 0 20%;
+                    background: transparent;
+                    padding: 0 10px;
+
+                    @media (max-width:1600px) {
+                        flex: 0 0 33.33%;
+                        width: 33.33%;
+                    }
+
+                    @media (max-width:1279px) {
+                        flex: 0 0 50%;
+                        width: 50%;
+                    }
+
+                    @media (max-width:767px) {
+                        flex: 0 0 100%;
+                        width: 100%;
+                        margin-bottom: 15px;
+                        padding: 0px;
+                    }
+
+                    .react-trello-lane {
+                        display: block;
+                        width: 100%;
+                        flex: 0 0 100%;
+
+                        .sc-iwsKbI {
+                            .smooth-dnd-container {
+                                .smooth-dnd-draggable-wrapper {
+                                    width: 100%;
+                                    flex: 0 0 100%;
+                                    padding: 0px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    .sc-eNQAEJ {
+        background: #fff;
+        padding: 10px;
+
+        article {
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            border-bottom: none;
+            margin-bottom: 15px;
+
+            header {
+                padding: 0px;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0;
+
+                span {
+                    padding: 0;
+                }
+            }
+
+            div {
+                text-transform: capitalize;
+
+                &:focus {
+                    outline: none;
+                    border: 1px solid #EAEAF5;
+                }
+            }
+        }
+
+        button {
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}
+
+.czqOHE {
+    font-size: 12px;
+    color: #D63305;
+
+    &:focus {
+        outline: none;
+    }
+}

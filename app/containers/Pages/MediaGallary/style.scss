@@ -1,0 +1,67 @@
+@import '../../../../docs/css/mixin.scss';
+
+.mediaWrapper {
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+
+  .mediaImages {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      transition: all .4s;
+      transform: scale(1);
+    }
+
+    button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      color: #fff;
+      font-size: 18px;
+      border: 2px solid $baseColor;
+      border-radius: 50%;
+      background: $baseColor;
+      visibility: hidden;
+      opacity: 0;
+      transition: all .4s;
+
+      &:hover {
+        background: #fff;
+        color: $baseColor;
+      }
+    }
+  }
+
+  &:hover {
+    .mediaImages {
+      position: relative;
+
+      img {
+        transform: scale(1.2);
+      }
+
+      button {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+
+  .mediaContent {
+    padding: 20px;
+
+    h4 {
+      text-transform: capitalize;
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+  }
+}

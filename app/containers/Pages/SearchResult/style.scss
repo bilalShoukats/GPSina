@@ -1,0 +1,46 @@
+@import '../../../../docs/css/mixin.scss';
+
+.searchResultWrapper {
+
+    .searchResult {
+        border-left: 1px solid #f1f1f1;
+        border-right: 1px solid #f1f1f1;
+        margin-bottom: 30px;
+
+        li {
+            border-bottom: 1px solid #f1f1f1;
+            border-top: 1px solid #f1f1f1;
+            padding: 20px 30px;
+            margin-top: -1px;
+            transition: all .4s ease;
+
+            &:nth-child(odd) {
+                background: #fafafa;
+            }
+
+            &:hover {
+                background: #fafafa;
+            }
+
+            a {
+                color: $textColor;
+
+                span {
+                    display: block;
+                    font-size: 14px;
+
+                    &.title {
+                        font-weight: 600;
+                        color: $headingColor;
+                        margin-bottom: 3px;
+                        font-size: 18px;
+                    }
+
+                    &.details {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

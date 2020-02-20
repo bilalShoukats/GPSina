@@ -1,0 +1,28 @@
+.custom-tooltip-blue {
+  background: #ffffff;
+  padding: 4px 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+
+  h4 {
+    color: #3B53DB;
+    font-size: 12px;
+
+    &.label2 {
+      color: #18A0FB;
+    }
+  }
+}
+
+.comparisionChart {
+  .recharts-legend-wrapper {
+    top: -65px !important;
+    @media (max-width: 767px) {
+      top: -35px !important;
+    }
+  }
+}

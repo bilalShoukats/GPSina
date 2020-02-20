@@ -1,0 +1,57 @@
+.invesmentWrapper {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+
+  .invesmentInner {
+    height: 300px;
+    margin-bottom: 88px;
+  }
+
+  .switchInvestChart {
+    position: absolute;
+    left: 50%;
+    bottom: 38px;
+    transform: translateX(-50%);
+    width: 80%;
+
+    button {
+      padding: 20px 10px;
+      text-transform: capitalize;
+      background: #ffffff;
+
+      &:first-child {
+        border-radius: 10px 0 0 10px;
+      }
+
+      &:last-child {
+        border-radius: 0 10px 10px 0;
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        height: 3px;
+        width: 0;
+        transform: translateX(-50%);
+        background: #BD20D3;
+        opacity: 0;
+        transition: all 0.3s ease 0s;
+      }
+
+      &.active {
+        &:before {
+          opacity: 1;
+          width: 40%;
+        }
+      }
+
+      span {
+        color: #111026;
+        font-weight: 700;
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+@import '../../../../docs/css/mixin.scss';
+
+.react-grid-Container {
+    width: 100% !important;
+}
+
+.react-grid-Main {
+    outline: none;
+
+    .react-grid-Grid {
+        border: 1px solid #F0F0F9;
+
+        .react-grid-Header {
+            box-shadow: 0px 0px 4px 0px #F0F0F9;
+            background: #F0F0F9;
+
+            .react-grid-HeaderCell {
+                background: #F0F0F9;
+                border-right: 1px solid #F0F0F9;
+                border-bottom: 1px solid #F0F0F9;
+                display: inline-flex !important;
+                align-items: center;
+            }
+        }
+
+        .react-grid-Viewport {
+            .react-grid-Canvas {
+                .rdg-selected {
+                    border: none;
+                }
+
+                .react-grid-Row {
+                    .react-grid-Cell {
+                        border-right: 1px solid #F0F0F9;
+                        border-bottom: 1px solid #F0F0F9;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.stripedEditableTable {
+    .react-grid-Main {
+        .react-grid-Grid {
+            border: none;
+
+            .react-grid-Header {
+                .react-grid-HeaderCell {
+                    border-right: none;
+                    border-bottom: none;
+                }
+            }
+
+            .react-grid-Viewport {
+                .react-grid-Canvas {
+                    .react-grid-Row {
+                        .react-grid-Cell {
+                            border-right: none;
+                            border-bottom: none;
+                        }
+
+                        &.react-grid-Row--odd {
+                            .react-grid-Cell {
+                                background: #fafafa;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.inverseEditableTable {
+    .react-grid-Grid {
+        border: 1px solid #F0F0F9;
+
+        .react-grid-Header {
+            box-shadow: 0px 0px 4px 0px #F0F0F9;
+            background: #fafafa;
+
+            .react-grid-HeaderCell {
+                background: #424c5c;
+                border-right: none;
+                border-bottom: 1px solid #595e67;
+                color: #fff;
+
+            }
+        }
+
+        .react-grid-Viewport {
+            .react-grid-Canvas {
+                .rdg-selected {
+                    border: none;
+                }
+
+                .react-grid-Row {
+                    .react-grid-Cell {
+                        border-right: none;
+                        border-bottom: none;
+                        background: #424c5c;
+
+                        span {
+                            color: $textColor;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

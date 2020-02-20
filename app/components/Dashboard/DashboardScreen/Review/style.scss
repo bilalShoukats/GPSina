@@ -1,0 +1,54 @@
+.progressbarList {
+    .pBarItem {
+        margin-bottom: 30px;
+
+        p {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 17px;
+            color: #48466d;
+            margin-bottom: 12px;
+        }
+
+        .pBarArea {
+            position: relative;
+            z-index: 1;
+            height: 5px;
+            width: 100%;
+
+            &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 100%;
+                border-radius: 10px;
+                background: #E7F8FF;
+            }
+
+            .pbar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                border-radius: 10px;
+                height: 100%;
+                width: 0%;
+                background: #0EB7FE;
+            }
+
+            .pText {
+                position: absolute;
+                right: 0;
+                top: -28px;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 17px;
+                text-align: right;
+                color: #878AA0;
+            }
+        }
+    }
+}

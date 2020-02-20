@@ -1,0 +1,114 @@
+.responsiveTable {
+  overflow-x: auto;
+}
+
+.postTable {
+  min-width: 743px;
+
+  thead {
+    tr {
+      th {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 17px;
+        letter-spacing: 0.1px;
+        color: #878AA0;
+        border-bottom: 1px solid #F1F1F5;
+        padding-top: 0;
+
+        &:first-child {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+
+      td,
+      th {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 14px;
+        letter-spacing: 0.1px;
+        color: #111026;
+        border-bottom: 1px solid #F1F1F5;
+
+        &:first-child {
+          padding-left: 0;
+        }
+
+        .flex {
+          display: flex;
+          align-items: center;
+        }
+
+        .icon {
+          height: 50px;
+          width: 50px;
+          flex-basis: 50px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-right: 15px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        strong {
+          display: inline-block;
+        }
+
+        strong {
+          &.Medium {
+            color: #F1682C;
+          }
+
+          &.High {
+            color: #3B53DB;
+          }
+
+          &.Pending {
+            color: #F1682C;
+          }
+
+          &.Received {
+            color: #0EB7FE;
+          }
+
+          &.Canceled {
+            color: #BD20D3;
+          }
+        }
+
+        .progress {
+          background: #E7F8FF;
+          height: 10px;
+          border-radius: 10px;
+          position: relative;
+          z-index: 1;
+
+          .pBar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            height: 100%;
+            background: #0EB7FE;
+          }
+        }
+      }
+
+      &:last-child {
+
+        th,
+        td {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+      }
+    }
+  }
+}

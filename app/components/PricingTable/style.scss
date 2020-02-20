@@ -1,0 +1,75 @@
+.pricingTableWrapper {
+    background: #ffff;
+    text-align: center;
+    padding: 40px 30px;
+    position: relative;
+
+    .badgePricing {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 1;
+        width: 83px;
+        height: 22px;
+        line-height: 22px;
+        background: #667dff;
+        border-radius: 3px;
+
+        span {
+            font-size: 10px;
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            display: block;
+            -webkit-box-shadow: 0 0 8px 0 rgba(50, 58, 70, .06), 0 1px 0 0 rgba(50, 58, 70, .02);
+            box-shadow: 0 0 8px 0 rgba(50, 58, 70, .06), 0 1px 0 0 rgba(50, 58, 70, .02);
+        }
+    }
+
+    h4 {
+        text-transform: capitalize;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 35px;
+    }
+
+    h2 {
+        font-size: 34px;
+        font-weight: 900;
+        display: flex;
+        align-items: flex-end;
+        line-height: 40px;
+        justify-content: center;
+        margin-bottom: 25px;
+
+        strong {
+            color: #ddd;
+            font-size: 20px;
+            line-height: 22px;
+        }
+
+        span {
+            font-size: 12px;
+            line-height: 14px;
+            margin-left: 5px;
+            text-transform: capitalize;
+            color: #18329c;
+        }
+    }
+
+    ul {
+        margin-bottom: 30px;
+
+        li {
+            line-height: 35px;
+            font-weight: 500;
+        }
+    }
+
+    &.pricingTableWrapperStyleTwo {
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-30px);
+        position: relative;
+        z-index: 1;
+    }
+}

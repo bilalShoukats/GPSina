@@ -1,0 +1,79 @@
+@import '../../../../docs/css/mixin.scss';
+
+.tabStyle {
+    .tabContainer {
+        button {
+            text-transform: capitalize;
+            font-size: 14px;
+
+            span {
+                color: #fff;
+            }
+        }
+
+        .indicator {
+            background: rgba(255, 255, 255, .3);
+            height: 2px;
+        }
+    }
+}
+
+.tabWrapper {
+    background: #fafafa;
+    padding: 25px;
+}
+
+.acordianWrapper {
+    box-shadow: none;
+    background: #fafafa;
+    margin: 5px 0;
+
+    &::before {
+        display: none;
+    }
+
+    &.acordianWrapperExpanded {
+        .acordianHeaderExpanded {
+            border-bottom: none;
+
+            h4 {
+                color: #fff;
+            }
+
+            .acordianHeaderIcon {
+                background: transparent;
+
+                span {
+                    svg {
+                        fill: #fff;
+                    }
+                }
+            }
+        }
+    }
+
+    .acordianHeader {
+        min-height: 50px;
+
+        .acordianHeaderContent {
+            margin: 0;
+
+            h4 {
+                margin: 0;
+            }
+        }
+
+        .acordianHeaderIcon {
+            padding: 0;
+        }
+    }
+
+    .acordianBody {
+        padding: 25px;
+
+        p {
+            margin: 0;
+            color: $textColor
+        }
+    }
+}

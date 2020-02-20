@@ -1,0 +1,41 @@
+.transactionsLists {
+
+  .scrollarea {
+    max-height: 300px;
+    padding-right: 10px;
+
+    .scrollarea-content {
+      min-width: 328px;
+    }
+  }
+
+  .transItem {
+    display: flex;
+    margin-bottom: 30px;
+    align-items: center;
+
+    .icon {
+      margin-right: 15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    h4 {
+      color: #111026;
+      font-size: 16px;
+    }
+
+    p {
+      color: #878AA0;
+      font-size: 14px;
+      text-transform: capitalize;
+    }
+
+    .amount {
+      margin-left: auto;
+      text-align: right;
+    }
+  }
+}

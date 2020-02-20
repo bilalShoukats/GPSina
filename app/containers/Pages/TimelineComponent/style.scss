@@ -1,0 +1,90 @@
+.timelineWrapper {
+    .todoListItem {
+        display: flex;
+        align-items: flex-start;
+        position: relative;
+        z-index: 9;
+
+        @media (max-width:767px) {
+            padding: 0;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .timelineItemTail {
+            position: absolute;
+            left: 40px;
+            top: 8px;
+            width: 3px;
+            height: 100%;
+            z-index: -9;
+
+            @media (max-width:767px) {
+                left: 23px;
+                display: none;
+            }
+        }
+
+        &:last-child {
+            .timelineItemTail {
+                display: none;
+            }
+        }
+
+        .timeLineIcon {
+            margin-right: 30px;
+
+            @media (max-width:767px) {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            span {
+                img {
+                    width: 50px;
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        .timelineContent {
+            padding: 40px;
+            background: #fafafa;
+            position: relative;
+            border-radius: 3px;
+
+            @media (max-width:767px) {
+                padding: 40px 15px;
+            }
+
+            &::before {
+                position: absolute;
+                left: -25px;
+                top: 5px;
+                content: "";
+                border-top: 25px solid transparent;
+                border-right: 25px solid #fafafa;
+                border-bottom: 0px solid transparent;
+            }
+
+            h5 {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 5px;
+
+                span {
+                    display: inline-block;
+                    margin-left: 15px;
+                    margin-bottom: 0;
+                    font-size: 14px;
+                }
+            }
+
+            span {
+                font-size: 14px;
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+    }
+}

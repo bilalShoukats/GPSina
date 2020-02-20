@@ -1,0 +1,93 @@
+.loansWrapper {
+  h2 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 38px;
+    line-height: 46px;
+    letter-spacing: 0.5px;
+    color: #111026;
+    margin-bottom: 30px;
+    @media (min-width: 1201px) and (max-width: 1599px) {
+      font-size: 27px;
+      line-height: 40px;
+    }
+    @media (min-width: 768px) and (max-width: 991px) {
+      font-size: 25px;
+      line-height: 39px;
+    }
+    @media (max-width: 767px) {
+      font-size: 22px;
+      line-height: 32px;
+      margin-bottom: 19px;
+    }
+  }
+
+  .loanCard {
+    border: 1px solid #DBDCE3;
+    border-radius: 15px;
+    padding: 30px;
+    @media (min-width: 1201px) and (max-width: 1599px) {
+      padding: 20px;
+    }
+    @media (max-width: 767px) {
+      padding: 20px;
+    }
+
+    h4 {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.5px;
+      color: #111026;
+      margin-bottom: 10px;
+
+    }
+
+    .lbtm {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h3 {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 24px;
+        line-height: 29px;
+        letter-spacing: 0.5px;
+        color: #111026;
+        @media (min-width: 1201px) and (max-width: 1599px) {
+          font-size: 20px;
+          min-width: 93px;
+        }
+        @media (max-width: 767px) {
+          font-size: 20px;
+        }
+      }
+
+      .lprogressbar {
+        height: 5px;
+        width: 130px;
+        position: relative;
+        z-index: 1;
+
+        .prbg {
+          display: block;
+          width: 100%;
+          height: 5px;
+          border-radius: 20px;
+          opacity: 0.2;
+        }
+
+        .lpbar {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 5px;
+          display: block;
+          border-radius: 30px;
+        }
+      }
+    }
+  }
+}

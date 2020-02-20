@@ -1,0 +1,63 @@
+.emailList {
+  display: flex;
+  flex-wrap: wrap;
+  @media (max-width: 1200px) {
+    justify-content: space-between;
+  }
+
+  li {
+    flex: 1;
+
+    @media (max-width: 767px) {
+      flex: auto;
+    }
+
+    > span {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.1px;
+      color: #878AA0;
+      margin: 20px;
+    }
+
+    h3 {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 19px;
+      line-height: 16px;
+      color: #0B0D31;
+      display: flex;
+      align-items: center;
+
+      @media (min-width: 1201px) and (max-width: 1599px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 767px) {
+        font-size: 15px;
+      }
+
+      span {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+
+.emailPieChart {
+  max-width: 100%;
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  @media (max-width: 767px) {
+    width: 320px;
+    height: 200px;
+  }
+}

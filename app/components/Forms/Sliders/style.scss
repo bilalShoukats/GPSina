@@ -1,0 +1,158 @@
+.sliderMain{
+    margin-bottom: 30px;
+    p{
+        margin-top: 0;
+    }
+    .sliderWrapper{
+        span{
+            color: inherit!important;
+        }
+        .sliderRail{
+            color: #ccc!important;
+        }
+        &.sliderDefault{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #ff9966!important;
+            }
+            .sliderValueLabel {
+                color: #ff9966!important;
+                span{
+                    color: #ff9966!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderSuccess{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #28a745!important;
+            }
+            .sliderValueLabel {
+                color: #28a745!important;
+                span{
+                    color: #28a745!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderPrimary{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #007bff!important;
+            }
+            .sliderValueLabel {
+                color: #007bff!important;
+                span{
+                    color: #007bff!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderSecondary{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #6c757d!important;
+            }
+            .sliderValueLabel {
+                color: #6c757d!important;
+                span{
+                    color: #6c757d!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderDanger{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #dc3545!important;
+            }
+            .sliderValueLabel {
+                color: #dc3545!important;
+                span{
+                    color: #dc3545!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderWarning{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #ffc107!important;
+            }
+            .sliderValueLabel {
+                color: #ffc107!important;
+                span{
+                    color: #ffc107!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderInfo{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #17a2b8!important;
+            }
+            .sliderValueLabel {
+                color: #17a2b8!important;
+                span{
+                    color: #17a2b8!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+        &.sliderLight{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #f8f9fa!important;
+            }
+            .sliderValueLabel {
+                color: #f8f9fa!important;
+                span{
+                    color: #f8f9fa!important;
+                    span{
+                        color: #343a40!important;
+                    }
+                }
+            }
+        }
+        &.sliderDark{
+            .sliderThumb,
+            .sliderMask,
+            .sliderTrack{
+                color: #343a40!important;
+            }
+            .sliderValueLabel {
+                color: #343a40!important;
+                span{
+                    color: #343a40!important;
+                    span{
+                        color: #fff!important;
+                    }
+                }
+            }
+        }
+    }
+}
