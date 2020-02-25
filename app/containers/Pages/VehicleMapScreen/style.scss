@@ -378,47 +378,6 @@
         }
       }
     }
-    .selectedButtonClass {
-      padding: 15px 20px;
-      display: block;
-      padding-left: 65px;
-      position: relative;
-      color: $textColor;
-      border-radius: 0px;
-      width: 100%;
-      background: #e4e4e4;
-
-      .icon {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        height: 30px;
-        width: 30px;
-        background: $baseColor;
-        color: #fff;
-        font-size: 12px;
-        text-align: center;
-        border-radius: 50%;
-        line-height: 29px;
-      }
-
-      span {
-        display: block;
-        font-size: 14px;
-        text-transform: capitalize;
-        font-weight: 500;
-        width: 100%;
-        text-align: start;
-
-        span {
-          line-height: 15px;
-          margin-top: 3px;
-          font-size: 12px;
-          font-weight: 400;
-        }
-      }
-    }
   }
 }
 
@@ -491,3 +450,5 @@
     }
   }
 }
+
+

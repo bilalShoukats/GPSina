@@ -84,6 +84,7 @@ import AddUserScreen from 'containers/Pages/AddUserScreen/Loadable';
 import ViewUsersScreen from 'containers/Pages/ViewUsersScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
 import ViewVehiclesScreen from 'containers/Pages/ViewVehiclesScreen/Loadable';
+import VehicleMapScreen from 'containers/Pages/VehicleMapScreen/Loadable';
 import LockScreen from 'containers/Pages/LockScreen/Loadable';
 import LogViewer from 'containers/Pages/LogViewer/Loadable';
 import MediaGallary from 'containers/Pages/MediaGallary/Loadable';
@@ -114,6 +115,7 @@ const Routes = props => (
     {/* Vehicle Links */}
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />
+    <PrivateRoute exact path={`/vehicleMap/:registrationNo`} component={VehicleMapScreen} />
     {/* Route Links */}
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
