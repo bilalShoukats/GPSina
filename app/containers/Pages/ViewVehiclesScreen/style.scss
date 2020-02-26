@@ -42,7 +42,7 @@
         }
 
         .chatScrollBar {
-            height: 840px;
+            height: 800px;
 
             .chatScrollBarContent {
                 .chatTabWrapper {
@@ -93,7 +93,6 @@
 
     .chatAppRight {
         width: calc(100% - 350px);
-        padding-bottom: 30px;
 
         @media (max-width:767px) {
             width: 100%;

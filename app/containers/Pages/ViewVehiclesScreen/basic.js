@@ -9,9 +9,11 @@ import {
 } from "react-google-maps"
 
 const MapWithAMarker = compose(withScriptjs, withGoogleMap)(props => {
-
+    const defaultMapOptions = {
+        disableDefaultUI: true
+    };
     return (
-        <GoogleMap defaultZoom={8} defaultCenter={{ lat: 29.5, lng: -95 }}>
+        <GoogleMap defaultZoom={8} defaultCenter={{ lat: 29.5, lng: -95 }} defaultOptions={defaultMapOptions}>
             {props.markers.map(marker => {
                 const onClick = props.onClick.bind(this, marker)
                 return (

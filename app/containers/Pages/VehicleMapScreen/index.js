@@ -37,9 +37,9 @@ class ChatApp extends Component {
   }
 
   componentDidMount = () => {
-    setInterval(() => {
-      this.move();
-    }, 500);
+    // setInterval(() => {
+    //   this.move();
+    // }, 500);
   }
 
 

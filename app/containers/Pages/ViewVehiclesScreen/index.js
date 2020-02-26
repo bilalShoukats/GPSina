@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
 import Button from '@material-ui/core/Button';
-import { Grid } from '@material-ui/core'
+import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import Map from './basic'
@@ -12,6 +12,7 @@ import SettingsModal from './SettingsModal';
 import NotificationsModal from './NotificationsModal';
 import AssignDriverModal from './AssignDriverModal';
 import ConfirmModal from './ConfirmModal';
+import Dialog from '@material-ui/core/Dialog';
 
 import { Manager } from '../../../StorageManager/Storage';
 
@@ -41,7 +42,13 @@ class ChatApp extends Component {
       { "id": 3, "longitude": -95.473728, "latitude": 32.200987 },
       { "id": 4, "longitude": -95.473728, "latitude": 33.200987 }]
   }
-
+  componentDidUpdate(prevProps) {
+    if (this.props.timeout !== prevProps.timeout) {
+      if (this.props.timeout === true) {
+        this.setState({ loading: false })
+      }
+    }
+  }
   componentDidMount = () => {
     this.getEmail()
     // setInterval(() => {
@@ -111,10 +118,26 @@ class ChatApp extends Component {
     console.log("request to add route: ", data);
 
   }
+
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        onClose={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
   render() {
-    setTimeout(() => {
-      this.setState({ shelters: this.state.shelters })
-    }, 500); return (
+    console.log('haider hassan', this.props)
+    return (
       <Fragment>
         <h2 className="breadcumbTitle">Chat</h2>
         <Grid className="chatApp">
@@ -216,6 +239,7 @@ class ChatApp extends Component {
           registrationNo={this.state.registrationNo}
           history={this.props.history}
         />
+        {this.renderLoading()}
       </Fragment >
     )
   }

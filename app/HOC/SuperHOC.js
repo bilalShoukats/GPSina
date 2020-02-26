@@ -58,7 +58,7 @@ const WithAuthenticate = OriginalComponent => {
         headerTitle = 'Error';
         msg = e.message;
       }
-      if (e.error === -1) {
+      if (e.error === -1)  {
         this.setState({ showModal: true, retryApi: apiName, retryBody: body, retryBool: bool, retryCallback: callback });
         //this.props.history.push('/network');
       }
@@ -112,6 +112,7 @@ const WithAuthenticate = OriginalComponent => {
             reLoadUser={this.reLoadUser}
             customNavigate={(screen, data) => this.navigate(screen, data)}
             logout={this.logout}
+            timeout={this.state.showModal}
           />
           <SweetAlertSingle
             title="Request Timed Out!"
