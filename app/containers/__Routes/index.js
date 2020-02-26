@@ -79,7 +79,7 @@ import ApexChart from 'components/Chart/ApexChart/Loadable';
 import AddCompanyScreen from 'containers/Pages/AddCompanyScreen/Loadable';
 import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
-import ViewRoutesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
+import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
 import AddUserScreen from 'containers/Pages/AddUserScreen/Loadable';
 import ViewUsersScreen from 'containers/Pages/ViewUsersScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
