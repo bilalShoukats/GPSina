@@ -47,7 +47,7 @@ class AssignDriver extends Component {
   getUnAssignDrivers = () => {
     let body = {
       page: 1,
-      companyEmail: "usman.malik@azure-i.com"
+      companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewDrivers', body, res => {
@@ -63,7 +63,7 @@ class AssignDriver extends Component {
 
   getUnAssignedCar = () => {
     let body = {
-      companyEmail: "usman.malik@azure-i.com",
+      companyEmail: this.props.user.companyEmail,
       page: 1,
       // companyEmail:this.state.email
     }
@@ -82,7 +82,7 @@ class AssignDriver extends Component {
   getAllRoutes = () => {
     let body = {
       page: 1,
-      companyEmail: "usman.malik@azure-i.com"
+      companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewRoute', body, res => {

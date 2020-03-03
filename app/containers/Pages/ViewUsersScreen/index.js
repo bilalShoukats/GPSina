@@ -1,9 +1,5 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import makeSelectViewUsersScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
@@ -13,6 +9,7 @@ import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
+import NotificationsModal from './NotificationsModal'
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -30,7 +27,9 @@ class ViewUsersScreen extends Component {
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
-    showConfirmModal: false
+    carID: '',
+    showConfirmModal: false,
+    showNotificationsModal: false,
   }
 
   handleChange = (event, newValue) => {
@@ -53,6 +52,9 @@ class ViewUsersScreen extends Component {
   }
 
   getAllMyCompanies = () => {
+    let body = {
+      companyEmail: this.props.user.companyEmail,
+    }
     this.props.apiManager.makeCall(`getAllCompanies?page=${this.state.currentPage}`, {}, res => {
       if (res.code === 1019) {
         this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
@@ -71,6 +73,9 @@ class ViewUsersScreen extends Component {
   }
   openConfirmModal = (item) => {
     this.setState({ carID: item.carID, showConfirmModal: true })
+  }
+  openNotificationsModal = (item) => {
+    this.setState({ carID: item.carID, showNotificationsModal: true })
   }
 
   render() {
@@ -116,19 +121,28 @@ class ViewUsersScreen extends Component {
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
                     {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => (
-                      <div className="companiesLink" key={i}  style={{ padding: 10 }}>
+                      <div className="companiesLink" key={i} style={{ padding: 10 }}>
                         <Grid className="companiesAutorImg">
                           {/* <img src={item.companyLogo} alt="" /> */}
                           <img src={profile} alt="" />
                         </Grid>
                         <Grid className="companiesAutorContent">
+                          <h4 style={{ visibility: 'hidden' }}>:
+                            <Button onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              this.openNotificationsModal(item)
+                            }} style={{ visibility: 'visible' }} xl={6} className='btn bg-primary' >
+                              <i className="icofont-notification" />
+                            </Button>
+                          </h4>
                           <h4>{item.companyName}
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               this.props.history.push(`/editUser/${item.carId}`)
                             }} xl={6} className='btn bg-dark'>
-                              <i className="icofont-ui-settings" />
+                              <i className="icofont-ui-edit" />
                             </Button>
                           </h4>
                           <h4 style={{ fontSize: 14 }}>Director Name : {item.director}
@@ -169,6 +183,11 @@ class ViewUsersScreen extends Component {
           close={() => this.setState({ showConfirmModal: false })}
         // registrationNo={this.state.registrationNo}
         // history={this.props.history}
+        />
+        <NotificationsModal
+          open={this.state.showNotificationsModal}
+          close={() => this.setState({ showNotificationsModal: false })}
+          carID={this.state.carID}
         />
       </Fragment>
     );

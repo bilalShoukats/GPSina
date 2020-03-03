@@ -38,6 +38,7 @@ class AddUserScreen extends Component {
     viewVehicle: false,
     assignDriver: false,
     attachDevice: false,
+    driver: []
   }
 
   schema = {
@@ -153,21 +154,53 @@ class AddUserScreen extends Component {
     return errors;
   };
 
-  submitHandler = (e) => {
-    e.preventDefault()
-    console.log("submitting add user form");
-    const error = this.validate()
 
+  handleChange = (event) => {
+    this.setState({
+      file: URL.createObjectURL(event.target.files[0])
+    })
+  }
+  handleSwitchChange = (name) => (event) => {
+    this.setState({ [name]: event.target.checked });
+  };
+  getDriverDetails = () => {
+    let body = {
+      driverID: this.props.match.params
+    }
+    this.props.apiManager.makeCall('viewDrivers', body, res => {
+      if (res) {
+        this.setState({ driver: res.response });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
+  componentWillMount = () => {
+    this.getDriverDetails();
+  }
+  editDriver = () => {
+    e.preventDefault()
+    console.log("submitting add company form");
+    const error = this.validate()
     if (!error) {
       let body = {
-        companyName: this.state.companyName,
-        email: this.state.companyEmail,
-        director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
+        driverName: this.state.driverName,
+        driverEmail: this.state.driverEmail,
+        licenceNumber: this.state.licenceNumber,
+        licenceExpiry: parseInt(this.state.licenceExpiry),
+        driverBloodGroup: parseInt(this.state.gender),
+        driverAge: parseInt(this.state.driverAge),
+        role: 0,
+        gender: parseInt(this.state.gender),
+        companyEmail: this.props.user.companyEmail,
       }
-      this.props.apiManager.makeCall("addCompany", body, (response) => {
+      this.props.apiManager.makeCall("editDriver", body, (response) => {
+        console.log("response: ", response);
+        console.log("response: ", body);
         if (response.code === 1008) {
-          toast.success('User added successfully!')
+          toast.success('Driver Edited successfully!')
         }
         else
           toast.error(response.id)
@@ -179,14 +212,6 @@ class AddUserScreen extends Component {
       })
     }
   }
-  handleChange = (event) => {
-    this.setState({
-      file: URL.createObjectURL(event.target.files[0])
-    })
-  }
-  handleSwitchChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
 
   render() {
     const genderItems = [
@@ -231,7 +256,7 @@ class AddUserScreen extends Component {
               className="addCompany"
             >
               <Grid container spacing={3}>
-              <Grid item sm={6} xs={12}>
+                <Grid item sm={6} xs={12}>
                   <TextField
                     label="Name"
                     placeholder="Your Name name here.."

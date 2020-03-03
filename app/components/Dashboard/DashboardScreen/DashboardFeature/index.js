@@ -24,7 +24,7 @@ const features = [
     color: '#FFFFFF'
   },
   {
-    title: 'Car fence in notification',
+    title: 'Car fence inn notification',
     color: '#FFFFFF'
   }
 ];
@@ -41,14 +41,13 @@ const DashboardFeature = () => {
             speed={500}
             slidesToShow={3}
             slidesToScroll={1}
+            
           >
             {features.map((item, i) => {
               return (
-
-                <Grid key={i} className="cmfSignle" style={{ background: item.color }}>
+                <Grid key={i} className="cmfSignle" >
                   <p key={i}>{item.title}</p>
                 </Grid>
-
               )
             })}
           </Slider>

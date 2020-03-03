@@ -149,7 +149,7 @@ class AddUserScreen extends Component {
       licenceNumber: this.state.licenceNumber,
       licenceExpiry: this.state.licenceExpiry,
       driverAge: this.state.driverAge,
-      companyEmail: "usman.malik@azure-i.com",
+      companyEmail: this.props.user.companyEmail,
 
     }
     const { error } = Joi.validate(form, this.schema, options)
@@ -176,7 +176,7 @@ class AddUserScreen extends Component {
         role: 0,
         gender: parseInt(this.state.gender),
         // driverOwner: this.state.driverOwner,
-        companyEmail: "usman.malik@azure-i.com",
+        companyEmail: this.props.user.companyEmail,
         // companyName: this.state.companyName,
         // email: this.state.companyEmail,
         // director: this.state.directorName,
@@ -268,11 +268,11 @@ class AddUserScreen extends Component {
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
-                <img src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
+                <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
 
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} for="file">Edit Image</label>
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
 
               <Grid className="companyInfoContent">
                 <h4>Please upload user image</h4>

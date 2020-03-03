@@ -45,7 +45,7 @@ class AssignDriver extends Component {
   getAllDrivers = () => {
     let body = {
       page: 1,
-      companyEmail: "usman.malik@azure-i.com"
+      companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewDrivers', body, res => {

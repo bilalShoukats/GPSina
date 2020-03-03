@@ -28,16 +28,17 @@ class AddUserScreen extends Component {
     error: {},
     file: '',
     addUser: false,
-    viewUser:false,
-    editUser:false,
-    addRoute:false,
-    viewRoutes:false,
-    addDriver:false,
-    viewDrivers:false,
-    addVehicle:false,
-    viewVehicle:false,
-    assignDriver:false,
-    attachDevice:false,
+    addUser: false,
+    viewUser: false,
+    editUser: false,
+    addRoute: false,
+    viewRoutes: false,
+    addDriver: false,
+    viewDrivers: false,
+    addVehicle: false,
+    viewVehicle: false,
+    assignDriver: false,
+    attachDevice: false,
   }
 
   schema = {
@@ -141,9 +142,12 @@ class AddUserScreen extends Component {
   validate = () => {
     const options = { abortEarly: false }
     const form = {
-      companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
-      directorName: this.state.directorName
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      userName: this.state.userName,
+      password: this.state.password,
+      email: this.state.email,
+      phone: this.state.phone,
     }
     const { error } = Joi.validate(form, this.schema, options)
     if (!error) return null;
@@ -157,15 +161,37 @@ class AddUserScreen extends Component {
     e.preventDefault()
     console.log("submitting add user form");
     const error = this.validate()
-
     if (!error) {
+      let emaill = this.props.user.companyEmail
       let body = {
-        companyName: this.state.companyName,
-        email: this.state.companyEmail,
-        director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        userName: this.state.userName,
+        password: this.state.password,
+        email: this.state.email,
+        phone: this.state.phone,
+        avatar: 'lalu',
+        userPermission: {
+          emaill: {
+            apiOperation: [
+              this.state.addUser === true ? 1 : 0,
+              this.state.viewUser === true ? 1 : 0,
+              this.state.editUser === true ? 1 : 0,
+              this.state.addRoute === true ? 1 : 0,
+              this.state.viewRoutes === true ? 1 : 0,
+              this.state.addDriver === true ? 1 : 0,
+              this.state.viewDrivers === true ? 1 : 0,
+              this.state.addVehicle === true ? 1 : 0,
+              this.state.viewVehicle === true ? 1 : 0,
+              this.state.assignDriver === true ? 1 : 0,
+              this.state.attachDevice === true ? 1 : 0,
+            ]
+          }
+        }
       }
-      this.props.apiManager.makeCall("addCompany", body, (response) => {
+      this.props.apiManager.makeCall("addEmployeeUserToCompany", body, (response) => {
+        console.log('adddddd', response)
+        console.log('adddddd', body)
         if (response.code === 1008) {
           toast.success('User added successfully!')
         }
@@ -200,12 +226,10 @@ class AddUserScreen extends Component {
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
-                <img src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
-
+                <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} for="file">Edit Image</label>
-
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
               <Grid className="companyInfoContent">
                 <h4>Please upload user image</h4>
               </Grid>
@@ -323,7 +347,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <div className="modalContent">
                     <h4>
-                      Over Speed:
+                      Add User:
                 </h4>
                     <Switch
                       checked={this.state.addUser}
@@ -399,7 +423,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <div className="modalContent">
                     <h4>
-                      View Router:
+                      View Route:
                 </h4>
                     <Switch
                       checked={this.state.viewRoutes}
