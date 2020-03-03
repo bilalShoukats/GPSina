@@ -5,14 +5,16 @@ import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
 import { Grid } from '@material-ui/core'
 import './style.scss'
-import Map from './basic'
-
+import GMap from './basic'
+import SocketComponent from '../../../components/WebSocket';
+import { Manager } from '../../../StorageManager/Storage';
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
 class ChatApp extends Component {
   state = {
     email: "",
     value: 0,
+    hash: "",
     companies: [],
     loading: true,
     vibrateNotification: false,
@@ -27,16 +29,35 @@ class ChatApp extends Component {
     showConfirmModal: false,
     carID: '',
     registrationNo: '',
-    mapData: [
-      { "id": 1, "longitude": -95, "latitude": 29.5 },
-    ],
-    mapInitialData: [
-      { "id": 1, "longitude": -95, "latitude": 29.5 },
-    ]
-  
+    deviceId: 0,
+    mapObject: new Map(),
+  }
+
+  recieveData = (deviceId, engineStatus, Lat, Lng) => {
+    let mapObject = this.state.mapObject;
+    mapObject.set(
+      deviceId,
+      [deviceId, engineStatus, Lat[0], Lng[0]]
+    );
+    this.setState({ mapObject }, () => {
+      console.log('MapData: ', this.state.mapObject);
+    });
+  }
+
+  getMyUserData = async () => {
+    let user = await Manager.getItem('user', true);
+    this.setState({ hash: user.hash }, () => {
+      this.socketComponent = new SocketComponent(this.recieveData);
+      console.log(this.state.hash);
+      console.log(this.state.deviceId);
+      this.socketComponent.connectSocketServer(this.state.hash, ["" + this.state.deviceId]);
+    });
   }
 
   componentDidMount = () => {
+    this.getMyUserData();
+    this.setState({ deviceId: this.props.match.params.registrationNo });
+    // this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
     // setInterval(() => {
     //   this.move();
     // }, 500);
@@ -71,12 +92,11 @@ class ChatApp extends Component {
 
     return (
       <Fragment>
-        <h2 className="breadcumbTitle">MAP</h2>
+        <h2 className="breadcumbTitle">Device Map</h2>
         <Grid className="chatApp">
           <Grid style={{ width: '100%', height: '100%' }}>
-            <Map
-              data={this.state.mapData}
-              initialData={this.state.mapInitialData}
+            <GMap
+              data={[...this.state.mapObject.values()]}
             />
           </Grid>
         </Grid>

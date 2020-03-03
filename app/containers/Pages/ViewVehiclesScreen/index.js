@@ -7,20 +7,23 @@ import Button from '@material-ui/core/Button';
 import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
-import Map from './basic'
+import GMap from './basic'
 import SettingsModal from './SettingsModal';
 import NotificationsModal from './NotificationsModal';
 import AssignDriverModal from './AssignDriverModal';
 import ConfirmModal from './ConfirmModal';
+import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
-
 import { Manager } from '../../../StorageManager/Storage';
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
 class ChatApp extends Component {
   state = {
+    companyIdsSet: "",
     email: "",
+    hash: "",
+    companyEmail: "",
     value: 0,
     companies: [],
     loading: true,
@@ -36,12 +39,20 @@ class ChatApp extends Component {
     showConfirmModal: false,
     carID: '',
     registrationNo: '',
-    mapData: [
-      { "id": 1, "longitude": -95.473728, "latitude": 30.200987 },
-      { "id": 2, "longitude": -95.473728, "latitude": 31.200987 },
-      { "id": 3, "longitude": -95.473728, "latitude": 32.200987 },
-      { "id": 4, "longitude": -95.473728, "latitude": 33.200987 }]
+    mapObject: new Map()
   }
+
+  recieveData = (deviceId, engineStatus, Lat, Lng) => {
+    let mapObject = this.state.mapObject;
+    mapObject.set(
+      deviceId,
+      [deviceId, engineStatus, Lat[0], Lng[0]]
+    );
+    this.setState({ mapObject }, () => {
+      console.log('MapData: ', this.state.mapObject);
+    });
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.timeout !== prevProps.timeout) {
       if (this.props.timeout === true) {
@@ -49,41 +60,39 @@ class ChatApp extends Component {
       }
     }
   }
-  componentDidMount = () => {
-    this.getEmail()
-    // setInterval(() => {
-    //   this.move();
-    // }, 500);
-  }
 
-  move = () => {
-    let mapData = this.state.mapData;
-    mapData.forEach(single => {
-      single.longitude -= 0.002
-    });
-    this.setState({ mapData });
+  componentDidMount = () => {
+    this.socketComponent = new SocketComponent(this.recieveData);
+    this.getMyEmail();
   }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getAllMyCompanies();
+        this.getAllMyVehicles();
       })
     }
   }
 
-  getAllMyCompanies = () => {
+  getAllMyVehicles = () => {
     let body = {
       page: this.state.currentPage,
-      companyEmail: "usman.malik@azure-i.com"
-      // companyEmail:this.state.email
+      companyEmail: this.state.companyEmail
     }
     this.props.apiManager.makeCall('viewCars', body, res => {
       console.log('get cars - v', res)
       console.log('get cars - v', body)
       if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
+          let companyIdSet = [];
+          this.state.companies.map((item, index) => {
+            companyIdSet.push("" + item.deviceID);
+          });
+          this.setState({ companyIdSet }, () => {
+            this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
+          });
+        });
       }
       else {
         this.setState({ loading: false });
@@ -95,10 +104,12 @@ class ChatApp extends Component {
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
-  getEmail = async () => {
+
+  getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
-    this.setState({ email: user.email }, () => this.getAllMyCompanies());
+    this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllMyVehicles());
   }
+
   openSettingsModal = (item) => {
     this.setState({ carID: item.carID, showSettingsModal: true })
   }
@@ -135,11 +146,11 @@ class ChatApp extends Component {
       </Dialog>
     )
   }
+
   render() {
-    console.log('haider hassan', this.props)
     return (
       <Fragment>
-        <h2 className="breadcumbTitle">Chat</h2>
+        <h2 className="breadcumbTitle">Your Vehicles</h2>
         <Grid className="chatApp">
           <Grid className="chatAppLeft">
             <ScrollArea
@@ -150,7 +161,10 @@ class ChatApp extends Component {
             >
               {this.state.companies.map((item, index) => {
                 return (
-                  <Grid key={index} className='itemContainer' onClick={() => this.props.history.push(`/vehicleMap/${item.carID}`)}>
+                  <Grid key={index} className='itemContainer' onClick={() => {
+                    this.socketComponent.disconnectSocketServer();
+                    this.props.history.push(`/vehicleMap/${item.deviceID}`)
+                  }}>
                     <Grid style={{ display: 'flex', width: '100%', justifyContent: 'space-between', padding: '10px 20px 0px 20px', }}>
                       <h4>{item.carOwnerName}</h4>
                       <p>{item.registrationNo}</p>
@@ -211,8 +225,8 @@ class ChatApp extends Component {
             </ScrollArea>
           </Grid>
           <Grid className="chatAppRight">
-            <Map
-              data={this.state.mapData}
+            <GMap
+              data={[...this.state.mapObject.values()]}
             />
           </Grid>
         </Grid>

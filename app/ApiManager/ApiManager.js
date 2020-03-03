@@ -168,6 +168,7 @@ export default class ApiManager {
 
   }
 
+  //bool false means post, true for get request
   makeCall(apiName, body, callback, bool = false) {
     this.post(apiName, body, bool, (res) => callback(res));
   }

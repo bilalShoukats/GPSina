@@ -14,7 +14,6 @@ export default class MapContainer extends React.Component {
 
     componentDidMount = () => {
         // console.log("testing: ", this.map);
-
     }
 
     render() {
@@ -48,7 +47,6 @@ export default class MapContainer extends React.Component {
                             });
                         },
                         addMarker: e => {
-                            console.log("add mark");
                             if (this.state.maxMarkers < 2) {
                                 const newPlace = {
                                     id: this.state.places.length,
@@ -63,8 +61,7 @@ export default class MapContainer extends React.Component {
                             }
                         },
                         resetMarkers: () => {
-                            console.log("reset markers");
-                            me.props.disableButton();
+                            me.props.disableResetButton();
                             this.setState({
                                 places: [], maxMarkers: 0, directions: null
                             });
@@ -79,8 +76,9 @@ export default class MapContainer extends React.Component {
                                     travelMode: google.maps.TravelMode.DRIVING,
                                 }, (result, status) => {
                                     if (status === google.maps.DirectionsStatus.OK) {
-                                        this.setState({ directions: { ...result } }, () => {
-                                            me.props.onDirectionConfirm(this.state.directions.routes[0].overview_path);
+                                        this.setState({ directions: { ...result }, markers: true }, () => {
+                                            me.props.enableAddRouteButton(this.state.directions.routes[0].overview_path);
+                                            // me.props.onDirectionConfirm(this.state.directions.routes[0].overview_path);
                                         })
                                     } else {
                                         this.state.resetMarkers();
@@ -90,16 +88,9 @@ export default class MapContainer extends React.Component {
                             }
                         },
                         onDragEnd: (markerId) => evt => {
-                            console.log(this.state.places[markerId]);
                             this.state.places[markerId].lat = evt.latLng.lat();
                             this.state.places[markerId].lng = evt.latLng.lng();
-
-                            this.setState({
-                                places: this.state.places
-                            }, () => {
-                                console.log(this.state.places)
-                            });
-
+                            this.setState({ places: this.state.places });
                             this.state.showDirections();
                         },
                     })
@@ -114,10 +105,10 @@ export default class MapContainer extends React.Component {
                     defaultCenter={{ lat: -33.8665433, lng: 151.1956316 }}
                     defaultOptions={defaultMapOptions}
                 >
-                    {props.directions && <DirectionsRenderer directions={props.directions} suppressMarkers={true} />}
+                    {props.directions && <DirectionsRenderer directions={props.directions} options={{ suppressMarkers: true }} />}
                     {props.places.map(place => {
                         this.innerProps = props;
-                        this.props.enableButton();
+                        this.props.enableResetButton();
                         return (
                             <Marker
                                 icon={ruoteImg}
@@ -125,7 +116,6 @@ export default class MapContainer extends React.Component {
                                 position={{ lat: place.lat, lng: place.lng }}
                                 draggable={true}
                                 onDragEnd={props.onDragEnd(place.id)}
-                            // onDragEnd={() => props.onDragEnd((values) => this.props.handleDragEnd(values))}
                             />
                         );
                     })}

@@ -59,6 +59,61 @@
     }
 }
 
+.modalWrapper {
+    overflow-y: auto;
+  
+    h2 {
+      display: flex;
+      justify-content: space-between;
+  
+      .closeModal {
+        font-size: 14px;
+        cursor: pointer;
+      }
+    }
+  
+    .modalInner {
+      background: #fff;
+      padding: 30px 50px;
+      box-shadow: none;
+      outline: none;
+      width: 700px;
+      max-width: 95%;
+      margin: 50px auto;
+      border-radius: 5px;
+  
+      form {
+        margin-top: 50px;
+  
+        button {
+          margin-top: 20px;
+        }
+      }
+  
+      .formInput {
+        margin-bottom: 10px;
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    .modalHead{
+      max-width: 350px;
+    }
+  }
+  .modalHead{
+    width: 600px;
+  }
+
+  .modalContent{
+    display: flex; 
+    justify-content: space-between; 
+    flex-direction: row; 
+    width: 100%; 
+    margin-top: 10px;
+    margin-bottom: 10px; 
+    align-items: center;
+  }
+
 .addCompany {
     span {
         display: block;
