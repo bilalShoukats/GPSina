@@ -125,208 +125,208 @@ const TopHeader = props => {
           link: '/dashboard',
           id: 5968568
         },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Cryptocurrency })}`,
-          link: '/cryptocurrency',
-          id: 54684684684
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.BankingSystem })}`,
-          link: '/banking-system',
-          id: 546852586
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Crm })}`,
-          link: '/crm',
-          id: 546852588
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Ecommerce })}`,
-          link: '/ecommerce',
-          id: 5468525881
-        },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.Cryptocurrency })}`,
+        //   link: '/cryptocurrency',
+        //   id: 54684684684
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.BankingSystem })}`,
+        //   link: '/banking-system',
+        //   id: 546852586
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.Crm })}`,
+        //   link: '/crm',
+        //   id: 546852588
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.Ecommerce })}`,
+        //   link: '/ecommerce',
+        //   id: 5468525881
+        // },
       ],
     },
 
-    {
-      name: 'Apps',
-      icon: ana,
-      iconHover: anaH,
-      id: 88854,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.forums })}`,
-          link: '/forums',
-          id: 59681445745,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.contactlist })}`,
-          link: '/contact-list',
-          id: 181058459,
-          color:
-            'linear-gradient(rgb(209, 122, 255) 0%, rgb(129, 109, 255) 100%)',
-          value: '65',
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.scrumbord })}`,
-          link: '/scrumbord',
-          id: 2720484,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.todo })}`,
-          link: '/todo',
-          id: 4986596,
-          color:
-            'linear-gradient(rgb(151, 149, 231) 0%, rgb(84, 78, 250) 100%)',
-          value: '65',
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.chat })}`,
-          link: '/chat',
-          id: 482,
-          color:
-            'linear-gradient(rgb(255, 209, 238) -35.41%, rgb(255, 107, 175) 84.45%)',
-          value: '30',
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.invoice })}`,
-          link: '/invoice',
-          id: 896542424,
-          color:
-            'linear-gradient(173.78deg, rgb(45, 255, 227) -31.46%, rgb(67, 206, 75) 90.39%)',
-          value: '100',
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.inbox })}`,
-          link: '/inbox',
-          id: 856324157852014,
-          color:
-            'linear-gradient(rgb(0, 238, 255) -36.33%, rgb(104, 41, 231) 142.87%)',
-          value: '35',
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.eventcalendar })}`,
-          link: '/event-calendar',
-          id: 58757452873457382,
-        },
-      ],
-    },
-    {
-      name: `${props.intl.formatMessage({ ...messages.UIComponents })}`,
-      id: 41728,
-      icon: ui,
-      iconHover: uiH,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.UI })}`,
-          id: 24787,
-          submenus: [
-            {
-              name: `${props.intl.formatMessage({ ...messages.Buttons })}`,
-              link: '/buttons',
-              id: 7898,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.alerts })}`,
-              link: '/alerts',
-              id: 60721,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.dropdowns })}`,
-              link: '/dropdowns',
-              id: 55485,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.grids })}`,
-              link: '/grids',
-              id: 98061,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.modals })}`,
-              link: '/modals',
-              id: 13755,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.tooltios })}`,
-              link: '/tooltios',
-              id: 33027,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.preloaders })}`,
-              link: '/preloaders',
-              id: 46396,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.sweetalert })}`,
-              link: '/sweet-alert',
-              id: 95359,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.tabs })}`,
-              link: '/tabs',
-              id: 88531,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.typography })}`,
-              link: '/typography',
-              id: 36951,
-            },
-            {
-              name: 'texteditor',
-              link: '/texteditor',
-              id: 74096,
-            },
-          ],
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Maps })}`,
-          id: 40968,
-          submenus: [
-            {
-              name: `${props.intl.formatMessage({ ...messages.googlemap })}`,
-              link: '/google-map',
-              id: 14102,
-            },
-            {
-              name: 'vector map',
-              link: '/vector-map',
-              id: 14102,
-            },
-          ],
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Charts })}`,
-          id: 51089,
-          submenus: [
-            {
-              name: `${props.intl.formatMessage({ ...messages.chartjs })}`,
-              link: '/chart-js',
-              id: 70862,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.reactvis })}`,
-              link: '/reactvis-chart',
-              id: 78948,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.rechart })}`,
-              link: '/rechart',
-              id: 14736,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.highcharts })}`,
-              link: '/highcharts',
-              id: 11183,
-            },
-            {
-              name: 'Apex Chart',
-              link: '/apex',
-              id: 7754568,
-            },
-          ],
-        },
-      ],
-    },
+    // {
+    //   name: 'Apps',
+    //   icon: ana,
+    //   iconHover: anaH,
+    //   id: 88854,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.forums })}`,
+    //       link: '/forums',
+    //       id: 59681445745,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.contactlist })}`,
+    //       link: '/contact-list',
+    //       id: 181058459,
+    //       color:
+    //         'linear-gradient(rgb(209, 122, 255) 0%, rgb(129, 109, 255) 100%)',
+    //       value: '65',
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.scrumbord })}`,
+    //       link: '/scrumbord',
+    //       id: 2720484,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.todo })}`,
+    //       link: '/todo',
+    //       id: 4986596,
+    //       color:
+    //         'linear-gradient(rgb(151, 149, 231) 0%, rgb(84, 78, 250) 100%)',
+    //       value: '65',
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.chat })}`,
+    //       link: '/chat',
+    //       id: 482,
+    //       color:
+    //         'linear-gradient(rgb(255, 209, 238) -35.41%, rgb(255, 107, 175) 84.45%)',
+    //       value: '30',
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.invoice })}`,
+    //       link: '/invoice',
+    //       id: 896542424,
+    //       color:
+    //         'linear-gradient(173.78deg, rgb(45, 255, 227) -31.46%, rgb(67, 206, 75) 90.39%)',
+    //       value: '100',
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.inbox })}`,
+    //       link: '/inbox',
+    //       id: 856324157852014,
+    //       color:
+    //         'linear-gradient(rgb(0, 238, 255) -36.33%, rgb(104, 41, 231) 142.87%)',
+    //       value: '35',
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.eventcalendar })}`,
+    //       link: '/event-calendar',
+    //       id: 58757452873457382,
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: `${props.intl.formatMessage({ ...messages.UIComponents })}`,
+    //   id: 41728,
+    //   icon: ui,
+    //   iconHover: uiH,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.UI })}`,
+    //       id: 24787,
+    //       submenus: [
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.Buttons })}`,
+    //           link: '/buttons',
+    //           id: 7898,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.alerts })}`,
+    //           link: '/alerts',
+    //           id: 60721,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.dropdowns })}`,
+    //           link: '/dropdowns',
+    //           id: 55485,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.grids })}`,
+    //           link: '/grids',
+    //           id: 98061,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.modals })}`,
+    //           link: '/modals',
+    //           id: 13755,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.tooltios })}`,
+    //           link: '/tooltios',
+    //           id: 33027,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.preloaders })}`,
+    //           link: '/preloaders',
+    //           id: 46396,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.sweetalert })}`,
+    //           link: '/sweet-alert',
+    //           id: 95359,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.tabs })}`,
+    //           link: '/tabs',
+    //           id: 88531,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.typography })}`,
+    //           link: '/typography',
+    //           id: 36951,
+    //         },
+    //         {
+    //           name: 'texteditor',
+    //           link: '/texteditor',
+    //           id: 74096,
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.Maps })}`,
+    //       id: 40968,
+    //       submenus: [
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.googlemap })}`,
+    //           link: '/google-map',
+    //           id: 14102,
+    //         },
+    //         {
+    //           name: 'vector map',
+    //           link: '/vector-map',
+    //           id: 14102,
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.Charts })}`,
+    //       id: 51089,
+    //       submenus: [
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.chartjs })}`,
+    //           link: '/chart-js',
+    //           id: 70862,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.reactvis })}`,
+    //           link: '/reactvis-chart',
+    //           id: 78948,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.rechart })}`,
+    //           link: '/rechart',
+    //           id: 14736,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.highcharts })}`,
+    //           link: '/highcharts',
+    //           id: 11183,
+    //         },
+    //         {
+    //           name: 'Apex Chart',
+    //           link: '/apex',
+    //           id: 7754568,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: pricing,
@@ -343,66 +343,66 @@ const TopHeader = props => {
           link: '/viewCompanies',
           id: 7456832452412,
         },
-        {
-          name: `${props.intl.formatMessage({ ...messages.lockscreen })}`,
-          link: '/lock-screen',
-          id: 411242585693241,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.mediagallary })}`,
-          link: '/media-gallary',
-          id: 4144525885,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.logviewer })}`,
-          link: '/log-viewer',
-          id: 8558241442,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.profile })}`,
-          link: '/profile',
-          id: 5886852541,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.searchresult })}`,
-          link: '/search-result',
-          id: 445421353,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.sectiontimeout })}`,
-          link: '/section-timeout',
-          id: 986542124,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.timeline })}`,
-          link: '/timeline',
-          id: 68532452,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.blogs })}`,
-          link: '/blogs',
-          id: 685835624,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.signup })}`,
-          link: '/signup',
-          id: 868352504,
-        },
-        {
-          name: 'Login',
-          link: '/',
-          id: 474525252,
-        },
-        {
-          name: '404',
-          link: '/404',
-          id: 7858225,
-        },
-        {
-          name: '505',
-          link: '/505',
-          id: 458585,
-        },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.lockscreen })}`,
+        //   link: '/lock-screen',
+        //   id: 411242585693241,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.mediagallary })}`,
+        //   link: '/media-gallary',
+        //   id: 4144525885,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.logviewer })}`,
+        //   link: '/log-viewer',
+        //   id: 8558241442,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.profile })}`,
+        //   link: '/profile',
+        //   id: 5886852541,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.searchresult })}`,
+        //   link: '/search-result',
+        //   id: 445421353,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.sectiontimeout })}`,
+        //   link: '/section-timeout',
+        //   id: 986542124,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.timeline })}`,
+        //   link: '/timeline',
+        //   id: 68532452,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.blogs })}`,
+        //   link: '/blogs',
+        //   id: 685835624,
+        // },
+        // {
+        //   name: `${props.intl.formatMessage({ ...messages.signup })}`,
+        //   link: '/signup',
+        //   id: 868352504,
+        // },
+        // {
+        //   name: 'Login',
+        //   link: '/',
+        //   id: 474525252,
+        // },
+        // {
+        //   name: '404',
+        //   link: '/404',
+        //   id: 7858225,
+        // },
+        // {
+        //   name: '505',
+        //   link: '/505',
+        //   id: 458585,
+        // },
       ],
     },
     {
@@ -477,168 +477,168 @@ const TopHeader = props => {
         },
       ],
     },
-    {
-      name: 'Forums & Tables',
-      id: 70153,
-      icon: form,
-      iconHover: formH,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.Forms })}`,
-          id: 52262,
-          submenus: [
-            {
-              name: `${props.intl.formatMessage({ ...messages.inputfild })}`,
-              link: '/inputfild',
-              id: 98923,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.checkbox })}`,
-              link: '/checkbox',
-              id: 6857,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.fileupload })}`,
-              link: '/file-upload',
-              id: 56770,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.selectinput })}`,
-              link: '/select-input',
-              id: 16848,
-            },
-            {
-              name: `${props.intl.formatMessage({
-                ...messages.discreteslider,
-              })}`,
-              link: '/discrete-slider',
-              id: 801,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.datepicker })}`,
-              link: '/date-picker',
-              id: 7585,
-            },
-            {
-              name: `${props.intl.formatMessage({ ...messages.transferfile })}`,
-              link: '/transferfile',
-              id: 88241,
-            },
-          ],
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.Tables })}`,
-          id: 90074,
-          submenus: [
-            {
-              name: `${props.intl.formatMessage({ ...messages.basictable })}`,
-              link: '/basic-table',
-              id: 48107,
-            },
-            {
-              name: `${props.intl.formatMessage({
-                ...messages.editabletable,
-              })}`,
-              link: '/editable-table',
-              id: 96622,
-            },
-            {
-              name: `${props.intl.formatMessage({
-                ...messages.materialtable,
-              })}`,
-              link: '/material-table',
-              id: 31083,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: `${props.intl.formatMessage({ ...messages.Icons })}`,
-      id: 92394,
-      icon: fontawesome,
-      iconHover: fontawesomeH,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.fontawesome })}`,
-          link: '/fontawesome',
-          id: 58482586584214528525,
-        },
-        {
-          name: 'Themify',
-          link: '/themify',
-          id: 745683244545252412,
-        },
-        {
-          name: 'Pixeden Icons',
-          link: '/pixeden',
-          id: 411242548565885693241,
-        },
-        {
-          name: 'Icofont',
-          link: '/icofont',
-          id: 41447587586525885,
-        },
-      ],
-    },
-    {
-      name: 'Pages',
-      icon: pricing,
-      iconHover: pricingH,
-      id: 9239448445,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.pricingtable })}`,
-          link: '/pricing-table',
-          id: 2586584214528525,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.lockscreen })}`,
-          link: '/lock-screen',
-          id: 411242585693241,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.mediagallary })}`,
-          link: '/media-gallary',
-          id: 4144525885,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.logviewer })}`,
-          link: '/log-viewer',
-          id: 8558241442,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.searchresult })}`,
-          link: '/search-result',
-          id: 445421353,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.profile })}`,
-          link: '/profile',
-          id: 5886852541,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.signup })}`,
-          link: '/signup',
-          id: 868352504,
-        },
-        {
-          name: 'Login',
-          link: '/',
-          id: 474525252,
-        },
-        {
-          name: '404',
-          link: '/404',
-          id: 7858225,
-        },
-        {
-          name: '505',
-          link: '/505',
-          id: 458585,
-        },
-      ],
-    },
+    // {
+    //   name: 'Forums & Tables',
+    //   id: 70153,
+    //   icon: form,
+    //   iconHover: formH,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.Forms })}`,
+    //       id: 52262,
+    //       submenus: [
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.inputfild })}`,
+    //           link: '/inputfild',
+    //           id: 98923,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.checkbox })}`,
+    //           link: '/checkbox',
+    //           id: 6857,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.fileupload })}`,
+    //           link: '/file-upload',
+    //           id: 56770,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.selectinput })}`,
+    //           link: '/select-input',
+    //           id: 16848,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({
+    //             ...messages.discreteslider,
+    //           })}`,
+    //           link: '/discrete-slider',
+    //           id: 801,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.datepicker })}`,
+    //           link: '/date-picker',
+    //           id: 7585,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.transferfile })}`,
+    //           link: '/transferfile',
+    //           id: 88241,
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.Tables })}`,
+    //       id: 90074,
+    //       submenus: [
+    //         {
+    //           name: `${props.intl.formatMessage({ ...messages.basictable })}`,
+    //           link: '/basic-table',
+    //           id: 48107,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({
+    //             ...messages.editabletable,
+    //           })}`,
+    //           link: '/editable-table',
+    //           id: 96622,
+    //         },
+    //         {
+    //           name: `${props.intl.formatMessage({
+    //             ...messages.materialtable,
+    //           })}`,
+    //           link: '/material-table',
+    //           id: 31083,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: `${props.intl.formatMessage({ ...messages.Icons })}`,
+    //   id: 92394,
+    //   icon: fontawesome,
+    //   iconHover: fontawesomeH,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.fontawesome })}`,
+    //       link: '/fontawesome',
+    //       id: 58482586584214528525,
+    //     },
+    //     {
+    //       name: 'Themify',
+    //       link: '/themify',
+    //       id: 745683244545252412,
+    //     },
+    //     {
+    //       name: 'Pixeden Icons',
+    //       link: '/pixeden',
+    //       id: 411242548565885693241,
+    //     },
+    //     {
+    //       name: 'Icofont',
+    //       link: '/icofont',
+    //       id: 41447587586525885,
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: 'Pages',
+    //   icon: pricing,
+    //   iconHover: pricingH,
+    //   id: 9239448445,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.pricingtable })}`,
+    //       link: '/pricing-table',
+    //       id: 2586584214528525,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.lockscreen })}`,
+    //       link: '/lock-screen',
+    //       id: 411242585693241,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.mediagallary })}`,
+    //       link: '/media-gallary',
+    //       id: 4144525885,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.logviewer })}`,
+    //       link: '/log-viewer',
+    //       id: 8558241442,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.searchresult })}`,
+    //       link: '/search-result',
+    //       id: 445421353,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.profile })}`,
+    //       link: '/profile',
+    //       id: 5886852541,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.signup })}`,
+    //       link: '/signup',
+    //       id: 868352504,
+    //     },
+    //     {
+    //       name: 'Login',
+    //       link: '/',
+    //       id: 474525252,
+    //     },
+    //     {
+    //       name: '404',
+    //       link: '/404',
+    //       id: 7858225,
+    //     },
+    //     {
+    //       name: '505',
+    //       link: '/505',
+    //       id: 458585,
+    //     },
+    //   ],
+    // },
   ];
 
   return (
