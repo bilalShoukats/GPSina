@@ -340,6 +340,24 @@ const SidebarNav = props => {
       ],
     },
     {
+      name: `Driver`,
+      icon: pricing,
+      iconHover: pricingH,
+      id: 23,
+      menus: [
+        {
+          name: `add`,
+          link: '/addDriver',
+          id: 231,
+        },
+        {
+          name: `view`,
+          link: '/viewDrivers',
+          id: 232,
+        },
+      ],
+    },
+    {
       name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
       icon: pricing,
       iconHover: pricingH,

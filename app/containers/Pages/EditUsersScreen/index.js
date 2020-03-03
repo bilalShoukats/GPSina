@@ -6,16 +6,16 @@ import { compose } from 'redux';
 import makeSelectViewUsersScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
-import Card from 'components/Card/Loadable'
+import Card from './node_modules/components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
-import 'sass/elements/sweet-alerts.scss';
+import './node_modules/sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
 
 // images
-import profile from 'images/team/img1.jpg'
+import profile from './node_modules/images/team/img1.jpg'
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
@@ -126,7 +126,7 @@ class ViewUsersScreen extends Component {
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              this.props.history.push(`/editUser/${item.carId}`)
+                              this.props.history.push(`/editUser${item}`)
                             }} xl={6} className='btn bg-dark'>
                               <i className="icofont-ui-settings" />
                             </Button>

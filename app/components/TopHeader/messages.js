@@ -45,6 +45,18 @@ export default defineMessages({
     id: `${scope}.ViewUsersScreen`,
     defaultMessage: 'View Users',
   },
+  Drivers: {
+    id: `${scope}.Drivers`,
+    defaultMessage: 'Drivers',
+  },
+  AddDriverScreen: {
+    id: `${scope}.AddDriverScreen`,
+    defaultMessage: 'Add Driver',
+  },
+  ViewDriversScreen: {
+    id: `${scope}.ViewDriversScreen`,
+    defaultMessage: 'View Drivers',
+  },
   Vehicle: {
     id: `${scope}.Vehicle`,
     defaultMessage: 'Vehicle',

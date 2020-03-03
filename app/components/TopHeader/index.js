@@ -424,6 +424,24 @@ const TopHeader = props => {
       ],
     },
     {
+      name: `${props.intl.formatMessage({ ...messages.Drivers })}`,
+      icon: pricing,
+      iconHover: pricingH,
+      id: 13,
+      menus: [
+        {
+          name: `${props.intl.formatMessage({ ...messages.AddDriverscreen })}`,
+          link: '/addDriver',
+          id: 131,
+        },
+        {
+          name: `${props.intl.formatMessage({ ...messages.ViewDriversScreen })}`,
+          link: '/viewDrivers',
+          id: 132,
+        },
+      ],
+    },
+    {
       name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
       icon: pricing,
       iconHover: pricingH,

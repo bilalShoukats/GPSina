@@ -81,7 +81,11 @@ import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
 import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
 import AddUserScreen from 'containers/Pages/AddUserScreen/Loadable';
+import EditUserScreen from 'containers/Pages/EditUserScreen/Loadable';
 import ViewUsersScreen from 'containers/Pages/ViewUsersScreen/Loadable';
+import AddDriverScreen from 'containers/Pages/AddDriverScreen/Loadable';
+import EditDriverScreen from 'containers/Pages/EditDriverScreen/Loadable';
+import ViewDriversScreen from 'containers/Pages/ViewDriversScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
 import ViewVehiclesScreen from 'containers/Pages/ViewVehiclesScreen/Loadable';
 import VehicleMapScreen from 'containers/Pages/VehicleMapScreen/Loadable';
@@ -111,7 +115,12 @@ const Routes = props => (
     <PrivateRoute exact path="/viewCompanies" component={ViewCompaniesScreen} />
     {/* Employee Links */}
     <PrivateRoute exact path="/addUser" component={AddUserScreen} />
+    <PrivateRoute exact path={`/editUser/:item`} component={EditUserScreen} />
     <PrivateRoute exact path="/viewUsers" component={ViewUsersScreen} />
+    {/*Driver*/}
+    <PrivateRoute exact path="/addDriver" component={AddDriverScreen} />
+    <PrivateRoute exact path={`/editDriver/:item`} component={EditDriverScreen} />
+    <PrivateRoute exact path="/viewDrivers" component={ViewDriversScreen} />
     {/* Vehicle Links */}
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import makeSelectViewUsersScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
@@ -13,24 +12,30 @@ import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
+import AssignDriverModal from './AssignDriverModal'
+import ConfirmUnAssignModal from './ConfirmUnAssignModal'
 
 // images
 import profile from 'images/team/img1.jpg'
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
-class ViewUsersScreen extends Component {
+class ViewDriversScreen extends Component {
 
   state = {
     search: "",
+    driverId: '',
     value: 0,
     companies: [],
+    drivers: [],
     loading: true,
     showAlert: false,
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
-    showConfirmModal: false
+    showConfirmModal: false,
+    showAssignDriverModal: false,
+    showConfirmUnAssignModal: false,
   }
 
   handleChange = (event, newValue) => {
@@ -41,6 +46,7 @@ class ViewUsersScreen extends Component {
 
   componentDidMount = () => {
     this.getAllMyCompanies();
+    this.getAllDrivers();
   }
 
   loadMoreHandler = () => {
@@ -50,6 +56,23 @@ class ViewUsersScreen extends Component {
         this.getAllMyCompanies();
       })
     }
+  }
+  getAllDrivers = () => {
+    let body = {
+      page: 1,
+      companyEmail: "usman.malik@azure-i.com"
+      // companyEmail:this.state.email
+    }
+    this.props.apiManager.makeCall('viewDrivers', body, res => {
+      console.log('View Drivers - ', res)
+      if (res) {
+        this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
   }
 
   getAllMyCompanies = () => {
@@ -72,6 +95,13 @@ class ViewUsersScreen extends Component {
   openConfirmModal = (item) => {
     this.setState({ carID: item.carID, showConfirmModal: true })
   }
+  openConfirmUnAssignModal = (item) => {
+    this.setState({ registrationNo: item.registrationNo, showConfirmUnAssignModal: true })
+  }
+  openAssignDriverModal = (item) => {
+    console.log('assign cars - view', item)
+    this.setState({ driverId: item.driverID, registrationNo: item.registrationNo, showAssignDriverModal: true })
+  }
 
   render() {
     let searchingFor = null;
@@ -79,14 +109,16 @@ class ViewUsersScreen extends Component {
       return null;
 
     if (this.state.companies[0]) {
-      searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
+      searchingFor = search => drivers => drivers.driverName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
-
+    console.log('console bawa company', this.state.companies)
+    console.log('console bawa drivers', this.state.drivers)
     return (
-      <Fragment>
-        <h2 className="breadcumbTitle">Your Users</h2>
+
+      < Fragment >
+        <h2 className="breadcumbTitle">Your Drivers</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.companies[0]) ? (
+          {(this.state.drivers[0]) ? (
             <Grid className="viewCompaniesLeft">
               <TextField
                 fullWidth
@@ -96,7 +128,7 @@ class ViewUsersScreen extends Component {
                 value={this.state.search}
                 name="search"
                 onChange={this.changeHandler}
-                placeholder="Search Users"
+                placeholder="Search Drivers"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment
@@ -115,23 +147,41 @@ class ViewUsersScreen extends Component {
               >
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
-                    {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => (
-                      <div className="companiesLink" key={i}  style={{ padding: 10 }}>
+                    {this.state.drivers.filter(searchingFor(this.state.search)).map((item, i) => (
+                      <div className="companiesLink" key={i} style={{ padding: 10, margin: 10 }}>
                         <Grid className="companiesAutorImg">
                           {/* <img src={item.companyLogo} alt="" /> */}
                           <img src={profile} alt="" />
                         </Grid>
                         <Grid className="companiesAutorContent">
-                          <h4>{item.companyName}
+                          {item.registrationNo === '' ?
+                            <h4 style={{ fontSize: 14, visibility: 'hidden' }}> :
+                            <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.openAssignDriverModal(item)
+                              }} xl={6} className='btn bg-info' Ï>
+                                <i className="icofont-ui-user" />
+                              </Button></h4>
+                            : <h4 style={{ fontSize: 14, visibility: 'hidden' }}> :
+                            <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.openConfirmUnAssignModal(item)
+                              }} xl={6} className='btn bg-secondary' Ï>
+                                <i class="fa fa-user-times"></i>
+                              </Button></h4>}
+                          <h4>Assigned Car : {item.registrationNo}
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              this.props.history.push(`/editUser/${item.carId}`)
+                              this.props.history.push(`/editDriver/${item.carId}`)
                             }} xl={6} className='btn bg-dark'>
                               <i className="icofont-ui-settings" />
                             </Button>
+
                           </h4>
-                          <h4 style={{ fontSize: 14 }}>Director Name : {item.director}
+                          <h4 style={{ fontSize: 14 }}>Director Name : {item.driverName}
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -152,25 +202,39 @@ class ViewUsersScreen extends Component {
               </Card>
             )}
         </Grid>
-        {(this.state.companies[0]) ? (
-          <Grid className="buttonGrid">
-            {(this.state.currentPage < this.state.totalPages) ? (
-              <ul>
-                <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
-              </ul>
-            ) : (
+        {
+          (this.state.companies[0]) ? (
+            <Grid className="buttonGrid">
+              {(this.state.currentPage < this.state.totalPages) ? (
                 <ul>
-                  <li><Button className="btn bg-default btn-radius">You have seen it all!</Button></li>
+                  <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                 </ul>
-              )}
-          </Grid>) : null}
+              ) : (
+                  <ul>
+                    <li><Button className="btn bg-default btn-radius">You have seen it all!</Button></li>
+                  </ul>
+                )}
+            </Grid>) : null
+        }
         <ConfirmModal
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
         // registrationNo={this.state.registrationNo}
         // history={this.props.history}
         />
-      </Fragment>
+        <AssignDriverModal
+          open={this.state.showAssignDriverModal}
+          close={() => this.setState({ showAssignDriverModal: false })}
+          registrationNo={this.state.registrationNo}
+          driverID={this.state.driverId}
+        />
+        <ConfirmUnAssignModal
+          open={this.state.showConfirmUnAssignModal}
+          close={() => this.setState({ showConfirmUnAssignModal: false })}
+          registrationNo={this.state.registrationNo}
+        // history={this.props.history}
+        />
+      </Fragment >
     );
   }
 }
@@ -202,4 +266,4 @@ const withConnect = connect(
   null,
   mapDispatchToProps,
 );
-export default SuperHOC((withConnect)(ViewUsersScreen));
+export default SuperHOC((withConnect)(ViewDriversScreen));

@@ -28,16 +28,16 @@ class AddUserScreen extends Component {
     error: {},
     file: '',
     addUser: false,
-    viewUser:false,
-    editUser:false,
-    addRoute:false,
-    viewRoutes:false,
-    addDriver:false,
-    viewDrivers:false,
-    addVehicle:false,
-    viewVehicle:false,
-    assignDriver:false,
-    attachDevice:false,
+    viewUser: false,
+    editUser: false,
+    addRoute: false,
+    viewRoutes: false,
+    addDriver: false,
+    viewDrivers: false,
+    addVehicle: false,
+    viewVehicle: false,
+    assignDriver: false,
+    attachDevice: false,
   }
 
   schema = {
@@ -192,10 +192,10 @@ class AddUserScreen extends Component {
     return (
       <Fragment>
         <Helmet>
-          <title>Add User</title>
+          <title>Edit User</title>
           <meta name="description" content="Description of AddUserScreen" />
         </Helmet>
-        <h2 className="breadcumbTitle">Add User</h2>
+        <h2 className="breadcumbTitle">Edit User</h2>
         <Grid container spacing={3}>
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
@@ -251,8 +251,10 @@ class AddUserScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={6} xs={12} >
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
+                    disabled={true}
                     label="User Name"
                     placeholder="Your User name here.."
                     fullWidth
@@ -288,6 +290,8 @@ class AddUserScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
+                    disabled={true}
                     label="Email"
                     placeholder="Your Email here.."
                     fullWidth
@@ -531,13 +535,13 @@ class AddUserScreen extends Component {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Add User</Button>
+                  <Button className="btn bg-default" onClick={this.submitHandler}>Edit User</Button>
                 </Grid>
               </Grid>
             </Card>
           </Grid>
         </Grid>
-      </Fragment>
+      </Fragment >
     );
   }
 }
