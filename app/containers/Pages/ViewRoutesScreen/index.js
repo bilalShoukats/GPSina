@@ -12,7 +12,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
-import SocketComponent from '../../../components/WebSocket';
 // images
 import profile from 'images/team/img1.jpg'
 
@@ -37,14 +36,9 @@ class ViewRoutesScreen extends Component {
     })
   }
 
-  recieveData = (dataReceived) => {
-    console.log("dataReceived: ", dataReceived);
-  }
-
   componentDidMount = () => {
     console.log("routes screen did mount");
-    var socketComponent = new SocketComponent(this.recieveData);
-    //this.getAllMyCompanies();
+    this.getAllMyCompanies();
   }
 
   loadMoreHandler = () => {

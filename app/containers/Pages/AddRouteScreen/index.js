@@ -10,17 +10,14 @@ import CustomButton from './Button'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import 'sass/elements/sweet-alerts.scss';
+import AddRouteModal from './AddRouteModal';
 import BasicMap from '../../../components/Maps/GoogleMapsComponent/components/basic';
 
 class AddRouteScreen extends Component {
 
   state = {
-    disabled: true
-  }
-
-  addRouteApi = (data) => {
-    console.log("request to add route: ", data);
-
+    disabled: true,
+    mapRoutes: {},
   }
 
   render() {
@@ -39,16 +36,22 @@ class AddRouteScreen extends Component {
                 <Grid item xs={12}>
                   <BasicMap
                     ref={r => this.basicMap = r}
-                    onDirectionConfirm={(data) => this.addRouteApi(data)}
-                    enableButton={() => this.customButton.makeEnable()}
-                    disableButton={() => this.customButton.makeDisable()} />
+                    enableResetButton={() => this.resetMarkerButton.makeEnable()}
+                    enableAddRouteButton={(data) => {
+                      this.addRouteButton.makeEnable(data)
+                    }}
+                    disableResetButton={() => {
+                      this.resetMarkerButton.makeDisable()
+                      this.addRouteButton.makeDisable()
+                    }}
+                  />
                 </Grid>
                 <Grid container spacing={4}>
                   <Grid item md={3} xs={12}>
                   </Grid>
                   <Grid item md={6} xs={12} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <CustomButton text={'Add Route'} ref={r => this.customButton = r} onClick={() => { console.log('basic map', this.basicMap.innerProps.resetMarkers()) }} />
-                    <CustomButton text={'Reset Route'} ref={r => this.customButton = r} onClick={() => { console.log('basic map', this.basicMap.innerProps.resetMarkers()) }} />
+                    <CustomButton text={'Add Route'} ref={r => this.addRouteButton = r} onClick={(data) => { this.addRouteModal.showModal(data) }} />
+                    <CustomButton text={'Reset Route'} ref={r => this.resetMarkerButton = r} onClick={() => { this.basicMap.innerProps.resetMarkers() }} />
                   </Grid>
                   <Grid item md={3} xs={12}>
                   </Grid>
@@ -57,6 +60,10 @@ class AddRouteScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        <AddRouteModal
+          {...this.props}
+          ref={r => this.addRouteModal = r}
+        />
       </Fragment >
     );
   }

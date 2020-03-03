@@ -9,28 +9,29 @@ import {
 } from "react-google-maps"
 
 const MapWithAMarker = compose(withScriptjs, withGoogleMap)(props => {
-
     return (
-        <GoogleMap defaultZoom={8} defaultCenter={{ lat: 29.5, lng: -95 }}>
-            {props.markers.map(marker => {
-                const onClick = props.onClick.bind(this, marker)
-                return (
-                    <Marker
-                        key={marker.id}
-                        onClick={onClick}
-                        position={{ lat: marker.latitude, lng: marker.longitude }}
-                    >
-                        {props.selectedMarker === marker &&
-                            <InfoWindow>
-                                <div>
-                                    {marker.shelter}
-                                </div>
-                            </InfoWindow>}
-
-                    </Marker>
-                )
-            })}
-        </GoogleMap>
+        <GoogleMap defaultZoom={1.5} defaultOptions={{ disableDefaultUI: true, scaleControl: true, zoomControl: true }} defaultCenter={{ lat: 29.5, lng: -95 }}>
+            {
+                props.markers.map(marker => {
+                    console.log('bawwa jee aja', marker)
+                    const onClick = props.onClick.bind(this, marker)
+                    return (
+                        <Marker
+                            key={marker[0]}
+                            onClick={onClick}
+                            position={{ lat: marker[2], lng: marker[3] }}
+                        >
+                            {props.selectedMarker === marker &&
+                                <InfoWindow>
+                                    <div>
+                                        {marker[2]}
+                                    </div>
+                                </InfoWindow>}
+                        </Marker>
+                    )
+                })
+            }
+        </GoogleMap >
     )
 })
 
@@ -43,14 +44,25 @@ export default class ShelterMap extends Component {
         }
     }
     componentDidMount() {
-        this.setState({ shelters: this.props.data })
+        let data = [...this.props.data.values()];
+        console.log("Data in google map: ", [...this.props.data.values()]);
+        console.log("Data in google map: ", this.props.data)
+        // this.setState({ shelters: this.props.data })
+        console.log("Data in google map: ", this.state.shelters)
     }
     handleClick = (marker, event) => {
         // console.log({ marker })
         this.setState({ selectedMarker: marker })
+
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.data !== this.props.data) {
+            this.setState({ shelters: this.props.data })
+        }
     }
     render() {
-
+        console.log("Data in google map: ", this.state.shelters);
         return (
             <MapWithAMarker
                 selectedMarker={this.state.selectedMarker}
