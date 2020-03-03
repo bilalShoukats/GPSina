@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
 import Button from '@material-ui/core/Button';
-import { Grid } from '@material-ui/core'
+import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './basic'
@@ -13,6 +13,7 @@ import NotificationsModal from './NotificationsModal';
 import AssignDriverModal from './AssignDriverModal';
 import ConfirmModal from './ConfirmModal';
 import SocketComponent from '../../../components/WebSocket';
+import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -50,6 +51,14 @@ class ChatApp extends Component {
     this.setState({ mapObject }, () => {
       console.log('MapData: ', this.state.mapObject);
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.timeout !== prevProps.timeout) {
+      if (this.props.timeout === true) {
+        this.setState({ loading: false })
+      }
+    }
   }
 
   componentDidMount = () => {
@@ -120,9 +129,25 @@ class ChatApp extends Component {
     console.log("request to add route: ", data);
 
   }
+
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        onClose={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
+
   render() {
-    console.log("Vehicle Render: ", [...this.state.mapObject.values()]);
-    console.log("Companies Data: ",this.state.companies);
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Vehicles</h2>
@@ -228,6 +253,7 @@ class ChatApp extends Component {
           registrationNo={this.state.registrationNo}
           history={this.props.history}
         />
+        {this.renderLoading()}
       </Fragment >
     )
   }
