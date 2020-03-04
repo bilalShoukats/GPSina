@@ -35,7 +35,8 @@ export default class SocketComponent {
         */
     connectSocketServer = async (hash, deviceIds) => {
         console.log("connect with socket");
-        this.socket = new WebSocket('ws://13.228.129.207:8091');
+        // this.socket = new WebSocket('ws://13.228.129.207:8091');
+        this.socket = new WebSocket('ws://localhost:8091');
         this.token = hash;
         this.deviceIDs = deviceIds;
 
