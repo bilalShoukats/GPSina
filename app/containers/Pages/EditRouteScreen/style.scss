@@ -19,20 +19,20 @@
     }
 }
 
-.viewRoutesApp {
+.viewCompaniesApp {
     background: #fff;
     //display: flex;
     flex-wrap: wrap;
     box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
 
-    .viewRoutesLeft {
+    .viewCompaniesLeft {
         //width: 300px;
 
         @media (max-width:767px) {
             width: 100%;
         }
 
-        .searchRoutes {
+        .searchUsers {
             background: #ebedfb;
 
             div {
@@ -53,7 +53,7 @@
                 }
             }
 
-            .routesScrollBar {
+            .companiesScrollBar {
                 height: 770px;
               
                 .scrollbar-container.vertical {
@@ -66,7 +66,7 @@
                 }
               }
 
-            .searchRoutesIcon {
+            .searchCompaniesIcon {
                 width: 70px;
                 margin-left: 0;
                 justify-content: center;
@@ -74,8 +74,8 @@
             }
         }
 
-        .routesList {
-            .routesLink {
+        .companiesList {
+            .companiesLink {
               display: flex;
               align-items: center;
               padding: 20px;
@@ -101,24 +101,24 @@
                 box-shadow: 1px 0px 15px rgba(0, 0, 0, .1);
               }
       
-              .routesAutorImg {
+              .companiesAutorImg {
                 width: 150px;
       
                 img {
                   width: 80px;
                   height: 80px;
-                  //border-radius: 50%;
+                  border-radius: 50%;
                 }
               }
       
-              .routesAutorContent {
+              .companiesAutorContent {
                 h4 {
                   font-size: 18px;
                   margin-bottom: 0;
                   display: flex;
                   align-items: center;
                   line-height: 35px;
-                  //text-transform: capitalize;
+                  text-transform: capitalize;
                   justify-content: space-between;
       
                   @media (max-width: 1600px) {
@@ -182,6 +182,61 @@
           }
     }
 }
+
+.modalWrapper {
+    overflow-y: auto;
+  
+    h2 {
+      display: flex;
+      justify-content: space-between;
+  
+      .closeModal {
+        font-size: 14px;
+        cursor: pointer;
+      }
+    }
+  
+    .modalInner {
+      background: #fff;
+      padding: 30px 50px;
+      box-shadow: none;
+      outline: none;
+      width: 700px;
+      max-width: 95%;
+      margin: 50px auto;
+      border-radius: 5px;
+  
+      form {
+        margin-top: 50px;
+  
+        button {
+          margin-top: 20px;
+        }
+      }
+  
+      .formInput {
+        margin-bottom: 10px;
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    .modalHead{
+      max-width: 350px;
+    }
+  }
+  .modalHead{
+    width: 600px;
+  }
+
+  .modalContent{
+    display: flex; 
+    justify-content: space-between; 
+    flex-direction: row; 
+    width: 100%; 
+    margin-top: 10px;
+    margin-bottom: 10px; 
+    align-items: center;
+  }
 
 .chatAppHead {
     min-height: 71px;

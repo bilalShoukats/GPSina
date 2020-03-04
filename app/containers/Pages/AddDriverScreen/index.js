@@ -272,7 +272,7 @@ class AddUserScreen extends Component {
 
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} for="file">Edit Image</label>
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
 
               <Grid className="companyInfoContent">
                 <h4>Please upload user image</h4>
