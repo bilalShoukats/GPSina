@@ -3,8 +3,8 @@ import { Manager } from "../StorageManager/Storage";
 import ErrMsg from "./string-error-code-en";
 import CryptoJS from "crypto-js";
 // dev server url
-// const URL = (apiName) => 'http://13.228.129.207:8081/api/' + apiName;
-const URL = (apiName) => 'http://192.168.88.18:8080/api/' + apiName;
+const URL = (apiName) => 'http://13.228.129.207:8081/api/' + apiName;
+// const URL = (apiName) => 'http://192.168.88.18:8080/api/' + apiName;
 
 const TIMEOUT = 10000; // ten seconds
 
