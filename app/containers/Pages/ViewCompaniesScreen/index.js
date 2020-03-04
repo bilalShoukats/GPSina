@@ -1,17 +1,14 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import makeSelectViewCompaniesScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs, InputAdornment } from '@material-ui/core'
+import { Grid, TextField, Button, Tab, CircularProgress, InputAdornment } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -66,6 +63,22 @@ class ViewCompaniesScreen extends Component {
     this.setState({
       [e.target.name]: e.target.value
     })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        onClose={() => { this.setState({ loading: false }) }}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
@@ -145,6 +158,7 @@ class ViewCompaniesScreen extends Component {
                 </ul>
               )}
           </Grid>) : null}
+        {this.renderLoading()}
       </Fragment>
     );
   }
