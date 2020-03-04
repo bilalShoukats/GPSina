@@ -80,6 +80,7 @@ import AddCompanyScreen from 'containers/Pages/AddCompanyScreen/Loadable';
 import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
 import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
+import EditRouteScreen from 'containers/Pages/EditRouteScreen/Loadable';
 import AddUserScreen from 'containers/Pages/AddUserScreen/Loadable';
 import EditUserScreen from 'containers/Pages/EditUserScreen/Loadable';
 import ViewUsersScreen from 'containers/Pages/ViewUsersScreen/Loadable';
@@ -128,6 +129,7 @@ const Routes = props => (
     {/* Route Links */}
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
+    <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} />
     <Route exact path="/forgotPassword" component={ForgotPassword} />
     <PrivateRoute
       exact
