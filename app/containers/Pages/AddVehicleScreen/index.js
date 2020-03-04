@@ -23,6 +23,7 @@ class AddVehicleScreen extends Component {
     directorName: '',
     companyLogo: '',
     error: {},
+    file: ''
   }
 
   schema = {
@@ -129,6 +130,11 @@ class AddVehicleScreen extends Component {
       })
     }
   }
+  handleChange = (event) => {
+    this.setState({
+      file: URL.createObjectURL(event.target.files[0])
+    })
+  }
 
   render() {
     return (
@@ -142,22 +148,24 @@ class AddVehicleScreen extends Component {
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
-                <img src={companyLogo} alt="" />
+                <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
               </Grid>
+              <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
               <Grid className="companyInfoContent">
-                <h4>Please upload company logo</h4>
+                <h4>Please upload Vehicle logo</h4>
               </Grid>
             </Grid>
           </Grid>
           <Grid item xl={9} lg={8} xs={12}>
             <Card
-              title="Add Company"
+              title="Add Vehicle"
               className="addCompany"
             >
               <Grid container spacing={3}>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Company Name"
+                    label="Vehicle Name"
                     placeholder="Your company name here.."
                     fullWidth
                     variant="outlined"
@@ -174,7 +182,7 @@ class AddVehicleScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Company Email"
+                    label="Vehicle"
                     placeholder="Your company email here.."
                     fullWidth
                     variant="outlined"
@@ -207,7 +215,7 @@ class AddVehicleScreen extends Component {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Add Company</Button>
+                  <Button className="btn bg-default" onClick={this.submitHandler}>Add Vehicle</Button>
                 </Grid>
               </Grid>
             </Card>

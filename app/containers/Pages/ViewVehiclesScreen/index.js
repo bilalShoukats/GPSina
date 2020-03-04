@@ -175,7 +175,7 @@ class ChatApp extends Component {
                         e.stopPropagation();
                         this.openSettingsModal(item)
                       }} xl={6} className='btn bg-dark'>
-                        <i className="icofont-ui-settings" />
+                        <i className="icofont-ui-edit" />
                       </Button>
                       <Button onClick={(e) => {
                         e.preventDefault();

@@ -1,8 +1,5 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
@@ -14,6 +11,7 @@ import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
 import AssignDriverModal from './AssignDriverModal'
 import ConfirmUnAssignModal from './ConfirmUnAssignModal'
+import NotificationsModal from './NotificationsModal'
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -36,6 +34,7 @@ class ViewDriversScreen extends Component {
     showConfirmModal: false,
     showAssignDriverModal: false,
     showConfirmUnAssignModal: false,
+    showNotificationsModal: false
   }
 
   handleChange = (event, newValue) => {
@@ -60,7 +59,7 @@ class ViewDriversScreen extends Component {
   getAllDrivers = () => {
     let body = {
       page: 1,
-      companyEmail: "usman.malik@azure-i.com"
+      companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewDrivers', body, res => {
@@ -101,6 +100,9 @@ class ViewDriversScreen extends Component {
   openAssignDriverModal = (item) => {
     console.log('assign cars - view', item)
     this.setState({ driverId: item.driverID, registrationNo: item.registrationNo, showAssignDriverModal: true })
+  }
+  openNotificationsModal = (item) => {
+    this.setState({ carID: item.carID, showNotificationsModal: true })
   }
 
   render() {
@@ -155,33 +157,50 @@ class ViewDriversScreen extends Component {
                         </Grid>
                         <Grid className="companiesAutorContent">
                           {item.registrationNo === '' ?
-                            <h4 style={{ fontSize: 14, visibility: 'hidden' }}> :
-                            <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
+                              <Button style={{ visibility: 'visible' }} onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 this.openAssignDriverModal(item)
                               }} xl={6} className='btn bg-info' Ï>
                                 <i className="icofont-ui-user" />
-                              </Button></h4>
-                            : <h4 style={{ fontSize: 14, visibility: 'hidden' }}> :
-                            <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                              </Button>
+                              <Button onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.openNotificationsModal(item)
+                              }} xl={6} className='btn bg-primary' >
+                                <i className="icofont-notification" />
+                              </Button></div>
+                            :
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
+                              <Button style={{ visibility: 'visible' }} onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 this.openConfirmUnAssignModal(item)
                               }} xl={6} className='btn bg-secondary' Ï>
                                 <i class="fa fa-user-times"></i>
-                              </Button></h4>}
-                          <h4>Assigned Car : {item.registrationNo}
+                              </Button>
+                              <Button onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.openNotificationsModal(item)
+                              }} xl={6} className='btn bg-primary' >
+                                <i className="icofont-notification" />
+                              </Button>
+                            </div>
+                          }
+                          <h4 style={{ marginTop: 15 }}>Assigned Car : {item.registrationNo}
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              this.props.history.push(`/editDriver/${item.carId}`)
+                              this.props.history.push(`/editDriver/${item.driverID}`)
                             }} xl={6} className='btn bg-dark'>
-                              <i className="icofont-ui-settings" />
+                              <i className="icofont-ui-edit" />
                             </Button>
 
                           </h4>
-                          <h4 style={{ fontSize: 14 }}>Director Name : {item.driverName}
+                          <h4 style={{ fontSize: 14, marginTop: 15 }}>Director Name : {item.driverName}
                             <Button onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -233,6 +252,11 @@ class ViewDriversScreen extends Component {
           close={() => this.setState({ showConfirmUnAssignModal: false })}
           registrationNo={this.state.registrationNo}
         // history={this.props.history}
+        />
+        <NotificationsModal
+          open={this.state.showNotificationsModal}
+          close={() => this.setState({ showNotificationsModal: false })}
+          driverID={this.state.driverId}
         />
       </Fragment >
     );
