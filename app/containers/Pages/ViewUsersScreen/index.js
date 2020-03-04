@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
+import { Grid, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
 import NotificationsModal from './NotificationsModal'
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -30,6 +31,7 @@ class ViewUsersScreen extends Component {
     carID: '',
     showConfirmModal: false,
     showNotificationsModal: false,
+    loading: false,
   }
 
   handleChange = (event, newValue) => {
@@ -40,6 +42,13 @@ class ViewUsersScreen extends Component {
 
   componentDidMount = () => {
     this.getAllMyCompanies();
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.timeout !== prevProps.timeout) {
+      if (this.props.timeout === true) {
+        this.setState({ loading: false })
+      }
+    }
   }
 
   loadMoreHandler = () => {
@@ -77,11 +86,25 @@ class ViewUsersScreen extends Component {
   openNotificationsModal = (item) => {
     this.setState({ carID: item.carID, showNotificationsModal: true })
   }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        onClose={() => { this.setState({ loading: false }) }}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
 
   render() {
     let searchingFor = null;
-    if (this.state.loading)
-      return null;
 
     if (this.state.companies[0]) {
       searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -162,7 +185,7 @@ class ViewUsersScreen extends Component {
             </Grid>
           ) : (
               <Card title="No Company Found!">
-                <p className="subText">Don't have any company? <Link to="/addCompany">Create company</Link></p>
+                <p className="subText">Don't have any Users? <Link to="/addUser">Create User</Link></p>
               </Card>
             )}
         </Grid>
@@ -189,6 +212,7 @@ class ViewUsersScreen extends Component {
           close={() => this.setState({ showNotificationsModal: false })}
           carID={this.state.carID}
         />
+        {this.renderLoading()}
       </Fragment>
     );
   }

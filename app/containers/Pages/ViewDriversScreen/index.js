@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tabs, InputAdornment } from '@material-ui/core'
+import { Grid, TextField, Button, Tabs, InputAdornment, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,6 +12,7 @@ import ConfirmModal from './ConfirmModal';
 import AssignDriverModal from './AssignDriverModal'
 import ConfirmUnAssignModal from './ConfirmUnAssignModal'
 import NotificationsModal from './NotificationsModal'
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -104,12 +105,24 @@ class ViewDriversScreen extends Component {
   openNotificationsModal = (item) => {
     this.setState({ carID: item.carID, showNotificationsModal: true })
   }
-
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        onClose={() => { this.setState({ loading: false }) }}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
   render() {
     let searchingFor = null;
-    if (this.state.loading)
-      return null;
-
     if (this.state.companies[0]) {
       searchingFor = search => drivers => drivers.driverName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
@@ -258,6 +271,7 @@ class ViewDriversScreen extends Component {
           close={() => this.setState({ showNotificationsModal: false })}
           driverID={this.state.driverId}
         />
+        {this.renderLoading()}
       </Fragment >
     );
   }
