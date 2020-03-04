@@ -1,17 +1,15 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import makeSelectAddUserScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -30,6 +28,8 @@ class AddUserScreen extends Component {
     error: {},
     file: '',
     gender: 1,
+    driverBloodGroup: 1,
+    loading: false,
     addUser: false,
     viewUser: false,
     editUser: false,
@@ -96,19 +96,6 @@ class AddUserScreen extends Component {
       });
       return errors;
     }),
-    companyEmail: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
-            break;
-          default:
-            err.message = "Email cannot be empty";
-            break;
-        }
-      });
-      return errors;
-    }),
     licenceExpiry: Joi.string().required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
@@ -149,7 +136,6 @@ class AddUserScreen extends Component {
       licenceNumber: this.state.licenceNumber,
       licenceExpiry: this.state.licenceExpiry,
       driverAge: this.state.driverAge,
-      companyEmail: this.props.user.companyEmail,
 
     }
     const { error } = Joi.validate(form, this.schema, options)
@@ -164,40 +150,43 @@ class AddUserScreen extends Component {
     e.preventDefault()
     console.log("submitting add company form");
     const error = this.validate()
-
-    if (!error) {
-      let body = {
-        driverName: this.state.driverName,
-        driverEmail: this.state.driverEmail,
-        licenceNumber: this.state.licenceNumber,
-        licenceExpiry: parseInt(this.state.licenceExpiry),
-        driverBloodGroup: parseInt(this.state.gender),
-        driverAge: parseInt(this.state.driverAge),
-        role: 0,
-        gender: parseInt(this.state.gender),
-        // driverOwner: this.state.driverOwner,
-        companyEmail: this.props.user.companyEmail,
-        // companyName: this.state.companyName,
-        // email: this.state.companyEmail,
-        // director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
-      }
-      this.props.apiManager.makeCall("addDriver", body, (response) => {
-        console.log("response: ", response);
-        console.log("response: ", body);
-        if (response.code === 1008) {
-          toast.success('Driver added successfully!')
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          driverName: this.state.driverName,
+          driverEmail: this.state.driverEmail,
+          licenceNumber: this.state.licenceNumber,
+          licenceExpiry: parseInt(this.state.licenceExpiry),
+          driverBloodGroup: parseInt(this.state.driverBloodGroup),
+          driverAge: parseInt(this.state.driverAge),
+          role: 0,
+          gender: parseInt(this.state.gender),
+          // driverOwner: this.state.driverOwner,
+          companyEmail: this.props.user.companyEmail,
+          // companyName: this.state.companyName,
+          // email: this.state.companyEmail,
+          // director: this.state.directorName,
+          // companyLogo: this.state.companyLogo,
         }
-        else
+        this.props.apiManager.makeCall("addDriver", body, (response) => {
+          console.log("response: ", response);
+          console.log("response: ", body);
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('Driver added successfully!')
+          }
+          else
+            this.setState({ loading: false })
           toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
-
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
   handleChange = (event) => {
     this.setState({
@@ -207,6 +196,21 @@ class AddUserScreen extends Component {
   handleSwitchChange = (name) => (event) => {
     this.setState({ [name]: event.target.checked });
   };
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
 
   render() {
     const genderItems = [
@@ -269,13 +273,11 @@ class AddUserScreen extends Component {
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
                 <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
-
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
               <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
-
               <Grid className="companyInfoContent">
-                <h4>Please upload user image</h4>
+                <h4>Please upload driver image</h4>
               </Grid>
             </Grid>
           </Grid>
@@ -314,8 +316,8 @@ class AddUserScreen extends Component {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.email && true}
-                    helperText={this.state.error.email && this.state.error.email}
+                    error={this.state.error.driverEmail && true}
+                    helperText={this.state.error.driverEmail && this.state.error.driverEmail}
                     className="formInput"
                   />
                 </Grid>
@@ -442,6 +444,7 @@ class AddUserScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }

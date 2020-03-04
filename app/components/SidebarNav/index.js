@@ -28,10 +28,13 @@ import fontawesomeH from 'images/icons/sidebar/new/fontawesome-h.svg'
 import logo from 'images/logo.png'
 import smallLogo from 'images/small-logo.png'
 import sidenavBg from 'images/sidenav-bg.jpg'
-
+import { Manager } from '../../StorageManager/Storage'
 import messages from './messages';
 
 const SidebarNav = props => {
+  // let user = Manager.getItem('user', true);
+  // console.log('propsssss', user.email)
+
   const navigations = [
     {
       name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
@@ -346,12 +349,12 @@ const SidebarNav = props => {
       id: 23,
       menus: [
         {
-          name: `add`,
+          name: `Add Driver`,
           link: '/addDriver',
           id: 231,
         },
         {
-          name: `view`,
+          name: `View Driver`,
           link: '/viewDrivers',
           id: 232,
         },

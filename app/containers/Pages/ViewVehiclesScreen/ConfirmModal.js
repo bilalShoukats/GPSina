@@ -10,11 +10,14 @@ export default class ConfirmModal extends Component {
     this.props.apiManager.makeCall('deleteCar', body, res => {
       console.log('assign cars - view', res)
       console.log('assign cars - view', this.props)
-      if (res) {
-        alert('baawwa')
+      if (res.code === 2008) {
+        toast.success(res.id)
+        this.props.getAllMyVehicles()
+        this.props.close()
       }
       else {
         toast.error(res.id);
+        this.props.close()
       }
     })
   }

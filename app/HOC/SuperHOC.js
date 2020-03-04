@@ -113,6 +113,7 @@ const WithAuthenticate = OriginalComponent => {
             customNavigate={(screen, data) => this.navigate(screen, data)}
             logout={this.logout}
             timeout={this.state.showModal}
+            bool={true}
           />
           <SweetAlertSingle
             title="Request Timed Out!"

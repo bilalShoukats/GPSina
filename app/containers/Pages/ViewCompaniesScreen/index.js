@@ -68,7 +68,6 @@ class ViewCompaniesScreen extends Component {
     return (
       <Dialog
         open={this.state.loading}
-        onClose={() => { this.setState({ loading: false }) }}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',

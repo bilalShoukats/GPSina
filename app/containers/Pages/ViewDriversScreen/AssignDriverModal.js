@@ -7,6 +7,8 @@ import './style.scss'
 import { Grid, } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ScrollArea from 'react-scrollbar';
+import Card from 'components/Card/Loadable'
+import { Link } from 'react-router-dom';
 
 class AssignDriver extends Component {
   state = {
@@ -34,68 +36,53 @@ class AssignDriver extends Component {
     }
   }
   componentDidMount() {
-    this.getUnAssignedCar();
+    this.props.getUnAssignedCar();
   }
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getUnAssignedCar();
+        this.props.getUnAssignedCar();
       })
     }
   }
-  getUnAssignDrivers = () => {
-    let body = {
-      page: 1,
-      companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
-    }
-    this.props.apiManager.makeCall('viewDrivers', body, res => {
-      if (res) {
-        this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    })
-  }
 
-  getUnAssignedCar = () => {
-    let body = {
-      companyEmail: this.props.user.companyEmail,
-      page: 1,
-      // companyEmail:this.state.email
-    }
-    this.props.apiManager.makeCall('getUnAssignedCar', body, res => {
-      console.log('View cars - llll', res)
-      console.log('View cars - llll', body)
-      if (res) {
-        this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => this.getAllRoutes());
-      }
-      else {
-        this.setState({ loading: false }, () => this.getAllRoutes());
-        toast.error(res.id);
-      }
-    })
-  }
-  getAllRoutes = () => {
-    let body = {
-      page: 1,
-      companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
-    }
-    this.props.apiManager.makeCall('viewRoute', body, res => {
-      console.log('routes show-', res)
-      if (res) {
-        this.setState({ routes: this.state.routes.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    })
-  }
+  // getUnAssignedCar = () => {
+  //   let body = {
+  //     companyEmail: this.props.user.companyEmail,
+  //     page: 1,
+  //     // companyEmail:this.state.email
+  //   }
+  //   this.props.apiManager.makeCall('getUnAssignedCar', body, res => {
+  //     console.log('View cars - llll', res)
+  //     console.log('View cars - llll', body)
+  //     if (res) {
+  //       this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => this.getAllRoutes());
+  //     }
+  //     else {
+  //       this.setState({ loading: false }, () => this.getAllRoutes());
+  //       toast.error(res.id);
+  //     }
+  //   })
+  // }
+  // getAllRoutes = () => {
+  //   let body = {
+  //     page: 1,
+  //     companyEmail: this.props.user.companyEmail
+  //     // companyEmail:this.state.email
+  //   }
+  //   this.props.apiManager.makeCall('viewRoute', body, res => {
+  //     console.log('routes show-', res)
+  //     if (res) {
+  //       this.setState({ routes: this.state.routes.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+  //     }
+  //     else {
+  //       this.setState({ loading: false });
+  //       toast.error(res.id);
+  //     }
+  //   })
+  // }
+
   assignCar = () => {
     let body = {
       registrationNo: this.state.registrationNo,
@@ -106,11 +93,11 @@ class AssignDriver extends Component {
       if (this.state.routeID !== '') {
         this.props.apiManager.makeCall('assignCar', body, res => {
           console.log('assign cars - view', res)
-          console.log('assign cars - view', body)
           if (res) {
-            toast.success(res.id)
-            this.props.close()
-            this.getUnAssignDrivers()
+            this.setState({ registrationNo: '', routeID: '' }, () => {
+              toast.success(res.id)
+              this.props.close()
+            })
           }
           else {
             toast.error(res.id);
@@ -126,7 +113,9 @@ class AssignDriver extends Component {
     }
   }
   render() {
-    console.log('view drivers', this.state.drivers)
+    console.log('assign cars - viewwwwe', this.props.drivers.length)
+    console.log('assign cars - viewwwwe', this.props.drivers)
+
     return (
       <Fragment>
         <Dialog
@@ -140,7 +129,6 @@ class AssignDriver extends Component {
                 <h5>
                   Assign Vehicle
                 </h5>
-
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                   <div className="notificationList" style={{ textAlign: 'center' }}>
                     Vehicles
@@ -151,7 +139,7 @@ class AssignDriver extends Component {
                       horizontal={false}
                     >
                       <ul className="notificationItems" style={{ borderRight: '1px solid black' }}>
-                        {this.state.drivers[0] !== null && this.state.drivers.length > 0 && this.state.drivers.map((item, i) => (
+                        {this.props.drivers && this.props.drivers[0] !== undefined && this.props.drivers.length > 0 ? this.props.drivers.map((item, i) => (
                           < li key={i} >
                             <Button className={this.state.carID === item.carID ? "selectedButtonClass" : "buttonClass"} onClick={() => this.setState({ carID: item.carID, registrationNo: item.registrationNo })}>
                               <i className="icon">
@@ -174,10 +162,12 @@ class AssignDriver extends Component {
                               <span>{item && item.registrationNo ? item.registrationNo : ''}</span>
                             </Button>
                           </li>
-                        ))}
+                        )) : <Card title="No Vehicles Found!">
+                            <p className="subText">Don't have any Vehicles? <Link to="/addVehicle">Add Vehicles</Link></p>
+                          </Card>}
                       </ul>
                       {
-                        (this.state.drivers[0]) ? (
+                        (this.props.drivers[0]) ? (
                           <Grid className="buttonGrid" style={{ marginTop: 20 }}>
                             {(this.state.currentPage < this.state.totalPages) ? (
                               <ul>
@@ -188,7 +178,7 @@ class AssignDriver extends Component {
                                   <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center', cursor: 'initial' }}>You have seen it all!</div></li>
                                 </ul>
                               )}
-                          </Grid>) : <h4 style={{ marginTop: '40px' }}>No Vehicle Found</h4>
+                          </Grid>) : ''
                       }
                     </ScrollArea>
                   </div>
@@ -201,7 +191,7 @@ class AssignDriver extends Component {
                       horizontal={false}
                     >
                       <ul className="notificationItems" style={{ borderLeft: '1px solid black' }}>
-                        {this.state.routes.map((item, i) => (
+                        {this.props.routes.length > 0 ? this.props.routes.map((item, i) => (
                           <li key={i}>
                             <Button className={this.state.routeID === item.routeID ? "selectedButtonClass" : "buttonClass"} onClick={() => this.setState({ routeID: item.routeID })}>
                               <i className="icon">
@@ -224,10 +214,14 @@ class AssignDriver extends Component {
                               <span>{item.routeID}</span>
                             </Button>
                           </li>
-                        ))}
+                        )) : (
+                            <Card title="No Route Found!">
+                              <p className="subText">Don't have any Route? <Link to="/addRoute">Add Route</Link></p>
+                            </Card>
+                          )}
                       </ul>
                       {
-                        (this.state.drivers[0]) ? (
+                        (this.props.drivers[0]) ? (
                           <Grid className="buttonGrid" style={{ marginTop: 20 }}>
                             {(this.state.currentPage < this.state.totalPages) ? (
                               <ul>

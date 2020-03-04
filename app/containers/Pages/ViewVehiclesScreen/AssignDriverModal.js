@@ -16,7 +16,8 @@ class AssignDriver extends Component {
     showSettingsModal: false,
     deviceId: '',
     drivers: [],
-    driverID: ''
+    driverID: '',
+    currentPage:1
   }
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
@@ -44,7 +45,7 @@ class AssignDriver extends Component {
 
   getAllDrivers = () => {
     let body = {
-      page: 1,
+      page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }

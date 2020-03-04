@@ -1,16 +1,14 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import makeSelectAddVehicleScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -23,7 +21,8 @@ class AddVehicleScreen extends Component {
     directorName: '',
     companyLogo: '',
     error: {},
-    file: ''
+    file: '',
+    loading: false
   }
 
   schema = {
@@ -108,32 +107,51 @@ class AddVehicleScreen extends Component {
     e.preventDefault()
     console.log("submitting add vehicle form");
     const error = this.validate()
-
-    if (!error) {
-      let body = {
-        companyName: this.state.companyName,
-        email: this.state.companyEmail,
-        director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
-      }
-      this.props.apiManager.makeCall("addCompany", body, (response) => {
-        if (response.code === 1008) {
-          toast.success('Vehicle added successfully!')
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          companyName: this.state.companyName,
+          email: this.state.companyEmail,
+          director: this.state.directorName,
+          // companyLogo: this.state.companyLogo,
         }
-        else
+        this.props.apiManager.makeCall("addCompany", body, (response) => {
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('Vehicle added successfully!')
+          }
+          else
+            this.setState({ loading: false })
           toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
   handleChange = (event) => {
     this.setState({
       file: URL.createObjectURL(event.target.files[0])
     })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
@@ -221,6 +239,7 @@ class AddVehicleScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }

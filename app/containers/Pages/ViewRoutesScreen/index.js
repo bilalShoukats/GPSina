@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, InputAdornment } from '@material-ui/core'
+import { Grid, TextField, Button, InputAdornment, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { toast } from 'react-toastify';
@@ -9,6 +9,7 @@ import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import profile from 'images/team/img1.jpg';
@@ -24,7 +25,8 @@ class ViewRoutesScreen extends Component {
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
-    showConfirmModal: false
+    showConfirmModal: false,
+    loading: true
   }
 
   handleChange = (event, newValue) => {
@@ -80,24 +82,40 @@ class ViewRoutesScreen extends Component {
       routeID: this.state.deleteRouteID,
       companyEmail: this.props.user.companyEmail
     }
-    this.props.apiManager.makeCall('deleteRoute', body, res => {
-      console.log("response is: ", res);
-      if (res.code === 1016) {
-        toast.success('Route deleted successfully!');
-        this.setState({ showConfirmModal: false }, () => {
-          this.getAllMyRoutes();
-        })
-      }
-      else {
-        toast.error(res.id);
-      }
+    this.setState({ loading: true }, () => {
+      this.props.apiManager.makeCall('deleteRoute', body, res => {
+        console.log("response is: ", res);
+        if (res.code === 1016) {
+          toast.success('Route deleted successfully!');
+          this.setState({ showConfirmModal: false, loading: false }, () => {
+            this.getAllMyRoutes();
+          })
+        }
+        else {
+          toast.error(res.id)
+          loading: false
+        }
+      })
     })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
     let searchingFor = null;
-    if (this.state.loading)
-      return null;
 
     if (this.state.routes[0]) {
       searchingFor = search => routes => routes.routeName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -190,6 +208,7 @@ class ViewRoutesScreen extends Component {
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
         />
+        {this.renderLoading()}
       </Fragment>
     );
   }

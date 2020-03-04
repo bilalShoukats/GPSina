@@ -27,6 +27,8 @@ class ViewDriversScreen extends Component {
     value: 0,
     companies: [],
     drivers: [],
+    unAssignCars: [],
+    routes: [],
     loading: true,
     showAlert: false,
     currentPage: 1,
@@ -45,8 +47,9 @@ class ViewDriversScreen extends Component {
   }
 
   componentDidMount = () => {
-    this.getAllMyCompanies();
+    // this.getAllMyCompanies();
     this.getAllDrivers();
+    // this.getUnAssignedCar()
   }
 
   loadMoreHandler = () => {
@@ -59,14 +62,16 @@ class ViewDriversScreen extends Component {
   }
   getAllDrivers = () => {
     let body = {
-      page: 1,
+      page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewDrivers', body, res => {
       console.log('View Drivers - ', res)
       if (res) {
-        this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        this.setState({ drivers: [] }, () => {
+          this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        })
       }
       else {
         this.setState({ loading: false });
@@ -99,8 +104,8 @@ class ViewDriversScreen extends Component {
     this.setState({ registrationNo: item.registrationNo, showConfirmUnAssignModal: true })
   }
   openAssignDriverModal = (item) => {
-    console.log('assign cars - view', item)
-    this.setState({ driverId: item.driverID, registrationNo: item.registrationNo, showAssignDriverModal: true })
+    console.log('assign cars - viewww', this)
+    this.setState({ driverId: item.driverID, registrationNo: item.registrationNo, showAssignDriverModal: true }, () => this.getUnAssignedCar())
   }
   openNotificationsModal = (item) => {
     this.setState({ carID: item.carID, showNotificationsModal: true })
@@ -109,7 +114,6 @@ class ViewDriversScreen extends Component {
     return (
       <Dialog
         open={this.state.loading}
-        onClose={() => { this.setState({ loading: false }) }}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
@@ -121,9 +125,52 @@ class ViewDriversScreen extends Component {
       </Dialog>
     )
   }
+  close = () => {
+    this.setState({ showConfirmUnAssignModal: false, showAssignDriverModal: false, routes: [], unAssignCars: [] }, () => this.getAllDrivers())
+  }
+  getUnAssignedCar = () => {
+    let body = {
+      companyEmail: this.props.user.companyEmail,
+      page: 1,
+      // companyEmail:this.state.email
+    }
+    this.props.apiManager.makeCall('getUnAssignedCar', body, res => {
+      console.log('View cars - llll', res)
+      console.log('View cars - llll', body)
+      if (res) {
+        if (res.response) {
+          this.setState({ unAssignCars: this.state.unAssignCars.concat(res.response), loading: false }, () => this.getAllRoutes());
+        }
+        else {
+          this.setState({ unAssignCars: [] })
+        }
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
+  getAllRoutes = () => {
+    let body = {
+      page: 1,
+      companyEmail: this.props.user.companyEmail
+      // companyEmail:this.state.email
+    }
+    this.props.apiManager.makeCall('viewRoute', body, res => {
+      console.log('routes show-', res)
+      if (res) {
+        this.setState({ routes: this.state.routes.concat(res.response), });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
   render() {
     let searchingFor = null;
-    if (this.state.companies[0]) {
+    if (this.state.drivers.length > 0) {
       searchingFor = search => drivers => drivers.driverName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
     console.log('console bawa company', this.state.companies)
@@ -133,7 +180,7 @@ class ViewDriversScreen extends Component {
       < Fragment >
         <h2 className="breadcumbTitle">Your Drivers</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.drivers[0]) ? (
+          {(this.state.drivers.length > 0) ? (
             <Grid className="viewCompaniesLeft">
               <TextField
                 fullWidth
@@ -175,7 +222,7 @@ class ViewDriversScreen extends Component {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 this.openAssignDriverModal(item)
-                              }} xl={6} className='btn bg-info' Ï>
+                              }} xl={6} className='btn bg-info'>
                                 <i className="icofont-ui-user" />
                               </Button>
                               <Button onClick={(e) => {
@@ -191,8 +238,8 @@ class ViewDriversScreen extends Component {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 this.openConfirmUnAssignModal(item)
-                              }} xl={6} className='btn bg-secondary' Ï>
-                                <i class="fa fa-user-times"></i>
+                              }} xl={6} className='btn bg-secondary'>
+                                <i className="fa fa-user-times"></i>
                               </Button>
                               <Button onClick={(e) => {
                                 e.preventDefault();
@@ -229,13 +276,13 @@ class ViewDriversScreen extends Component {
               </ScrollArea>
             </Grid>
           ) : (
-              <Card title="No Company Found!">
-                <p className="subText">Don't have any company? <Link to="/addCompany">Create company</Link></p>
+              <Card title="No Driver Found!">
+                <p className="subText">Don't have any Drivers? <Link to="/addDriver">Add Driver</Link></p>
               </Card>
             )}
         </Grid>
         {
-          (this.state.companies[0]) ? (
+          (this.state.drivers.length > 0) ? (
             <Grid className="buttonGrid">
               {(this.state.currentPage < this.state.totalPages) ? (
                 <ul>
@@ -251,19 +298,25 @@ class ViewDriversScreen extends Component {
         <ConfirmModal
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
+          getAllDrivers={() => this.getAllDrivers()}
         // registrationNo={this.state.registrationNo}
         // history={this.props.history}
         />
         <AssignDriverModal
           open={this.state.showAssignDriverModal}
-          close={() => this.setState({ showAssignDriverModal: false })}
+          close={this.close}
           registrationNo={this.state.registrationNo}
           driverID={this.state.driverId}
+          getAllDrivers={() => this.getAllDrivers()}
+          drivers={this.state.unAssignCars}
+          routes={this.state.routes}
+          getUnAssignedCar={() => this.getUnAssignedCar}
         />
         <ConfirmUnAssignModal
           open={this.state.showConfirmUnAssignModal}
-          close={() => this.setState({ showConfirmUnAssignModal: false })}
+          close={this.close}
           registrationNo={this.state.registrationNo}
+          getAllDrivers={() => this.getAllDrivers()}
         // history={this.props.history}
         />
         <NotificationsModal

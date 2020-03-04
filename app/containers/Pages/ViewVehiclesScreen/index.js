@@ -134,7 +134,7 @@ class ChatApp extends Component {
     return (
       <Dialog
         open={this.state.loading}
-        onClose={()=>{this.setState({loading:false})}}
+        // onClose={this.state.loading}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
@@ -234,6 +234,7 @@ class ChatApp extends Component {
           open={this.state.showSettingsModal}
           close={() => this.setState({ showSettingsModal: false })}
           carID={this.state.carID}
+          {...this.props}
         />
         <AssignDriverModal
           open={this.state.showAssignDriverModal}
@@ -241,17 +242,21 @@ class ChatApp extends Component {
           carID={this.state.carID}
           registrationNo={this.state.registrationNo}
           history={this.props.history}
+          {...this.props}
         />
         <NotificationsModal
           open={this.state.showNotificationsModal}
           close={() => this.setState({ showNotificationsModal: false })}
           carID={this.state.carID}
+          {...this.props}
         />
         <ConfirmModal
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
           registrationNo={this.state.registrationNo}
           history={this.props.history}
+          getAllMyVehicles={this.getAllMyVehicles}
+          {...this.props}
         />
         {this.renderLoading()}
       </Fragment >
