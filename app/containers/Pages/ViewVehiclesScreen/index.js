@@ -62,8 +62,12 @@ class ChatApp extends Component {
   }
 
   componentDidMount = () => {
-    this.socketComponent = new SocketComponent(this.recieveData);
+    this.socketComponent = new SocketComponent();
     this.getMyEmail();
+  }
+
+  componentWillUnmount = () => {
+    this.socketComponent.disconnectSocketServer();
   }
 
   loadMoreHandler = () => {
@@ -90,7 +94,7 @@ class ChatApp extends Component {
             companyIdSet.push("" + item.deviceID);
           });
           this.setState({ companyIdSet }, () => {
-            this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
+            this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet, this.recieveData);
           });
         });
       }

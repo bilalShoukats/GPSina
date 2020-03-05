@@ -1,11 +1,13 @@
+import React, { Fragment, Component } from 'react';
 var Protocol = require('bin-protocol');
 import { isNumber } from "util";
 
-export default class SocketComponent {
+export default class SocketComponent extends Component {
 
-    constructor(callBackFunc) {
-        this.callBack = callBackFunc;
+    constructor(props) {
+        super(props);
         this.socket = "";
+        this.hardClose = false;
     }
 
     /**
@@ -27,18 +29,24 @@ export default class SocketComponent {
     }
 
     disconnectSocketServer = () => {
-        this.socket.close();
+        console.log("SOCKET HARD CLOSE");
+        if (this.socket) {
+            this.socket.close(1000);
+            this.hardClose = true;
+        }
     }
 
     /**
         * Create connection with web socket server and send encrypted token and device ids on socker.
         */
-    connectSocketServer = async (hash, deviceIds) => {
+    connectSocketServer = async (hash, deviceIds, callBackFunc) => {
         console.log("connect with socket");
-        // this.socket = new WebSocket('ws://13.228.129.207:8091');
-        this.socket = new WebSocket('ws://13.233.162.122:8091');
+        // this.socket = new WebSocket('ws://13.228.129.207:8091'); //develop
+        this.socket = new WebSocket('ws://13.233.162.122:8091'); //live
+        // this.socket = new WebSocket('ws://192.168.88.18:8091'); //local
         this.token = hash;
         this.deviceIDs = deviceIds;
+        this.callBack = callBackFunc;
 
         this.socket.onopen = () => {
             console.log("socket is open now: ");
@@ -51,18 +59,20 @@ export default class SocketComponent {
         this.socket.onmessage = (e) => {
             e.data.arrayBuffer()
                 .then(value => {
-                    var serverReponse = new Uint8Array(value);
-                    if (this.rightPacket(serverReponse)) {
-                        var unpackData = this.UnPackVarUInt32(serverReponse);
-                        var deviceUnpackData = this.UnPackInt32(unpackData[1]);
-                        var engineByte = deviceUnpackData[1].slice(0, 1);
-                        var engineStatus = this.Itob(engineByte);
-                        var Lat = this.UnPackFloat32(deviceUnpackData[1].subarray(1));
-                        var Lng = this.UnPackFloat32(Lat[1]);
-                        this.callBack(deviceUnpackData[0], engineStatus, Lat, Lng);
+                    if (this.hardClose)
+                        this.socket.close(1000);
+                    else {
+                        var serverReponse = new Uint8Array(value);
+                        if (this.rightPacket(serverReponse)) {
+                            var unpackData = this.UnPackVarUInt32(serverReponse);
+                            var deviceUnpackData = this.UnPackInt32(unpackData[1]);
+                            var engineByte = deviceUnpackData[1].slice(0, 1);
+                            var engineStatus = this.Itob(engineByte);
+                            var Lat = this.UnPackFloat32(deviceUnpackData[1].subarray(1));
+                            var Lng = this.UnPackFloat32(Lat[1]);
+                            this.callBack(deviceUnpackData[0], engineStatus, Lat, Lng);
+                        }
                     }
-                    else
-                        return null;
                 })
         }
 
@@ -70,6 +80,13 @@ export default class SocketComponent {
             // an error occurred
             console.log("socket error: ", e);
             console.log("socket error: ", e.message);
+            if (this.hardClose) {
+                this.socket.close(1000);
+            }
+            else {
+                this.socket.close(1000);
+                this.connectSocketServer(this.token, this.deviceIDs, this.callBack);
+            }
         };
 
         this.socket.onclose = (e) => {
