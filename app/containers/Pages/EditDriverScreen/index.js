@@ -5,13 +5,14 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import makeSelectAddUserScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -27,6 +28,8 @@ class AddUserScreen extends Component {
     licenceNumber: '',
     error: {},
     file: '',
+    driverBloodGroup: 1,
+    loading: false,
     addUser: false,
     viewUser: false,
     editUser: false,
@@ -42,7 +45,7 @@ class AddUserScreen extends Component {
   }
 
   schema = {
-    firstName: Joi.string().regex(/^[a-zA-Z ]{3}/).required().error(errors => {
+    driverName: Joi.string().regex(/^[a-zA-Z ]{3}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
@@ -55,27 +58,27 @@ class AddUserScreen extends Component {
       });
       return errors;
     }),
-    lastName: Joi.string().regex(/^[a-zA-Z ]{3}/).required().error(errors => {
+    // driverOwner: Joi.string().regex(/^[a-zA-Z ]{3}/).required().error(errors => {
+    //   errors.forEach(err => {
+    //     switch (err.type) {
+    //       case "string.regex.base":
+    //         err.message = "Owner name must be more than 3 character";
+    //         break;
+    //       default:
+    //         err.message = "Please enter ast name";
+    //         break;
+    //     }
+    //   });
+    //   return errors;
+    // }),
+    licenceNumber: Joi.string().regex(/^[a-zA-Z0-9]{6}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Owner name must be more than 3 character";
+            err.message = "Licence Number must be more than 5 character";
             break;
           default:
-            err.message = "Please enter ast name";
-            break;
-        }
-      });
-      return errors;
-    }),
-    licenceNumber: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.regex.base":
-            err.message = "User name must be more than 7 character";
-            break;
-          default:
-            err.message = "Please enter user name";
+            err.message = "Please enter Licence Number";
             break;
         }
       });
@@ -94,23 +97,10 @@ class AddUserScreen extends Component {
       });
       return errors;
     }),
-    email: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
+    licenceExpiry: Joi.number().integer().min(2020).max(2030).error(errors => {
       errors.forEach(err => {
         switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
-            break;
-          default:
-            err.message = "Email cannot be empty";
-            break;
-        }
-      });
-      return errors;
-    }),
-    licenceExpiry: Joi.string().required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          default: err.message = "licenceExpiry  can not be empty";
+          default: err.message = "licenceExpiry  should be above 2020 and less than 2030";
             break;
         }
       });
@@ -142,9 +132,10 @@ class AddUserScreen extends Component {
   validate = () => {
     const options = { abortEarly: false }
     const form = {
-      companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
-      directorName: this.state.directorName
+      driverName: this.state.driverName,
+      licenceNumber: this.state.licenceNumber,
+      licenceExpiry: this.state.licenceExpiry,
+      driverAge: this.state.driverAge,
     }
     const { error } = Joi.validate(form, this.schema, options)
     if (!error) return null;
@@ -180,37 +171,58 @@ class AddUserScreen extends Component {
   componentWillMount = () => {
     this.getDriverDetails();
   }
-  editDriver = () => {
+  editDriver = (e) => {
     e.preventDefault()
     console.log("submitting add company form");
     const error = this.validate()
-    if (!error) {
-      let body = {
-        driverName: this.state.driverName,
-        driverEmail: this.state.driverEmail,
-        licenceNumber: this.state.licenceNumber,
-        licenceExpiry: parseInt(this.state.licenceExpiry),
-        driverBloodGroup: parseInt(this.state.gender),
-        driverAge: parseInt(this.state.driverAge),
-        role: 0,
-        gender: parseInt(this.state.gender),
-        companyEmail: this.props.user.companyEmail,
-      }
-      this.props.apiManager.makeCall("editDriver", body, (response) => {
-        console.log("response: ", response);
-        console.log("response: ", body);
-        if (response.code === 1008) {
-          toast.success('Driver Edited successfully!')
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          driverName: this.state.driverName,
+          driverEmail: this.state.driverEmail,
+          licenceNumber: this.state.licenceNumber,
+          licenceExpiry: parseInt(this.state.licenceExpiry),
+          driverBloodGroup: parseInt(this.state.gender),
+          driverAge: parseInt(this.state.driverAge),
+          role: 0,
+          gender: parseInt(this.state.gender),
+          companyEmail: this.props.user.companyEmail,
         }
-        else
-          toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
+        this.props.apiManager.makeCall("editDriver", body, (response) => {
+          console.log("response: ", response);
+          console.log("response: ", body);
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('Driver Edited successfully!')
+          }
+          else {
+            this.setState({ loading: false })
+            toast.error(response.id)
+          }
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
@@ -228,6 +240,40 @@ class AddUserScreen extends Component {
         label: 'Transgender',
       },
     ];
+    const bloodGorupItems = [
+      {
+        value: '1',
+        label: 'A RhD positive (A+)',
+      },
+      {
+        value: '2',
+        label: 'A RhD negative (A-)',
+      },
+      {
+        value: '3',
+        label: 'B RhD positive (B+)',
+      },
+      {
+        value: '4',
+        label: 'B RhD negative (B-)',
+      },
+      {
+        value: '5',
+        label: 'O RhD positive (O+)',
+      },
+      {
+        value: '6',
+        label: 'O RhD negative (O-)',
+      },
+      {
+        value: '7',
+        label: 'AB RhD positive (AB+)',
+      },
+      {
+        value: '8',
+        label: 'AB RhD negative (AB-)',
+      },
+    ];
     return (
       <Fragment>
         <Helmet>
@@ -243,8 +289,7 @@ class AddUserScreen extends Component {
 
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} for="file">Edit Image</label>
-
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
               <Grid className="companyInfoContent">
                 <h4>Please upload user image</h4>
               </Grid>
@@ -268,8 +313,8 @@ class AddUserScreen extends Component {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.firstName && true}
-                    helperText={this.state.error.firstName && this.state.error.firstName}
+                    error={this.state.error.driverName && true}
+                    helperText={this.state.error.driverName && this.state.error.driverName}
                     className="formInput"
                   />
                 </Grid>
@@ -312,7 +357,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Licence Number"
-                    placeholder="Your User name here.."
+                    placeholder="Your Licence number here.."
                     fullWidth
                     variant="outlined"
                     name="licenceNumber"
@@ -345,20 +390,27 @@ class AddUserScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Blood Group"
-                    placeholder="Your BloodGroup here.."
-                    fullWidth
-                    variant="outlined"
-                    name="driverBloodGroup"
-                    onChange={this.changeHandler}
+                    select
+                    label="Blodd Group"
+                    className='formInput'
                     value={this.state.driverBloodGroup}
-                    InputLabelProps={{
-                      shrink: true,
+                    fullWidth
+                    onChange={event => {
+                      const { value } = event.target;
+                      console.log('lolololol', event.target.value)
+                      this.setState({ driverBloodGroup: Number(value) });
                     }}
-                    error={this.state.error.email && true}
-                    helperText={this.state.error.email && this.state.error.email}
-                    className="formInput"
-                  />
+                    SelectProps={{
+                      native: true,
+                    }}
+                    variant="outlined"
+                  >
+                    {bloodGorupItems.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
@@ -401,12 +453,13 @@ class AddUserScreen extends Component {
                   </TextField>
                 </Grid>
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Edit Driver</Button>
+                  <Button className="btn bg-default" onClick={this.editDriver}>Edit Driver</Button>
                 </Grid>
               </Grid>
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }

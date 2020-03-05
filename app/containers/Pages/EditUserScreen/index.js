@@ -5,13 +5,14 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import makeSelectAddUserScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -27,6 +28,7 @@ class AddUserScreen extends Component {
     userName: '',
     error: {},
     file: '',
+    loading:false,
     addUser: false,
     viewUser: false,
     editUser: false,
@@ -67,19 +69,6 @@ class AddUserScreen extends Component {
       });
       return errors;
     }),
-    userName: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.regex.base":
-            err.message = "User name must be more than 7 character";
-            break;
-          default:
-            err.message = "Please enter user name";
-            break;
-        }
-      });
-      return errors;
-    }),
     phone: Joi.string().regex(/^[0-9 ]{10}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
@@ -88,19 +77,6 @@ class AddUserScreen extends Component {
             break;
           default:
             err.message = "Please enter phone number";
-            break;
-        }
-      });
-      return errors;
-    }),
-    email: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
-            break;
-          default:
-            err.message = "Email cannot be empty";
             break;
         }
       });
@@ -141,9 +117,10 @@ class AddUserScreen extends Component {
   validate = () => {
     const options = { abortEarly: false }
     const form = {
-      companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
-      directorName: this.state.directorName
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      password: this.state.password,
+      phone: this.state.phone,
     }
     const { error } = Joi.validate(form, this.schema, options)
     if (!error) return null;
@@ -157,27 +134,33 @@ class AddUserScreen extends Component {
     e.preventDefault()
     console.log("submitting add user form");
     const error = this.validate()
-
-    if (!error) {
-      let body = {
-        companyName: this.state.companyName,
-        email: this.state.companyEmail,
-        director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
-      }
-      this.props.apiManager.makeCall("addCompany", body, (response) => {
-        if (response.code === 1008) {
-          toast.success('User added successfully!')
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          password: this.state.password,
+          phone: this.state.phone,
+          avatar: 'lalu',
         }
-        else
-          toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
+        this.props.apiManager.makeCall("addCompany", body, (response) => {
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('User added successfully!')
+          }
+          else {
+            this.setState({ loading: false })
+            toast.error(response.id)
+          }
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
   handleChange = (event) => {
     this.setState({
@@ -187,6 +170,21 @@ class AddUserScreen extends Component {
   handleSwitchChange = (name) => (event) => {
     this.setState({ [name]: event.target.checked });
   };
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
 
   render() {
     return (
@@ -204,7 +202,7 @@ class AddUserScreen extends Component {
 
               </Grid>
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} for="file">Edit Image</label>
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
 
               <Grid className="companyInfoContent">
                 <h4>Please upload user image</h4>
@@ -533,7 +531,6 @@ class AddUserScreen extends Component {
                     />
                   </div>
                 </Grid>
-
                 <Grid item xs={12}>
                   <Button className="btn bg-default" onClick={this.submitHandler}>Edit User</Button>
                 </Grid>
@@ -541,6 +538,7 @@ class AddUserScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment >
     );
   }

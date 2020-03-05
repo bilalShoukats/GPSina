@@ -12,8 +12,8 @@ class ConfirmModal extends Component {
       console.log('unassign cars - view', res)
       console.log('unassign cars - view', this.props)
       if (res.code === 5032) {
-        toast.success(res.id);
         this.props.close()
+        toast.success(res.id);
       }
       else {
         toast.error(res.id);

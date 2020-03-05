@@ -12,7 +12,8 @@ class ConfirmModal extends Component {
       console.log('assign cars - view', res)
       console.log('assign cars - view', this.props)
       if (res) {
-        alert('baawwa')
+        this.props.getAllDrivers()
+        toast.success(res.id)
       }
       else {
         toast.error(res.id);

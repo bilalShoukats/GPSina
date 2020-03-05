@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 import makeSelectLogin from './selectors';
-import { Grid, TextField, Button, InputAdornment, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Grid, TextField, Button, InputAdornment, FormControlLabel, Checkbox, CircularProgress } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import Joi from 'joi-browser'
 import { ToastContainer, toast } from 'react-toastify';
 import { SuperHOC } from '../../../HOC';
 import './style.scss'
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import loginImg from 'images/login-bg.png'
@@ -21,7 +20,8 @@ class Login extends Component {
     password: '',
     remember: false,
     showpass: false,
-    error: {}
+    error: {},
+    loading: false,
   }
 
   schema = {
@@ -103,25 +103,46 @@ class Login extends Component {
     console.log(this.state.email);
     console.log(this.state.password);
     const error = this.validate()
-    if (!error) {
-      let body = {
-        email: this.state.email,
-        password: this.state.password
-      }
-      this.props.apiManager.makeCall("login", body, (response) => {
-        if (response.response.hash && response.code === 2003) {
-          toast.success('Successfully logged in!')
-          this.props.history.push('/dashboard')
-          //window.location.href = "/dashboard";
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          email: this.state.email,
+          password: this.state.password
         }
-        else
-          toast.error(response.id)
-      });
-    } else {
-      this.setState({
-        error: error || {}
-      })
-    }
+        this.props.apiManager.makeCall("login", body, (response) => {
+          if (response.response.hash && response.code === 2003) {
+            this.setState({ loading: false })
+            toast.success('Successfully logged in!')
+            this.props.history.push('/dashboard')
+            //window.location.href = "/dashboard";
+          }
+          else {
+            this.setState({ loading: false })
+            toast.error(response.id)
+          }
+        });
+      } else {
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
@@ -204,6 +225,7 @@ class Login extends Component {
             </Grid>
           </form>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }

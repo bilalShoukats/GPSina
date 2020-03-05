@@ -1,16 +1,14 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import makeSelectAddCompanyScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -23,6 +21,8 @@ class AddCompanyScreen extends Component {
     directorName: '',
     companyLogo: '',
     error: {},
+    loading: false,
+    file: ''
   }
 
   schema = {
@@ -107,29 +107,52 @@ class AddCompanyScreen extends Component {
     e.preventDefault()
     console.log("submitting add company form");
     const error = this.validate()
-
-    if (!error) {
-      let body = {
-        companyName: this.state.companyName,
-        email: this.state.companyEmail,
-        director: this.state.directorName,
-        // companyLogo: this.state.companyLogo,
-      }
-      this.props.apiManager.makeCall("addCompany", body, (response) => {
-        if (response.code === 1008) {
-          toast.success('Company added successfully!')
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          companyName: this.state.companyName,
+          email: this.state.companyEmail,
+          director: this.state.directorName,
+          // companyLogo: this.state.companyLogo,
         }
-        else
+        this.props.apiManager.makeCall("addCompany", body, (response) => {
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('Company added successfully!')
+          }
+          else
+            this.setState({ loading: false })
           toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
-
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
+  handleChange = (event) => {
+    this.setState({
+      file: URL.createObjectURL(event.target.files[0])
+    })
+  }
   render() {
     return (
       <Fragment>
@@ -142,8 +165,10 @@ class AddCompanyScreen extends Component {
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
-                <img src={companyLogo} alt="" />
+                <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
               </Grid>
+              <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
+              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
               <Grid className="companyInfoContent">
                 <h4>Please upload company logo</h4>
               </Grid>
@@ -213,6 +238,7 @@ class AddCompanyScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }

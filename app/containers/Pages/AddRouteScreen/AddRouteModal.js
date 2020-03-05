@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Joi from 'joi-browser'
-import { Grid, TextField, Button, } from '@material-ui/core'
+import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import { toast } from 'react-toastify';
 
 class AddRouteModal extends Component {
@@ -10,7 +10,8 @@ class AddRouteModal extends Component {
     routeName: '',
     disabled: true,
     data: {},
-    error: {}
+    error: {},
+    loading: false
   }
 
   schema = {
@@ -66,25 +67,31 @@ class AddRouteModal extends Component {
   submitHandler = (e) => {
     e.preventDefault()
     const error = this.validate()
-    if (!error) {
-      let body = {
-        routeName: this.state.routeName,
-        companyEmail: this.props.user.companyEmail,
-        addresses: this.state.data,
-      }
-      this.props.apiManager.makeCall("addRoute", body, (response) => {
-        this.hideModal();
-        if (response.code === 1008) {
-          toast.success('Route added successfully!');
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let body = {
+          routeName: this.state.routeName,
+          companyEmail: this.props.user.companyEmail,
+          addresses: this.state.data,
         }
-        else
-          toast.error(response.id)
-      });
-    } else {
-      this.setState({
-        error: error || {}
-      })
-    }
+        this.props.apiManager.makeCall("addRoute", body, (response) => {
+          this.hideModal();
+          if (response.code === 1008) {
+            this.setState({ loading: false })
+            toast.success('Route added successfully!');
+          }
+          else {
+            this.setState({ loading: false })
+            toast.error(response.id)
+          }
+        });
+      } else {
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
 
   hideModal = () => {
@@ -93,6 +100,21 @@ class AddRouteModal extends Component {
 
   showModal = (data) => {
     this.setState({ disabled: false, data: data })
+  }
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
   }
 
   render() {
@@ -135,6 +157,7 @@ class AddRouteModal extends Component {
             </Grid>
           </div>
         </Dialog>
+        {this.renderLoading()}
       </Fragment>
     )
   }

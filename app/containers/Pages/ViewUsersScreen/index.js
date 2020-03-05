@@ -31,7 +31,7 @@ class ViewUsersScreen extends Component {
     carID: '',
     showConfirmModal: false,
     showNotificationsModal: false,
-    loading: false,
+    // loading: false,
   }
 
   handleChange = (event, newValue) => {
@@ -90,7 +90,6 @@ class ViewUsersScreen extends Component {
     return (
       <Dialog
         open={this.state.loading}
-        onClose={() => { this.setState({ loading: false }) }}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',

@@ -5,13 +5,14 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import makeSelectAddUserScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs } from '@material-ui/core'
+import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
+import Dialog from '@material-ui/core/Dialog';
 
 // images
 import companyLogo from 'images/team/img1.jpg'
@@ -27,6 +28,7 @@ class AddUserScreen extends Component {
     userName: '',
     error: {},
     file: '',
+    loading: false,
     addUser: false,
     addUser: false,
     viewUser: false,
@@ -161,49 +163,54 @@ class AddUserScreen extends Component {
     e.preventDefault()
     console.log("submitting add user form");
     const error = this.validate()
-    if (!error) {
-      let emaill = this.props.user.companyEmail
-      let body = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        userName: this.state.userName,
-        password: this.state.password,
-        email: this.state.email,
-        phone: this.state.phone,
-        avatar: 'lalu',
-        userPermission: {
-          emaill: {
-            apiOperation: [
-              this.state.addUser === true ? 1 : 0,
-              this.state.viewUser === true ? 1 : 0,
-              this.state.editUser === true ? 1 : 0,
-              this.state.addRoute === true ? 1 : 0,
-              this.state.viewRoutes === true ? 1 : 0,
-              this.state.addDriver === true ? 1 : 0,
-              this.state.viewDrivers === true ? 1 : 0,
-              this.state.addVehicle === true ? 1 : 0,
-              this.state.viewVehicle === true ? 1 : 0,
-              this.state.assignDriver === true ? 1 : 0,
-              this.state.attachDevice === true ? 1 : 0,
-            ]
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let emaill = this.props.user.companyEmail
+        let body = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          userName: this.state.userName,
+          password: this.state.password,
+          email: this.state.email,
+          phone: this.state.phone,
+          avatar: 'lalu',
+          userPermissions: {
+            [emaill]: {
+              apiOperation: [
+                this.state.addUser === true ? 1 : 0,
+                this.state.viewUser === true ? 1 : 0,
+                this.state.editUser === true ? 1 : 0,
+                this.state.addRoute === true ? 1 : 0,
+                this.state.viewRoutes === true ? 1 : 0,
+                this.state.addDriver === true ? 1 : 0,
+                this.state.viewDrivers === true ? 1 : 0,
+                this.state.addVehicle === true ? 1 : 0,
+                this.state.viewVehicle === true ? 1 : 0,
+                this.state.assignDriver === true ? 1 : 0,
+                this.state.attachDevice === true ? 1 : 0,
+              ]
+            }
           }
         }
-      }
-      this.props.apiManager.makeCall("addEmployeeUserToCompany", body, (response) => {
-        console.log('adddddd', response)
-        console.log('adddddd', body)
-        if (response.code === 1008) {
-          toast.success('User added successfully!')
-        }
-        else
+        this.props.apiManager.makeCall("addEmployeeUserToCompany", body, (response) => {
+          console.log('adddddd', response)
+          console.log('adddddd', body)
+          if (response.code === 1006) {
+            this.setState({ loading: false })
+            toast.success('User added successfully!')
+          }
+          else
+            this.setState({ loading: false })
           toast.error(response.id)
-      });
-    } else {
-      console.log(error);
-      this.setState({
-        error: error || {}
-      })
-    }
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
   }
   handleChange = (event) => {
     this.setState({
@@ -213,7 +220,21 @@ class AddUserScreen extends Component {
   handleSwitchChange = (name) => (event) => {
     this.setState({ [name]: event.target.checked });
   };
-
+  renderLoading = () => {
+    return (
+      <Dialog
+        open={this.state.loading}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            padding: 10
+          },
+        }}>
+        <CircularProgress className="text-dark" />
+      </Dialog>
+    )
+  }
   render() {
     return (
       <Fragment>
@@ -561,6 +582,7 @@ class AddUserScreen extends Component {
             </Card>
           </Grid>
         </Grid>
+        {this.renderLoading()}
       </Fragment>
     );
   }
