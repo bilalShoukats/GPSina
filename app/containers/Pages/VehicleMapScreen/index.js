@@ -48,10 +48,8 @@ class ChatApp extends Component {
   getMyUserData = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ hash: user.hash }, () => {
-      this.socketComponent = new SocketComponent(this.recieveData);
-      console.log(this.state.hash);
-      console.log(this.state.deviceId);
-      this.socketComponent.connectSocketServer(this.state.hash, ["" + this.state.deviceId]);
+      this.socketComponent = new SocketComponent();
+      this.socketComponent.connectSocketServer(this.state.hash, ["" + this.state.deviceId], this.recieveData);
     });
   }
 
@@ -64,7 +62,9 @@ class ChatApp extends Component {
     // }, 5000);
   }
 
-
+  componentWillUnmount = () => {
+    this.socketComponent.disconnectSocketServer();
+  }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
@@ -74,6 +74,7 @@ class ChatApp extends Component {
       })
     }
   }
+
   move = () => {
     let mapii = this.state.mapii;
     mapii.forEach(single => {
@@ -85,10 +86,11 @@ class ChatApp extends Component {
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
+
   addRouteApi = (data) => {
     console.log("request to add route: ", data);
-
   }
+
   render() {
     console.log('data of mapppp', this.state.mapObject)
     return (

@@ -4,7 +4,9 @@ import ErrMsg from "./string-error-code-en";
 import CryptoJS from "crypto-js";
 // dev server url
 // const URL = (apiName) => 'http://13.228.129.207:8081/api/' + apiName;
+// live server url
 const URL = (apiName) => 'http://13.233.162.122:8080/api/' + apiName;
+// live server url
 // const URL = (apiName) => 'http://192.168.88.18:8080/api/' + apiName;
 
 const TIMEOUT = 10000; // ten seconds
@@ -62,6 +64,7 @@ export default class ApiManager {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'mode': 'cors',
+        'Access-Control-Allow-Origin': '*',
         'Authorization': 'Basic ' + this.token,
       },
       body: JSON.stringify(body)
@@ -75,6 +78,7 @@ export default class ApiManager {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'mode': 'cors',
+        'Access-Control-Allow-Origin': '*',
         'Authorization': 'Basic ' + this.token,
       }
     };
@@ -86,6 +90,7 @@ export default class ApiManager {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
         'mode': 'cors'
       },
       body: JSON.stringify(body)
