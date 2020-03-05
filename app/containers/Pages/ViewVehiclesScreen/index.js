@@ -84,7 +84,7 @@ class ChatApp extends Component {
       console.log('get cars - v', res)
       console.log('get cars - v', body)
       if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
+        this.setState({ companies: this.state.companies.concat(res.response[0]), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
           let companyIdSet = [];
           this.state.companies.map((item, index) => {
             companyIdSet.push("" + item.deviceID);
@@ -148,6 +148,7 @@ class ChatApp extends Component {
   }
 
   render() {
+    console.log('data of map', [...this.state.mapObject.values()])
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Vehicles</h2>
