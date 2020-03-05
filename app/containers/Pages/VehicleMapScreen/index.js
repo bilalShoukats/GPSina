@@ -47,23 +47,19 @@ class ChatApp extends Component {
   getMyUserData = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ hash: user.hash }, () => {
-      this.socketComponent = new SocketComponent(this.recieveData);
-      console.log(this.state.hash);
-      console.log(this.state.deviceId);
-      this.socketComponent.connectSocketServer(this.state.hash, ["" + this.state.deviceId]);
+      this.socketComponent = new SocketComponent();
+      this.socketComponent.connectSocketServer(this.state.hash, ["" + this.state.deviceId], this.recieveData);
     });
   }
 
   componentDidMount = () => {
     this.getMyUserData();
     this.setState({ deviceId: this.props.match.params.registrationNo });
-    // this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
-    // setInterval(() => {
-    //   this.move();
-    // }, 500);
   }
 
-
+  componentWillUnmount = () => {
+    this.socketComponent.disconnectSocketServer();
+  }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
@@ -73,23 +69,16 @@ class ChatApp extends Component {
       })
     }
   }
-  move = () => {
-    let mapData = this.state.mapData;
-    mapData.forEach(single => {
-      single.latitude += 0.0001
-    });
-    this.setState({ mapData });
-  }
 
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
+
   addRouteApi = (data) => {
     console.log("request to add route: ", data);
-
   }
-  render() {
 
+  render() {
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Device Map</h2>
