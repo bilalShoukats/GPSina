@@ -8,22 +8,26 @@ import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './basic'
-import SocketComponent from '../../../components/WebSocket';
+import SocketComponent from 'components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
-import BankingSystemFeature from 'components/Dashboard/BankingSystem/BankingSystemFeature';
+import DashboardVehicleFeature from 'components/Dashboard/DashboardScreen/DashboardVehicleFeature';
+import DashboardVehiclePieChart from 'components/Dashboard/DashboardScreen/DashboardVehiclePieChart';
 
 class DashboardScreen extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     email: "",
     hash: "",
     companyEmail: "",
-    companies: [],
-    loading: true,
-    currentPage: 1,
-    totalPages: 0,
-    itemsInPage: 10,
-    mapObject: new Map()
+    loading: false,
+    vehiclesData: [],
+    deviceIds: [],
+    mapObject: new Map(),
   }
 
   componentDidUpdate(prevProps) {
@@ -34,36 +38,45 @@ class DashboardScreen extends Component {
     }
   }
 
+  componentWillUnmount = () => {
+    //this.socketComponent.disconnectSocketServer();
+  }
+
   componentDidMount = () => {
-    // this.socketComponent = new SocketComponent();
     this.getMyEmail();
   }
 
-  loadMoreHandler = () => {
-    if (this.state.currentPage < this.state.totalPages) {
-      this.setState({ currentPage: this.state.currentPage + 1 }, () => {
-        console.log(this.state.currentPage);
-        this.getAllMyVehicles();
-      })
-    }
+  getMyEmail = async () => {
+    let user = await Manager.getItem('user', true);
+    this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllMyVehicles());
+  }
+
+  recieveData = (deviceId, engineStatus, Lat, Lng, gpsSpeed, obdSpeed, carTemprature, fuelReading, rpm) => {
+    let mapObject = this.state.mapObject;
+    mapObject.set(
+      deviceId,
+      [deviceId, engineStatus, Lat, Lng, gpsSpeed, obdSpeed, carTemprature, fuelReading, rpm]
+    );
+    this.setState({ mapObject }, () => {
+      // console.log('MapData: ', this.state.mapObject);
+    });
   }
 
   getAllMyVehicles = () => {
     let body = {
-      page: this.state.currentPage,
       companyEmail: this.state.companyEmail
     }
     this.props.apiManager.makeCall('viewCars', body, res => {
-      console.log('get cars - v', res)
-      console.log('get cars - v', body)
+      // console.log("all my vehicles: ", res);
       if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
-          let companyIdSet = [];
-          this.state.companies.map((item, index) => {
-            companyIdSet.push("" + item.deviceID);
+        this.setState({ vehiclesData: res.response, loading: false }, () => {
+          let devices = [];
+          this.state.vehiclesData.map((item) => {
+            devices.push("" + item.deviceID);
           });
-          this.setState({ companyIdSet }, () => {
-            // this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet, this.recieveData);
+          this.setState({ deviceIds: devices }, () => {
+            this.socketComponent = new SocketComponent();
+            //this.socketComponent.connectSocketServer(this.state.hash, this.state.deviceIds, this.recieveData);
           });
         });
       }
@@ -74,20 +87,10 @@ class DashboardScreen extends Component {
     }, false)
   }
 
-  handleInputChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  };
-
-  getMyEmail = async () => {
-    let user = await Manager.getItem('user', true);
-    this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllMyVehicles());
-  }
-
   renderLoading = () => {
     return (
       <Dialog
         open={this.state.loading}
-        // onClose={this.state.loading}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
@@ -103,15 +106,11 @@ class DashboardScreen extends Component {
   render() {
     return (
       <Fragment>
-        <h2 className="breadcumbTitle">Dashboard</h2>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <GMap
-              data={[...this.state.mapObject.values()]}
+              data={[...this.state.mapObject]}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <BankingSystemFeature />
           </Grid>
         </Grid>
         {this.renderLoading()}

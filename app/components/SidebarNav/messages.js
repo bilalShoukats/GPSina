@@ -9,7 +9,7 @@ export default defineMessages({
   },
   DashboardScreen: {
     id: `${scope}.DashboardScreen`,
-    defaultMessage: 'Your Information',
+    defaultMessage: 'Live Dashboard',
   },
   Company: {
     id: `${scope}.Company`,

@@ -59,6 +59,7 @@ export default class SocketComponent extends Component {
         this.socket.onmessage = (e) => {
             e.data.arrayBuffer()
                 .then(value => {
+                    // console.log("data: ", value);
                     if (this.hardClose)
                         this.socket.close(1000);
                     else {
@@ -70,7 +71,12 @@ export default class SocketComponent extends Component {
                             var engineStatus = this.Itob(engineByte);
                             var Lat = this.UnPackFloat32(deviceUnpackData[1].subarray(1));
                             var Lng = this.UnPackFloat32(Lat[1]);
-                            this.callBack(deviceUnpackData[0], engineStatus, Lat, Lng);
+                            var gpsSpeed = this.UnPackFloat32(Lng[1]);
+                            var obdSpeed = this.UnPackFloat32(gpsSpeed[1]);
+                            var carTemprature = this.UnPackFloat32(obdSpeed[1]);
+                            var fuelReading = this.UnPackFloat32(carTemprature[1]);
+                            var rpm = this.UnPackFloat32(fuelReading[1]);
+                            this.callBack(deviceUnpackData[0], engineStatus, Lat[0], Lng[0], gpsSpeed[0], obdSpeed[0], carTemprature[0], fuelReading[0], rpm[0]);
                         }
                     }
                 })
@@ -104,11 +110,11 @@ export default class SocketComponent extends Component {
         var buffer = protocol.read(dataArray).UVarint().result;
         dataArray = dataArray.subarray(1);
         if (buffer === dataArray.length) {
-            console.log("Length is same");
+            // console.log("Length is same");
             return true;
         }
         else {
-            console.log("Length not same");
+            // console.log("Length not same");
             return false;
         }
     }
