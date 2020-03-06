@@ -156,17 +156,17 @@ class ChatApp extends Component {
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Vehicles</h2>
-        <Grid className="chatApp">
-          <Grid className="chatAppLeft">
+        <Grid className="chatAppp">
+          <Grid className="chatAppLeftt">
             <ScrollArea
               speed={1}
-              className="chatScrollBar"
-              contentClassName='chatScrollBarContent'
+              className="chatScrollBarr"
+              contentClassName='chatScrollBarContentt'
               horizontal={false}
             >
               {this.state.companies.map((item, index) => {
                 return (
-                  <Grid key={index} className='itemContainer' onClick={() => {
+                  <Grid key={index} className='itemContainerr' onClick={() => {
                     this.socketComponent.disconnectSocketServer();
                     this.props.history.push(`/vehicleMap/${item.deviceID}`)
                   }}>
@@ -229,7 +229,7 @@ class ChatApp extends Component {
               }
             </ScrollArea>
           </Grid>
-          <Grid className="chatAppRight">
+          <Grid className="chatAppRightt">
             <GMap
               data={[...this.state.mapObject.values()]}
             />
