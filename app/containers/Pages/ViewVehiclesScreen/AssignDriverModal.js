@@ -7,6 +7,8 @@ import './style.scss'
 import { Grid, } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ScrollArea from 'react-scrollbar';
+import Card from 'components/Card/Loadable'
+import { Link } from 'react-router-dom';
 
 class AssignDriver extends Component {
   state = {
@@ -17,7 +19,7 @@ class AssignDriver extends Component {
     deviceId: '',
     drivers: [],
     driverID: '',
-    currentPage:1
+    currentPage: 1
   }
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
@@ -103,7 +105,7 @@ class AssignDriver extends Component {
                   horizontal={false}
                 >
                   <ul className="notificationItems">
-                    {this.state.drivers.map((item, i) => (
+                    {this.state.drivers && this.state.drivers[0] !== undefined && this.state.drivers.length > 0 ? this.state.drivers.map((item, i) => (
                       <li key={i}>
                         <Button className={this.state.driverID === item.driverID ? "selectedButtonClass" : "buttonClass"} onClick={() => this.setState({ driverID: item.driverID })}>
                           <i className="icon">
@@ -126,7 +128,9 @@ class AssignDriver extends Component {
                           <span>{item.driverID}</span>
                         </Button>
                       </li>
-                    ))}
+                    )) : <Card title="No Drivers Found!">
+                        <p className="subText">Don't have any Drivers? <Link to="/addDriver">Add Drivers</Link></p>
+                      </Card>}
                   </ul>
                 </ScrollArea>
                 {

@@ -31,6 +31,7 @@ class ChatApp extends Component {
     registrationNo: '',
     deviceId: 0,
     mapObject: new Map(),
+    mapii: [[123, 123, 18.558908, -68.389916]]
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
@@ -55,6 +56,10 @@ class ChatApp extends Component {
   componentDidMount = () => {
     this.getMyUserData();
     this.setState({ deviceId: this.props.match.params.registrationNo });
+    // this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
+    // setInterval(() => {
+    //   this.move();
+    // }, 5000);
   }
 
   componentWillUnmount = () => {
@@ -70,6 +75,14 @@ class ChatApp extends Component {
     }
   }
 
+  move = () => {
+    let mapii = this.state.mapii;
+    mapii.forEach(single => {
+      single[2] += 0.001
+    });
+    this.setState({ mapii });
+  }
+
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
@@ -79,13 +92,15 @@ class ChatApp extends Component {
   }
 
   render() {
+    console.log('data of mapppp', this.state.mapObject)
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Device Map</h2>
         <Grid className="chatApp">
           <Grid style={{ width: '100%', height: '100%' }}>
             <GMap
-              data={[...this.state.mapObject.values()]}
+              // data={[...this.state.mapObject]}
+              data={this.state.mapii}
             />
           </Grid>
         </Grid>
