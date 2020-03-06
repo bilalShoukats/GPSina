@@ -81,7 +81,7 @@ const SidebarNav = props => {
         {
           icon: ana,
           name: `Fleet Utilization`,
-          link: '/driverDetail',
+          link: '/fleetUtilization',
           id: 59685682
         },
       ]
