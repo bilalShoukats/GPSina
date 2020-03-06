@@ -1,6 +1,7 @@
 import React from 'react';
 import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-google-maps'
 import car from './car.png'
+const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 class Map extends React.Component {
     state = {
         progress: [],
@@ -191,12 +192,12 @@ class Map extends React.Component {
             <GoogleMap
                 defaultZoom={16}
                 defaultCenter={{ lat: 18.559008, lng: -68.388881 }}
-            // defaultOptions={defaultMapOptions}
+                defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
             >
                 {this.state.progress && (
                     <>
-                        <Polyline path={this.state.progress} options={{ strokeColor: "#FF0000" }} />
-                        <Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
+         <Polyline path={this.state.progress} options={{ strokeColor:"#FF0000" }} />
+<Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
                     </>
                 )}
             </GoogleMap>

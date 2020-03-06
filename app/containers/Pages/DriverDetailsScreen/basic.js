@@ -11,8 +11,8 @@ const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 
 const MapWithAMarker = compose(withScriptjs, withGoogleMap)(props => {
     return (
-        <GoogleMap defaultZoom={1.5} 
-defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}        defaultCenter={{ lat: 29.5, lng: -95 }}>
+        <GoogleMap defaultZoom={1.5}
+            defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }} defaultCenter={{ lat: 29.5, lng: -95 }}>
             {
                 props.markers.map(marker => {
                     console.log('bawwa jee aja', marker)
@@ -72,7 +72,7 @@ export default class ShelterMap extends Component {
                 onClick={this.handleClick}
                 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI"
                 loadingElement={<div style={{ height: `100%` }} />}
-                containerElement={<div style={{ height: `100vh` }} />}
+                containerElement={<div style={{ height: `85%`, width: '100%', minHeight: '400px', }} />}
                 mapElement={<div style={{ height: `100%` }} />}
             />
         )
