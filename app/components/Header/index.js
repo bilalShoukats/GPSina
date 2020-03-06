@@ -106,7 +106,7 @@ const Header = props => {
     };
 
     return (
-        <header className="headerArea">
+        <header className="headerArea" style={{background:'linear-gradient(350deg,  rgb(66,100,134),rgb(107, 154, 193))'}}>
             <Grid container spacing={4} alignItems="center">
                 <Hidden mdUp>
                     <Grid item xs={2}>
@@ -136,7 +136,7 @@ const Header = props => {
                             <span className="profileImg">
                                 <img src={avatar} alt="" />
                             </span>
-                            <span onClick={profileOpen} className="name">
+                            <span onClick={profileOpen} className="name" style={{color:'white'}}>
                                 <span className="text">{props.user.userName}</span>
                                 <i className="fa fa-angle-down" />
                             </span>

@@ -37,13 +37,14 @@ const SidebarNav = props => {
 
   const navigations = [
     {
-      name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
+      // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      id: 11031,
+      // id: 11031,
       alwaysexpand: true,
       menus: [
         {
+          icon: ana,
           name: `${props.intl.formatMessage({ ...messages.DashboardScreen })}`,
           link: '/dashboard',
           id: 5968568
@@ -68,6 +69,21 @@ const SidebarNav = props => {
         //   link: '/ecommerce',
         //   id: 5468525881
         // },
+      ]
+    },
+    {
+      // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
+      icon: ana,
+      iconHover: anaH,
+      // id: 11031,
+      alwaysexpand: true,
+      menus: [
+        {
+          icon: ana,
+          name: `Fleet Utilization`,
+          link: '/driverDetail',
+          id: 59685682
+        },
       ]
     },
 
@@ -247,10 +263,11 @@ const SidebarNav = props => {
     //   ],
     // },
     {
-      name: `${props.intl.formatMessage({ ...messages.Company })}`,
-      icon: pricing,
-      iconHover: pricingH,
-      id: 5464145555522,
+      // name: `${props.intl.formatMessage({ ...messages.Company })}`,
+      icon: ui,
+      iconHover: uiH,
+      // id: 5464145555522,
+      alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddCompanyScreen })}`,
@@ -325,10 +342,11 @@ const SidebarNav = props => {
       ],
     },
     {
-      name: `${props.intl.formatMessage({ ...messages.Users })}`,
+      // name: `${props.intl.formatMessage({ ...messages.Users })}`,
       icon: pricing,
       iconHover: pricingH,
-      id: 12,
+      // id: 12,
+      alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddUserScreen })}`,
@@ -343,10 +361,11 @@ const SidebarNav = props => {
       ],
     },
     {
-      name: `Driver`,
-      icon: pricing,
-      iconHover: pricingH,
-      id: 23,
+      // name: `Driver`,
+      icon: form,
+      iconHover: formH,
+      alwaysexpand: true,
+      // id: 23,
       menus: [
         {
           name: `Add Driver`,
@@ -361,10 +380,11 @@ const SidebarNav = props => {
       ],
     },
     {
-      name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
-      icon: pricing,
-      iconHover: pricingH,
-      id: 22,
+      // name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
+      icon: table,
+      iconHover: tableH,
+      // id: 22,
+      alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddVehicleScreen })}`,
@@ -379,10 +399,11 @@ const SidebarNav = props => {
       ],
     },
     {
-      name: `${props.intl.formatMessage({ ...messages.Route })}`,
-      icon: pricing,
-      iconHover: pricingH,
-      id: 32,
+      // name: `${props.intl.formatMessage({ ...messages.Route })}`,
+      icon: fontawesome,
+      iconHover: fontawesomeH,
+      alwaysexpand: true,
+      // id: 32,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
@@ -590,6 +611,7 @@ const SidebarNav = props => {
                   onChange={parent_handleChange(nav.id)}
                 >
                   <ExpansionPanelSummary
+                    style={{ minHeight: '5px', height: '5px' }}
                     classes={{
                       root: 'navItemsText',
                       expanded: 'navItemsTextExpanded',
@@ -598,10 +620,10 @@ const SidebarNav = props => {
                     }}
                     expandIcon={nav.alwaysexpand ? '' : <i className="fa fa-angle-down" />}
                   >
-                    <span className="icon">
+                    {/* <span className="icon">
                       <img className="normal" src={nav.icon} alt="" />
                       <img className="hover" src={nav.iconHover} alt="" />
-                    </span>
+                    </span> */}
                     <span className="name">{nav.name}</span>
                   </ExpansionPanelSummary>
                   <ul className="submenu">

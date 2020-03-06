@@ -7,7 +7,7 @@
   min-height: 80px;
   border-bottom: 1px solid #E5E5E7;
   margin-bottom: 43px;
-  background: #ffffff;
+  background:  linear-gradient(45deg,  rgb(66,100,134),rgb(107, 154, 193));
 }
 
 .headerRight {
@@ -222,7 +222,7 @@
     &.name {
       display: inline-block;
       cursor: pointer;
-      color: $headingColor;
+      color: white;
       font-weight: 700;
       font-size: 18px;
       line-height: 21px;
@@ -230,6 +230,7 @@
       span.text {
         @media (max-width: 400px) {
           display: none;
+          color: white;
         }
       }
 
