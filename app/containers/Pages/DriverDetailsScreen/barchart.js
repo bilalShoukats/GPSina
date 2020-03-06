@@ -100,7 +100,7 @@ class BarChart extends PureComponent {
         const { data } = this.state;
         return (
             <Bar
-                width='100%'
+                width={100}
                 // height='70px'
                 // maxHeight='100px'
                 data={data} options={options} />

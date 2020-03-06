@@ -40,7 +40,7 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      // id: 11031,
+      id: 11031,
       alwaysexpand: true,
       menus: [
         {
@@ -75,7 +75,7 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      // id: 11031,
+      id: 110311,
       alwaysexpand: true,
       menus: [
         {
@@ -266,7 +266,7 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
       iconHover: uiH,
-      // id: 5464145555522,
+      id: 5464145555522,
       alwaysexpand: true,
       menus: [
         {
@@ -345,7 +345,7 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Users })}`,
       icon: pricing,
       iconHover: pricingH,
-      // id: 12,
+      id: 12,
       alwaysexpand: true,
       menus: [
         {
@@ -365,7 +365,7 @@ const SidebarNav = props => {
       icon: form,
       iconHover: formH,
       alwaysexpand: true,
-      // id: 23,
+      id: 23,
       menus: [
         {
           name: `Add Driver`,
@@ -383,7 +383,7 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
       icon: table,
       iconHover: tableH,
-      // id: 22,
+      id: 22,
       alwaysexpand: true,
       menus: [
         {
@@ -403,7 +403,7 @@ const SidebarNav = props => {
       icon: fontawesome,
       iconHover: fontawesomeH,
       alwaysexpand: true,
-      // id: 32,
+      id: 32,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
@@ -628,7 +628,7 @@ const SidebarNav = props => {
                   </ExpansionPanelSummary>
                   <ul className="submenu">
                     {nav.menus.map((menu, i) => (
-                      <li key={menu.id}>{menu.link ?
+                      <li key={i}>{menu.link ?
                         <NavLink className="navItem" activeClassName="active" exact onClick={window.scrollTo(0, 0)}
                           to={menu.link}>
                           <span className="name">
