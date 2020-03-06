@@ -127,7 +127,7 @@ const Routes = props => (
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />
     <PrivateRoute exact path={`/vehicleMap/:registrationNo`} component={VehicleMapScreen} />
-    <PrivateRoute exact path="/driverDetail" component={DriverDetails} />
+    <PrivateRoute exact path="/fleetUtilization" component={DriverDetails} />
     {/* Route Links */}
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />

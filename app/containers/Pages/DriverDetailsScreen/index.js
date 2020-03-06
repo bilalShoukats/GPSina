@@ -14,6 +14,8 @@ import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
 import BarChart from './barchart'
 import Bar from './bar'
+import DistanceDriven from './distanceDriven'
+import WeeklyProfile from './weeklyProfile'
 
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
@@ -42,7 +44,7 @@ class ChatApp extends Component {
       drivers: [],
       selectedIndex: 1
     }
-    this.barItems = [{ class: <BarChart />, key: 0 }, { class: <Bar />, key: 1 }, { class: <BarChart />, key: 2 }, { class: <Bar />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
+    this.barItems = [{ class: <BarChart />, key: 0 }, { class: <Bar />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
@@ -164,11 +166,11 @@ class ChatApp extends Component {
               {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
                 console.log('sate drivers-', item)
                 return (
-                  <Grid key={index} className='itemContainer' onClick={() => {
+                  <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
                     this.socketComponent.disconnectSocketServer();
-                    this.setState({ driverID: driverID })
+                    this.setState({ driverID: item.driverID })
                   }}>
-                    <Grid style={{ display: 'flex', width: '100%', flexDirection: 'column', padding: '10px 20px 10px 20px', }}>
+                    <Grid className='text'>
                       <h4>{item.driverName}</h4>
                       {/* <p>{item.driverEmail}</p> */}
                     </Grid>
