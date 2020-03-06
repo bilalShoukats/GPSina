@@ -161,7 +161,7 @@ const AreaRange = (props) => {
       allowChartUpdate
       immutable={false}
       updateArgs={[true, true, true]}
-      containerProps={{ className: 'chartContainer' }}
+      containerProps={{ className: 'chartContainerr' }}
       options={options}
     />
   );
