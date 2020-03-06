@@ -34,7 +34,7 @@ export default class index extends Component {
       this.state.drivers.map((item, index) => {
         return (
           <div
-            className='driver-list'
+            //className='driver-list'
             key={index}
             style={{
               marginTop: 15,
@@ -42,14 +42,15 @@ export default class index extends Component {
               marginLeft: 30,
               marginRight: 30,
               paddingTop: 5,
-              paddingBottom: 5
+              paddingBottom: 5,
+              borderBottom: '1px solid rgb(245,246,250)'
             }}
             onClick={(e) => {
               e.preventDefault()
               this.selectDriver(item.id)
             }}
           >
-            <h5 style={{ textAlign: 'center', fontSize: this.state.slectedDriver === item.id ? 16 : 12, color: 'white' }}>{item.name}</h5>
+            <h5 style={{ textAlign: 'center', fontSize: this.state.slectedDriver === item.id ? 18 : 14, color: 'black', }}>{item.name}</h5>
           </div>
         )
       })
@@ -59,18 +60,9 @@ export default class index extends Component {
   render() {
     return (
       <Fragment>
+        <h2 className="breadcumbTitle">Driving Analysis</h2>
         <Grid className="chatApp">
           <Grid className="chatAppLeft">
-            <div
-              style={{ marginTop: 30, marginLeft: 30, marginRight: 30, paddingBottom: 5, paddingTop: 5 }}>
-              <h5 style={{ fontSize: 24 }}>
-                Driving Analysis
-              </h5>
-              {/* <input
-                style={{ backgroundColor: 'rgb(242,243,247);', width: '100%', paddingTop: 5, paddingBottom: 5, paddingLeft: 5, outline: 'none' }}
-                placeholder='search driver name'
-              /> */}
-            </div>
             <ScrollArea
               speed={1}
               className="chatScrollBar"

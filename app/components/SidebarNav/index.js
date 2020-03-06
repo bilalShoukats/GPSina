@@ -86,6 +86,21 @@ const SidebarNav = props => {
         },
       ]
     },
+    {
+      // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
+      icon: ana,
+      iconHover: anaH,
+      id: 231656533,
+      alwaysexpand: true,
+      menus: [
+        {
+          icon: ana,
+          name: `Driving Analysis`,
+          link: '/driving-analysis',
+          id: 123123
+        },
+      ]
+    },
 
     // {
     //   name: 'Apps',

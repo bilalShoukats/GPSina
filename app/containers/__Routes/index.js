@@ -133,7 +133,7 @@ const Routes = props => (
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
     <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} />
-    <PrivateRoute exact path={`/driver`} component={DriverAnalysis} />
+    <PrivateRoute exact path={`/driving-analysis`} component={DriverAnalysis} />
     <Route exact path="/forgotPassword" component={ForgotPassword} />
     <PrivateRoute
       exact

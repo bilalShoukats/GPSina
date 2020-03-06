@@ -1,5 +1,6 @@
 import React from 'react';
 import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-google-maps'
+const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 class AnalysisMap extends React.Component {
   state = {
     progress: [],
@@ -190,7 +191,8 @@ class AnalysisMap extends React.Component {
       <GoogleMap
         defaultZoom={16}
         defaultCenter={{ lat: 18.559008, lng: -68.388881 }}
-      // defaultOptions={defaultMapOptions}
+        // defaultOptions={defaultMapOptions}
+        defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
       >
         {this.state.progress && (
           <>
@@ -215,7 +217,7 @@ export default (props) => (
     // onClick={this.handleClick}
     googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI&libraries=geometry,drawing,places"
     loadingElement={<div style={{ height: `100%` }} />}
-    containerElement={<div style={{ height: `360px` }} />}
+    containerElement={<div style={{ height: `370px` }} />}
     mapElement={<div style={{ height: `100%` }} />}
   />
 );
