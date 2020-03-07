@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withStateHandlers, lifecycle } from "recompose";
 import { InfoWindow, withGoogleMap, withScriptjs, GoogleMap, Marker, DirectionsRenderer } from 'react-google-maps';
-import ruoteImg from 'images/routeIcon.png';
+import ruoteImg from './node_modules/images/routeIcon.png';
 
 export default class EditRouteMap extends React.Component {
     constructor(props) {
@@ -65,7 +65,6 @@ export default class EditRouteMap extends React.Component {
                             });
                         },
                         drawDirections: (oldPlaces) => {
-                            console.log('bawaa', oldPlaces)
                             let oldPlaceMarkers = [{
                                 id: 0,
                                 lat: oldPlaces[0].lat,
@@ -93,7 +92,7 @@ export default class EditRouteMap extends React.Component {
                                 }, (result, status) => {
                                     if (status === google.maps.DirectionsStatus.OK) {
                                         this.setState({ directions: { ...result }, markers: true }, () => {
-                                            me.props.enableeditRouteButton(this.state.directions.routes[0].overview_path);
+                                            // me.props.enableeditRouteButton(this.state.directions.routes[0].overview_path);
                                             // me.props.onDirectionConfirm(this.state.directions.routes[0].overview_path);
                                         })
                                     } else {
@@ -119,13 +118,13 @@ export default class EditRouteMap extends React.Component {
                     onClick={props.addMarker.bind(this)}
                     ref={props.onMapMounted}
                     defaultZoom={10}
-                    defaultCenter={{ lat: -33.8665433, lng: 151.1956316 }}
+                    // defaultCenter={{ lat: -33.8665433, lng: 151.1956316 }}
                     defaultOptions={defaultMapOptions}
                 >
                     {props.directions && <DirectionsRenderer directions={props.directions} options={{ suppressMarkers: true }} />}
                     {props.places.map(place => {
                         this.innerProps = props;
-                        this.props.enableResetButton();
+                        // this.props.enableResetButton();
                         return (
                             <Marker
                                 icon={ruoteImg}
@@ -133,10 +132,10 @@ export default class EditRouteMap extends React.Component {
                                 position={{ lat: place.lat, lng: place.lng }}
                                 draggable={true}
                                 onDragEnd={props.onDragEnd(place.id)}
+                                // defaultPosition={{ lat: -33.866, lng: 151.195 }}
                             />
                         );
                     })}
-
                 </GoogleMap>
             );
         return (

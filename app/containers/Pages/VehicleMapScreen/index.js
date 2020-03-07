@@ -35,14 +35,13 @@ class ChatApp extends Component {
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
+    // console.log('MapData: ', Lat[0]);
     let mapObject = this.state.mapObject;
     mapObject.set(
       deviceId,
       [deviceId, engineStatus, Lat[0], Lng[0]]
     );
-    this.setState({ mapObject }, () => {
-      console.log('MapData: ', this.state.mapObject);
-    });
+    this.setState({ mapObject });
   }
 
   getMyUserData = async () => {
@@ -69,38 +68,38 @@ class ChatApp extends Component {
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
-        console.log(this.state.currentPage);
+        // console.log(this.state.currentPage);
         this.getAllMyCompanies();
       })
     }
   }
 
-  move = () => {
-    let mapii = this.state.mapii;
-    mapii.forEach(single => {
-      single[2] += 0.001
-    });
-    this.setState({ mapii });
-  }
+  // move = () => {
+  //   let mapii = this.state.mapii;
+  //   mapii.forEach(single => {
+  //     single[2] += 0.001
+  //   });
+  //   this.setState({ mapii });
+  // }
 
   handleInputChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
 
   addRouteApi = (data) => {
-    console.log("request to add route: ", data);
+    // console.log("request to add route: ", data);
   }
 
   render() {
-    console.log('data of mapppp', this.state.mapObject)
+    // console.log('data of mapppp', [...this.state.mapObject.values()])
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Device Map</h2>
         <Grid className="chatApp">
           <Grid style={{ width: '100%', height: '100%' }}>
             <GMap
-              // data={[...this.state.mapObject]}
-              data={this.state.mapii}
+              data={[...this.state.mapObject.values()]}
+              // data={this.state.mapii}
             />
           </Grid>
         </Grid>

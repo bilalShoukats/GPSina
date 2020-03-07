@@ -2,21 +2,14 @@ import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
-import 'sass/elements/sweet-alerts.scss';
-import Button from '@material-ui/core/Button';
+import './node_modules/sass/elements/sweet-alerts.scss';
 import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
-import GMap from './basic'
 import ConfirmModal from './ConfirmModal';
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
-import BarChart from './barchart'
-import Bar from './bar'
-import DistanceDriven from './distanceDriven'
-import WeeklyProfile from './weeklyProfile'
-
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
@@ -44,7 +37,6 @@ class ChatApp extends Component {
       drivers: [],
       selectedIndex: 1
     }
-    this.barItems = [{ class: <BarChart />, key: 0 }, { class: <Bar />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
@@ -156,7 +148,8 @@ class ChatApp extends Component {
       <Fragment >
         <h2 className="breadcumbTitle">Fleet Utilization</h2>
         <Grid className="chatApp">
-          <Grid className="chatAppLeft">
+          <Grid className="cchatAppLeft">
+            <h5 className="headingText">Drivers List</h5>
             <ScrollArea
               speed={1}
               className="chatScrollBar"
@@ -193,31 +186,43 @@ class ChatApp extends Component {
               }
             </ScrollArea>
           </Grid>
-          <Grid className="cchatAppRight">
-            <Grid style={{ display: 'flex', flex: 1, flexDirection: 'row', marginBottom: '15px', overflowY: 'hidden', overflowX: 'scroll', backgroundColor: 'white' }}>
-              {this.barItems.map((item, index) => {
-                console.log('bawaaaaa-', item)
+          <Grid className="cchatAppRightt">
+            <h5 className="headingText">Routes List</h5>
+            <ScrollArea
+              speed={1}
+              className="chatScrollBar"
+              contentClassName='chatScrollBarContent'
+              horizontal={false}
+            >
+              {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
+                console.log('sate drivers-', item)
                 return (
-                  <Grid style={{ display: 'flex', flex: 1, height: '160px', padding: 5, cursor: 'pointer', boxShadow: '2px 3px 2px #d0d0d0', minWidth: '200px', margin: 5 }} key={item.key}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      this.setState({ selectedIndex: item.key })
-                    }}
-                  >
-                    {item.class}
+                  <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                    this.socketComponent.disconnectSocketServer();
+                    this.setState({ driverID: item.driverID })
+                  }}>
+                    <Grid className='text'>
+                      <h4>{item.driverName}</h4>
+                      {/* <p>{item.driverEmail}</p> */}
+                    </Grid>
                   </Grid>
                 )
-              })}
-            </Grid>
-            <Grid style={{ height: '430px' }}>
+              }) : ''}
               {
-                this.barItems[this.state.selectedIndex].class
+                (this.state.drivers[0]) ? (
+                  <Grid className="buttonGrid" style={{ marginTop: 20 }}>
+                    {(this.state.currentPage < this.state.totalPages) ? (
+                      <ul>
+                        <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
+                      </ul>
+                    ) : (
+                        <ul>
+                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
+                        </ul>
+                      )}
+                  </Grid>) : null
               }
-            </Grid>
-            {/* <GMap
-              data={[...this.state.mapObject.values()]}
-            /> */}
+            </ScrollArea>
           </Grid>
         </Grid>
         <ConfirmModal

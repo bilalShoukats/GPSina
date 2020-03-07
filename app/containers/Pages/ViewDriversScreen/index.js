@@ -142,7 +142,7 @@ class ViewDriversScreen extends Component {
           this.setState({ unAssignCars: this.state.unAssignCars.concat(res.response), loading: false }, () => this.getAllRoutes());
         }
         else {
-          this.setState({ unAssignCars: [] })
+          this.setState({ unAssignCars: [] }, () => this.getAllRoutes())
         }
       }
       else {

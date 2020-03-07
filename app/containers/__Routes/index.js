@@ -101,6 +101,8 @@ import Login from 'containers/Pages/Login/Loadable';
 import Signup from 'containers/Pages/Signup/Loadable';
 import ForgotPassword from 'containers/Pages/ForgotPassword/Loadable';
 import DriverDetails from 'containers/Pages/DriverDetailsScreen';
+import DriverRoutes from 'containers/Pages/RoutesHistory/Loadable';
+import RouteMap from 'containers/Pages/RouteMap/Loadable';
 
 // notfound
 import NotfoundPage from 'components/NotfoundPage/Loadable';
@@ -128,6 +130,8 @@ const Routes = props => (
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />
     <PrivateRoute exact path={`/vehicleMap/:registrationNo`} component={VehicleMapScreen} />
     <PrivateRoute exact path="/fleetUtilization" component={DriverDetails} />
+    <PrivateRoute exact path="/RoutesHistory" component={DriverRoutes} />
+    <PrivateRoute exact path={`/RouteMap/:item`} component={RouteMap} />
     {/* Route Links */}
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />

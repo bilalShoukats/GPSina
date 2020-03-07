@@ -19,11 +19,12 @@ class DashboardScreen extends Component {
     hash: "",
     companyEmail: "",
     companies: [],
-    loading: true,
+    loading: false,
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
-    mapObject: new Map()
+    mapObject: new Map(),
+    mapii: [[1, 123, 34.758908, 70.389916], [12, 123, 34.558908, 70.389916], [123, 123, 34.958908, 70.689916], [1234, 1234, 34.558908, 70.689916], [12345, 12345, 34.558908, 70.989916]]
   }
 
   componentDidUpdate(prevProps) {
@@ -33,10 +34,23 @@ class DashboardScreen extends Component {
       }
     }
   }
+  move = () => {
+    let mapii = this.state.mapii;
+    mapii.forEach(single => {
+      // console.log('laloo',single)
+      single[2] += 0.1
+    });
+    this.setState({ mapii });
+  }
 
   componentDidMount = () => {
+    setInterval(() => {
+      this.move();
+    }, 1000);
     // this.socketComponent = new SocketComponent();
     this.getMyEmail();
+    // this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet);
+
   }
 
   loadMoreHandler = () => {
@@ -107,7 +121,9 @@ class DashboardScreen extends Component {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <GMap
-              data={[...this.state.mapObject.values()]}
+              // data={[...this.state.mapObject.values()]}
+              data={this.state.mapii}
+
             />
           </Grid>
           <Grid item xs={12}>

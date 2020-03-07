@@ -78,8 +78,7 @@ class Map extends React.Component {
         this.setState({ progress })
     }
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps', nextProps);
-        console.log('componentWillReceiveProps', this.props);
+        // console.log('componentWillReceiveProps', this.props);
         let array = []
         if (this.props !== nextProps) {
             nextProps.data.map((item, i) => {
@@ -92,7 +91,7 @@ class Map extends React.Component {
     }
     check = () => {
         this.path = this.path.map((coordinates, i, array) => {
-            console.log('bawwaaaaa', array)
+            // console.log('bawwaaaaa', array)
             if (array.i === 0) {
                 return { ...coordinates, distance: 0 } // it begins here! 
             }
@@ -141,63 +140,65 @@ class Map extends React.Component {
         // })
 
     }
-     componentDidUpdate = () => {
-    const distance = this.getDistance()
-    if (! distance) {
-      return
+    componentDidUpdate = () => {
+        const distance = this.getDistance()
+        if (!distance) {
+            return
+        }
+
+        let progress = this.path.filter(coordinates => coordinates.distance < distance)
+
+        const nextLine = this.path.find(coordinates => coordinates.distance > distance)
+
+        let point1, point2
+
+        if (nextLine) {
+            point1 = progress[progress.length - 1]
+            point2 = nextLine
+        } else {
+            // it's the end, so use the latest 2
+            point1 = progress[progress.length - 2]
+            point2 = progress[progress.length - 1]
+        }
+
+        const point1LatLng = new window.google.maps.LatLng(point1 && point1.lat ? point1.lat : '', point1 && point1.lng ? point1.lng : '')
+        const point2LatLng = new window.google.maps.LatLng(point2 && point2.lat ? point2.lat : '', point2 && point2.lng ? point2.lng : '')
+
+        const angle = window.google.maps.geometry.spherical.computeHeading(point1LatLng, point2LatLng)
+        const actualAngle = angle - 90
+
+        const markerUrl = require('./car.png')
+        const marker = document.querySelector(`[src="${markerUrl}"]`)
+
+        if (marker) { // when it hasn't loaded, it's null
+            marker.style.transform = `rotate(${actualAngle}deg)`
+        }
+
     }
-
-    let progress = this.path.filter(coordinates => coordinates.distance < distance)
-
-    const nextLine = this.path.find(coordinates => coordinates.distance > distance)
-
-    let point1, point2
-
-    if (nextLine) {
-      point1 = progress[progress.length -1]
-      point2 = nextLine
-    } else {
-      // it's the end, so use the latest 2
-      point1 = progress[progress.length - 2]
-      point2 = progress[progress.length - 1]
-    }
-
-    const point1LatLng = new window.google.maps.LatLng(point1 && point1.lat?point1.lat:'', point1 && point1.lng?point1.lng:'')
-    const point2LatLng = new window.google.maps.LatLng(point2 && point2.lat?point2.lat:'', point2 && point2.lng?point2.lng:'')
-
-    const angle = window.google.maps.geometry.spherical.computeHeading(point1LatLng, point2LatLng)
-    const actualAngle = angle - 90
-
-    const markerUrl = require('./car.png')
-    const marker = document.querySelector(`[src="${markerUrl}"]`)
-
-    if (marker) { // when it hasn't loaded, it's null
-      marker.style.transform = `rotate(${actualAngle}deg)`
-    }
-
-  }
 
 
     render = () => {
-         const icon = {
-      url: require('./car.png'),
-      scaledSize: new window.google.maps.Size(30, 30),
-      anchor: { x: 10, y: 10 }
-    }
-        console.log('bawa', this.path)
+        console.log('bawwaaaaa', this.state.progress[0])
+        const icon = {
+            url: require('./car.png'),
+            scaledSize: new window.google.maps.Size(30, 30),
+            anchor: { x: 10, y: 10 }
+        }
+        // console.log('bawa', this.path)
         // const defaultMapOptions = {
         //     disableDefaultUI: true
         // };
         return (
             <GoogleMap
-                defaultZoom={16}
-                defaultCenter={{ lat: 18.559008, lng: -68.388881 }}
+                defaultZoom={11}
+                defaultCenter={{ lat: 30.285, lng: 73.031 }}
                 defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
+                center={{ lat: this.state.progress.length > 0 ? this.state.progress[0].lat : 30.285, lng: this.state.progress.length > 0 ? this.state.progress[0].lng : 73.031 }}
             >
                 {this.state.progress && (
                     <>
-         <Polyline path={this.state.progress} options={{ strokeColor:"#FF0000" }} />
-<Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
+                        <Polyline path={this.state.progress} options={{ strokeColor: "#FF0000" }} />
+                        <Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
                     </>
                 )}
             </GoogleMap>

@@ -41,6 +41,7 @@ export default class EditRouteMap extends React.Component {
                             this.setState({
                                 mapRef: ref
                             }, () => {
+                                console.log('bawaaaaa', me.props.addresses)
                                 this.state.drawDirections(me.props.addresses);
                             });
                         },
@@ -59,21 +60,21 @@ export default class EditRouteMap extends React.Component {
                             }
                         },
                         resetMarkers: () => {
-                            me.props.disableResetButton();
+                            // me.props.disableResetButton();
                             this.setState({
                                 places: [], maxMarkers: 0, directions: null
                             });
                         },
                         drawDirections: (oldPlaces) => {
-                            console.log('bawaa', oldPlaces)
+                            console.log('bawaa',oldPlaces.length)
                             let oldPlaceMarkers = [{
                                 id: 0,
-                                lat: oldPlaces[0].lat,
-                                lng: oldPlaces[0].lng
+                                lat: oldPlaces[0].tripGpsLat,
+                                lng: oldPlaces[0].tripGpsLng
                             }, {
                                 id: 1,
-                                lat: oldPlaces[oldPlaces.length - 1].lat,
-                                lng: oldPlaces[oldPlaces.length - 1].lng
+                                lat: oldPlaces[oldPlaces.length - 1].tripGpsLat,
+                                lng: oldPlaces[oldPlaces.length - 1].tripGpsLng
                             }];
 
                             // oldPlaces = oldPlaces.slice(1, oldPlaces.length - 1);
@@ -83,6 +84,7 @@ export default class EditRouteMap extends React.Component {
                             });
                         },
                         showDirections: () => {
+                            console.log("data: ", this.state.places);
                             if (this.state.places.length == 2) {
                                 const DirectionsService = new google.maps.DirectionsService();
                                 DirectionsService.route({
@@ -93,7 +95,7 @@ export default class EditRouteMap extends React.Component {
                                 }, (result, status) => {
                                     if (status === google.maps.DirectionsStatus.OK) {
                                         this.setState({ directions: { ...result }, markers: true }, () => {
-                                            me.props.enableeditRouteButton(this.state.directions.routes[0].overview_path);
+                                            // me.props.enableeditRouteButton(this.state.directions.routes[0].overview_path);
                                             // me.props.onDirectionConfirm(this.state.directions.routes[0].overview_path);
                                         })
                                     } else {
@@ -125,7 +127,7 @@ export default class EditRouteMap extends React.Component {
                     {props.directions && <DirectionsRenderer directions={props.directions} options={{ suppressMarkers: true }} />}
                     {props.places.map(place => {
                         this.innerProps = props;
-                        this.props.enableResetButton();
+                        // this.props.enableResetButton();
                         return (
                             <Marker
                                 icon={ruoteImg}

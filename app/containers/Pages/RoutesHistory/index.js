@@ -3,48 +3,33 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
-import Button from '@material-ui/core/Button';
 import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
-import GMap from './basic'
 import ConfirmModal from './ConfirmModal';
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
-import BarChart from './barchart'
-import Bar from './bar'
-import DistanceDriven from './distanceDriven'
-import WeeklyProfile from './weeklyProfile'
-
+import Button from '@material-ui/core/Button';
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      companyIdsSet: "",
-      email: "",
-      hash: "",
-      companyEmail: "",
-      value: 0,
       loading: true,
-      vibrateNotification: false,
-      overSpeed: false,
-      acc: false,
       currentPage: 1,
       totalPages: 0,
       itemsInPage: 10,
-      showSettingsModal: false,
-      showNotificationsModal: false,
-      showAssignDriverModal: false,
-      showConfirmModal: false,
+      routes: [],
       carID: '',
       registrationNo: '',
       mapObject: new Map(),
       drivers: [],
-      selectedIndex: 1
+      selectedIndex: 1,
+      tripid: '',
+      deviceID: '',
+      viewLess: true,
     }
-    this.barItems = [{ class: <BarChart />, key: 0 }, { class: <Bar />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
@@ -89,7 +74,7 @@ class ChatApp extends Component {
       companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
-    this.props.apiManager.makeCall('viewDrivers', body, res => {
+    this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
       console.log('View Drivers - ', res)
       if (res) {
         this.setState({ drivers: [] }, () => {
@@ -100,6 +85,28 @@ class ChatApp extends Component {
         this.setState({ loading: false });
         toast.error(res.id);
       }
+    })
+  }
+  getAllRoutes = (item) => {
+    console.log('routes show-', item)
+    this.setState({ driverID: item.driverID, deviceID: item && item.AttachedCarInformation && item.AttachedCarInformation[0] ? item.AttachedCarInformation[0].deviceID : '' }, () => {
+      let body = {
+        // page: 1,
+        // companyEmail: this.props.user.companyEmail,
+        deviceid: this.state.deviceID.toString()
+        // companyEmail:this.state.email
+      }
+      this.props.apiManager.makeCall('driverTripStats', body, res => {
+        console.log('routes show-', body)
+        console.log('routes show-', res)
+        if (res) {
+          this.setState({ routes: this.state.routes.concat(res.response), });
+        }
+        else {
+          this.setState({ loading: false });
+          toast.error(res.id);
+        }
+      })
     })
   }
 
@@ -154,9 +161,10 @@ class ChatApp extends Component {
     console.log('bawaa item', this.state.selectedIndex)
     return (
       <Fragment >
-        <h2 className="breadcumbTitle">Fleet Utilization</h2>
+        <h2 className="breadcumbTitle">Routes History</h2>
         <Grid className="chatApp">
-          <Grid className="chatAppLeft">
+          <Grid className="cchatAppLeft">
+            <h5 className="headingText">Drivers List</h5>
             <ScrollArea
               speed={1}
               className="chatScrollBar"
@@ -168,7 +176,7 @@ class ChatApp extends Component {
                 return (
                   <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
                     this.socketComponent.disconnectSocketServer();
-                    this.setState({ driverID: item.driverID })
+                    this.getAllRoutes(item)
                   }}>
                     <Grid className='text'>
                       <h4>{item.driverName}</h4>
@@ -193,31 +201,62 @@ class ChatApp extends Component {
               }
             </ScrollArea>
           </Grid>
-          <Grid className="cchatAppRight">
-            <Grid style={{ display: 'flex', flex: 1, flexDirection: 'row', marginBottom: '15px', overflowY: 'hidden', overflowX: 'scroll', backgroundColor: 'white' }}>
-              {this.barItems.map((item, index) => {
-                console.log('bawaaaaa-', item)
+          <Grid className="cchatAppRightt">
+            <h5 className="headingText">Routes List</h5>
+            <ScrollArea
+              speed={1}
+              className="chatScrollBar"
+              contentClassName='chatScrollBarContent'
+              horizontal={false}
+            >
+              {this.state.routes.length > 0 && this.state.routes[0] !== null ? this.state.routes.map((item, index) => {
+                console.log('sate driversss-', item)
                 return (
-                  <Grid style={{ display: 'flex', flex: 1, height: '160px', padding: 5, cursor: 'pointer', boxShadow: '2px 3px 2px #d0d0d0', minWidth: '200px', margin: 5 }} key={item.key}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      this.setState({ selectedIndex: item.key })
-                    }}
-                  >
-                    {item.class}
-                  </Grid>
+                  this.state.viewLess ?
+                    index < 5 ?
+                      <Grid key={index} className={item.tripid === this.state.tripid ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                        this.socketComponent.disconnectSocketServer();
+                        this.setState({ tripid: item.tripid })
+                      }}>
+                        <Grid className='text'>
+                          <h4>{item.tripid}</h4>
+                          {/* <p>{item.driverEmail}</p> */}
+                        </Grid>
+                      </Grid>
+                      : ''
+                    :
+                    <Grid key={index} className={item.tripid === this.state.tripid ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                      this.socketComponent.disconnectSocketServer();
+                      this.setState({ tripid: item.tripid })
+                    }}>
+                      <Grid className='text'>
+                        <h4>{item.tripid}</h4>
+                        {/* <p>{item.driverEmail}</p> */}
+                      </Grid>
+                    </Grid>
                 )
-              })}
-            </Grid>
-            <Grid style={{ height: '430px' }}>
+              }) : ''}
+              {this.state.routes.length > 5 ? <h6 style={{ color: 'rgb(224, 106, 66)', cursor: 'pointer', textAlign: 'center' }} onClick={() => this.setState({ viewLess: !this.state.viewLess })}>{this.state.viewLess ? 'View More' : 'View Less'}</h6> : ''}
               {
-                this.barItems[this.state.selectedIndex].class
+                (this.state.drivers[0]) ? (
+                  <Grid className="buttonGrid" style={{ marginTop: 20 }}>
+                    {(this.state.currentPage < this.state.totalPages) ? (
+                      <ul>
+                        <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
+                      </ul>
+                    ) : (
+                        <ul>
+                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
+                        </ul>
+                      )}
+                  </Grid>) : null
               }
-            </Grid>
-            {/* <GMap
-              data={[...this.state.mapObject.values()]}
-            /> */}
+            </ScrollArea>
+          </Grid>
+          <Grid className="modalFooter">
+            <Button style={{ padding: '10px 25px', }} disabled={this.state.tripid !== '' ? false : true} className="btn bg-default" onClick={() => this.props.history.push(`RouteMap/${this.state.tripid}`)}>
+              See Route
+              </Button>
           </Grid>
         </Grid>
         <ConfirmModal

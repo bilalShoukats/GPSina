@@ -83,38 +83,7 @@ class AssignDriver extends Component {
   //   })
   // }
 
-  assignCar = () => {
-    let body = {
-      registrationNo: this.state.registrationNo,
-      driverID: this.props.driverID,
-      routeID: this.state.routeID
-    }
-    if (this.state.registrationNo !== '') {
-      if (this.state.routeID !== '') {
-        this.props.apiManager.makeCall('assignCar', body, res => {
-          console.log('assign cars - view', res)
-          if (res) {
-            this.setState({ registrationNo: '', routeID: '' }, () => {
-              toast.success(res.id)
-              this.props.close()
-            })
-          }
-          else {
-            toast.error(res.id);
-          }
-        })
-      }
-      else {
-        toast.error('Please Select Route First');
-      }
-    }
-    else {
-      toast.error('Please Select Vehicle First');
-    }
-  }
   render() {
-    console.log('assign cars - viewwwwe', this.props.routes.length)
-    console.log('assign cars - viewwwwe', this.props.routes)
 
     return (
       <Fragment>
@@ -167,7 +136,7 @@ class AssignDriver extends Component {
                           </Card>}
                       </ul>
                       {
-                        (this.props.drivers[0]) ? (
+                        (this.props.drivers && this.props.drivers[0]) ? (
                           <Grid className="buttonGrid" style={{ marginTop: 20 }}>
                             {(this.state.currentPage < this.state.totalPages) ? (
                               <ul>
@@ -221,7 +190,7 @@ class AssignDriver extends Component {
                           )}
                       </ul>
                       {
-                        (this.props.drivers[0]) ? (
+                        (this.props.druvers && this.props.drivers[0]) ? (
                           <Grid className="buttonGrid" style={{ marginTop: 20 }}>
                             {(this.state.currentPage < this.state.totalPages) ? (
                               <ul>
@@ -244,7 +213,7 @@ class AssignDriver extends Component {
               <Button style={{ padding: '5px 20px' }} className="bg-warning" onClick={this.props.close}>
                 Cancel
               </Button>
-              <Button style={{ padding: '5px 20px' }} className="bg-success" onClick={this.assignCar}>
+              <Button style={{ padding: '5px 20px' }} className="bg-success" onClick={()=>{this.props.getRoute(this.state.routeID)}}>
                 Assign
               </Button>
             </Grid>
