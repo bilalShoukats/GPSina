@@ -1,14 +1,22 @@
 @import '../../../../docs/css/mixin.scss';
+
+.chartContainerr{
+  height: 200px;
+}
+
+.driver-list{
+  background: linear-gradient(45deg,  rgb(66,100,134),rgb(107, 154, 193)) !important;
+}
 .chatApp {
-    background: #fff;
+    //background: #fff;
+    background-color: rgb(245,246,250);
     display: flex;
-    flex-wrap: wrap;
+  //  flex-wrap: wrap;
     box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
 
     .chatAppLeft {
-        width: 100%;
-        // width: 350px;
-
+        width: 350px;
+        background-color: white;
         @media (max-width:767px) {
             width: 100%;
         }
@@ -43,8 +51,8 @@
         }
 
         .chatScrollBar {
-            height: 800px;
-
+           height: 500px;
+           overflow-y: scroll;
             .chatScrollBarContent {
                 .chatTabWrapper {
                     .chatTabContainer {
@@ -94,12 +102,12 @@
 
     .chatAppRight {
         width: calc(100% - 350px);
+        background-color: rgb(242,243,247);
 
         @media (max-width:767px) {
             width: 100%;
         }
     }
-
 }
 
 .chatAppHead {
@@ -420,11 +428,6 @@
       }
     }
   }
-}
-
-.makeGreen
-{
-  background-color: rgba(78, 144, 18, 0.75) !important;
 }
 
 .profileWrap {

@@ -1,0 +1,36 @@
+.sessionList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  li {
+
+    > span {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.1px;
+      color: #878AA0;
+      margin: 20px;
+    }
+
+    h3 {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 19px;
+      line-height: 16px;
+      color: #0B0D31;
+      display: flex;
+      align-items: center;
+
+      span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+    }
+  }
+}

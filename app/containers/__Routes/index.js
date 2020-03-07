@@ -90,6 +90,7 @@ import ViewDriversScreen from 'containers/Pages/ViewDriversScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
 import ViewVehiclesScreen from 'containers/Pages/ViewVehiclesScreen/Loadable';
 import VehicleMapScreen from 'containers/Pages/VehicleMapScreen/Loadable';
+import DriverAnalysis from 'containers/Pages/DriverAnalysis/Loadable';
 import LockScreen from 'containers/Pages/LockScreen/Loadable';
 import LogViewer from 'containers/Pages/LogViewer/Loadable';
 import MediaGallary from 'containers/Pages/MediaGallary/Loadable';
@@ -136,6 +137,7 @@ const Routes = props => (
     <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
     <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
     <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} />
+    <PrivateRoute exact path={`/driving-analysis`} component={DriverAnalysis} />
     <Route exact path="/forgotPassword" component={ForgotPassword} />
     <PrivateRoute
       exact
