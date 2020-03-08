@@ -23,7 +23,7 @@ const AreaRange = () => {
             }
         },
         title: {
-            text: "RPM"
+            text: "GPS SPEED"
         },
         subtitle: false,
         xAxis: {
@@ -128,7 +128,7 @@ const AreaRange = () => {
 
         series: [{
             type: 'area',
-            name: 'Distance Driven',
+            name: 'GPS Speed',
             data: data
         }],
         responsive: {

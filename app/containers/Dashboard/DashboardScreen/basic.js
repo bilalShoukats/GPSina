@@ -3,18 +3,29 @@ import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-
 import DashboardVehicleInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleInfo';
 import DashboardVehicleEngineInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleEngineInfo';
 import { Button, Grid } from '@material-ui/core'
-import Bar from './bar'
-import DistanceDriven from './distanceDriven'
+import fuelReadingGraph from './fuelReadingGraph'
+import gpsSpeedGraph from './gpsSpeedGraph'
+import obdSpeedGraph from './obdSpeedGraph'
+import rpmGraph from './rpmGraph'
+import { gpsSpeedSampleData } from './gpsSpeedSampleData'
+import { obdSpeedSampleData } from './obdSpeedSampleData'
+import { fuelReadingSampleData } from './fuelReadingSampleData'
+import { rpmSampleData } from './rpmSampleData'
+
 const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 
 class DashboardMap extends React.Component {
     constructor(props) {
         super(props);
-        this.barItems = [{ class: <Bar />, key: 0 }, { class: <Bar />, key: 1 }, { class: <DistanceDriven />, key: 2 }, { class: <DistanceDriven />, key: 3 }]
     }
     state = {
         progress: [],
+        gpsSpeedData: [],
+        obdSpeedData: [],
+        FuelReadingData: [],
+        rpmReadingData: [],
     }
+    barItems = [];
     bool = false;
     zoomValue = false;
     path = [
@@ -37,6 +48,41 @@ class DashboardMap extends React.Component {
     }
 
     componentDidMount = () => {
+        let obdData = [];
+        let gpsData = [];
+        let fuelData = [];
+        let rpmData = [];
+        rpmSampleData.map((item) => {
+            let newObject = [];
+            newObject[0] = item.accX;
+            newObject[1] = item.accY;
+            rpmData.push(newObject);
+        });
+        fuelReadingSampleData.map((item) => {
+            let newObject = [];
+            newObject[0] = item.accX;
+            newObject[1] = item.accY;
+            fuelData.push(newObject);
+        });
+        gpsSpeedSampleData.map((item) => {
+            let newObject = [];
+            newObject[0] = item.accX;
+            newObject[1] = item.accY;
+            gpsData.push(newObject);
+        });
+        obdSpeedSampleData.map((item) => {
+            let newObject = [];
+            newObject[0] = item.accX;
+            newObject[1] = item.accY;
+            obdData.push(newObject);
+        });
+        this.setState({ gpsSpeedData: gpsData, obdSpeedData: obdData, FuelReadingData: fuelData, rpmReadingData: rpmData }, () => {
+            console.log("hours driven data: ", this.state.hoursDrivenData);
+            this.barItems = [{
+                class: <gpsSpeedGraph data={this.state.gpsSpeedData}
+                />, key: 0
+            }, { class: <obdSpeedGraph data={this.state.obdSpeedData} />, key: 1 }, { class: <fuelReadingGraph data={this.state.FuelReadingData} />, key: 2 }, { class: <rpmGraph data={this.state.rpmReadingData} />, key: 3 }]
+        });
         let i = (Object.keys(this.props.data)).length
         for (let j = 0; j < i; j++) {
             let A = { 'lat': parseFloat(this.props.data[j][2]), 'lng': parseFloat(this.props.data[j][3]) }
@@ -210,7 +256,7 @@ class DashboardMap extends React.Component {
                     <DashboardVehicleEngineInfo />
                 </div>
                 <div style={{ position: "absolute", top: "25%", right: "3%", visibility: this.bool ? 'visible' : 'hidden' }}>
-                    {this.barItems.map((item, index) => {
+                    {this.barItems.length > 0 && this.barItems.map((item, index) => {
                         // console.log('bawaaaaa-', item)
                         return (
                             <Grid style={{ display: 'flex', flex: 1, height: '120px', padding: 5, cursor: 'pointer', backgroundColor: 'rgba(0, 0, 0, 0.25)', boxShadow: '2px 3px 2px #D0D0D0', minWidth: '200px', margin: 5 }} key={item.key}
