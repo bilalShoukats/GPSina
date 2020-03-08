@@ -3,10 +3,10 @@ import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-
 import DashboardVehicleInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleInfo';
 import DashboardVehicleEngineInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleEngineInfo';
 import { Button, Grid } from '@material-ui/core'
-import fuelReadingGraph from './fuelReadingGraph'
-import gpsSpeedGraph from './gpsSpeedGraph'
-import obdSpeedGraph from './obdSpeedGraph'
-import rpmGraph from './rpmGraph'
+import FuelReadingGraph from './FuelReadingGraph'
+import GpsSpeedGraph from './GpsSpeedGraph'
+import ObdSpeedGraph from './ObdSpeedGraph'
+import RpmGraph from './RpmGraph'
 import { gpsSpeedSampleData } from './gpsSpeedSampleData'
 import { obdSpeedSampleData } from './obdSpeedSampleData'
 import { fuelReadingSampleData } from './fuelReadingSampleData'
@@ -43,7 +43,7 @@ class DashboardMap extends React.Component {
 
     getDistance = () => {
         // seconds between when the component loaded and now
-        const differentInTime = (new Date() - this.initialDate) / 5000 // pass to seconds
+        const differentInTime = (new Date() - this.initialDate) / 1000 // pass to seconds
         return differentInTime * this.velocity // d = v*t -- thanks Newton!
     }
 
@@ -79,9 +79,9 @@ class DashboardMap extends React.Component {
         this.setState({ gpsSpeedData: gpsData, obdSpeedData: obdData, FuelReadingData: fuelData, rpmReadingData: rpmData }, () => {
             console.log("hours driven data: ", this.state.hoursDrivenData);
             this.barItems = [{
-                class: <gpsSpeedGraph data={this.state.gpsSpeedData}
+                class: <GpsSpeedGraph data={this.state.gpsSpeedData}
                 />, key: 0
-            }, { class: <obdSpeedGraph data={this.state.obdSpeedData} />, key: 1 }, { class: <fuelReadingGraph data={this.state.FuelReadingData} />, key: 2 }, { class: <rpmGraph data={this.state.rpmReadingData} />, key: 3 }]
+            }, { class: <ObdSpeedGraph data={this.state.obdSpeedData} />, key: 1 }, { class: <FuelReadingGraph data={this.state.FuelReadingData} />, key: 2 }, { class: <RpmGraph data={this.state.rpmReadingData} />, key: 3 }]
         });
         let i = (Object.keys(this.props.data)).length
         for (let j = 0; j < i; j++) {
@@ -89,7 +89,7 @@ class DashboardMap extends React.Component {
             // this.path['i' + this.props.data[j][0]] = [A]
             this.path[j] = [A]
         }
-        this.interval = window.setInterval(this.moveObject, 5000)
+        this.interval = window.setInterval(this.moveObject, 1000)
     }
     showAllVehicles = () => {
         this.bool = false;
