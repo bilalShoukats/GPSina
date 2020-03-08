@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
 import Dialog from '@material-ui/core/Dialog';
-
+import RouterCard from './RouteCard'
 // images
 import profile from 'images/team/img1.jpg';
 
@@ -154,33 +154,43 @@ class ViewRoutesScreen extends Component {
               >
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="routesList" >
-                    {this.state.routes.filter(searchingFor(this.state.search)).map((item, i) => (
-                      <div className="routesLink" key={i} style={{ padding: 10 }}>
-                        <Grid className="routesAutorImg">
-                          {/* <img src={item.companyLogo} alt="" /> */}
-                          {/* <img src={profile} alt="" /> */}
-                        </Grid>
-                        <Grid className="routesAutorContent">
-                          <h4>{item.routeName}
-                            <Button onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              this.props.history.push(`/editRoute/${item.routeID}`)
-                            }} xl={6} className='btn bg-dark'>
-                              <i className="icofont-ui-edit" />
-                            </Button>
-                          </h4>
-                          <h4 style={{ fontSize: 14 }}>Company Email : {this.props.user.companyEmail}
-                            <Button onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              this.openConfirmModal(item)
-                            }} xl={6} className='btn bg-danger'>
-                              <i className="icofont-ui-delete" />
-                            </Button></h4>
-                        </Grid>
-                      </div>
-                    ))}
+                    {this.state.routes.filter(searchingFor(this.state.search)).map((item, i) => {
+                      console.log('route', item)
+                      return (
+                        <RouterCard
+                          key={i}
+                          item={item}
+                          editRoute={() => this.props.history.push(`/editRoute/${item.routeID}`)}
+                          openConfirmModal={() => this.openConfirmModal(item)}
+                        />
+                      )
+                    }
+                      // <div className="routesLink" key={i} style={{ padding: 10 }}>
+                      //   <Grid className="routesAutorImg">
+                      //     {/* <img src={item.companyLogo} alt="" /> */}
+                      //     {/* <img src={profile} alt="" /> */}
+                      //   </Grid>
+                      //   <Grid className="routesAutorContent">
+                      //     <h4>{item.routeName}
+                      //       <Button onClick={(e) => {
+                      //         e.preventDefault();
+                      //         e.stopPropagation();
+                      //         this.props.history.push(`/editRoute/${item.routeID}`)
+                      //       }} xl={6} className='btn bg-dark'>
+                      //         <i className="icofont-ui-edit" />
+                      //       </Button>
+                      //     </h4>
+                      //     <h4 style={{ fontSize: 14 }}>Company Email : {this.props.user.companyEmail}
+                      //       <Button onClick={(e) => {
+                      //         e.preventDefault();
+                      //         e.stopPropagation();
+                      //         this.openConfirmModal(item)
+                      //       }} xl={6} className='btn bg-danger'>
+                      //         <i className="icofont-ui-delete" />
+                      //       </Button></h4>
+                      //   </Grid>
+                      // </div>
+                    )}
                   </li>
                 </ul>
               </ScrollArea>
