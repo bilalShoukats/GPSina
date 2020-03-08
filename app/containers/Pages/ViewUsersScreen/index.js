@@ -18,6 +18,71 @@ import UserCard from './UserCard'
 import profile from 'images/team/img1.jpg'
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
+const data = {
+  "code": 1019,
+  "id": "Listing successful",
+  "response": [
+    {
+      "CreatedAt": "2020-03-04T15:12:39.035Z",
+      "UpdatedAt": "2020-03-04T15:16:42.796Z",
+      "_id": "5e5fc56793e161956b9d1274",
+      "carID": "5e5fc5674518947d015b7cd2",
+      "carModel": "2020",
+      "carOwnerEmail": "jawad.hassan@azure-i.com",
+      "carOwnerName": "Chimbakul",
+      "carType": "EFI-Electronice-Fuel-Injection",
+      "chassis": "122321411",
+      "color": "Grey",
+      "companyEmail": "usman.malik0029@gmail.com",
+      "deviceActive": true,
+      "deviceID": 745713500,
+      "engineNo": "12slf1111",
+      "fuelType": "Petrol",
+      "mileage": "270111",
+      "registrationNo": "LER-8014"
+    },
+    {
+      "CreatedAt": "2020-03-04T15:12:39.035Z",
+      "UpdatedAt": "2020-03-04T15:16:42.796Z",
+      "_id": "5e5fc56793e161956b9d1274",
+      "carID": "5e5fc5674518947d015b7cd2",
+      "carModel": "2021",
+      "carOwnerEmail": "jawad.hassan@azure-i.com",
+      "carOwnerName": "Chiasdasdmbakul",
+      "carType": "EFI-Electronice-Fuel-Injection",
+      "chassis": "122321asd411",
+      "color": "Grey",
+      "companyEmail": "usman.malik0029@gmail.com",
+      "deviceActive": true,
+      "deviceID": 745713500,
+      "engineNo": "12slf1111",
+      "fuelType": "Petrol",
+      "mileage": "270111",
+      "registrationNo": "LER-8104"
+    },
+    {
+      "CreatedAt": "2020-03-04T15:12:39.035Z",
+      "UpdatedAt": "2020-03-04T15:16:42.796Z",
+      "_id": "5e5fc56793e161956b9d1274",
+      "carID": "5e5fc5674518947d015b7cd2",
+      "carModel": "2022",
+      "carOwnerEmail": "jawad.hassan@azure-i.com",
+      "carOwnerName": "Chimbsssakul",
+      "carType": "EFI-Electrondsice-Fuel-Injection",
+      "chassis": "122321411",
+      "color": "Grey",
+      "companyEmail": "usman.malik0029@gmail.com",
+      "deviceActive": true,
+      "deviceID": 745713500,
+      "engineNo": "12slf1111",
+      "fuelType": "Petrol",
+      "mileage": "270111",
+      "registrationNo": "LER-8111"
+    }
+  ],
+  "totalPages": 1,
+  "currentPage": 1
+}
 class ViewUsersScreen extends Component {
 
   state = {
@@ -36,9 +101,11 @@ class ViewUsersScreen extends Component {
     showCarAssignModal: false,
     registrationNo: '',
     assignCar: false,
-    carModel: ''
-    // loading: false,
+    carModel: '',
+    switches: []
+
   }
+
 
   handleChange = (event, newValue) => {
     this.setState({
@@ -73,7 +140,7 @@ class ViewUsersScreen extends Component {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall(`viewCompanyUserDetails`, body, res => {
-      console.log('all', res)
+      console.log('alssssl', res.response)
       if (res.code === 1019) {
         this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
@@ -96,6 +163,24 @@ class ViewUsersScreen extends Component {
       else {
         this.setState({ loading: false });
         toast.error(res.id);
+      }
+    })
+  }
+  assignVehicle = () => {
+    let body = {
+      companyEmail: this.props.user.companyEmail,
+      email: this.state.userEmail,
+      registrationNo: this.state.switches
+    }
+    console.log('carssss', body)
+    this.props.apiManager.makeCall('assignVehicleToEmployee', body, res => {
+      console.log('carssss', res)
+      if (res.code === 1019) {
+        toast.success(res.id)
+      }
+      else {
+        toast.error(res.id)
+        this.setState({ loading: false });
       }
     })
   }
@@ -128,9 +213,23 @@ class ViewUsersScreen extends Component {
     )
   }
 
-  handleSwitchChange = (item) => {
-    console.log('event', item)
-    this.setState({ carModel: item });
+  handleSwitchChange = (item) => (event) => {
+    if (event.target.checked === true) {
+      var newStateArray = this.state.switches.slice();
+      newStateArray.push(item);
+      this.setState({ switches: newStateArray }, () => console.log('bawa array dkha', this.state.switches)
+      );
+    }
+    else {
+      var result = arrayRemove(this.state.switches, item);
+      this.setState({ switches: result }, () => console.log('bawa array dkha', this.state.switches)
+      );
+    }
+    function arrayRemove(arr, value) {
+      return arr.filter(function (ele) {
+        return ele !== value;
+      });
+    }
   };
 
   renderAssignCarModal = () => {
@@ -154,56 +253,59 @@ class ViewUsersScreen extends Component {
                   horizontal={false}
                 >
                   <ul className="notificationItems">
-                    {this.state.cars.map((item, i) => (
-                      <Card>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                          <h4>
-                            Car Model:
+                    {this.state.cars.map((item, i) => {
+                      console.log('bawaa', item)
+                      return (
+                        <Card key={i}>
+                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <h4>
+                              Car Model:
                           </h4>
-                          <h4>
-                            {item.carModel}
+                            <h4>
+                              {item.carModel}
+                            </h4>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
+                            <h4>
+                              Car Owner Name:
                           </h4>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                          <h4>
-                            Car Owner Name:
+                            <h4>
+                              {item.carOwnerName}
+                            </h4>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
+                            <h4>
+                              Car Color:
                           </h4>
-                          <h4>
-                            {item.carOwnerName}
+                            <h4>
+                              {item.color}
+                            </h4>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
+                            <h4>
+                              Car Registration No:
                           </h4>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                          <h4>
-                            Car Color:
-                          </h4>
-                          <h4>
-                            {item.color}
-                          </h4>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                          <h4>
-                            Car Registration No:
-                          </h4>
-                          <h4>
-                            {item.registrationNo}
-                          </h4>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
-                          <Switch
-                            checked={this.state.carModal === item.carModel}
-                            onChange={() => this.handleSwitchChange(item.carModel)}
-                            value={item.carModel}
-                            classes={{
-                              root: 'switchDefault',
-                              switchBase: 'switchBase',
-                              thumb: 'switchThumb',
-                              track: 'switchTrack',
-                              checked: 'switchChecked'
-                            }}
-                          />
-                        </div>
-                      </Card>
-                    ))}
+                            <h4>
+                              {item.registrationNo}
+                            </h4>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
+                            <Switch
+                              checked={this.state[item.carModel]}
+                              onChange={this.handleSwitchChange(item.registrationNo)}
+                              value={item.carModel}
+                              classes={{
+                                root: 'switchDefault',
+                                switchBase: 'switchBase',
+                                thumb: 'switchThumb',
+                                track: 'switchTrack',
+                                checked: 'switchChecked'
+                              }}
+                            />
+                          </div>
+                        </Card>
+                      )
+                    })}
                   </ul>
                 </ScrollArea>
               </div>
@@ -216,7 +318,7 @@ class ViewUsersScreen extends Component {
               >
                 Cancel
               </Button>
-              <Button style={{ padding: '5px 20px' }} className="bg-success">
+              <Button style={{ padding: '5px 20px' }} className="bg-success" onClick={this.assignVehicle}>
                 Assign
               </Button>
             </Grid>
@@ -267,6 +369,7 @@ class ViewUsersScreen extends Component {
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
                     {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => {
+
                       console.log('user ', item)
                       return (
                         <UserCard
@@ -275,44 +378,10 @@ class ViewUsersScreen extends Component {
                           openNotificationsModal={() => this.openNotificationsModal(item)}
                           editUser={() => this.props.history.push(`/editUser/${item.carId}`)}
                           openConfirmModal={() => this.openConfirmModal(item)}
-                          assignCar={() => this.setState({ showCarAssignModal: true })}
+                          assignCar={() => this.setState({ showCarAssignModal: true, userEmail: item.email })}
                         />
                       )
                     }
-                      // <div className="companiesLink" key={i} style={{ padding: 10 }}>
-                      //   <Grid className="companiesAutorImg">
-                      //     {/* <img src={item.companyLogo} alt="" /> */}
-                      //     <img src={profile} alt="" />
-                      //   </Grid>
-                      //   <Grid className="companiesAutorContent">
-                      //     <h4 style={{ visibility: 'hidden' }}>:
-                      //       <Button onClick={(e) => {
-                      //         e.preventDefault();
-                      //         e.stopPropagation();
-                      //         this.openNotificationsModal(item)
-                      //       }} style={{ visibility: 'visible' }} xl={6} className='btn bg-primary' >
-                      //         <i className="icofont-notification" />
-                      //       </Button>
-                      //     </h4>
-                      //     <h4>{item.companyName}
-                      //       <Button onClick={(e) => {
-                      //         e.preventDefault();
-                      //         e.stopPropagation();
-                      //         this.props.history.push(`/editUser/${item.carId}`)
-                      //       }} xl={6} className='btn bg-dark'>
-                      //         <i className="icofont-ui-edit" />
-                      //       </Button>
-                      //     </h4>
-                      //     <h4 style={{ fontSize: 14 }}>Director Name : {item.director}
-                      //       <Button onClick={(e) => {
-                      //         e.preventDefault();
-                      //         e.stopPropagation();
-                      //         this.openConfirmModal(item)
-                      //       }} xl={6} className='btn bg-danger'>
-                      //         <i className="icofont-ui-delete" />
-                      //       </Button></h4>
-                      //   </Grid>
-                      // </div>
                     )}
                   </li>
                 </ul>
@@ -353,23 +422,6 @@ class ViewUsersScreen extends Component {
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   viewUsersScreen: makeSelectViewUsersScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(ViewUsersScreen);
 
 function mapDispatchToProps(dispatch) {
   return {

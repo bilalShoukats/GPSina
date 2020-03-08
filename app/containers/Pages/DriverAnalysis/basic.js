@@ -1,9 +1,18 @@
 import React from 'react';
-import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-google-maps'
+import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker, InfoWindow } from 'react-google-maps'
 const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 class AnalysisMap extends React.Component {
   state = {
     progress: [],
+    markers: [
+      { lat: 18.555818, lng: -68.389916, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
+      { lat: 18.558853, lng: -68.395000, url: ('http://maps.google.com/mapfiles/ms/icons/purple-dot.png'), text: 'harsh swe' },
+      { lat: 18.558375, lng: -68.390999, url: ('http://maps.google.com/mapfiles/ms/icons/red-dot.png'), text: 'harsh acc' },
+      { lat: 18.558032, lng: -68.399192, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
+      { lat: 18.558050, lng: -68.388623, url: ('http://maps.google.com/mapfiles/ms/icons/purple-dot.png'), text: 'harsh swe' },
+      { lat: 18.557256, lng: -68.393000, url: ('http://maps.google.com/mapfiles/ms/icons/red-dot.png'), text: 'harsh acc' },
+      { lat: 18.558744, lng: -68.385949, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
+    ],
   }
   path = [
     // { lat: 18.558908, lng: -68.389916 },
@@ -194,12 +203,39 @@ class AnalysisMap extends React.Component {
         // defaultOptions={defaultMapOptions}
         defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
       >
-        {this.state.progress && (
+        {/* {this.state.progress && (
           <>
             <Polyline path={this.state.progress} options={{ strokeColor: "#FF0000" }} />
             <Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
           </>
-        )}
+        )} */}
+        {this.state.markers.map((marker, index) => {
+          console.log("bawaaaaaaaaaaa", marker)
+          return (
+            <Marker
+              icon={marker.url}
+              key={index}
+              defaultVisible={true}
+              // defaultPosition={props.center}
+              position={marker}
+            // onClick={marker}
+            // defaultDraggable={true}
+            // draggable={true}
+            // ref={props.onMarkerMounted.bind(this)}
+            // onDragEnd={() => props.onDragEnd((values) => this.props.handleDragEnd(values))}
+            // onClick={props.onToggleOpen}
+
+            >
+              <InfoWindow >
+                <div>
+                  {/* <i className="fa fa-anchor"></i> */}
+                  <span style={{ color: marker.text === 'harsh acc' ? 'red' : marker.text === 'harsh swe' ? 'purple' : 'blue' }} > {' ' + marker.text + ' '}</span>
+                  {marker.lat.toFixed(4)}
+                </div>
+              </InfoWindow>
+            </Marker>
+          )
+        })}
       </GoogleMap>
     )
   }

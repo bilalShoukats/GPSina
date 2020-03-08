@@ -32,7 +32,7 @@ class DashboardMap extends React.Component {
 
     getDistance = () => {
         // seconds between when the component loaded and now
-        const differentInTime = (new Date() - this.initialDate) / 500 // pass to seconds
+        const differentInTime = (new Date() - this.initialDate) / 5000 // pass to seconds
         return differentInTime * this.velocity // d = v*t -- thanks Newton!
     }
 
@@ -43,7 +43,7 @@ class DashboardMap extends React.Component {
             // this.path['i' + this.props.data[j][0]] = [A]
             this.path[j] = [A]
         }
-        this.interval = window.setInterval(this.moveObject, 500)
+        this.interval = window.setInterval(this.moveObject, 5000)
     }
     showAllVehicles = () => {
         this.bool = false;
@@ -63,27 +63,20 @@ class DashboardMap extends React.Component {
             if (!distance) {
                 return
             }
-            // if (j === 1) alert('52')
             let progress = []
-            // if (j === 1) alert('54')
             progress[j] = this.path[j].filter(coordinates => coordinates.distance < distance)
             const nextLine = this.path[j].find(coordinates => coordinates.distance > distance)
-            // if (j === 1) alert('57')
             if (!nextLine) {
                 let a = this.state.progress.slice(); //creates the clone of the state
                 a[j] = progress[j]
                 this.setState({ progress: a })
-                // return false// it's the end!
+                return // it's the end!
             }
-            // if (j === 1) alert('64')
-            if (j === 1) console.log('lastline 1', progress.length)
             const lastLine = progress[j][0]
-            if (j === 1) console.log('lastline', lastLine)
             const lastLineLatLng = new window.google.maps.LatLng(
                 lastLine.lat,
                 lastLine.lng
             )
-            // if (j === 1) alert('71')
 
             const nextLineLatLng = new window.google.maps.LatLng(
                 nextLine.lat,
@@ -104,8 +97,6 @@ class DashboardMap extends React.Component {
             let a = this.state.progress.slice(); //creates the clone of the state
             a[j] = progress[j]
             this.setState({ progress: a })
-            // alert(j)
-            // console.log('lastline', j)
         }
     }
 
@@ -175,7 +166,7 @@ class DashboardMap extends React.Component {
         }
     }
     render = () => {
-        // console.log('bawaaaaa 1', this.state.progress && this.state.progress[0] ? this.state.progress[0] : '')
+        // console.log('bawaaaaa 1', this.state.progress.length > 0 ? this.state.progress[0][0].lat : '')
         // console.log('bawaaaaa 2', this.state.progress && this.state.progress[1] ? this.state.progress[1] : '')
         return (
             <div>
@@ -184,18 +175,18 @@ class DashboardMap extends React.Component {
                     defaultZoom={4}
                     defaultCenter={{ lat: 34.558908, lng: 70.389916 }}
                     defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
-                    center={{ lat: this.state.progress.length > 0 ? this.state.progress[0].lat : 34.558908, lng: this.state.progress.length > 0 ? this.state.progress[0].lng : 70.389916 }}
+                // center={{ lat: this.state.progress.length > 0 ? this.state.progress[0].lat : 34.558908, lng: this.state.progress.length > 0 ? this.state.progress[0].lng : 70.389916 }}
 
                 >
                     {/* {this.state.progress.map(item => { console.log('Pleseeee', item) })} */}
                     {
                         this.state.progress ? this.state.progress.map((item, index) => {
-                            console.log('bawaaaaa 1', item[0])
+                            // console.log('bawaaaaa 1', index)
                             return (
-                                <>
-                                    <Polyline key={index} path={item} options={{ strokeColor: "#FF0000" }} />
-                                    <Marker key={index} position={item[1]} onClick={() => { this.bool = true, this.zoomValue = true; }} />
-                                </>
+                                <div key={index}>
+                                    <Polyline path={item} options={{ strokeColor: "#FF0000" }} />
+                                    <Marker position={item[1]} onClick={() => { this.bool = true, this.zoomValue = true; }} />
+                                </div>
                             )
                         }) : ''
                     }
@@ -213,7 +204,7 @@ class DashboardMap extends React.Component {
                     {this.barItems.map((item, index) => {
                         // console.log('bawaaaaa-', item)
                         return (
-                            <Grid style={{ display: 'flex', flex: 1, height: '120px', padding: 5, cursor: 'pointer', backgroundColor: 'rgba(0, 0, 0, 0.25)', boxShadow: '2px 3px 2px #D0D0D0', minWidth: '200px', margin: 5 }} key={item.key}
+                            <Grid key={index} style={{ display: 'flex', flex: 1, height: '120px', padding: 5, cursor: 'pointer', backgroundColor: 'rgba(0, 0, 0, 0.25)', boxShadow: '2px 3px 2px #D0D0D0', minWidth: '200px', margin: 5 }} key={item.key}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
