@@ -1,6 +1,6 @@
 @import '../../../../docs/css/mixin.scss';
 
-.chartContainerr{
+.chartContainer-driving{
   height: 200px;
 }
 
@@ -14,7 +14,7 @@
   //  flex-wrap: wrap;
     box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
 
-    .chatAppLeft {
+    .chatAppLeft-driving {
         width: 350px;
         background-color: white;
         @media (max-width:767px) {

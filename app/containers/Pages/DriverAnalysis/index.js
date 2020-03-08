@@ -5,20 +5,20 @@ import ScrollArea from 'react-scrollbar'
 import Chart from "./Chart";
 import Map from "./basic";
 import data from 'utils/json/range.json'
-
+import { SuperHOC } from '../../../HOC';
+import { response } from './data2'
 import './style.scss'
 
-export default class index extends Component {
+class index extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      drivers: [
-        { id: 1, name: 'nadeem khan' },
-        { id: 2, name: 'usama khan' },
-        { id: 3, name: 'jawad bhai' },
-        { id: 4, name: 'haider hassan' },
-      ],
-      slectedDriver: 1
+      drivers: [],
+      slectedDriver: '',
+      carDeviceId: null,
+      graphData: [],
+      accX: [],
+      accY: []
     }
   }
 
@@ -28,6 +28,95 @@ export default class index extends Component {
     this.setState({ slectedDriver: id })
   }
 
+
+
+  componentDidMount() {
+    this.getCarDriverDetails()
+    //this.harshSwerving()
+    if (this.state.carDeviceId !== null) {
+      this.harshAcceleration()
+      this.harshBraking()
+      this.harshSwerving()
+    }
+    let harshData = [];
+    response.map((item) => {
+      let newObject = [];
+      newObject[0] = item.accX;
+      newObject[1] = item.accY;
+      harshData.push(newObject);
+    });
+    this.setState({ graphData: harshData });
+    // console.log("test: ", test);
+    // this.setState({ accX: response.map(item => item.accX), accY: response.map(item => item.accY) })
+  }
+
+
+  getCarDriverDetails = () => {
+    let body = {
+      companyEmail: this.props.user.companyEmail,
+    }
+    this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
+      console.log('get drivers', res)
+      if (res.code === 1019) {
+        this.setState({ drivers: res.response, slectedDriver: res.response[0]._id, carDeviceId: res.response[0].AttachedCarInformation[0].deviceID });
+      }
+      else {
+        // this.setState({ loading: false });
+        // toast.error(res.id);
+      }
+    })
+  }
+
+  harshAcceleration = () => {
+    let body = {
+      deviceid: this.state.carDeviceId,
+    }
+    this.props.apiManager.makeCall('harshAccelerationTimeBase', body, res => {
+      console.log('acceleration', res)
+      // if (res.code === 1019) {
+      //   this.setState({ cars: res.response, loading: false });
+      // }
+      // else {
+      //   this.setState({ loading: false });
+      //   toast.error(res.id);
+      // }
+    })
+  }
+
+  harshBraking = () => {
+    let body = {
+      deviceid: this.state.carDeviceId,
+    }
+    this.props.apiManager.makeCall('harshBrakingTimeBase', body, res => {
+      console.log('braking', res)
+      // if (res.code === 1019) {
+      //   this.setState({ cars: res.response, loading: false });
+      // }
+      // else {
+      //   this.setState({ loading: false });
+      //   toast.error(res.id);
+      // }
+    })
+  }
+
+  harshSwerving = () => {
+    const { AttachedCarInformation } = this.state.drivers
+    if (AttachedCarInformation) {
+      let body = {
+        deviceid: this.state.carDeviceId,
+      }
+      this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
+        console.log('swerving', res)
+        // if (res.code === 1019) {
+        //   this.setState({ cars: res.response, loading: false });
+        // }
+        // else {
+        //   this.setState({ loading: false });
+        //   toast.error(res.id);
+        // }
+      })
+    }
+  }
 
   renderDriver = () => {
     return (
@@ -47,10 +136,10 @@ export default class index extends Component {
             }}
             onClick={(e) => {
               e.preventDefault()
-              this.selectDriver(item.id)
+              this.selectDriver(item._id)
             }}
           >
-            <h5 style={{ textAlign: 'center', fontSize: this.state.slectedDriver === item.id ? 18 : 14, color: 'black', }}>{item.name}</h5>
+            <h5 style={{ textAlign: 'center', fontSize: this.state.slectedDriver === item._id ? 18 : 14, color: 'black', }}>{item.driverName}</h5>
           </div>
         )
       })
@@ -58,11 +147,12 @@ export default class index extends Component {
   }
 
   render() {
+    console.log('x', this.state.accX)
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Driving Analysis</h2>
         <Grid className="chatApp">
-          <Grid className="chatAppLeft">
+          <Grid className="chatAppLeft-driving">
             <ScrollArea
               speed={1}
               className="chatScrollBar"
@@ -73,26 +163,30 @@ export default class index extends Component {
             </ScrollArea>
           </Grid>
           <Grid className="chatAppRight">
-            <div style={{ height: 200, display: 'flex', flexDirection: 'row', marginBottom: 5, marginRight: 5, marginLeft: 5 }}>
-              <div style={{ height: 200, width: '50%', marginRight: 5 }}>
+            <div style={{ height: 200, display: 'flex', flexDirection: 'row', marginBottom: 5, overflowX: 'scroll' }}>
+              <div style={{ height: 200, width: 300, marginRight: 5 }}>
                 <Chart
                   type='area'
                   name='harsh acceleration'
-                  data={data}
+                  yName='acc'
+                  data={this.state.graphData}
+                // data={data}
                 />
               </div>
-              <div style={{ height: '100%', width: '25%', marginRight: 5 }}>
+              <div style={{ height: '100%', width: 300, marginRight: 5 }}>
                 <Chart
                   type='area'
                   name='harsh swerving'
-                  data={data}
+                  yName='swer'
+                  data={this.state.graphData}
                 />
               </div>
-              <div style={{ height: '100%', width: '25%', marginRight: 5 }}>
+              <div style={{ height: '100%', width: 300, marginRight: 5 }}>
                 <Chart
                   type='area'
                   name='harsh braking'
-                  data={data}
+                  yName='brake'
+                  data={this.state.graphData}
                 />
               </div>
             </div>
@@ -105,3 +199,5 @@ export default class index extends Component {
     )
   }
 }
+
+export default SuperHOC(index)
