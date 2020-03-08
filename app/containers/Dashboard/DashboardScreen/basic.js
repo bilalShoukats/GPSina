@@ -1,12 +1,22 @@
 import React from 'react';
 import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-google-maps'
+import DashboardVehicleInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleInfo';
+import DashboardVehicleEngineInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleEngineInfo';
+import { Button, Grid } from '@material-ui/core'
+import Bar from './bar'
+import DistanceDriven from './distanceDriven'
 const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 
 class DashboardMap extends React.Component {
+    constructor(props) {
+        super(props);
+        this.barItems = [{ class: <Bar />, key: 0 }, { class: <Bar />, key: 1 }, { class: <DistanceDriven />, key: 2 }, { class: <DistanceDriven />, key: 3 }]
+    }
     state = {
         progress: [],
     }
-
+    bool = false;
+    zoomValue = false;
     path = [
         // { lat: 18.558908, lng: -68.389916 },
         // { lat: 18.558853, lng: -68.389922 },
@@ -34,6 +44,10 @@ class DashboardMap extends React.Component {
             this.path[j] = [A]
         }
         this.interval = window.setInterval(this.moveObject, 500)
+    }
+    showAllVehicles = () => {
+        this.bool = false;
+        this.zoomValue = false;
     }
 
     componentWillUnmount = () => {
@@ -164,28 +178,55 @@ class DashboardMap extends React.Component {
         // console.log('bawaaaaa 1', this.state.progress && this.state.progress[0] ? this.state.progress[0] : '')
         // console.log('bawaaaaa 2', this.state.progress && this.state.progress[1] ? this.state.progress[1] : '')
         return (
-            <GoogleMap
-                defaultZoom={10}
-                defaultCenter={{ lat: 34.558908, lng: 70.389916 }}
-                defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
-                center={{ lat: this.state.progress.length > 0 ? this.state.progress[0].lat : 34.558908, lng: this.state.progress.length > 0 ? this.state.progress[0].lng : 70.389916 }}
+            <div>
+                <GoogleMap
+                    zoom={this.zoomValue ? 10 : 4}
+                    defaultZoom={4}
+                    defaultCenter={{ lat: 34.558908, lng: 70.389916 }}
+                    defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
+                    center={{ lat: this.state.progress.length > 0 ? this.state.progress[0].lat : 34.558908, lng: this.state.progress.length > 0 ? this.state.progress[0].lng : 70.389916 }}
 
-            >
-                {/* {this.state.progress.map(item => { console.log('Pleseeee', item) })} */}
-                {
-                    this.state.progress ? this.state.progress.map((item, index) => {
-                        console.log('bawaaaaa 1', item[0])
+                >
+                    {/* {this.state.progress.map(item => { console.log('Pleseeee', item) })} */}
+                    {
+                        this.state.progress ? this.state.progress.map((item, index) => {
+                            console.log('bawaaaaa 1', item[0])
+                            return (
+                                <>
+                                    <Polyline key={index} path={item} options={{ strokeColor: "#FF0000" }} />
+                                    <Marker key={index} position={item[1]} onClick={() => { this.bool = true, this.zoomValue = true; }} />
+                                </>
+                            )
+                        }) : ''
+                    }
+                </GoogleMap>
+                <div style={{ position: "absolute", top: "25%", marginLeft: "35%" }}>
+                    <Button className="btn bg-success" onClick={this.showAllVehicles}>All Fleet ({this.props.data.length} cars)</Button>
+                </div >
+                <div style={{ position: "absolute", top: "25%", marginLeft: "1%", visibility: this.bool ? 'visible' : 'hidden' }}>
+                    <DashboardVehicleInfo />
+                </div>
+                <div style={{ position: "absolute", top: "74%", bottom: "26%", marginLeft: "1%", visibility: this.bool ? 'visible' : 'hidden' }}>
+                    <DashboardVehicleEngineInfo />
+                </div>
+                <div style={{ position: "absolute", top: "25%", right: "3%", visibility: this.bool ? 'visible' : 'hidden' }}>
+                    {this.barItems.map((item, index) => {
+                        // console.log('bawaaaaa-', item)
                         return (
-                            <>
-                                <Polyline key={index} path={item} options={{ strokeColor: "#FF0000" }} />
-                                <Marker key={index} position={item[1]} />
-                            </>
+                            <Grid style={{ display: 'flex', flex: 1, height: '120px', padding: 5, cursor: 'pointer', backgroundColor: 'rgba(0, 0, 0, 0.25)', boxShadow: '2px 3px 2px #D0D0D0', minWidth: '200px', margin: 5 }} key={item.key}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.setState({ selectedIndex: item.key })
+                                }}
+                            >
+                                {item.class}
+                            </Grid>
                         )
-                    }) : ''
-                }
-
-
-            </GoogleMap>
+                    })
+                    }
+                </div >
+            </div >
         )
     }
 }
@@ -195,10 +236,9 @@ const MapComponent = withScriptjs(withGoogleMap(DashboardMap))
 export default (props) => (
     <MapComponent
         data={props.data}
-
         googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI&v=3.exp&libraries=geometry,drawing,places"
         loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `400px`, width: '100%' }} />}
+        containerElement={<div style={{ height: `600px`, width: '100%' }} />}
         mapElement={<div style={{ height: `100%` }} />}
     />
 )

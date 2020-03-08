@@ -123,11 +123,10 @@ class DashboardScreen extends Component {
             <GMap
               // data={[...this.state.mapObject.values()]}
               data={this.state.mapii}
-
             />
           </Grid>
           <Grid item xs={12}>
-            <BankingSystemFeature />
+            {/* <BankingSystemFeature /> */}
           </Grid>
         </Grid>
         {this.renderLoading()}

@@ -2,6 +2,8 @@ import React from 'react';
 import { compose, withStateHandlers, lifecycle } from "recompose";
 import { InfoWindow, withGoogleMap, withScriptjs, GoogleMap, Marker, DirectionsRenderer } from 'react-google-maps';
 import ruoteImg from 'images/routeIcon.png';
+const demoFancyMapStyles = require("../../../../MapStyle/MapStyle.json");
+
 
 export default class MapContainer extends React.Component {
     constructor(props) {
@@ -21,6 +23,7 @@ export default class MapContainer extends React.Component {
             disableDefaultUI: true,
             scaleControl: true,
             zoomControl: true,
+            styles: demoFancyMapStyles,
         };
         let me = this;
         const Map = compose(
@@ -28,11 +31,11 @@ export default class MapContainer extends React.Component {
                 isMarkerShown: false,
                 markerPosition: null
             }), {
-                    onMapClick: ({ isMarkerShown }) => (e) => ({
-                        markerPosition: e.latLng,
-                        isMarkerShown: true
-                    })
-                }),
+                onMapClick: ({ isMarkerShown }) => (e) => ({
+                    markerPosition: e.latLng,
+                    isMarkerShown: true
+                })
+            }),
             withScriptjs,
             withGoogleMap,
             lifecycle({

@@ -209,7 +209,7 @@ class ChatApp extends Component {
               contentClassName='chatScrollBarContent'
               horizontal={false}
             >
-              {this.state.routes.length > 0 && this.state.routes[0] !== null ? this.state.routes.map((item, index) => {
+              {this.state.routes.length > 0 && this.state.routes[0] !== undefined ? this.state.routes.map((item, index) => {
                 console.log('sate driversss-', item)
                 return (
                   this.state.viewLess ?
