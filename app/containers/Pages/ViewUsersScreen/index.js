@@ -155,7 +155,7 @@ class ViewUsersScreen extends Component {
                 >
                   <ul className="notificationItems">
                     {this.state.cars.map((item, i) => (
-                      <Card>
+                      <Card key={i}>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                           <h4>
                             Car Model:
