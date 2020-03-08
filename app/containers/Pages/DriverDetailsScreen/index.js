@@ -18,6 +18,8 @@ import DistanceDriven from './distanceDriven'
 import WeeklyProfile from './weeklyProfile'
 import { response } from './data'
 import { hoursDriven } from './hoursDriven'
+import { weeklyDriven } from './weeklyDriven'
+import { distanceDrivenData } from './distanceDrivenData'
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
@@ -46,8 +48,8 @@ class ChatApp extends Component {
       selectedIndex: 1,
       dailyProfileData: [],
       hoursDrivenData: [],
-      weeklyProfileData: [],
-      distanceDrivenData: [],
+      weeklyDrivenData: [],
+      distanceDrivenArr: [],
     }
   }
 
@@ -75,6 +77,8 @@ class ChatApp extends Component {
   componentDidMount = () => {
     let harshData = [];
     let hoursGraphData = [];
+    let weeklyGraphData = [];
+    let distanceGraphData = [];
     response.map((item) => {
       let newObject = [];
       newObject[0] = item.accX;
@@ -87,12 +91,24 @@ class ChatApp extends Component {
       newObject[1] = item.accY;
       hoursGraphData.push(newObject);
     });
-    this.setState({ dailyProfileData: harshData, hoursDrivenData: hoursGraphData }, () => {
+    weeklyDriven.map((item) => {
+      let newObject = [];
+      newObject[0] = item.accX;
+      newObject[1] = item.accY;
+      weeklyGraphData.push(newObject);
+    });
+    distanceDrivenData.map((item) => {
+      let newObject = [];
+      newObject[0] = item.accX;
+      newObject[1] = item.accY;
+      distanceGraphData.push(newObject);
+    });
+    this.setState({ dailyProfileData: harshData, hoursDrivenData: hoursGraphData, weeklyDrivenData: weeklyGraphData, distanceDrivenArr: distanceGraphData }, () => {
       console.log("hours driven data: ", this.state.hoursDrivenData);
       this.barItems = [{
         class: <BarChart data={this.state.dailyProfileData}
         />, key: 0
-      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
+      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 }, { class: <WeeklyProfile data={this.state.weeklyDrivenData} />, key: 2 }, { class: <DistanceDriven data={this.state.distanceDrivenArr} />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
     });
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
