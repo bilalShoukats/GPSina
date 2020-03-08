@@ -19,6 +19,7 @@ const Report = (props) => (
             <TableCell>Image</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Phone</TableCell>
+            <TableCell>Liscense</TableCell>
             <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -30,13 +31,22 @@ const Report = (props) => (
               </Grid>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.userName}</strong>
+              <strong className="uThum">
+                {props.item.driverName}
+              </strong>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.phone}</strong>
+              <strong className="uThum">
+                {props.item.driverPhone}
+              </strong>
             </TableCell>
             <TableCell>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <strong className="uThum">
+                {props.item.licenceNumber}
+              </strong>
+            </TableCell>
+            <TableCell>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                 <div>
                   <Button onClick={(e) => {
                     e.preventDefault();
@@ -54,8 +64,7 @@ const Report = (props) => (
                   <Button onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    props.editUser()
-                    props.history.push(`/editUser/${props.item.id}`)
+                    props.editDriver()
                   }} xl={6} className='btn bg-dark'>
                     <i className="icofont-ui-edit" />
                   </Button>
@@ -69,15 +78,25 @@ const Report = (props) => (
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>
-                <div style={{ marginLeft: 5 }}>
-                  <Button onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.assignCar()
-                  }} xl={6} className='btn bg-success'>
-                    <i className="fa fa-car" />
-                  </Button>
-                </div>
+                {
+                  props.item.registrationNo === '' ? <div style={{ marginLeft: 5 }}>
+                    <Button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      props.assignCarToDriver()
+                    }} xl={6} className='btn bg-success'>
+                      <i className="fa fa-car" />
+                    </Button>
+                  </div> : <div style={{ marginLeft: 5 }}>
+                      <Button onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        props.openConfirmUnAssignModal()
+                      }} xl={6} className='btn bg-secondary'>
+                        <i className="fa fa-user-times" />
+                      </Button>
+                    </div>
+                }
               </div>
             </TableCell>
           </TableRow>

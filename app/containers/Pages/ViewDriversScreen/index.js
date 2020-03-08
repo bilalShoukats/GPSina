@@ -13,7 +13,7 @@ import AssignDriverModal from './AssignDriverModal'
 import ConfirmUnAssignModal from './ConfirmUnAssignModal'
 import NotificationsModal from './NotificationsModal'
 import Dialog from '@material-ui/core/Dialog';
-
+import DriverCard from './DriverCard'
 // images
 import profile from 'images/team/img1.jpg'
 
@@ -209,68 +209,80 @@ class ViewDriversScreen extends Component {
               >
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
-                    {this.state.drivers.filter(searchingFor(this.state.search)).map((item, i) => (
-                      <div className="companiesLink" key={i} style={{ padding: 10, margin: 10 }}>
-                        <Grid className="companiesAutorImg">
-                          {/* <img src={item.companyLogo} alt="" /> */}
-                          <img src={profile} alt="" />
-                        </Grid>
-                        <Grid className="companiesAutorContent">
-                          {item.registrationNo === '' ?
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
-                              <Button style={{ visibility: 'visible' }} onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.openAssignDriverModal(item)
-                              }} xl={6} className='btn bg-info'>
-                                <i className="icofont-ui-user" />
-                              </Button>
-                              <Button onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.openNotificationsModal(item)
-                              }} xl={6} className='btn bg-primary' >
-                                <i className="icofont-notification" />
-                              </Button></div>
-                            :
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
-                              <Button style={{ visibility: 'visible' }} onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.openConfirmUnAssignModal(item)
-                              }} xl={6} className='btn bg-secondary'>
-                                <i className="fa fa-user-times"></i>
-                              </Button>
-                              <Button onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.openNotificationsModal(item)
-                              }} xl={6} className='btn bg-primary' >
-                                <i className="icofont-notification" />
-                              </Button>
-                            </div>
-                          }
-                          <h4 style={{ marginTop: 15 }}>Assigned Car : {item.registrationNo}
-                            <Button onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              this.props.history.push(`/editDriver/${item.driverID}`)
-                            }} xl={6} className='btn bg-dark'>
-                              <i className="icofont-ui-edit" />
-                            </Button>
+                    {this.state.drivers.filter(searchingFor(this.state.search)).map((item, i) => {
+                      console.log('nadeem', item)
+                      return (
+                        <DriverCard key={i}
+                          item={item}
+                          openNotificationsModal={() => this.openNotificationsModal(item)}
+                          assignCarToDriver={() => this.openAssignDriverModal(item)}
+                          editDriver={() => this.props.history.push(`/editDriver/${item.driverID}`)}
+                          openConfirmModal={() => this.openConfirmModal(item)}
+                          openConfirmUnAssignModal={() => this.openConfirmUnAssignModal(item)}
+                        />
+                      )
+                    }
+                      // <div className="companiesLink" key={i} style={{ padding: 10, margin: 10 }}>
+                      //   <Grid className="companiesAutorImg">
+                      //     {/* <img src={item.companyLogo} alt="" /> */}
+                      //     <img src={profile} alt="" />
+                      //   </Grid>
+                      //   <Grid className="companiesAutorContent">
+                      //     {item.registrationNo === '' ?
+                      //       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
+                      //         <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                      //           e.preventDefault();
+                      //           e.stopPropagation();
+                      //           this.openAssignDriverModal(item)
+                      //         }} xl={6} className='btn bg-info'>
+                      //           <i className="icofont-ui-user" />
+                      //         </Button>
+                      //         <Button onClick={(e) => {
+                      //           e.preventDefault();
+                      //           e.stopPropagation();
+                      //           this.openNotificationsModal(item)
+                      //         }} xl={6} className='btn bg-primary' >
+                      //           <i className="icofont-notification" />
+                      //         </Button></div>
+                      //       :
+                      //       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
+                      //         <Button style={{ visibility: 'visible' }} onClick={(e) => {
+                      //           e.preventDefault();
+                      //           e.stopPropagation();
+                      //           this.openConfirmUnAssignModal(item)
+                      //         }} xl={6} className='btn bg-secondary'>
+                      //           <i className="fa fa-user-times"></i>
+                      //         </Button>
+                      //         <Button onClick={(e) => {
+                      //           e.preventDefault();
+                      //           e.stopPropagation();
+                      //           this.openNotificationsModal(item)
+                      //         }} xl={6} className='btn bg-primary' >
+                      //           <i className="icofont-notification" />
+                      //         </Button>
+                      //       </div>
+                      //     }
+                      //     <h4 style={{ marginTop: 15 }}>Assigned Car : {item.registrationNo}
+                      //       <Button onClick={(e) => {
+                      //         e.preventDefault();
+                      //         e.stopPropagation();
+                      //         this.props.history.push(`/editDriver/${item.driverID}`)
+                      //       }} xl={6} className='btn bg-dark'>
+                      //         <i className="icofont-ui-edit" />
+                      //       </Button>
 
-                          </h4>
-                          <h4 style={{ fontSize: 14, marginTop: 15 }}>Director Name : {item.driverName}
-                            <Button onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              this.openConfirmModal(item)
-                            }} xl={6} className='btn bg-danger'>
-                              <i className="icofont-ui-delete" />
-                            </Button></h4>
-                        </Grid>
-                      </div>
-                    ))}
+                      //     </h4>
+                      //     <h4 style={{ fontSize: 14, marginTop: 15 }}>Director Name : {item.driverName}
+                      //       <Button onClick={(e) => {
+                      //         e.preventDefault();
+                      //         e.stopPropagation();
+                      //         this.openConfirmModal(item)
+                      //       }} xl={6} className='btn bg-danger'>
+                      //         <i className="icofont-ui-delete" />
+                      //       </Button></h4>
+                      //   </Grid>
+                      // </div>
+                    )}
                   </li>
                 </ul>
               </ScrollArea>
