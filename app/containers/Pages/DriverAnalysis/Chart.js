@@ -20,6 +20,8 @@ const AreaRange = (props) => {
     title: false,
     subtitle: false,
     xAxis: {
+      // min: 0,
+      // max: 30,
       gridLineColor: '#DCE0EE',
       gridLineDashStyle: 'solid',
       gridLineWidth: 0,
@@ -48,6 +50,7 @@ const AreaRange = (props) => {
     },
     yAxis: {
       min: 0,
+      // max: 5,
       title: false,
       gridLineColor: '#DCE0EE',
       gridLineWidth: 1,
@@ -58,7 +61,7 @@ const AreaRange = (props) => {
           fontWeight: "400",
         },
         formatter: function () {
-          return this.value + ' km';
+          return this.value + props.yName;
         }
       }
     },
@@ -67,7 +70,7 @@ const AreaRange = (props) => {
       className: 'heighChartTooltip',
       headerFormat: '<h4 className="tooltipTitle">{point.key}</h4><ul className="chatTooltip">',
       pointFormat: '<li><span style="color:{series.color};padding:0">{series.name}: </span>' +
-        '<span style="padding:0"><b>{point.y:.1f} $</b></span></li>',
+        '<span style="padding:0"><b>{point.y:.1f} </b></span></li>',
       footerFormat: '</ul>',
       shared: true,
       useHTML: true
@@ -122,7 +125,7 @@ const AreaRange = (props) => {
     series: [{
       type: props.type,
       name: props.name,
-      data: props.data
+      data: props.data,
     }],
     responsive: {
       rules: [{
@@ -161,7 +164,7 @@ const AreaRange = (props) => {
       allowChartUpdate
       immutable={false}
       updateArgs={[true, true, true]}
-      containerProps={{ className: 'chartContainer' }}
+      containerProps={{ className: 'chartContainer-driving' }}
       options={options}
     />
   );

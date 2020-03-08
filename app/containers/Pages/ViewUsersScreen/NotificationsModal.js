@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { Grid, Menu, Hidden } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ScrollArea from 'react-scrollbar';
+
 const notfications = [
   {
     title: 'omnis iste error sit',
@@ -81,6 +82,11 @@ export default class SettingsModal extends Component {
       e.preventDefault();
     }
   }
+
+
+
+
+
   render() {
     console.log('state - tttt', this.state)
     return (

@@ -16,7 +16,8 @@ import BarChart from './barchart'
 import Bar from './bar'
 import DistanceDriven from './distanceDriven'
 import WeeklyProfile from './weeklyProfile'
-
+import { response } from './data'
+import { hoursDriven } from './hoursDriven'
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
@@ -42,10 +43,15 @@ class ChatApp extends Component {
       registrationNo: '',
       mapObject: new Map(),
       drivers: [],
-      selectedIndex: 1
+      selectedIndex: 1,
+      dailyProfileData: [],
+      hoursDrivenData: [],
+      weeklyProfileData: [],
+      distanceDrivenData: [],
     }
-    this.barItems = [{ class: <BarChart />, key: 0 }, { class: <Bar />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
   }
+
+  barItems = [];
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
     let mapObject = this.state.mapObject;
@@ -67,6 +73,27 @@ class ChatApp extends Component {
   }
 
   componentDidMount = () => {
+    let harshData = [];
+    let hoursGraphData = [];
+    response.map((item) => {
+      let newObject = [];
+      newObject[0] = item.accX;
+      newObject[1] = item.accY;
+      harshData.push(newObject);
+    });
+    hoursDriven.map((item) => {
+      let newObject = [];
+      newObject[0] = item.accX;
+      newObject[1] = item.accY;
+      hoursGraphData.push(newObject);
+    });
+    this.setState({ dailyProfileData: harshData, hoursDrivenData: hoursGraphData }, () => {
+      console.log("hours driven data: ", this.state.hoursDrivenData);
+      this.barItems = [{
+        class: <BarChart data={this.state.dailyProfileData}
+        />, key: 0
+      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 }, { class: <WeeklyProfile />, key: 2 }, { class: <DistanceDriven />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
+    });
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
   }
@@ -212,7 +239,7 @@ class ChatApp extends Component {
             </Grid>
             <Grid style={{ height: '430px' }}>
               {
-                this.barItems[this.state.selectedIndex].class
+                this.barItems.length > 0 && this.barItems[this.state.selectedIndex].class
               }
             </Grid>
             {/* <GMap
