@@ -83,6 +83,21 @@ const SidebarNav = props => {
       ]
     },
     {
+      // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
+      icon: ana,
+      iconHover: anaH,
+      id: 129,
+      alwaysexpand: true,
+      menus: [
+        {
+          icon: ana,
+          name: `Route History`,
+          link: '/routesHistory',
+          id: 1291
+        },
+      ]
+    },
+    {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
       iconHover: uiH,

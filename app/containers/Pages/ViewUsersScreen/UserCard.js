@@ -51,6 +51,7 @@ const Report = (props) => (
                   </Button>
                 </div>
                 <div style={{ marginLeft: 5 }}>
+                  <p>{props.item.id}</p>
                   <Button onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
