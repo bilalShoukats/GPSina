@@ -170,7 +170,7 @@ class ViewUsersScreen extends Component {
     let body = {
       companyEmail: this.props.user.companyEmail,
       email: this.state.userEmail,
-      registrationNo: this.state.switches
+      vehicleIDs: this.state.switches
     }
     console.log('carssss', body)
     this.props.apiManager.makeCall('assignVehicleToEmployee', body, res => {
