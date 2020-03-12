@@ -52,19 +52,6 @@ class AddCompanyScreen extends Component {
       });
       return errors;
     }),
-    companyEmail: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
-            break;
-          default:
-            err.message = "Company email cannot be empty";
-            break;
-        }
-      });
-      return errors;
-    }),
   }
 
   changeHandler = event => {
@@ -92,7 +79,7 @@ class AddCompanyScreen extends Component {
     const options = { abortEarly: false }
     const form = {
       companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
+      // companyEmail: this.state.companyEmail,
       directorName: this.state.directorName
     }
     const { error } = Joi.validate(form, this.schema, options)
@@ -110,15 +97,14 @@ class AddCompanyScreen extends Component {
     this.setState({ loading: true }, () => {
       if (!error) {
         let body = {
+          email: this.props.match.params.item,
           companyName: this.state.companyName,
-          email: this.state.companyEmail,
-          director: this.state.directorName,
-          // companyLogo: this.state.companyLogo,
+          director: this.state.directorName
         }
-        this.props.apiManager.makeCall("addCompany", body, (response) => {
+        this.props.apiManager.makeCall("updateCompany", body, (response) => {
           console.log('add company', response)
           console.log('add company', body)
-          if (response.code === 1008) {
+          if (response.code === 1014) {
             this.setState({ loading: false })
             toast.success('Company added successfully!')
           }
@@ -156,14 +142,44 @@ class AddCompanyScreen extends Component {
       file: URL.createObjectURL(event.target.files[0])
     })
   }
+
+  componentDidMount() {
+    this.getSingleCompanyDetail()
+  }
+
+  getSingleCompanyDetail = () => {
+    // let dec = window.atob(this.props.match.params.item)
+    let body = {
+      companyEmail: this.props.match.params.item,
+      // driverId: this.props.match.params.item
+    }
+    // console.log('alssssl', body)
+    this.props.apiManager.makeCall(`getCompanyDetail`, body, res => {
+      console.log('alssssl', res)
+      console.log('alssssl', body)
+      if (res.code === 5056) {
+        this.setState({
+          userDetail: res.response, currentPage: res.currentPage, totalPages: res.totalPages, loading: false,
+          companyName: res.response.companyName,
+          directorName: res.response.director,
+          companyEmail: res.response.email,
+          file: res.response.companyLogo
+        });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
   render() {
     return (
       <Fragment>
         <Helmet>
-          <title>Add Company</title>
+          <title>Edit Company</title>
           <meta name="description" content="Description of AddCompanyScreen" />
         </Helmet>
-        <h2 className="breadcumbTitle">Add Company</h2>
+        <h2 className="breadcumbTitle">Edit Company</h2>
         <Grid container spacing={3}>
           <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
@@ -179,7 +195,7 @@ class AddCompanyScreen extends Component {
           </Grid>
           <Grid item xl={9} lg={8} xs={12}>
             <Card
-              title="Add Company"
+              title="Edit Company"
               className="addCompany"
             >
               <Grid container spacing={3}>
@@ -202,6 +218,8 @@ class AddCompanyScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
+                    disabled={true}
                     label="Company Email"
                     placeholder="Your company email here.."
                     fullWidth
@@ -220,7 +238,7 @@ class AddCompanyScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Director Name"
-                    placeholder="Your director name here.."
+                    // placeholder="Your director name here.."
                     fullWidth
                     variant="outlined"
                     name="directorName"
@@ -235,7 +253,7 @@ class AddCompanyScreen extends Component {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Add Company</Button>
+                  <Button className="btn bg-default" onClick={this.submitHandler}>Edit Company</Button>
                 </Grid>
               </Grid>
             </Card>
@@ -246,24 +264,6 @@ class AddCompanyScreen extends Component {
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   addCompanyScreen: makeSelectAddCompanyScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(AddCompanyScreen);
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,

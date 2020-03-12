@@ -180,7 +180,7 @@ class ViewDriversScreen extends Component {
       < Fragment >
         <h2 className="breadcumbTitle">Your Drivers</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.drivers.length > 0) ? (
+          {(this.state.drivers[0] !== undefined && this.state.drivers.length > 0) ? (
             <Grid className="viewCompaniesLeft">
               <TextField
                 fullWidth
@@ -211,6 +211,7 @@ class ViewDriversScreen extends Component {
                   <li className="companiesList" >
                     {this.state.drivers.filter(searchingFor(this.state.search)).map((item, i) => {
                       console.log('nadeem', item)
+                      var enc = window.btoa(item.driverEmail);
                       return (
                         <DriverCard key={i}
                           item={item}

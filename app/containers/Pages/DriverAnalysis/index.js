@@ -18,14 +18,20 @@ class index extends Component {
       carDeviceId: null,
       graphData: [],
       accX: [],
-      accY: []
+      accY: [],
+      breakData: [],
+      harshSwerData: [],
+      harshAccData: [],
+      mapData: []
     }
   }
 
 
 
   selectDriver = (id) => {
-    this.setState({ slectedDriver: id })
+    this.setState({ slectedDriver: id._id }, () => {
+      this.getGraphsData(id.AttachedCarInformation[0].deviceID)
+    })
   }
 
 
@@ -38,16 +44,20 @@ class index extends Component {
       this.harshBraking()
       this.harshSwerving()
     }
-    let harshData = [];
+    let harshSwerData = [];
     response.map((item) => {
       let newObject = [];
       newObject[0] = item.accX;
       newObject[1] = item.accY;
-      harshData.push(newObject);
+      harshSwerData.push(newObject);
     });
-    this.setState({ graphData: harshData });
-    // console.log("test: ", test);
+    this.setState({ graphData: harshSwerData });
     // this.setState({ accX: response.map(item => item.accX), accY: response.map(item => item.accY) })
+  }
+  getGraphsData = (id) => {
+    this.harshBraking(id)
+    this.harshAcceleration(id)
+    this.harshSwerving(id);
   }
 
 
@@ -56,9 +66,8 @@ class index extends Component {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
-      console.log('get drivers', res)
       if (res.code === 1019) {
-        this.setState({ drivers: res.response, slectedDriver: res.response[0]._id, carDeviceId: res.response[0].AttachedCarInformation[0].deviceID });
+        this.setState({ drivers: res.response,  carDeviceId: res.response[0].AttachedCarInformation[0].deviceID });
       }
       else {
         // this.setState({ loading: false });
@@ -67,79 +76,110 @@ class index extends Component {
     })
   }
 
-  harshAcceleration = () => {
+  harshAcceleration = (id) => {
     let body = {
-      deviceid: this.state.carDeviceId,
+      deviceid: this.state.carDeviceId.toString(),
     }
-    this.props.apiManager.makeCall('harshAccelerationTimeBase', body, res => {
-      console.log('acceleration', res)
-      // if (res.code === 1019) {
-      //   this.setState({ cars: res.response, loading: false });
-      // }
-      // else {
-      //   this.setState({ loading: false });
-      //   toast.error(res.id);
-      // }
-    })
-  }
-
-  harshBraking = () => {
-    let body = {
-      deviceid: this.state.carDeviceId,
-    }
-    this.props.apiManager.makeCall('harshBrakingTimeBase', body, res => {
-      console.log('braking', res)
-      // if (res.code === 1019) {
-      //   this.setState({ cars: res.response, loading: false });
-      // }
-      // else {
-      //   this.setState({ loading: false });
-      //   toast.error(res.id);
-      // }
-    })
-  }
-
-  harshSwerving = () => {
-    const { AttachedCarInformation } = this.state.drivers
-    if (AttachedCarInformation) {
-      let body = {
-        deviceid: this.state.carDeviceId,
+    this.props.apiManager.makeCall('harshAccerlationTimeBase', body, res => {
+      console.log('harshAccelerationTimeBase', body)
+      console.log('harshAccelerationTimeBase', res)
+      if (res) {
+        for (let index = 0; index < 31; index++) {
+          this.state.harshAccData[index] = [];
+          var newArray = this.state.harshAccData[index]
+          newArray[0] = index
+          newArray[1] = 0
+        }
+        res.response.map((item, index) => {
+          let date = new Date(item.time).getDate()
+          if (this.state.harshAccData[date][0] === date) {
+            let i = this.state.harshAccData[date][1]
+            this.state.harshAccData[date][1] = i + 1
+          }
+          else {
+          }
+        })
+        this.setState({ harshAccData: this.state.harshAccData, }, () => {
+          this.state.mapData[0] = (res.response)
+        })
       }
-      this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
-        console.log('swerving', res)
-        // if (res.code === 1019) {
-        //   this.setState({ cars: res.response, loading: false });
-        // }
-        // else {
-        //   this.setState({ loading: false });
-        //   toast.error(res.id);
-        // }
-      })
+    })
+  }
+
+  harshBraking = (id) => {
+    let body = {
+      deviceid: this.state.carDeviceId.toString(),
     }
+    this.props.apiManager.makeCall('harshBreakingTimeBase', body, res => {
+      console.log('harshBreakingTimeBase', res)
+      if (res) {
+        for (let index = 0; index < 31; index++) {
+          this.state.breakData[index] = [];
+          var newArray = this.state.breakData[index]
+          newArray[0] = index
+          newArray[1] = 0
+        }
+        res.response.map((item, index) => {
+          let date = new Date(item.time).getDate()
+          if (this.state.breakData[date][0] === date) {
+            let i = this.state.breakData[date][1]
+            this.state.breakData[date][1] = i + 1
+          }
+          else {
+          }
+        })
+        this.setState({ breakData: this.state.breakData, }, () => {
+          this.state.mapData[1] = (res.response)
+        })
+      }
+    })
+  }
+
+  harshSwerving = (id) => {
+    let body = {
+      deviceid: this.state.carDeviceId.toString(),
+    }
+    this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
+      console.log('harshSwervingTimeBase', res)
+      if (res) {
+        for (let index = 0; index < 31; index++) {
+          this.state.harshSwerData[index] = [];
+          var newArray = this.state.harshSwerData[index]
+          newArray[0] = index
+          newArray[1] = 0
+        }
+        res.response.map((item, index) => {
+          let date = new Date(item.startTime).getDate()
+          if (this.state.harshSwerData[date][0] === date) {
+            let i = this.state.harshSwerData[date][1]
+            this.state.harshSwerData[date][1] = i + 1
+          }
+          else {
+          }
+        })
+        this.setState({ harshSwerData: this.state.harshSwerData, }, () => {
+          // this.state.mapData[1] = (res.response)
+        })
+      }
+    })
   }
 
   renderDriver = () => {
     return (
       this.state.drivers.map((item, index) => {
+        console.log('kijoiahi', item._id)
+        console.log('kijoiahi', this.state.slectedDriver)
         return (
           <div
             //className='driver-list'
             key={index}
-            style={{
-              marginTop: 15,
-              marginBottom: 15,
-              marginLeft: 30,
-              marginRight: 30,
-              paddingTop: 5,
-              paddingBottom: 5,
-              borderBottom: '1px solid rgb(245,246,250)'
-            }}
+            className={item._id === this.state.slectedDriver ? 'selectedItemContainer' : 'itemContainer'}
             onClick={(e) => {
               e.preventDefault()
-              this.selectDriver(item._id)
+              this.selectDriver(item)
             }}
           >
-            <h5 style={{ textAlign: 'center', fontSize: this.state.slectedDriver === item._id ? 18 : 14, color: 'black', }}>{item.driverName}</h5>
+            <h5 >{item.driverName}</h5>
           </div>
         )
       })
@@ -147,7 +187,7 @@ class index extends Component {
   }
 
   render() {
-    console.log('x', this.state.accX)
+    console.log('brakingg', this.state.breakData)
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Driving Analysis</h2>
@@ -169,7 +209,7 @@ class index extends Component {
                   type='area'
                   name='harsh acceleration'
                   yName='acc'
-                  data={this.state.graphData}
+                  data={this.state.harshAccData}
                 // data={data}
                 />
               </div>
@@ -178,7 +218,7 @@ class index extends Component {
                   type='area'
                   name='harsh swerving'
                   yName='swer'
-                  data={this.state.graphData}
+                  data={this.state.harshSwerData}
                 />
               </div>
               <div style={{ height: '100%', width: 300, marginRight: 5 }}>
@@ -186,12 +226,14 @@ class index extends Component {
                   type='area'
                   name='harsh braking'
                   yName='brake'
-                  data={this.state.graphData}
+                  data={this.state.breakData}
                 />
               </div>
             </div>
             <div style={{ width: '100%' }}>
-              <Map />
+              <Map
+                data={this.state.mapData}
+              />
             </div>
           </Grid>
         </Grid>

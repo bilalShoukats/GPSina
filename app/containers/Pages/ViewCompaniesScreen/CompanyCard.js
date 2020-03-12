@@ -18,45 +18,43 @@ const Report = (props) => (
           <TableRow>
             <TableCell>Image</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Phone</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>Director</TableCell>
+            <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
             <TableCell>
               <Grid className="icon">
-                <img src={img} alt="thumb" />
+                <img src={props.item.companyLogo ? props.item.companyLogo : img} alt="thumb" height={50} width={50} />
               </Grid>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.userName}</strong>
+              <strong className="uThum">
+                {props.item.companyName.substring(0, 5)}
+              </strong>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.phone}</strong>
+              <strong className="uThum">
+                {props.item.director.substring(0, 5)}
+              </strong>
             </TableCell>
             <TableCell>
-              <div style={{ display: 'flex', flexDirection: 'row', }}>
-                <div>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                <div style={{ marginLeft: 5 }}>
                   <Button onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    props.openNotificationsModal()
-                  }}
-                    style={{ visibility: 'visible' }}
-                    xl={6}
-                    className='btn bg-primary' >
-                    <i className="icofont-notification"
-                    />
+                    props.openAssignCompanyModal()
+                  }} disabled={props.item.owner === '' ? false : true} xl={6} className='btn bg-success'>
+                    <i className="fa fa-user" />
                   </Button>
                 </div>
                 <div style={{ marginLeft: 5 }}>
-                  <p>{props.item.id}</p>
                   <Button onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    props.editUser()
-                    props.history.push(`/editUser/${props.item.id}`)
+                    props.editCompany()
                   }} xl={6} className='btn bg-dark'>
                     <i className="icofont-ui-edit" />
                   </Button>
@@ -68,15 +66,6 @@ const Report = (props) => (
                     props.openConfirmModal()
                   }} xl={6} className='btn bg-danger'>
                     <i className="icofont-ui-delete" />
-                  </Button>
-                </div>
-                <div style={{ marginLeft: 5 }}>
-                  <Button onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.assignCar()
-                  }} xl={6} className='btn bg-success'>
-                    <i className="fa fa-car" />
                   </Button>
                 </div>
               </div>
