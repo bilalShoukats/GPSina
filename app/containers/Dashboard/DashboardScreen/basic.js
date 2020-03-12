@@ -109,7 +109,7 @@ export default class DashboardMap extends React.Component {
                         })
                     }
                 </GoogleMap>
-                <div style={{ position: "absolute", top: "28%", marginLeft: "35%" }}>
+                <div style={{ position: "absolute", top: "23%", marginLeft: "35%" }}>
                     <Button className="btn bg-success" onClick={this.showAllVehicles}>All Fleet ({this.state.devicesData.length})</Button>
                 </div >
                 <div style={{ position: "absolute", top: "28%", marginLeft: "1%", visibility: this.bool ? 'visible' : 'hidden' }}>
