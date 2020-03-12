@@ -369,14 +369,14 @@ class ViewUsersScreen extends Component {
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
                     {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => {
-
+                      var enc = window.btoa(item.email);
                       console.log('user ', item)
                       return (
                         <UserCard
                           key={i}
                           item={item}
                           openNotificationsModal={() => this.openNotificationsModal(item)}
-                          editUser={() => this.props.history.push(`/editUser/${item.carId}`)}
+                          editUser={() => this.props.history.push(`/editUser/${enc}`)}
                           openConfirmModal={() => this.openConfirmModal(item)}
                           assignCar={() => this.setState({ showCarAssignModal: true, userEmail: item.email })}
                         />

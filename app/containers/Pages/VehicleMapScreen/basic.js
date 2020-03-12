@@ -178,7 +178,7 @@ class Map extends React.Component {
 
 
     render = () => {
-        console.log('bawwaaaaa', this.state.progress[0])
+        console.log('bawwaaaaa', this.state.progress)
         const icon = {
             url: require('./car.png'),
             scaledSize: new window.google.maps.Size(30, 30),
