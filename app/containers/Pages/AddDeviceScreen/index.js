@@ -16,8 +16,8 @@ import companyLogo from 'images/team/img1.jpg'
 class AddCompanyScreen extends Component {
 
   state = {
-    companyEmail: '',
-    companyName: '',
+    deviceId: Math.floor(100000000 + Math.random() * 900000000),
+    softwareVer: '',
     directorName: '',
     companyLogo: '',
     error: {},
@@ -26,40 +26,27 @@ class AddCompanyScreen extends Component {
   }
 
   schema = {
-    companyName: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
+    softwareVer: Joi.string().regex(/^[a-zA-Z0-9]{8}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Company name must be more than 7 character";
+            err.message = "softwareVersion name must be more than 7 character";
             break;
           default:
-            err.message = "Please enter company name";
+            err.message = "Please enter softwareVersion";
             break;
         }
       });
       return errors;
     }),
-    directorName: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
+    deviceId: Joi.string().regex(/[0-9]{9}/).length(9).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Director name must be more than 7 character";
+            err.message = "Device id must be of 9 character";
             break;
           default:
-            err.message = "Please enter director name";
-            break;
-        }
-      });
-      return errors;
-    }),
-    companyEmail: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
-            break;
-          default:
-            err.message = "Company email cannot be empty";
+            err.message = "Device id must be of 9 character";
             break;
         }
       });
@@ -91,9 +78,8 @@ class AddCompanyScreen extends Component {
   validate = () => {
     const options = { abortEarly: false }
     const form = {
-      companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
-      directorName: this.state.directorName
+      softwareVer: this.state.softwareVer,
+      deviceId: this.state.deviceId.toString(),
     }
     const { error } = Joi.validate(form, this.schema, options)
     if (!error) return null;
@@ -105,22 +91,20 @@ class AddCompanyScreen extends Component {
 
   submitHandler = (e) => {
     e.preventDefault()
-    console.log("submitting add company form");
+    console.log('add Devicess', this.state.deviceId);
     const error = this.validate()
     this.setState({ loading: true }, () => {
       if (!error) {
         let body = {
-          companyName: this.state.companyName,
-          email: this.state.companyEmail,
-          director: this.state.directorName,
-          // companyLogo: this.state.companyLogo,
+          softwareVer: this.state.softwareVer,
+          deviceId: this.state.deviceId,
         }
-        this.props.apiManager.makeCall("addCompany", body, (response) => {
-          console.log('add company', response)
-          console.log('add company', body)
+        this.props.apiManager.makeCall("addDevice", body, (response) => {
+          console.log('add Device', response)
+          console.log('add Device', body)
           if (response.code === 1008) {
             this.setState({ loading: false })
-            toast.success('Company added successfully!')
+            toast.success('Device added successfully!')
           }
           else {
             this.setState({ loading: false })
@@ -160,12 +144,12 @@ class AddCompanyScreen extends Component {
     return (
       <Fragment>
         <Helmet>
-          <title>Add Company</title>
+          <title>Add Device</title>
           <meta name="description" content="Description of AddCompanyScreen" />
         </Helmet>
-        <h2 className="breadcumbTitle">Add Company</h2>
+        <h2 className="breadcumbTitle">Add Device</h2>
         <Grid container spacing={3}>
-          <Grid item xl={3} lg={4} xs={12}>
+          {/* <Grid item xl={3} lg={4} xs={12}>
             <Grid className="companyInfoWrap">
               <Grid className="companyInfoImg">
                 <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
@@ -173,69 +157,53 @@ class AddCompanyScreen extends Component {
               <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
               <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
               <Grid className="companyInfoContent">
-                <h4>Please upload company logo</h4>
+                <h4>Please upload Device logo</h4>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xl={9} lg={8} xs={12}>
+          </Grid> */}
+          <Grid item xl={12} lg={12} xs={12}>
             <Card
-              title="Add Company"
+              title="Add Device"
               className="addCompany"
             >
               <Grid container spacing={3}>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Company Name"
-                    placeholder="Your company name here.."
+                    label="Software Version"
+                    placeholder="Your software version here.."
                     fullWidth
                     variant="outlined"
-                    name="companyName"
+                    name="softwareVer"
                     onChange={this.changeHandler}
-                    value={this.state.companyName}
+                    value={this.state.softwareVer}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.companyName && true}
-                    helperText={this.state.error.companyName && this.state.error.companyName}
+                    error={this.state.error.softwareVer && true}
+                    helperText={this.state.error.softwareVer && this.state.error.softwareVer}
                     className="formInput"
                   />
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Company Email"
+                    label="Device Id"
                     placeholder="Your company email here.."
                     fullWidth
                     variant="outlined"
-                    name="companyEmail"
+                    name="deviceId"
+                    max={9}
                     onChange={this.changeHandler}
-                    value={this.state.companyEmail}
+                    value={this.state.deviceId}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.companyEmail && true}
-                    helperText={this.state.error.companyEmail && this.state.error.companyEmail}
-                    className="formInput"
-                  />
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    label="Director Name"
-                    placeholder="Your director name here.."
-                    fullWidth
-                    variant="outlined"
-                    name="directorName"
-                    onChange={this.changeHandler}
-                    value={this.state.directorName}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    error={this.state.error.directorName && true}
-                    helperText={this.state.error.directorName && this.state.error.directorName}
+                    error={this.state.error.deviceId && true}
+                    helperText={this.state.error.deviceId && this.state.error.deviceId}
                     className="formInput"
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Add Company</Button>
+                  <Button className="btn bg-default" onClick={this.submitHandler}>Add Device</Button>
                 </Grid>
               </Grid>
             </Card>

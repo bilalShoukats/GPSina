@@ -41,7 +41,7 @@ export default class EditRouteMap extends React.Component {
                             this.setState({
                                 mapRef: ref
                             }, () => {
-                                console.log('bawaaaaa', me.props.addresses)
+                                // console.log('bawaaaaa', me.props.addresses)
                                 this.state.drawDirections(me.props.addresses);
                             });
                         },

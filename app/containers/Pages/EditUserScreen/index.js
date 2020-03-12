@@ -20,6 +20,7 @@ import companyLogo from 'images/team/img1.jpg'
 class AddUserScreen extends Component {
 
   state = {
+    userDetail: {},
     firstName: '',
     lastName: '',
     phone: '',
@@ -28,7 +29,7 @@ class AddUserScreen extends Component {
     userName: '',
     error: {},
     file: '',
-    loading:false,
+    loading: false,
     addUser: false,
     viewUser: false,
     editUser: false,
@@ -82,15 +83,6 @@ class AddUserScreen extends Component {
       });
       return errors;
     }),
-    password: Joi.string().required().error(errors => {
-      errors.forEach(err => {
-        switch (err.type) {
-          default: err.message = "Password  can not be empty";
-            break;
-        }
-      });
-      return errors;
-    }),
   }
 
   changeHandler = event => {
@@ -119,7 +111,6 @@ class AddUserScreen extends Component {
     const form = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
-      password: this.state.password,
       phone: this.state.phone,
     }
     const { error } = Joi.validate(form, this.schema, options)
@@ -130,38 +121,6 @@ class AddUserScreen extends Component {
     return errors;
   };
 
-  submitHandler = (e) => {
-    e.preventDefault()
-    console.log("submitting add user form");
-    const error = this.validate()
-    this.setState({ loading: true }, () => {
-      if (!error) {
-        let body = {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          password: this.state.password,
-          phone: this.state.phone,
-          avatar: 'lalu',
-        }
-        this.props.apiManager.makeCall("addCompany", body, (response) => {
-          if (response.code === 1008) {
-            this.setState({ loading: false })
-            toast.success('User added successfully!')
-          }
-          else {
-            this.setState({ loading: false })
-            toast.error(response.id)
-          }
-        });
-      } else {
-        console.log(error);
-        this.setState({
-          loading: false,
-          error: error || {}
-        })
-      }
-    })
-  }
   handleChange = (event) => {
     this.setState({
       file: URL.createObjectURL(event.target.files[0])
@@ -184,6 +143,101 @@ class AddUserScreen extends Component {
         <CircularProgress className="text-dark" />
       </Dialog>
     )
+  }
+  getSingleUserDetail = () => {
+    let dec = window.atob(this.props.match.params.item)
+    let body = {
+      companyEmail: this.props.user.companyEmail,
+      email: dec
+    }
+    // console.log('alssssl', body)
+    this.props.apiManager.makeCall(`getEmployeeDetail`, body, res => {
+      console.log('alssssl', res.response.userPermissions[body.companyEmail].apiOperation[0])
+      if (res.code === 5056) {
+        this.setState({
+          userDetail: res.response, currentPage: res.currentPage, totalPages: res.totalPages, loading: false,
+          firstName: res.response.firstName,
+          lastName: res.response.lastName,
+          email: res.response.email,
+          userName: res.response.userName,
+          password: res.response.password,
+          phone: res.response.phone,
+          file: res.response.avatar,
+          addUser: res.response.userPermissions[body.companyEmail].apiOperation[0],
+          viewUser: res.response.userPermissions[body.companyEmail].apiOperation[1],
+          editUser: res.response.userPermissions[body.companyEmail].apiOperation[2],
+          addRoute: res.response.userPermissions[body.companyEmail].apiOperation[3],
+          viewRoutes: res.response.userPermissions[body.companyEmail].apiOperation[4],
+          addDriver: res.response.userPermissions[body.companyEmail].apiOperation[5],
+          viewDrivers: res.response.userPermissions[body.companyEmail].apiOperation[6],
+          addVehicle: res.response.userPermissions[body.companyEmail].apiOperation[7],
+          viewVehicle: res.response.userPermissions[body.companyEmail].apiOperation[8],
+          assignDriver: res.response.userPermissions[body.companyEmail].apiOperation[9],
+          attachDevice: res.response.userPermissions[body.companyEmail].apiOperation[10],
+        });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
+
+  submitHandler = (e) => {
+    e.preventDefault()
+    console.log("submitting add user form");
+    const error = this.validate()
+    this.setState({ loading: true }, () => {
+      if (!error) {
+        let emaill = this.props.user.companyEmail
+        let body = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          userName: this.state.userName,
+          password: this.state.password,
+          email: this.state.email,
+          phone: this.state.phone,
+          avatar: this.state.file,
+          userPermissions: {
+            [emaill]: {
+              apiOperation: [
+                this.state.addUser,
+                this.state.viewUser,
+                this.state.editUser,
+                this.state.addRoute,
+                this.state.viewRoutes,
+                this.state.addDriver,
+                this.state.viewDrivers,
+                this.state.addVehicle,
+                this.state.viewVehicle,
+                this.state.assignDriver,
+                this.state.attachDevice,
+              ]
+            }
+          }
+        }
+        this.props.apiManager.makeCall("updateEmployee", body, (response) => {
+          console.log('adddddd', response)
+          console.log('adddddd', body)
+          if (response.code === 1014) {
+            this.setState({ loading: false })
+            toast.success('User added successfully!')
+          }
+          else
+            this.setState({ loading: false })
+          toast.error(response.id)
+        });
+      } else {
+        console.log(error);
+        this.setState({
+          loading: false,
+          error: error || {}
+        })
+      }
+    })
+  }
+  componentDidMount = () => {
+    this.getSingleUserDetail();
   }
 
   render() {
@@ -270,12 +324,14 @@ class AddUserScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
                     label="Password"
                     placeholder="Your Password  here.."
                     fullWidth
                     variant="outlined"
                     name="password"
                     type='password'
+                    disabled={true}
                     onChange={this.changeHandler}
                     value={this.state.password}
                     InputLabelProps={{
@@ -307,6 +363,8 @@ class AddUserScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
+                    disabled={true}
                     label="Phone Number"
                     placeholder="Your Phone Number here.."
                     fullWidth

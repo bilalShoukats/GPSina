@@ -38,7 +38,6 @@ class AnalysisMap extends React.Component {
   }
 
   componentDidMount = () => {
-
     this.interval = window.setInterval(this.moveObject, 500)
   }
 
@@ -86,17 +85,18 @@ class AnalysisMap extends React.Component {
     this.setState({ progress })
   }
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps', nextProps);
-    // console.log('componentWillReceiveProps', this.props);
-    // let array = []
-    // if (this.props !== nextProps) {
-    //   nextProps.data.map((item, i) => {
-    //     let A = { 'lat': parseFloat(item[2]), 'lng': parseFloat(item[3]), 'i': i }
-    //     this.path.push(A)
-    //   })
-    //   this.check()
-    // }
-
+    let array = []
+    console.log('componentWillps', nextProps.data.length);
+    if (nextProps.data.length === 2) {
+      console.log('componentWillps', nextProps);
+      nextProps.data.map((item, i) => {
+        item.map((subItem, i) => {
+          let latlng = subItem.startGpsLocation.split(',')
+          let A = { 'lat': parseFloat(latlng[0]), 'lng': parseFloat(latlng[1]), 'text': subItem.isHarshAcc ? 'harshacc' : 'harshbreak' }
+          this.path.push(A)
+        })
+      })
+    }
   }
   check = () => {
     this.path = this.path.map((coordinates, i, array) => {
@@ -187,18 +187,18 @@ class AnalysisMap extends React.Component {
 
 
   render = () => {
+    console.log('bawaaa', this.path)
     const icon = {
       url: require('./car.png'),
       scaledSize: new window.google.maps.Size(30, 30),
       anchor: { x: 10, y: 10 }
     }
-    console.log('bawa', this.path)
     // const defaultMapOptions = {
     //     disableDefaultUI: true
     // };
     return (
       <GoogleMap
-        defaultZoom={16}
+        defaultZoom={9}
         defaultCenter={{ lat: 18.559008, lng: -68.388881 }}
         // defaultOptions={defaultMapOptions}
         defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
@@ -209,32 +209,34 @@ class AnalysisMap extends React.Component {
             <Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
           </>
         )} */}
-        {this.state.markers.map((marker, index) => {
-          console.log("bawaaaaaaaaaaa", marker)
-          return (
-            <Marker
-              icon={marker.url}
-              key={index}
-              defaultVisible={true}
-              // defaultPosition={props.center}
-              position={marker}
-            // onClick={marker}
-            // defaultDraggable={true}
-            // draggable={true}
-            // ref={props.onMarkerMounted.bind(this)}
-            // onDragEnd={() => props.onDragEnd((values) => this.props.handleDragEnd(values))}
-            // onClick={props.onToggleOpen}
+        {this.path.map((marker, index) => {
+          // console.log("bawaaaaaaaaaaa", marker)
+          if (index < 10) {
+            return (
+              <Marker
+                // icon={marker.url}
+                key={index}
+                defaultVisible={true}
+                // defaultPosition={props.center}
+                position={marker}
+              // onClick={marker}
+              // defaultDraggable={true}
+              // draggable={true}
+              // ref={props.onMarkerMounted.bind(this)}
+              // onDragEnd={() => props.onDragEnd((values) => this.props.handleDragEnd(values))}
+              // onClick={props.onToggleOpen}
 
-            >
-              <InfoWindow >
-                <div>
-                  {/* <i className="fa fa-anchor"></i> */}
-                  <span style={{ color: marker.text === 'harsh acc' ? 'red' : marker.text === 'harsh swe' ? 'purple' : 'blue' }} > {' ' + marker.text + ' '}</span>
-                  {marker.lat.toFixed(4)}
-                </div>
-              </InfoWindow>
-            </Marker>
-          )
+              >
+                <InfoWindow >
+                  <div>
+                    {/* <i className="fa fa-anchor"></i> */}
+                    <span style={{ color: marker.text === 'harsh acc' ? 'red' : marker.text === 'harsh swe' ? 'purple' : 'blue' }} > {' ' + marker.text + ' '}</span>
+                    {marker.lat.toFixed(4)}
+                  </div>
+                </InfoWindow>
+              </Marker>
+            )
+          }
         })}
       </GoogleMap>
     )
@@ -244,7 +246,7 @@ class AnalysisMap extends React.Component {
 const MapComponent = withScriptjs(withGoogleMap(AnalysisMap))
 
 export default (props) => (
-  <MapComponent
+  < MapComponent
     data={props.data}
     // selectedMarker={this.state.selectedMarker}
     // defulatLat={this.state.defulatLat}
@@ -252,8 +254,8 @@ export default (props) => (
     // initialData={this.state.initialData}
     // onClick={this.handleClick}
     googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI&libraries=geometry,drawing,places"
-    loadingElement={<div style={{ height: `100%` }} />}
-    containerElement={<div style={{ height: `400px` }} />}
-    mapElement={<div style={{ height: `100%` }} />}
+    loadingElement={< div style={{ height: `100%` }} />}
+    containerElement={< div style={{ height: `400px` }} />}
+    mapElement={< div style={{ height: `100%` }} />}
   />
 );

@@ -216,7 +216,7 @@ class ChatApp extends Component {
                     index < 5 ?
                       <Grid key={index} className={item.tripid === this.state.tripid ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
                         this.socketComponent.disconnectSocketServer();
-                        this.setState({ tripid: item.tripid })
+                        this.props.history.push(`RouteMap/${item.tripid}`)
                       }}>
                         <Grid className='text'>
                           <h4>{item.tripid}</h4>
@@ -227,7 +227,7 @@ class ChatApp extends Component {
                     :
                     <Grid key={index} className={item.tripid === this.state.tripid ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
                       this.socketComponent.disconnectSocketServer();
-                      this.setState({ tripid: item.tripid })
+                      this.props.history.push(`RouteMap/${item.tripid}`)
                     }}>
                       <Grid className='text'>
                         <h4>{item.tripid}</h4>
@@ -235,7 +235,9 @@ class ChatApp extends Component {
                       </Grid>
                     </Grid>
                 )
-              }) : ''}
+              }) : <Grid style={{ textAlign: 'center', marginTop: 10 }}>
+                  <h4>Please Select Driver First</h4>
+                </Grid>}
               {this.state.routes.length > 5 ? <h6 style={{ color: 'rgb(224, 106, 66)', cursor: 'pointer', textAlign: 'center' }} onClick={() => this.setState({ viewLess: !this.state.viewLess })}>{this.state.viewLess ? 'View More' : 'View Less'}</h6> : ''}
               {
                 (this.state.drivers[0]) ? (
@@ -253,11 +255,11 @@ class ChatApp extends Component {
               }
             </ScrollArea>
           </Grid>
-          <Grid className="modalFooter">
+          {/* <Grid className="modalFooter">
             <Button style={{ padding: '10px 25px', }} disabled={this.state.tripid !== '' ? false : true} className="btn bg-default" onClick={() => this.props.history.push(`RouteMap/${this.state.tripid}`)}>
               See Route
               </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
         <ConfirmModal
           open={this.state.showConfirmModal}

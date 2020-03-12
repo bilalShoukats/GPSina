@@ -47,6 +47,8 @@ class ChatApp extends Component {
       drivers: [],
       selectedIndex: 1,
       dailyProfileData: [],
+      dailyProfileDat: [],
+      weeklyGraphData: [],
       hoursDrivenData: [],
       weeklyDrivenData: [],
       distanceDrivenArr: [],
@@ -73,8 +75,98 @@ class ChatApp extends Component {
       }
     }
   }
+  barData = (deviceID) => {
+    let body = {
+      deviceid: deviceID.toString()
+    }
+    this.props.apiManager.makeCall('driverTripStats', body, res => {
+      console.log('View trip - ', res)
+      console.log('View trip - ', body)
+      if (res) {
+        this.setState({ dailyProfile: res.response, loading: false }, () => {
+          for (let index = 0; index < 31; index++) {
+            this.state.dailyProfileDat[index] = [];
+            var newArray = this.state.dailyProfileDat[index]
+            newArray[0] = index
+            newArray[1] = 0
+          }
+          res.response.map((item, index) => {
+            let date = new Date(item.tripStartTime).getDate()
+            if (this.state.dailyProfileDat[date][0] === date) {
+              let i = this.state.dailyProfileDat[date][1]
+              this.state.dailyProfileDat[date][1] = i + 1
+            }
+            else {
+            }
+            let day = new Date(item.tripStartTime).getDay()
+            if (this.state.weeklyGraphData[day][0] === day) {
+              let i = this.state.weeklyGraphData[day][1]
+              this.state.weeklyGraphData[day][1] = i + 1
+            }
 
+          });
+        }, () => {
+          this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
+        });
+        console.log('lala', this.state.weeklyGraphData)
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
+  graphData = (deviceID) => {
+    let body = {
+      deviceid: deviceID.toString()
+    }
+    this.props.apiManager.makeCall('totalTimeTripsDrive', body, res => {
+      console.log('lalap', res)
+      if (res) {
+        this.setState({ dailyProfile: res.response, loading: false }, () => {
+          for (let index = 0; index < 31; index++) {
+            this.state.hoursDrivenData[index] = [];
+            var newArray = this.state.hoursDrivenData[index]
+            newArray[0] = index
+            newArray[1] = 0
+          }
+          res.response.map((item, index) => {
+            let date = new Date(item.starttime).getDate()
+            if (this.state.hoursDrivenData[date][0] === date) {
+              let i = this.state.hoursDrivenData[date][1]
+              this.state.hoursDrivenData[date][1] = i + item.totalsum
+            }
+            else {
+            }
+            // let day = new Date(item.tripStartTime).getDay()
+            // if (this.state.weeklyGraphData[day][0] === day) {
+            //   let i = this.state.weeklyGraphData[day][1]
+            //   this.state.weeklyGraphData[day][1] = i + 1
+            // }
+          });
+        }, () => {
+          this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
+        });
+        console.log('lalap', this.state.hoursDrivenData)
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    })
+  }
+
+  getDailyProfile = (deviceID) => {
+    this.barData(deviceID);
+    this.graphData(deviceID);
+  }
   componentDidMount = () => {
+    for (let index = 1; index < 8; index++) {
+      this.state.weeklyGraphData[index] = [];
+      var newArray = this.state.weeklyGraphData[index]
+      newArray[0] = index
+      newArray[1] = 0
+    }
     let harshData = [];
     let hoursGraphData = [];
     let weeklyGraphData = [];
@@ -103,12 +195,15 @@ class ChatApp extends Component {
       newObject[1] = item.accY;
       distanceGraphData.push(newObject);
     });
-    this.setState({ dailyProfileData: harshData, hoursDrivenData: hoursGraphData, weeklyDrivenData: weeklyGraphData, distanceDrivenArr: distanceGraphData }, () => {
-      console.log("hours driven data: ", this.state.hoursDrivenData);
+    this.setState({ dailyProfileData: harshData, hoursDrivenDataa: hoursGraphData, distanceDrivenArr: distanceGraphData }, () => {
+      console.log("hours driven data: ", hoursGraphData);
       this.barItems = [{
-        class: <BarChart data={this.state.dailyProfileData}
+        class: <BarChart data={this.state.dailyProfileDat}
         />, key: 0
-      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 }, { class: <WeeklyProfile data={this.state.weeklyDrivenData} />, key: 2 }, { class: <DistanceDriven data={this.state.distanceDrivenArr} />, key: 3 }, { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
+      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 },
+      { class: <WeeklyProfile data={this.state.weeklyGraphData} />, key: 2 },
+      { class: <DistanceDriven data={this.state.distanceDrivenArr} />, key: 3 },
+      { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
     });
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
@@ -132,7 +227,7 @@ class ChatApp extends Component {
       companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
-    this.props.apiManager.makeCall('viewDrivers', body, res => {
+    this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
       console.log('View Drivers - ', res)
       if (res) {
         this.setState({ drivers: [] }, () => {
@@ -211,7 +306,7 @@ class ChatApp extends Component {
                 return (
                   <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
                     this.socketComponent.disconnectSocketServer();
-                    this.setState({ driverID: item.driverID })
+                    this.getDailyProfile(item.AttachedCarInformation[0].deviceID)
                   }}>
                     <Grid className='text'>
                       <h4>{item.driverName}</h4>
@@ -239,7 +334,7 @@ class ChatApp extends Component {
           <Grid className="cchatAppRight">
             <Grid style={{ display: 'flex', flex: 1, flexDirection: 'row', marginBottom: '15px', overflowY: 'hidden', overflowX: 'scroll', backgroundColor: 'white' }}>
               {this.barItems.map((item, index) => {
-                console.log('bawaaaaa-', item)
+                // console.log('bawaaaaa-', item)
                 return (
                   <Grid style={{ display: 'flex', flex: 1, height: '160px', padding: 5, cursor: 'pointer', boxShadow: '2px 3px 2px #d0d0d0', minWidth: '200px', margin: 5 }} key={item.key}
                     onClick={(e) => {

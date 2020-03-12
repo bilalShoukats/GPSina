@@ -78,6 +78,9 @@ import ApexChart from 'components/Chart/ApexChart/Loadable';
 // import BlankPage from 'containers/Pages/BlankPage/Loadable';
 import AddCompanyScreen from 'containers/Pages/AddCompanyScreen/Loadable';
 import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
+import AddDeviceScreen from 'containers/Pages/AddDeviceScreen/Loadable';
+import ViewDeviceScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
+import EditCompanyScreen from 'containers/Pages/EditCompanyScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
 import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
 import EditRouteScreen from 'containers/Pages/EditRouteScreen/Loadable';
@@ -118,6 +121,10 @@ const Routes = props => (
     {/* Company Links */}
     <PrivateRoute exact path="/addCompany" component={AddCompanyScreen} />
     <PrivateRoute exact path="/viewCompanies" component={ViewCompaniesScreen} />
+    <PrivateRoute exact path={`/editCompany/:item`} component={EditCompanyScreen} />
+    {/* Device Links*/}
+    <PrivateRoute exact path="/addDevice" component={AddDeviceScreen} />
+    <PrivateRoute exact path="/viewDevice" component={ViewDeviceScreen} />
     {/* Employee Links */}
     <PrivateRoute exact path="/addUser" component={AddUserScreen} />
     <PrivateRoute exact path={`/editUser/:item`} component={EditUserScreen} />

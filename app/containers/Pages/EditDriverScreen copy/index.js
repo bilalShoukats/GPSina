@@ -6,16 +6,16 @@ import { compose } from 'redux';
 import makeSelectAddUserScreen from './selectors';
 import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
-import Card from 'components/Card/Loadable'
+import Card from './node_modules/components/Card/Loadable'
 import './style.scss'
 import { ToastContainer, toast } from 'react-toastify';
-import 'sass/elements/sweet-alerts.scss';
+import './node_modules/sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
 import Dialog from '@material-ui/core/Dialog';
 
 // images
-import companyLogo from 'images/team/img1.jpg'
+import companyLogo from './node_modules/images/team/img1.jpg'
 
 class AddUserScreen extends Component {
 

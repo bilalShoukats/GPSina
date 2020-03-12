@@ -9,6 +9,9 @@ import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import Dialog from '@material-ui/core/Dialog';
+import CompanyCard from './CompanyCard'
+import ConfirmModal from './ConfirmModal';
+import AssignCompany from './AssignCompanyModal'
 
 // images
 import profile from 'images/team/img1.jpg'
@@ -26,6 +29,8 @@ class ViewCompaniesScreen extends Component {
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
+    showConfirmModal: false,
+    showAssignCompanyModal: false
   }
 
   handleChange = (event, newValue) => {
@@ -49,6 +54,7 @@ class ViewCompaniesScreen extends Component {
 
   getAllMyCompanies = () => {
     this.props.apiManager.makeCall(`getAllCompanies?page=${this.state.currentPage}`, {}, res => {
+      console.log('lkjkl', res.response)
       if (res.code === 1019) {
         this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
@@ -79,7 +85,18 @@ class ViewCompaniesScreen extends Component {
       </Dialog>
     )
   }
-
+  openConfirmModal = (item) => {
+    this.setState({ companyEmail: item.email, showConfirmModal: true })
+  }
+  openConfirmUnAssignModal = (item) => {
+    this.setState({ registrationNo: item.registrationNo, showConfirmUnAssignModal: true })
+  }
+  close = () => {
+    this.setState({ showConfirmModal: false, showAssignCompanyModal: false, companies: [] }, () => this.getAllMyCompanies())
+  }
+  openAssignCompanyModal = (item) => {
+    this.setState({ companyEmail: item.email, showAssignCompanyModal: true })
+  }
   render() {
     let searchingFor = null;
     if (this.state.loading)
@@ -121,20 +138,21 @@ class ViewCompaniesScreen extends Component {
                 contentClassName='companiesScrollBarContent'
                 horizontal={false}
               >
-                <ul className="forumItems">
-                  <li className="companiesList">
-                    {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => (
-                      <Link className="companiesLink" key={i} to='#'>
-                        <Grid className="companiesAutorImg">
-                          {/* <img src={item.companyLogo} alt="" /> */}
-                          <img src={profile} alt="" />
-                        </Grid>
-                        <Grid className="companiesAutorContent">
-                          <h4>{item.companyName} <span className={`forumBadge ${item.companyName}`}>{item.companyName}</span></h4>
-                          <h5>Director Name : {item.director}</h5>
-                        </Grid>
-                      </Link>
-                    ))}
+                <ul className="forumItems" style={{ margin: 10 }}>
+                  <li className="companiesList" >
+                    {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => {
+                      console.log('nadeem', item)
+                      var enc = window.btoa(item.driverEmail);
+                      return (
+                        <CompanyCard key={i}
+                          item={item}
+                          openConfirmModal={() => this.openConfirmModal(item)}
+                          editCompany={() => this.props.history.push(`/editCompany/${item.email}`)}
+                          openAssignCompanyModal={() => this.openAssignCompanyModal(item)}
+                        />
+                      )
+                    }
+                    )}
                   </li>
                 </ul>
               </ScrollArea>
@@ -158,28 +176,23 @@ class ViewCompaniesScreen extends Component {
               )}
           </Grid>) : null}
         {this.renderLoading()}
+        <ConfirmModal
+          open={this.state.showConfirmModal}
+          close={this.close}
+          companyEmail={this.state.companyEmail}
+          {...this.props}
+        // history={this.props.history}
+        />
+        <AssignCompany
+          open={this.state.showAssignCompanyModal}
+          close={this.close}
+          companyEmail={this.state.companyEmail}
+          {...this.props}
+        />
       </Fragment>
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   viewCompaniesScreen: makeSelectViewCompaniesScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(ViewCompaniesScreen);
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,

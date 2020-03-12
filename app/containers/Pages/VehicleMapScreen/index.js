@@ -77,7 +77,7 @@ class ChatApp extends Component {
   // move = () => {
   //   let mapii = this.state.mapii;
   //   mapii.forEach(single => {
-  //     single[2] += 0.001
+  //     single[2] += 10.001
   //   });
   //   this.setState({ mapii });
   // }
@@ -98,8 +98,8 @@ class ChatApp extends Component {
         <Grid className="chatApp">
           <Grid style={{ width: '100%', height: '100%' }}>
             <GMap
-              data={[...this.state.mapObject.values()]}
-              // data={this.state.mapii}
+              // data={[...this.state.mapObject.values()]}
+              data={this.state.mapii}
             />
           </Grid>
         </Grid>

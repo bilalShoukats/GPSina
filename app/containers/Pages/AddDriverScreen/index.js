@@ -290,7 +290,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Name"
-                    placeholder="Your Name name here.."
+                    placeholder="Your driver name here.."
                     fullWidth
                     variant="outlined"
                     name="driverName"
@@ -307,7 +307,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Email"
-                    placeholder="Your Email here.."
+                    placeholder="Driver Email here.."
                     fullWidth
                     variant="outlined"
                     name="driverEmail"
@@ -324,7 +324,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Driver Owner"
-                    placeholder="Your Last Name here.."
+                    placeholder="Driver owner name here.."
                     fullWidth
                     variant="outlined"
                     name="driverOwner"
@@ -340,7 +340,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Licence Number"
-                    placeholder="Your User name here.."
+                    placeholder="Your licence number here.."
                     fullWidth
                     variant="outlined"
                     name="licenceNumber"
@@ -374,7 +374,7 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     select
-                    label="Gender"
+                    label="Blood Group"
                     className='formInput'
                     value={this.state.driverBloodGroup}
                     fullWidth
