@@ -9,6 +9,7 @@ class DashboardVehicleInfo extends Component {
 
   constructor(props) {
     super(props);
+    console.log("Vehicle info props: ", props);
     this.state = {
       vehicleName: "",
       driverName: "",
@@ -18,6 +19,16 @@ class DashboardVehicleInfo extends Component {
 
   componentDidMount = () => {
     this.setState({ vehicleName: "Honda Civic", driverName: "Ali Ahmed", registrationNo: "LER-6383" })
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.devicesInfo) {
+      nextProps.devicesInfo.forEach((item) => {
+        if (item.deviceID == nextProps.selectedDeviceId) {
+          this.setState({ registrationNo: item.registrationNo, vehicleName: item.deviceID, driverName: item.carOwnerName });
+        }
+      })
+    }
   }
 
   render() {
