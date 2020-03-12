@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
@@ -6,15 +6,23 @@ import HighchartsReact from 'highcharts-react-official'
 // json 
 import data from 'utils/json/range.json'
 
-const AreaRange = () => {
-    const options = {
+
+export default class GpsSpeedGraph extends Component {
+    constructor(props)
+    {
+        super(props);
+    }
+
+    gpsSpeed = [];
+
+    options = {
         minWidth: '100%',
         width: '100%',
         height: '100%',
         chart: {
             backgroundColor: 'rgba(0,0,0,0.25)',
             type: 'arearange',
-            zoomType: 'x',
+            zoomType: 'y',
             scrollablePlotArea: {
                 height: '100%',
                 minWidth: '100%',
@@ -26,21 +34,21 @@ const AreaRange = () => {
             text: "GPS SPEED"
         },
         subtitle: false,
-        xAxis: {
-            gridLineColor: '#DCE0EE',
-            gridLineDashStyle: 'solid',
-            gridLineWidth: 0,
-            crosshair: true,
-            labels: {
-                style: {
-                    color: '#676B79',
-                    fontSize: '14px',
-                    fontWeight: "400",
-                }
-            },
-            lineColor: '#EAEAF5',
-            lineWidth: 1,
-        },
+        // xAxis: {
+        //     gridLineColor: '#DCE0EE',
+        //     gridLineDashStyle: 'solid',
+        //     gridLineWidth: 0,
+        //     crosshair: true,
+        //     labels: {
+        //         style: {
+        //             color: '#676B79',
+        //             fontSize: '14px',
+        //             fontWeight: "400",
+        //         }
+        //     },
+        //     lineColor: '#EAEAF5',
+        //     lineWidth: 1,
+        // },
         legend: {
             enabled: false,
             itemStyle: {
@@ -74,7 +82,7 @@ const AreaRange = () => {
             className: 'heighChartTooltip',
             headerFormat: '<h4 className="tooltipTitle">{point.key}</h4><ul className="chatTooltip">',
             pointFormat: '<li><span style="color:{series.color};padding:0">{series.name}: </span>' +
-                '<span style="padding:0"><b>{point.y:.1f} $</b></span></li>',
+                '<span style="padding:0"><b>{point.y:.1f}</b></span></li>',
             footerFormat: '</ul>',
             shared: true,
             useHTML: true
@@ -129,7 +137,7 @@ const AreaRange = () => {
         series: [{
             type: 'area',
             name: 'GPS Speed',
-            data: data
+            data: this.gpsSpeed
         }],
         responsive: {
             rules: [{
@@ -166,18 +174,28 @@ const AreaRange = () => {
             }]
         }
     }
-    return (
-        <HighchartsReact
-            highcharts={Highcharts}
-            allowChartUpdate
-            immutable={false}
-            updateArgs={[true, true, true]}
-            containerProps={{ className: 'chartContainer' }}
-            options={options}
-            height='100%'
-            width='100%'
-        />
-    );
-}
 
-export default AreaRange;
+    componentWillReceiveProps = (nextProps) => {
+        console.log("GRAPHS: ", nextProps);
+        nextProps.data.forEach((item) => {
+            if (item.deviceId == nextProps.selectedId) {
+                this.gpsSpeed.push(item.gpsSpeed);
+            }
+        });
+    }
+
+    render(){
+        return (
+            <HighchartsReact
+                highcharts={Highcharts}
+                allowChartUpdate
+                immutable={false}
+                updateArgs={[true, true, true]}
+                containerProps={{ className: 'chartContainer' }}
+                options={this.options}
+                height='100%'
+                width='100%'
+            />
+        );
+    }
+}

@@ -35,6 +35,17 @@ const getItem = async (key, makeParse) => {
   }
 }
 
+function getItemCallback (key, makeParse, _callback) {
+  let data = localStorage.getItem(key);
+  if (data) {
+    let plainText = decrypt(data);
+    plainText = typeof plainText === 'string' && makeParse ? JSON.parse(plainText) : plainText;
+    _callback(plainText);
+  } else {
+    _callback('')
+  }
+}
+
 const removeItem = async (key) => {
   localStorage.removeItem(key);
 }
@@ -44,6 +55,7 @@ const removeItem = async (key) => {
 const Manager = {
   setItem,
   getItem,
-  removeItem
+  removeItem,
+  getItemCallback
 }
 export { Manager };
