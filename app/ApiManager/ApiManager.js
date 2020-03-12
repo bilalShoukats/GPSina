@@ -6,7 +6,7 @@ import CryptoJS from "crypto-js";
 // const URL = (apiName) => 'http://13.228.129.207:8081/api/' + apiName;
 // live server url
 const URL = (apiName) => 'http://13.233.162.122:8080/api/' + apiName;
-// live server url
+// local server url
 // const URL = (apiName) => 'http://192.168.88.18:8080/api/' + apiName;
 
 const TIMEOUT = 10000; // ten seconds
