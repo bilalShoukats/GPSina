@@ -10,14 +10,24 @@ class DashboardVehicleEngineInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      healthCheck: "",
-      vehicleTemperature: "",
-      vehicleVoltage: ""
+      engineStatus: "",
+      carTemperature: "",
+      rpm: ""
     }
   }
 
   componentDidMount = () => {
-    this.setState({ healthCheck: "OK", vehicleTemperature: "89", vehicleVoltage: "14.2" })
+    this.setState({ engineStatus: "OK", carTemperature: "89", rpm: "14.2" })
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.data) {
+      nextProps.data.forEach((item) => {
+        if (item.deviceId == nextProps.selectedDeviceId) {
+          this.setState({ carTemperature: Math.floor(item.carTemperature), engineStatus: item.engineStatus, rpm: Math.floor(item.rpm) });
+        }
+      })
+    }
   }
 
   render() {
@@ -25,10 +35,10 @@ class DashboardVehicleEngineInfo extends Component {
       <Grid className="vehicleDetailFeature">
         <Grid className="bsVehicleDetailItem">
           <Grid className="content">
-            <label>Engine</label>
-            <p>Health Check: {this.state.healthCheck}</p>
-            <p>Temperature: {this.state.vehicleTemperature} C</p>
-            <p>Voltage: {this.state.vehicleVoltage} V</p>
+            <label style={{ color: "#FFFFFF"}}>Engine</label>
+            <p>Status: {this.state.engineStatus ? "On" : "Off"}</p>
+            <p>Temperature: {this.state.carTemperature}</p>
+            <p>RPM: {this.state.rpm}</p>
           </Grid>
         </Grid>
       </Grid>
