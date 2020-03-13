@@ -3,37 +3,25 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
-import Button from '@material-ui/core/Button';
 import { Grid, CircularProgress } from '@material-ui/core';
-import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './mapHead'
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
+import { toast } from 'react-toastify';
 
 class DashboardScreen extends Component {
   state = {
-    email: "",
-    hash: "",
-    companyEmail: "",
-    companyVehicles: [],
-    loading: false,
-    mapObject: new Map(),
+    loading: true,
     devicesData: [],
-    deviceId: 0,
-    engineStatus: false,
-    Lat: 12,
-    Lng: 12,
-    gpsSpeed: 12,
-    obdSpeed: 12,
-    carTemperature: 12,
-    fuelReading: 12,
-    rpm: 12,
   }
 
-  vehicleDetails= [];
+  vehicleDetails = [];
 
+  /**
+        * Checking timeout of the api request and removing loader on timeout request.
+        */
   componentDidUpdate(prevProps) {
     if (this.props.timeout !== prevProps.timeout) {
       if (this.props.timeout === true) {
@@ -42,80 +30,71 @@ class DashboardScreen extends Component {
     }
   }
 
+  /**
+        * Removing websocket connection on screen change.
+        */
   componentWillUnmount() {
     this.socketComponent.disconnectSocketServer();
   }
 
+  /**
+        * Call back function of websocket to receive vehicle data, passing prop to dashboard map HOC.
+        * @param deviceId number.
+        * @param engineStatus status of engine false or true.
+        * @param Lat lattitude of the vehicle.
+        * @param Lng longtitude of the vehicle.
+        * @param gpsSpeed gps speed of the vehicle.
+        * @param obdSpeed obd speed of the vehicle.
+        * @param carTemperature car temperature of the vehicle.
+        * @param fuelReading fuel reading of the vehicle.
+        * @param rpm rpm of the vehicle.
+        */
   recieveData = (deviceId, engineStatus, Lat, Lng, gpsSpeed, obdSpeed, carTemperature, fuelReading, rpm) => {
     console.log("Index", deviceId)
     let data = {
       deviceId, engineStatus, Lat, Lng, gpsSpeed, obdSpeed, carTemperature, fuelReading, rpm
     }
-    this.mainMap(data, this.state.vehicleDetails);
+    try{
+      this.mainMap(data, this.state.vehicleDetails);
+    }
+    catch (e)
+    {
+      console.log("dashboard screen render not called yet");
+    }
   }
 
+  /**
+        * fetching user data and calling api to get all vehicles data and passing vehicle Ids to websocket.
+        */
   componentDidMount = () => {
     this.socketComponent = new SocketComponent();
     Manager.getItemCallback('user', true, (user) => {
-      console.log('User:', user)
-      this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash });
       let body = {
         companyEmail: user.companyEmail
       }
       this.props.apiManager.makeCall('viewCars', body, (res) => {
+        this.setState({ loading: false });
         if (res.code === 1019) {
           this.state.vehicleDetails = res.response;
           let companyVehicleIDs = [];
-          console.log("response", res)
           res.response.forEach((item) => {
             companyVehicleIDs.push(item.deviceID.toString());
           });
-          this.socketComponent.connectSocketServer(this.state.hash, companyVehicleIDs, this.recieveData);
+          this.socketComponent.connectSocketServer(user.hash, companyVehicleIDs, this.recieveData);
         } else {
-          this.setState({ loading: false });
           toast.error(res.id);
         }
       });
     });
-
-    // this.getMyEmail();
   }
 
-  getAllMyVehicles = () => {
-    let body = {
-      companyEmail: this.state.companyEmail
-    }
-    this.props.apiManager.makeCall('viewCars', body, res => {
-      if (res.code === 1019) {
-        this.setState({ companyVehicles: this.state.companyVehicles.concat(res.response), loading: false }, () => {
-          let companyVehicleIDs = [];
-          this.state.companyVehicles.map((item, index) => {
-            companyVehicleIDs.push("" + item.deviceID);
-          });
-          this.setState({ companyVehicleIDs }, () => {
-            setTimeout(() => {
-
-            }, 2000);
-          });
-        });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    }, false)
-  }
-
-  getMyEmail = async () => {
-
-    //, () => this.getAllMyVehicles());
-  }
-
+  /**
+        * rendering loader before calling vehicle api
+        */
   renderLoading = () => {
     return (
       <Dialog
         open={this.state.loading}
-        // onClose={this.state.loading}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
@@ -128,6 +107,9 @@ class DashboardScreen extends Component {
     )
   }
 
+  /**
+        * rendering all the screen components
+        */
   render() {
     return (
       <Fragment>
