@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { toast } from 'react-toastify';
-import SweetAlertSingle from '../../../../app/components/UI_Elements/SweetAlert/alert';
+import SweetAlertSingle from '../../../components/UI_Elements/SweetAlert/alert';
 
 export default class ConfirmModal extends Component {
   deleteCar = () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { compose, withStateHandlers, lifecycle } from "recompose";
 import { InfoWindow, withGoogleMap, withScriptjs, GoogleMap, Marker, DirectionsRenderer } from 'react-google-maps';
 import ruoteImg from 'images/routeIcon.png';
+const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 
 export default class EditRouteMap extends React.Component {
     constructor(props) {
@@ -17,6 +18,7 @@ export default class EditRouteMap extends React.Component {
             disableDefaultUI: true,
             scaleControl: true,
             zoomControl: true,
+            styles: demoFancyMapStyles,
         };
         let me = this;
         const Map = compose(
@@ -66,7 +68,7 @@ export default class EditRouteMap extends React.Component {
                             });
                         },
                         drawDirections: (oldPlaces) => {
-                            console.log('bawaa',oldPlaces.length)
+                            console.log('bawaa', oldPlaces.length)
                             let oldPlaceMarkers = [{
                                 id: 0,
                                 lat: oldPlaces[0].tripGpsLat,

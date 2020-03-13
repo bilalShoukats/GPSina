@@ -46,16 +46,17 @@ class ChatApp extends Component {
       mapObject: new Map(),
       drivers: [],
       selectedIndex: 1,
-      dailyProfileData: [],
       dailyProfileDat: [],
       weeklyGraphData: [],
       hoursDrivenData: [],
       weeklyDrivenData: [],
       distanceDrivenArr: [],
     }
+
+
   }
 
-  barItems = [];
+  // barItems = [];
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
     let mapObject = this.state.mapObject;
@@ -83,32 +84,28 @@ class ChatApp extends Component {
       console.log('View trip - ', res)
       console.log('View trip - ', body)
       if (res) {
-        this.setState({ dailyProfile: res.response, loading: false }, () => {
-          for (let index = 0; index < 31; index++) {
-            this.state.dailyProfileDat[index] = [];
-            var newArray = this.state.dailyProfileDat[index]
-            newArray[0] = index
-            newArray[1] = 0
+        for (let index = 0; index < 31; index++) {
+          this.state.dailyProfileDat[index] = [];
+          var newArray = this.state.dailyProfileDat[index]
+          newArray[0] = index
+          newArray[1] = 0
+        }
+        res.response.map((item, index) => {
+          let date = new Date(item.tripStartTime).getDate()
+          if (this.state.dailyProfileDat[date][0] === date) {
+            let i = this.state.dailyProfileDat[date][1]
+            this.state.dailyProfileDat[date][1] = i + 1
           }
-          res.response.map((item, index) => {
-            let date = new Date(item.tripStartTime).getDate()
-            if (this.state.dailyProfileDat[date][0] === date) {
-              let i = this.state.dailyProfileDat[date][1]
-              this.state.dailyProfileDat[date][1] = i + 1
-            }
-            else {
-            }
-            let day = new Date(item.tripStartTime).getDay()
-            if (this.state.weeklyGraphData[day][0] === day) {
-              let i = this.state.weeklyGraphData[day][1]
-              this.state.weeklyGraphData[day][1] = i + 1
-            }
+          else {
+          }
+          let day = new Date(item.tripStartTime).getDay()
+          if (this.state.weeklyGraphData[day][0] === day) {
+            let i = this.state.weeklyGraphData[day][1]
+            this.state.weeklyGraphData[day][1] = i + 1
+          }
 
-          });
-        }, () => {
-          this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
         });
-        console.log('lala', this.state.weeklyGraphData)
+        this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
       }
       else {
         this.setState({ loading: false });
@@ -123,31 +120,27 @@ class ChatApp extends Component {
     this.props.apiManager.makeCall('totalTimeTripsDrive', body, res => {
       console.log('lalap', res)
       if (res) {
-        this.setState({ dailyProfile: res.response, loading: false }, () => {
-          for (let index = 0; index < 31; index++) {
-            this.state.hoursDrivenData[index] = [];
-            var newArray = this.state.hoursDrivenData[index]
-            newArray[0] = index
-            newArray[1] = 0
+        for (let index = 0; index < 31; index++) {
+          this.state.hoursDrivenData[index] = [];
+          var newArray = this.state.hoursDrivenData[index]
+          newArray[0] = index
+          newArray[1] = 0
+        }
+        res.response.map((item, index) => {
+          let date = new Date(item.starttime).getDate()
+          if (this.state.hoursDrivenData[date][0] === date) {
+            let i = this.state.hoursDrivenData[date][1]
+            this.state.hoursDrivenData[date][1] = i + item.totalsum
           }
-          res.response.map((item, index) => {
-            let date = new Date(item.starttime).getDate()
-            if (this.state.hoursDrivenData[date][0] === date) {
-              let i = this.state.hoursDrivenData[date][1]
-              this.state.hoursDrivenData[date][1] = i + item.totalsum
-            }
-            else {
-            }
-            // let day = new Date(item.tripStartTime).getDay()
-            // if (this.state.weeklyGraphData[day][0] === day) {
-            //   let i = this.state.weeklyGraphData[day][1]
-            //   this.state.weeklyGraphData[day][1] = i + 1
-            // }
-          });
-        }, () => {
-          this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
+          else {
+          }
+          // let day = new Date(item.tripStartTime).getDay()
+          // if (this.state.weeklyGraphData[day][0] === day) {
+          //   let i = this.state.weeklyGraphData[day][1]
+          //   this.state.weeklyGraphData[day][1] = i + 1
+          // }
         });
-        console.log('lalap', this.state.hoursDrivenData)
+        this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
       }
       else {
         this.setState({ loading: false });
@@ -159,6 +152,7 @@ class ChatApp extends Component {
   getDailyProfile = (deviceID) => {
     this.barData(deviceID);
     this.graphData(deviceID);
+
   }
   componentDidMount = () => {
     for (let index = 1; index < 8; index++) {
@@ -167,46 +161,9 @@ class ChatApp extends Component {
       newArray[0] = index
       newArray[1] = 0
     }
-    let harshData = [];
-    let hoursGraphData = [];
-    let weeklyGraphData = [];
-    let distanceGraphData = [];
-    response.map((item) => {
-      let newObject = [];
-      newObject[0] = item.accX;
-      newObject[1] = item.accY;
-      harshData.push(newObject);
-    });
-    hoursDriven.map((item) => {
-      let newObject = [];
-      newObject[0] = item.accX;
-      newObject[1] = item.accY;
-      hoursGraphData.push(newObject);
-    });
-    weeklyDriven.map((item) => {
-      let newObject = [];
-      newObject[0] = item.accX;
-      newObject[1] = item.accY;
-      weeklyGraphData.push(newObject);
-    });
-    distanceDrivenData.map((item) => {
-      let newObject = [];
-      newObject[0] = item.accX;
-      newObject[1] = item.accY;
-      distanceGraphData.push(newObject);
-    });
-    this.setState({ dailyProfileData: harshData, hoursDrivenDataa: hoursGraphData, distanceDrivenArr: distanceGraphData }, () => {
-      console.log("hours driven data: ", hoursGraphData);
-      this.barItems = [{
-        class: <BarChart data={this.state.dailyProfileDat}
-        />, key: 0
-      }, { class: <Bar data={this.state.hoursDrivenData} />, key: 1 },
-      { class: <WeeklyProfile data={this.state.weeklyGraphData} />, key: 2 },
-      { class: <DistanceDriven data={this.state.distanceDrivenArr} />, key: 3 },
-      { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
-    });
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
+
   }
 
   componentWillUnmount = () => {
@@ -231,7 +188,9 @@ class ChatApp extends Component {
       console.log('View Drivers - ', res)
       if (res) {
         this.setState({ drivers: [] }, () => {
-          this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+          this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
+            this.getDailyProfile(res.response[0].AttachedCarInformation[0].deviceID)
+          });
         })
       }
       else {
@@ -289,7 +248,13 @@ class ChatApp extends Component {
 
 
   render() {
-    console.log('bawaa item', this.state.selectedIndex)
+    this.barItems = [
+      { class: <BarChart data={this.state.dailyProfileDat} />, key: 0 },
+      { class: <Bar data={this.state.hoursDrivenData} />, key: 1 },
+      { class: <WeeklyProfile data={this.state.weeklyGraphData} />, key: 2 },
+      { class: <DistanceDriven data={this.state.distanceDrivenArr} />, key: 3 },
+      { class: <GMap data={[...this.state.mapObject.values()]} />, key: 4 }]
+    console.log('bawaa item', this.state.dailyProfileDat)
     return (
       <Fragment >
         <h2 className="breadcumbTitle">Fleet Utilization</h2>
