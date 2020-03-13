@@ -28,6 +28,9 @@ export default class SocketComponent extends Component {
         return simpleArray;
     }
 
+    /**
+        * Disconnect socket server connection on screen change.
+        */
     disconnectSocketServer = () => {
         console.log("SOCKET HARD CLOSE");
         if (this.socket) {
@@ -38,12 +41,14 @@ export default class SocketComponent extends Component {
 
     /**
         * Create connection with web socket server and send encrypted token and device ids on socker.
+        * @param hash hash of the logged in user.
+        * @param deviceIds device ids array.
+        * @param callBackFunc call back function to return data to.
         */
     connectSocketServer = async (hash, deviceIds, callBackFunc) => {
-        console.log("connect with socket");
         // this.socket = new WebSocket('ws://13.228.129.207:8091'); //develop
         this.socket = new WebSocket('ws://13.233.162.122:8091'); //live
-        // this.socket = new WebSocket('ws://192.168.88.18:8091'); //local
+        // this.socket = new WebSocket('ws://192.168.88.49:8091'); //local
         this.token = hash;
         this.deviceIDs = deviceIds;
         this.callBack = callBackFunc;
@@ -59,7 +64,6 @@ export default class SocketComponent extends Component {
         this.socket.onmessage = (e) => {
             e.data.arrayBuffer()
                 .then(value => {
-                    // console.log("data: ", value);
                     if (this.hardClose)
                         this.socket.close(1000);
                     else {
@@ -110,11 +114,9 @@ export default class SocketComponent extends Component {
         var buffer = protocol.read(dataArray).UVarint().result;
         dataArray = dataArray.subarray(1);
         if (buffer === dataArray.length) {
-            // console.log("Length is same");
             return true;
         }
         else {
-            // console.log("Length not same");
             return false;
         }
     }

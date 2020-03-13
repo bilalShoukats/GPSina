@@ -33,10 +33,18 @@ export default class DashboardMap extends React.Component {
     currentMarkerClicked = 0;
     vehicleDetailsData = [];
 
+    /**
+        * binded function of HOC to get data from dashboard screen.
+        */
     componentDidMount = () => {
         this.props.show(this.show);
     }
 
+    /**
+        * Called when clicked on marker and show vehicle graphs and details.
+        * @param markerCurrentPos number.
+        * @param clickedDeviceId status of engine false or true.
+        */
     mapMarkerClicked = (markerCurrentPos, clickedDeviceId) => {
         this.bool = true;
         this.zoomValue = true;
@@ -45,6 +53,9 @@ export default class DashboardMap extends React.Component {
         this.showGraph = true;
     }
 
+    /**
+        * Show all vehicles on map and recenter map to default location.
+        */
     showAllVehicles = () => {
         this.bool = false;
         this.zoomValue = false;
@@ -53,12 +64,20 @@ export default class DashboardMap extends React.Component {
         this.showGraph = false;
     }
 
-    //binded function important
+    /**
+        * Binded function and sending data to dataRecieved.
+        * @param data array of data that contains vehicle information.
+        * @param vehicleDetailsInfo vehicle information.
+        */
     show = (data, vehicleDetailsInfo) => {
         this.state.vehicleDetailsData = vehicleDetailsInfo;
         this.dataReceived(data);
     }
 
+     /**
+        * Creating vehicle data array and setting array for all vehicle socket data.
+        * @param data array of data that contains vehicle websocket data.
+        */
     dataReceived = (data) => {
         console.log("data recieved: ", data);
         var flag = false;
@@ -89,6 +108,9 @@ export default class DashboardMap extends React.Component {
         }
     }
 
+     /**
+        * Render with map that render all the UI elements.
+        */
     renderWithMap = () => {
         return (
             <div>
