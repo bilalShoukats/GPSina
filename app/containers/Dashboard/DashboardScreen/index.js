@@ -11,6 +11,7 @@ import GMap from './mapHead'
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
+import { toast } from 'react-toastify';
 
 class DashboardScreen extends Component {
   state = {
@@ -32,7 +33,7 @@ class DashboardScreen extends Component {
     rpm: 12,
   }
 
-  vehicleDetails= [];
+  vehicleDetails = [];
 
   componentDidUpdate(prevProps) {
     if (this.props.timeout !== prevProps.timeout) {
