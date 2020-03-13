@@ -65,13 +65,14 @@ class AssignDriver extends Component {
     let body = {
       registrationNo: this.props.registrationNo,
       driverID: this.state.driverID,
-      routeID: "5e41652de249d140d80f6738"
+      routeID: "1234567891"
     }
     if (this.state.driverID !== '') {
       this.props.apiManager.makeCall('assignCar', body, res => {
         console.log('assign cars - view', res)
-        console.log('assign cars - view', this.props)
-        if (res) {
+        console.log('assign cars - view', body)
+        if (res.code === 104) {
+          toast.success(res.id)
           this.props.close()
         }
         else {

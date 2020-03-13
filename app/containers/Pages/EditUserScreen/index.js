@@ -152,7 +152,7 @@ class AddUserScreen extends Component {
     }
     // console.log('alssssl', body)
     this.props.apiManager.makeCall(`getEmployeeDetail`, body, res => {
-      console.log('alssssl', res.response.userPermissions[body.companyEmail].apiOperation[0])
+      console.log('alssssl', res.response.userPermissions[body.companyEmail])
       if (res.code === 5056) {
         this.setState({
           userDetail: res.response, currentPage: res.currentPage, totalPages: res.totalPages, loading: false,
@@ -198,20 +198,21 @@ class AddUserScreen extends Component {
           email: this.state.email,
           phone: this.state.phone,
           avatar: this.state.file,
+          companyEmail: emaill,
           userPermissions: {
             [emaill]: {
               apiOperation: [
-                this.state.addUser,
-                this.state.viewUser,
-                this.state.editUser,
-                this.state.addRoute,
-                this.state.viewRoutes,
-                this.state.addDriver,
-                this.state.viewDrivers,
-                this.state.addVehicle,
-                this.state.viewVehicle,
-                this.state.assignDriver,
-                this.state.attachDevice,
+                this.state.addUser === true ? 1 : 0,
+                this.state.viewUser === true ? 1 : 0,
+                this.state.editUser === true ? 1 : 0,
+                this.state.addRoute === true ? 1 : 0,
+                this.state.viewRoutes === true ? 1 : 0,
+                this.state.addDriver === true ? 1 : 0,
+                this.state.viewDrivers === true ? 1 : 0,
+                this.state.addVehicle === true ? 1 : 0,
+                this.state.viewVehicle === true ? 1 : 0,
+                this.state.assignDriver === true ? 1 : 0,
+                this.state.attachDevice === true ? 1 : 0,
               ]
             }
           }
@@ -223,9 +224,10 @@ class AddUserScreen extends Component {
             this.setState({ loading: false })
             toast.success('User added successfully!')
           }
-          else
+          else {
             this.setState({ loading: false })
-          toast.error(response.id)
+            toast.error(response.id)
+          }
         });
       } else {
         console.log(error);

@@ -103,6 +103,36 @@ class BarChart extends PureComponent {
     const { intervalId } = this.state;
     clearInterval(intervalId);
   }
+  componentWillReceiveProps(nextProps) {
+    const _this = this;
+
+    const newData = [];
+    const oldDataSet = _this.state.data.datasets[0];
+    const labels = [];
+
+    nextProps.data.map((key, value) => {
+      newData.push(key[1]);
+      labels.push(key[0]);
+    })
+
+    const newDataSet = {
+      ...oldDataSet,
+    };
+
+    console.log("new data set: ", newDataSet);
+
+    newDataSet.data = newData;
+
+    const newState = {
+      ...initialState,
+      data: {
+        datasets: [newDataSet],
+        labels: labels,
+      },
+    };
+
+    _this.setState(newState);
+  }
 
   render() {
     const { data } = this.state;

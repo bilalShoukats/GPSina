@@ -17,7 +17,7 @@ class AddVehicleScreen extends Component {
 
   state = {
     companyEmail: '',
-    companyName: '',
+    vehicleName: '',
     directorName: '',
     companyLogo: '',
     error: {},
@@ -26,40 +26,118 @@ class AddVehicleScreen extends Component {
   }
 
   schema = {
-    companyName: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
+    carOwnername: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Company name must be more than 7 character";
+            err.message = "Owner name must be more than 7 character";
             break;
           default:
-            err.message = "Please enter company name";
+            err.message = "Please enter Owner name";
             break;
         }
       });
       return errors;
     }),
-    directorName: Joi.string().regex(/^[a-zA-Z ]{8}/).required().error(errors => {
+    carModel: Joi.string().regex(/^[a-zA-Z0-9]{6}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Director name must be more than 7 character";
+            err.message = "Modal name must be more than 5 character";
             break;
           default:
-            err.message = "Please enter director name";
+            err.message = "Please enter Model name";
             break;
         }
       });
       return errors;
     }),
-    companyEmail: Joi.string().email({ minDomainAtoms: 2 }).required().error(errors => {
+    color: Joi.string().regex(/^[a-zA-Z0-9]{4}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
-          case "string.email":
-            err.message = "Please enter valid email address";
+          case "string.regex.base":
+            err.message = "Color must be more than 3 character";
             break;
           default:
-            err.message = "Company email cannot be empty";
+            err.message = "Please enter Color";
+            break;
+        }
+      });
+      return errors;
+    }),
+    carType: Joi.string().regex(/^[a-zA-Z0-9 ]{8}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Car type must be more than 7 character";
+            break;
+          default:
+            err.message = "Please enter car type";
+            break;
+        }
+      });
+      return errors;
+    }),
+    fuelType: Joi.string().regex(/^[a-zA-Z0-9]{4}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Fuel type must be more than 3 character";
+            break;
+          default:
+            err.message = "Please enter fuel type";
+            break;
+        }
+      });
+      return errors;
+    }),
+    mileage: Joi.string().regex(/^[0-9]{4}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Mileage must be more than 3 number";
+            break;
+          default:
+            err.message = "Please enter mileage";
+            break;
+        }
+      });
+      return errors;
+    }),
+    engineNo: Joi.string().regex(/^[a-zA-Z0-9]{7}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Engine Number must be more than 6 character";
+            break;
+          default:
+            err.message = "Please enter engine number";
+            break;
+        }
+      });
+      return errors;
+    }),
+    registrationNo: Joi.string().regex(/^[a-zA-Z0-9]{6}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Registration Number must be more than 5 character";
+            break;
+          default:
+            err.message = "Please enter registration number";
+            break;
+        }
+      });
+      return errors;
+    }),
+    chassis: Joi.string().regex(/^[0-9]{5}/).required().error(errors => {
+      errors.forEach(err => {
+        switch (err.type) {
+          case "string.regex.base":
+            err.message = "Chassis number must be more than 4 number";
+            break;
+          default:
+            err.message = "Please enter chassis number";
             break;
         }
       });
@@ -91,9 +169,16 @@ class AddVehicleScreen extends Component {
   validate = () => {
     const options = { abortEarly: false }
     const form = {
-      companyName: this.state.companyName,
-      companyEmail: this.state.companyEmail,
-      directorName: this.state.directorName
+      carOwnername: this.state.carOwnername,
+      carModel: this.state.carModel,
+      color: this.state.color,
+      carType: this.state.carType,
+      fuelType: this.state.fuelType,
+      mileage: this.state.mileage,
+      engineNo: this.state.engineNo,
+      registrationNo: this.state.registrationNo,
+      chassis: this.state.chassis,
+
     }
     const { error } = Joi.validate(form, this.schema, options)
     if (!error) return null;
@@ -110,12 +195,19 @@ class AddVehicleScreen extends Component {
     this.setState({ loading: true }, () => {
       if (!error) {
         let body = {
-          companyName: this.state.companyName,
-          email: this.state.companyEmail,
-          director: this.state.directorName,
-          // companyLogo: this.state.companyLogo,
+          carOwnername: this.state.carOwnername,
+          carModel: this.state.carModel,
+          color: this.state.color,
+          carType: this.state.carType,
+          fuelType: this.state.fuelType,
+          mileage: this.state.mileage,
+          engineNo: this.state.engineNo,
+          registrationNo: this.state.registrationNo,
+          chassis: this.state.chassis,
+          companyEmail: this.props.user.companyEmail,
         }
-        this.props.apiManager.makeCall("addCompany", body, (response) => {
+        this.props.apiManager.makeCall("addCar", body, (response) => {
+          console.log('addcar', body)
           if (response.code === 1008) {
             this.setState({ loading: false })
             toast.success('Vehicle added successfully!')
@@ -183,52 +275,154 @@ class AddVehicleScreen extends Component {
               <Grid container spacing={3}>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Vehicle Name"
-                    placeholder="Your company name here.."
+                    label="Vehicle Owner Name"
+                    placeholder="Vehicle owner name here.."
                     fullWidth
                     variant="outlined"
-                    name="companyName"
+                    name="carOwnername"
                     onChange={this.changeHandler}
-                    value={this.state.companyName}
+                    value={this.state.carOwnername}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.companyName && true}
-                    helperText={this.state.error.companyName && this.state.error.companyName}
+                    error={this.state.error.carOwnername && true}
+                    helperText={this.state.error.carOwnername && this.state.error.carOwnername}
                     className="formInput"
                   />
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Vehicle"
-                    placeholder="Your company email here.."
+                    label="Car Modal"
+                    placeholder="Your car modal here.."
                     fullWidth
                     variant="outlined"
-                    name="companyEmail"
+                    name="carModel"
                     onChange={this.changeHandler}
-                    value={this.state.companyEmail}
+                    value={this.state.carModel}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.companyEmail && true}
-                    helperText={this.state.error.companyEmail && this.state.error.companyEmail}
+                    error={this.state.error.carModel && true}
+                    helperText={this.state.error.carModel && this.state.error.carModel}
                     className="formInput"
                   />
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
-                    label="Director Name"
-                    placeholder="Your director name here.."
+                    label="Vehicle Color"
+                    placeholder="Vehicle color here.."
                     fullWidth
                     variant="outlined"
-                    name="directorName"
+                    name="color"
                     onChange={this.changeHandler}
-                    value={this.state.directorName}
+                    value={this.state.color}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={this.state.error.directorName && true}
-                    helperText={this.state.error.directorName && this.state.error.directorName}
+                    error={this.state.error.color && true}
+                    helperText={this.state.error.color && this.state.error.color}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Vehicle Type"
+                    placeholder="Your vehicle type here.."
+                    fullWidth
+                    variant="outlined"
+                    name="carType"
+                    onChange={this.changeHandler}
+                    value={this.state.carType}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.carType && true}
+                    helperText={this.state.error.carType && this.state.error.carType}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Fuel Type"
+                    placeholder="Vehicle fuel type here.."
+                    fullWidth
+                    variant="outlined"
+                    name="fuelType"
+                    onChange={this.changeHandler}
+                    value={this.state.fuelType}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.fuelType && true}
+                    helperText={this.state.error.fuelType && this.state.error.fuelType}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Vehicle Mileage"
+                    placeholder="Vehicle mileage here.."
+                    fullWidth
+                    variant="outlined"
+                    name="mileage"
+                    onChange={this.changeHandler}
+                    value={this.state.mileage}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.mileage && true}
+                    helperText={this.state.error.mileage && this.state.error.mileage}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Engine Number"
+                    placeholder="Vehicle engine number here.."
+                    fullWidth
+                    variant="outlined"
+                    name="engineNo"
+                    onChange={this.changeHandler}
+                    value={this.state.engineNo}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.engineNo && true}
+                    helperText={this.state.error.engineNo && this.state.error.engineNo}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Vehicle Registration Number"
+                    placeholder="Vehicle registration number here.."
+                    fullWidth
+                    variant="outlined"
+                    name="registrationNo"
+                    onChange={this.changeHandler}
+                    value={this.state.registrationNo}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.registrationNo && true}
+                    helperText={this.state.error.registrationNo && this.state.error.registrationNo}
+                    className="formInput"
+                  />
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <TextField
+                    label="Vehicle Chassis Number"
+                    placeholder="Vehicle chassis number here.."
+                    fullWidth
+                    variant="outlined"
+                    name="chassis"
+                    onChange={this.changeHandler}
+                    value={this.state.chassis}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={this.state.error.chassis && true}
+                    helperText={this.state.error.chassis && this.state.error.chassis}
                     className="formInput"
                   />
                 </Grid>

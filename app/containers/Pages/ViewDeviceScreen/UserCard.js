@@ -17,8 +17,8 @@ const Report = (props) => (
         <TableHead>
           <TableRow>
             <TableCell>Image</TableCell>
-            <TableCell style={{ minWidth: '140px' }}>Name</TableCell>
-            <TableCell style={{ minWidth: '140px' }}>Phone</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Device Id</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Registration No</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -30,37 +30,13 @@ const Report = (props) => (
               </Grid>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.userName}</strong>
+              <strong className="uThum">{props.item.deviceID}</strong>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.phone}</strong>
+              <strong className="uThum">{props.item.registrationNo}</strong>
             </TableCell>
             <TableCell>
               <div style={{ display: 'flex', flexDirection: 'row', }}>
-                <div>
-                  <Button onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.openNotificationsModal()
-                  }}
-                    style={{ visibility: 'visible' }}
-                    xl={6}
-                    className='btn bg-primary' >
-                    <i className="icofont-notification"
-                    />
-                  </Button>
-                </div>
-                <div style={{ marginLeft: 5 }}>
-                  <p>{props.item.id}</p>
-                  <Button onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.editUser()
-                    props.history.push(`/editUser/${props.item.id}`)
-                  }} xl={6} className='btn bg-dark'>
-                    <i className="icofont-ui-edit" />
-                  </Button>
-                </div>
                 <div style={{ marginLeft: 5 }}>
                   <Button onClick={(e) => {
                     e.preventDefault();
