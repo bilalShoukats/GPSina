@@ -177,11 +177,7 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>
@@ -215,11 +211,7 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>

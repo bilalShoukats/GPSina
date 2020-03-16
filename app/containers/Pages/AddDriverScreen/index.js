@@ -161,12 +161,7 @@ class AddUserScreen extends Component {
           driverAge: parseInt(this.state.driverAge),
           role: 0,
           gender: parseInt(this.state.gender),
-          // driverOwner: this.state.driverOwner,
           companyEmail: this.props.user.companyEmail,
-          // companyName: this.state.companyName,
-          // email: this.state.companyEmail,
-          // director: this.state.directorName,
-          // companyLogo: this.state.companyLogo,
         }
         this.props.apiManager.makeCall("addDriver", body, (response) => {
           console.log("response: ", response);
@@ -193,9 +188,7 @@ class AddUserScreen extends Component {
       file: URL.createObjectURL(event.target.files[0])
     })
   }
-  handleSwitchChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
+
   renderLoading = () => {
     return (
       <Dialog

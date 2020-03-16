@@ -4,9 +4,7 @@ import { Grid } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import Chart from "./Chart";
 import Map from "./basic";
-import data from 'utils/json/range.json'
 import { SuperHOC } from '../../../HOC';
-import { response } from './data2'
 import './style.scss'
 
 class index extends Component {
@@ -26,33 +24,14 @@ class index extends Component {
     }
   }
 
-
-
   selectDriver = (id) => {
     this.setState({ slectedDriver: id._id }, () => {
       this.getGraphsData(id.AttachedCarInformation[0].deviceID)
     })
   }
 
-
-
   componentDidMount() {
     this.getCarDriverDetails()
-    //this.harshSwerving()
-    if (this.state.carDeviceId !== null) {
-      this.harshAcceleration()
-      this.harshBraking()
-      this.harshSwerving()
-    }
-    let harshSwerData = [];
-    response.map((item) => {
-      let newObject = [];
-      newObject[0] = item.accX;
-      newObject[1] = item.accY;
-      harshSwerData.push(newObject);
-    });
-    this.setState({ graphData: harshSwerData });
-    // this.setState({ accX: response.map(item => item.accX), accY: response.map(item => item.accY) })
   }
   getGraphsData = (id) => {
     this.harshBraking(id)
@@ -67,7 +46,7 @@ class index extends Component {
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
       if (res.code === 1019) {
-        this.setState({ drivers: res.response,  carDeviceId: res.response[0].AttachedCarInformation[0].deviceID });
+        this.setState({ drivers: res.response, carDeviceId: res.response[0].AttachedCarInformation[0].deviceID }, () => this.getGraphsData(this.state.carDeviceId));
       }
       else {
         // this.setState({ loading: false });
@@ -78,7 +57,7 @@ class index extends Component {
 
   harshAcceleration = (id) => {
     let body = {
-      deviceid: this.state.carDeviceId.toString(),
+      deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshAccerlationTimeBase', body, res => {
       console.log('harshAccelerationTimeBase', body)
@@ -108,7 +87,7 @@ class index extends Component {
 
   harshBraking = (id) => {
     let body = {
-      deviceid: this.state.carDeviceId.toString(),
+      deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshBreakingTimeBase', body, res => {
       console.log('harshBreakingTimeBase', res)
@@ -137,7 +116,7 @@ class index extends Component {
 
   harshSwerving = (id) => {
     let body = {
-      deviceid: this.state.carDeviceId.toString(),
+      deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
       console.log('harshSwervingTimeBase', res)
@@ -167,11 +146,8 @@ class index extends Component {
   renderDriver = () => {
     return (
       this.state.drivers.map((item, index) => {
-        console.log('kijoiahi', item._id)
-        console.log('kijoiahi', this.state.slectedDriver)
         return (
           <div
-            //className='driver-list'
             key={index}
             className={item._id === this.state.slectedDriver ? 'selectedItemContainer' : 'itemContainer'}
             onClick={(e) => {
@@ -187,7 +163,6 @@ class index extends Component {
   }
 
   render() {
-    console.log('brakingg', this.state.breakData)
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Driving Analysis</h2>
@@ -210,7 +185,6 @@ class index extends Component {
                   name='harsh acceleration'
                   yName='acc'
                   data={this.state.harshAccData}
-                // data={data}
                 />
               </div>
               <div style={{ height: '100%', width: 300, marginRight: 5 }}>

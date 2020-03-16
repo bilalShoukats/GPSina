@@ -11,13 +11,14 @@ import GMap from './basic'
 import SettingsModal from './SettingsModal';
 import NotificationsModal from './NotificationsModal';
 import AssignDriverModal from './AssignDriverModal';
+import AttachDeviceModal from './AttachDeviceModal';
 import ConfirmModal from './ConfirmModal';
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
 import { toast } from 'react-toastify';
 
-// const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
+// const searchingFor = search => vehicles => vehicles.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
 class ChatApp extends Component {
   state = {
@@ -26,7 +27,7 @@ class ChatApp extends Component {
     hash: "",
     companyEmail: "",
     value: 0,
-    companies: [],
+    vehicles: [],
     loading: true,
     vibrateNotification: false,
     overSpeed: false,
@@ -40,7 +41,9 @@ class ChatApp extends Component {
     showConfirmModal: false,
     carID: '',
     registrationNo: '',
-    mapObject: new Map()
+    showAttahDeviceModal: false,
+    mapObject: new Map(),
+    showAttachDeviceModal:false
   }
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
@@ -89,9 +92,9 @@ class ChatApp extends Component {
       console.log('get cars - v', res)
       console.log('get cars - v', body)
       if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
+        this.setState({ vehicles: this.state.vehicles.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
           let companyIdSet = [];
-          this.state.companies.map((item, index) => {
+          this.state.vehicles.map((item, index) => {
             companyIdSet.push("" + item.deviceID);
           });
           this.setState({ companyIdSet }, () => {
@@ -106,10 +109,6 @@ class ChatApp extends Component {
     }, false)
   }
 
-  handleInputChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  };
-
   getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllMyVehicles());
@@ -119,7 +118,7 @@ class ChatApp extends Component {
     this.setState({ carID: item.carID, showSettingsModal: true })
   }
   openConfirmModal = (item) => {
-    this.setState({ carID: item.carID, showConfirmModal: true })
+    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showConfirmModal: true })
   }
   openNotificationsModal = (item) => {
     this.setState({ carID: item.carID, showNotificationsModal: true })
@@ -127,12 +126,12 @@ class ChatApp extends Component {
   openAssignDriverModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
   }
-  handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
-  addRouteApi = (data) => {
-    console.log("request to add route: ", data);
+  openAttachDeviceModal = (item) => {
+    this.setState({ registrationNo: item.registrationNo, showAttachDeviceModal: true })
+  }
 
+  close = () => {
+    this.setState({ showConfirmModal: false, showNotificationsModal: false, showAttachDeviceModal: false, showAssignDriverModal: false, showSettingsModal: false, vehicles: [] }, () => this.getAllMyVehicles())
   }
 
   renderLoading = () => {
@@ -153,7 +152,6 @@ class ChatApp extends Component {
   }
 
   render() {
-    console.log('data of map', [...this.state.mapObject.values()])
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Vehicles</h2>
@@ -165,8 +163,7 @@ class ChatApp extends Component {
               contentClassName='chatScrollBarContentt'
               horizontal={false}
             >
-              {this.state.companies.map((item, index) => {
-                console.log('kasdlkj', item)
+              {this.state.vehicles.map((item, index) => {
                 return (
                   <Grid key={index} className='itemContainerr'
                     style={{ background: item.deviceActive !== false ? '' : 'rgba(211,211,215,.9)' }}
@@ -187,53 +184,54 @@ class ChatApp extends Component {
                         e.preventDefault();
                         e.stopPropagation();
                         this.openSettingsModal(item)
-                      }} xl={6} className='btn bg-dark'>
+                      }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
                         <i className="icofont-ui-edit" />
+                        <span className="tooltip">Edit Vehicle</span>
                       </Button>
                       <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         this.openNotificationsModal(item)
-                      }} xl={6} className='btn bg-primary' >
+                      }} xl={6} className='btn bg-primary tooltipWrap topTooltip' >
                         <i className="icofont-notification" />
+                        <span className="tooltip">Notifications</span>
                       </Button>
                       <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         this.openConfirmModal(item)
-                      }} xl={6} className='btn bg-danger'>
+                      }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
                         <i className="icofont-ui-delete" />
+                        <span className="tooltip">Delete</span>
                       </Button>
                       <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                      }} disabled={true} xl={6} className='btn bg-secondary' >
-                        <i className="icofont-jail" />
+                        this.openAttachDeviceModal(item)
+                      }} xl={6} className='btn bg-secondary tooltipWrap topTooltip' >
+                        <i className="icofont-thunder-light" />
+                        <span className="tooltip">Attach Device</span>
                       </Button>
-
                       <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         this.openAssignDriverModal(item)
-                      }} xl={6} className='btn bg-info' >
+                      }} xl={6} className='btn bg-info tooltipWrap topTooltip' >
                         <i className="icofont-ui-user" />
+                        <span className="tooltip">Assign Driver</span>
                       </Button>
                     </Grid>
                   </Grid>
                 )
               })}
               {
-                (this.state.companies[0]) ? (
+                (this.state.vehicles[0]) ? (
                   <Grid className="buttonGrid" style={{ marginTop: 20 }}>
                     {(this.state.currentPage < this.state.totalPages) ? (
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius">You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>
@@ -258,6 +256,12 @@ class ChatApp extends Component {
           history={this.props.history}
           {...this.props}
         />
+        <AttachDeviceModal
+          open={this.state.showAttachDeviceModal}
+          close={() => this.setState({ showAttachDeviceModal: false })}
+          registrationNo={this.state.registrationNo}
+          {...this.props}
+        />
         <NotificationsModal
           open={this.state.showNotificationsModal}
           close={() => this.setState({ showNotificationsModal: false })}
@@ -266,7 +270,7 @@ class ChatApp extends Component {
         />
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={() => this.setState({ showConfirmModal: false })}
+          close={this.close}
           registrationNo={this.state.registrationNo}
           history={this.props.history}
           getAllMyVehicles={this.getAllMyVehicles}

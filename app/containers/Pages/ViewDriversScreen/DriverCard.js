@@ -17,8 +17,7 @@ const Report = (props) => (
         <TableHead>
           <TableRow>
             <TableCell>Image</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Phone</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Name</TableCell>
             <TableCell>Liscense</TableCell>
             <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
@@ -33,11 +32,6 @@ const Report = (props) => (
             <TableCell>
               <strong className="uThum">
                 {props.item.driverName}
-              </strong>
-            </TableCell>
-            <TableCell>
-              <strong className="uThum">
-                {props.item.driverPhone}
               </strong>
             </TableCell>
             <TableCell>

@@ -34,25 +34,27 @@ class AssignDriver extends Component {
     }
   }
   componentDidMount() {
-    this.getAllDrivers();
+    this.getAllDevices();
   }
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getAllDrivers();
+        this.getAllDevices();
       })
     }
   }
 
-  getAllDrivers = () => {
+  getAllDevices = () => {
     let body = {
       page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
       // companyEmail:this.state.email
     }
-    this.props.apiManager.makeCall('viewDrivers', body, res => {
-      if (res) {
+    this.props.apiManager.makeCall('getAllCompanyDevices', body, res => {
+      console.log('company devices', body)
+      console.log('company devices', res)
+      if (res.code === 1019) {
         this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
       else {
@@ -85,7 +87,7 @@ class AssignDriver extends Component {
     }
   }
   render() {
-    console.log('state - sss', this.props)
+    console.log('state - ttttttt', this.props.open)
     return (
       <Fragment>
         <Dialog

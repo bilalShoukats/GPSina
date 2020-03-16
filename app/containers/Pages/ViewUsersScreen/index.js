@@ -6,7 +6,7 @@ import Card from 'components/Card/Loadable'
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import './style.scss'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
@@ -15,80 +15,13 @@ import NotificationsModal from './NotificationsModal'
 import Switch from '@material-ui/core/Switch';
 import UserCard from './UserCard'
 // images
-import profile from 'images/team/img1.jpg'
 
-// const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
-const data = {
-  "code": 1019,
-  "id": "Listing successful",
-  "response": [
-    {
-      "CreatedAt": "2020-03-04T15:12:39.035Z",
-      "UpdatedAt": "2020-03-04T15:16:42.796Z",
-      "_id": "5e5fc56793e161956b9d1274",
-      "carID": "5e5fc5674518947d015b7cd2",
-      "carModel": "2020",
-      "carOwnerEmail": "jawad.hassan@azure-i.com",
-      "carOwnerName": "Chimbakul",
-      "carType": "EFI-Electronice-Fuel-Injection",
-      "chassis": "122321411",
-      "color": "Grey",
-      "companyEmail": "usman.malik0029@gmail.com",
-      "deviceActive": true,
-      "deviceID": 745713500,
-      "engineNo": "12slf1111",
-      "fuelType": "Petrol",
-      "mileage": "270111",
-      "registrationNo": "LER-8014"
-    },
-    {
-      "CreatedAt": "2020-03-04T15:12:39.035Z",
-      "UpdatedAt": "2020-03-04T15:16:42.796Z",
-      "_id": "5e5fc56793e161956b9d1274",
-      "carID": "5e5fc5674518947d015b7cd2",
-      "carModel": "2021",
-      "carOwnerEmail": "jawad.hassan@azure-i.com",
-      "carOwnerName": "Chiasdasdmbakul",
-      "carType": "EFI-Electronice-Fuel-Injection",
-      "chassis": "122321asd411",
-      "color": "Grey",
-      "companyEmail": "usman.malik0029@gmail.com",
-      "deviceActive": true,
-      "deviceID": 745713500,
-      "engineNo": "12slf1111",
-      "fuelType": "Petrol",
-      "mileage": "270111",
-      "registrationNo": "LER-8104"
-    },
-    {
-      "CreatedAt": "2020-03-04T15:12:39.035Z",
-      "UpdatedAt": "2020-03-04T15:16:42.796Z",
-      "_id": "5e5fc56793e161956b9d1274",
-      "carID": "5e5fc5674518947d015b7cd2",
-      "carModel": "2022",
-      "carOwnerEmail": "jawad.hassan@azure-i.com",
-      "carOwnerName": "Chimbsssakul",
-      "carType": "EFI-Electrondsice-Fuel-Injection",
-      "chassis": "122321411",
-      "color": "Grey",
-      "companyEmail": "usman.malik0029@gmail.com",
-      "deviceActive": true,
-      "deviceID": 745713500,
-      "engineNo": "12slf1111",
-      "fuelType": "Petrol",
-      "mileage": "270111",
-      "registrationNo": "LER-8111"
-    }
-  ],
-  "totalPages": 1,
-  "currentPage": 1
-}
 class ViewUsersScreen extends Component {
 
   state = {
     search: "",
     value: 0,
-    companies: [],
+    users: [],
     cars: [],
     loading: true,
     showAlert: false,
@@ -106,15 +39,8 @@ class ViewUsersScreen extends Component {
 
   }
 
-
-  handleChange = (event, newValue) => {
-    this.setState({
-      value: newValue
-    })
-  }
-
   componentDidMount = () => {
-    this.getAllMyCompanies();
+    this.getAllUsers();
     this.getCars()
   }
   componentDidUpdate(prevProps) {
@@ -129,20 +55,19 @@ class ViewUsersScreen extends Component {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getAllMyCompanies();
+        this.getAllUsers();
       })
     }
   }
 
-
-  getAllMyCompanies = () => {
+  getAllUsers = () => {
     let body = {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall(`viewCompanyUserDetails`, body, res => {
       console.log('alssssl', res.response)
       if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        this.setState({ users: this.state.users.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
       else {
         this.setState({ loading: false });
@@ -191,7 +116,6 @@ class ViewUsersScreen extends Component {
     })
   }
   openConfirmModal = (item) => {
-    console.log('kasldkalskdj',item)
     this.setState({ carID: item.carID, showConfirmModal: true })
   }
   openNotificationsModal = (item) => {
@@ -332,15 +256,15 @@ class ViewUsersScreen extends Component {
   render() {
     let searchingFor = null;
 
-    if (this.state.companies.length > 0) {
-      searchingFor = search => companies => companies.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+    if (this.state.users.length > 0) {
+      searchingFor = search => users => users.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
 
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Users</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.companies[0]) ? (
+          {(this.state.users[0]) ? (
             <Grid className="viewCompaniesLeft">
               <TextField
                 fullWidth
@@ -369,7 +293,7 @@ class ViewUsersScreen extends Component {
               >
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
-                    {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => {
+                    {this.state.users.filter(searchingFor(this.state.search)).map((item, i) => {
                       var enc = window.btoa(item.email);
                       console.log('user ', item)
                       return (
@@ -394,17 +318,13 @@ class ViewUsersScreen extends Component {
               </Card>
             )}
         </Grid>
-        {(this.state.companies[0]) ? (
+        {(this.state.users[0]) ? (
           <Grid className="buttonGrid">
             {(this.state.currentPage < this.state.totalPages) ? (
               <ul>
                 <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
               </ul>
-            ) : (
-                <ul>
-                  <li><Button className="btn bg-default btn-radius">You have seen it all!</Button></li>
-                </ul>
-              )}
+            ) : null}
           </Grid>) : null}
         <ConfirmModal
           open={this.state.showConfirmModal}

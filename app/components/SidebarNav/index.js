@@ -136,6 +136,25 @@ const SidebarNav = props => {
       ],
     },
     {
+      // name: `${props.intl.formatMessage({ ...messages.Company })}`,
+      icon: ui,
+      iconHover: uiH,
+      id: 546414555552234,
+      alwaysexpand: true,
+      menus: [
+        {
+          name: `Add Roles`,
+          link: '/addRoles',
+          id: 258658421452852534
+        },
+        {
+          name: `View Roles`,
+          link: '/viewRoles',
+          id: 745683245241234
+        },
+      ],
+    },
+    {
       // name: `${props.intl.formatMessage({ ...messages.Users })}`,
       icon: pricing,
       iconHover: pricingH,
@@ -248,6 +267,7 @@ const SidebarNav = props => {
               console.log('nav', nav)
               if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (5464145555522)) return null;
               if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (54641455555223)) return null;
+              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (546414555552234)) return null;
               return (
                 <Fragment key={nav.id}>
                   <ExpansionPanel

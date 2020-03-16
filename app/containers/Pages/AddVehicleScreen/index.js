@@ -2,10 +2,10 @@ import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tab, Tabs, CircularProgress } from '@material-ui/core'
+import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Dialog from '@material-ui/core/Dialog';
@@ -212,9 +212,10 @@ class AddVehicleScreen extends Component {
             this.setState({ loading: false })
             toast.success('Vehicle added successfully!')
           }
-          else
+          else {
             this.setState({ loading: false })
-          toast.error(response.id)
+            toast.error(response.id)
+          }
         });
       } else {
         console.log(error);
@@ -438,24 +439,6 @@ class AddVehicleScreen extends Component {
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   addVehicleScreen: makeSelectAddVehicleScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(AddVehicleScreen);
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,

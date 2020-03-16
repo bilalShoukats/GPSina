@@ -47,16 +47,14 @@ class ViewDriversScreen extends Component {
   }
 
   componentDidMount = () => {
-    // this.getAllMyCompanies();
     this.getAllDrivers();
-    // this.getUnAssignedCar()
   }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getAllMyCompanies();
+        this.getAllDrivers();
       })
     }
   }
@@ -78,18 +76,6 @@ class ViewDriversScreen extends Component {
         toast.error(res.id);
       }
     })
-  }
-
-  getAllMyCompanies = () => {
-    this.props.apiManager.makeCall(`getAllCompanies?page=${this.state.currentPage}`, {}, res => {
-      if (res.code === 1019) {
-        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    }, true)
   }
 
   changeHandler = (e) => {
@@ -132,7 +118,6 @@ class ViewDriversScreen extends Component {
     let body = {
       companyEmail: this.props.user.companyEmail,
       page: 1,
-      // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('getUnAssignedCar', body, res => {
       console.log('View cars - llll', res)
@@ -155,7 +140,6 @@ class ViewDriversScreen extends Component {
     let body = {
       page: 1,
       companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewRoute', body, res => {
       console.log('routes show-', res)
@@ -173,10 +157,7 @@ class ViewDriversScreen extends Component {
     if (this.state.drivers.length > 0) {
       searchingFor = search => drivers => drivers.driverName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
-    console.log('console bawa company', this.state.companies)
-    console.log('console bawa drivers', this.state.drivers)
     return (
-
       < Fragment >
         <h2 className="breadcumbTitle">Your Drivers</h2>
         <Grid className="viewCompaniesApp">
@@ -223,66 +204,6 @@ class ViewDriversScreen extends Component {
                         />
                       )
                     }
-                      // <div className="companiesLink" key={i} style={{ padding: 10, margin: 10 }}>
-                      //   <Grid className="companiesAutorImg">
-                      //     {/* <img src={item.companyLogo} alt="" /> */}
-                      //     <img src={profile} alt="" />
-                      //   </Grid>
-                      //   <Grid className="companiesAutorContent">
-                      //     {item.registrationNo === '' ?
-                      //       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
-                      //         <Button style={{ visibility: 'visible' }} onClick={(e) => {
-                      //           e.preventDefault();
-                      //           e.stopPropagation();
-                      //           this.openAssignDriverModal(item)
-                      //         }} xl={6} className='btn bg-info'>
-                      //           <i className="icofont-ui-user" />
-                      //         </Button>
-                      //         <Button onClick={(e) => {
-                      //           e.preventDefault();
-                      //           e.stopPropagation();
-                      //           this.openNotificationsModal(item)
-                      //         }} xl={6} className='btn bg-primary' >
-                      //           <i className="icofont-notification" />
-                      //         </Button></div>
-                      //       :
-                      //       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15 }}>
-                      //         <Button style={{ visibility: 'visible' }} onClick={(e) => {
-                      //           e.preventDefault();
-                      //           e.stopPropagation();
-                      //           this.openConfirmUnAssignModal(item)
-                      //         }} xl={6} className='btn bg-secondary'>
-                      //           <i className="fa fa-user-times"></i>
-                      //         </Button>
-                      //         <Button onClick={(e) => {
-                      //           e.preventDefault();
-                      //           e.stopPropagation();
-                      //           this.openNotificationsModal(item)
-                      //         }} xl={6} className='btn bg-primary' >
-                      //           <i className="icofont-notification" />
-                      //         </Button>
-                      //       </div>
-                      //     }
-                      //     <h4 style={{ marginTop: 15 }}>Assigned Car : {item.registrationNo}
-                      //       <Button onClick={(e) => {
-                      //         e.preventDefault();
-                      //         e.stopPropagation();
-                      //         this.props.history.push(`/editDriver/${item.driverID}`)
-                      //       }} xl={6} className='btn bg-dark'>
-                      //         <i className="icofont-ui-edit" />
-                      //       </Button>
-
-                      //     </h4>
-                      //     <h4 style={{ fontSize: 14, marginTop: 15 }}>Director Name : {item.driverName}
-                      //       <Button onClick={(e) => {
-                      //         e.preventDefault();
-                      //         e.stopPropagation();
-                      //         this.openConfirmModal(item)
-                      //       }} xl={6} className='btn bg-danger'>
-                      //         <i className="icofont-ui-delete" />
-                      //       </Button></h4>
-                      //   </Grid>
-                      // </div>
                     )}
                   </li>
                 </ul>
@@ -301,19 +222,13 @@ class ViewDriversScreen extends Component {
                 <ul>
                   <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                 </ul>
-              ) : (
-                  <ul>
-                    <li><Button className="btn bg-default btn-radius">You have seen it all!</Button></li>
-                  </ul>
-                )}
+              ) : null}
             </Grid>) : null
         }
         <ConfirmModal
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
           getAllDrivers={() => this.getAllDrivers()}
-        // registrationNo={this.state.registrationNo}
-        // history={this.props.history}
         />
         <AssignDriverModal
           open={this.state.showAssignDriverModal}
@@ -330,7 +245,6 @@ class ViewDriversScreen extends Component {
           close={this.close}
           registrationNo={this.state.registrationNo}
           getAllDrivers={() => this.getAllDrivers()}
-        // history={this.props.history}
         />
         <NotificationsModal
           open={this.state.showNotificationsModal}
@@ -342,24 +256,6 @@ class ViewDriversScreen extends Component {
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   viewUsersScreen: makeSelectViewUsersScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(ViewUsersScreen);
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,

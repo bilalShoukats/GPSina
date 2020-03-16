@@ -16,10 +16,6 @@ import BarChart from './barchart'
 import Bar from './bar'
 import DistanceDriven from './distanceDriven'
 import WeeklyProfile from './weeklyProfile'
-import { response } from './data'
-import { hoursDriven } from './hoursDriven'
-import { weeklyDriven } from './weeklyDriven'
-import { distanceDrivenData } from './distanceDrivenData'
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
@@ -52,11 +48,7 @@ class ChatApp extends Component {
       weeklyDrivenData: [],
       distanceDrivenArr: [],
     }
-
-
   }
-
-  // barItems = [];
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
     let mapObject = this.state.mapObject;
@@ -134,11 +126,6 @@ class ChatApp extends Component {
           }
           else {
           }
-          // let day = new Date(item.tripStartTime).getDay()
-          // if (this.state.weeklyGraphData[day][0] === day) {
-          //   let i = this.state.weeklyGraphData[day][1]
-          //   this.state.weeklyGraphData[day][1] = i + 1
-          // }
         });
         this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
       }
@@ -163,7 +150,6 @@ class ChatApp extends Component {
     }
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
-
   }
 
   componentWillUnmount = () => {
@@ -182,7 +168,6 @@ class ChatApp extends Component {
     let body = {
       page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
       console.log('View Drivers - ', res)
@@ -200,10 +185,6 @@ class ChatApp extends Component {
     })
   }
 
-  handleInputChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  };
-
   getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllDrivers());
@@ -220,13 +201,6 @@ class ChatApp extends Component {
   }
   openAssignDriverModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
-  }
-  handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
-  addRouteApi = (data) => {
-    console.log("request to add route: ", data);
-
   }
 
   renderLoading = () => {
@@ -287,11 +261,7 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>

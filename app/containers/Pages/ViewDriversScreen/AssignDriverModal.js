@@ -173,11 +173,7 @@ class AssignDriver extends Component {
                               <ul>
                                 <li><Button className="btn bg-default btn-radius" style={{ textAlign: 'center' }} onClick={this.loadMoreHandler}>Load More</Button></li>
                               </ul>
-                            ) : (
-                                <ul>
-                                  <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center', cursor: 'initial' }}>You have seen it all!</div></li>
-                                </ul>
-                              )}
+                            ) : null}
                           </Grid>) : ''
                       }
                     </ScrollArea>
@@ -227,11 +223,7 @@ class AssignDriver extends Component {
                               <ul>
                                 <li><Button className="btn bg-default btn-radius" style={{ textAlign: 'center' }} onClick={this.loadMoreHandler}>Load More</Button></li>
                               </ul>
-                            ) : (
-                                <ul>
-                                  <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center', cursor: 'initial' }}>You have seen it all!</div></li>
-                                </ul>
-                              )}
+                            ) : null}
                           </Grid>) : null
                       }
                     </ScrollArea>

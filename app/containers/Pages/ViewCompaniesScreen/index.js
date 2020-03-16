@@ -169,11 +169,7 @@ class ViewCompaniesScreen extends Component {
               <ul>
                 <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
               </ul>
-            ) : (
-                <ul>
-                  <li><Button className="btn bg-default btn-radius">You have seen it all!</Button></li>
-                </ul>
-              )}
+            ) : null}
           </Grid>) : null}
         {this.renderLoading()}
         <ConfirmModal
