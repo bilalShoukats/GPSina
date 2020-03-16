@@ -199,9 +199,10 @@ class AddUserScreen extends Component {
             this.setState({ loading: false })
             toast.success('User added successfully!')
           }
-          else
+          else {
             this.setState({ loading: false })
-          toast.error(response.id)
+            toast.error(response.id)
+          }
         });
       } else {
         console.log(error);
