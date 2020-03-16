@@ -190,6 +190,11 @@ const SidebarNav = props => {
           link: '/viewVehicles',
           id: 222,
         },
+        {
+          name: `Vehicles History`,
+          link: '/vehiclesHistory',
+          id: 222,
+        },
       ],
     },
     // {

@@ -18,7 +18,7 @@ const Report = (props) => (
           <TableRow>
             <TableCell>Image</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Phone</TableCell>
+            {/* <TableCell>Phone</TableCell> */}
             <TableCell>Liscense</TableCell>
             <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
@@ -35,11 +35,11 @@ const Report = (props) => (
                 {props.item.driverName}
               </strong>
             </TableCell>
-            <TableCell>
+            {/* <TableCell>
               <strong className="uThum">
                 {props.item.driverPhone}
               </strong>
-            </TableCell>
+            </TableCell> */}
             <TableCell>
               <strong className="uThum">
                 {props.item.licenceNumber}
