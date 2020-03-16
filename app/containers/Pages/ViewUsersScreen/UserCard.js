@@ -45,9 +45,9 @@ const Report = (props) => (
                   }}
                     style={{ visibility: 'visible' }}
                     xl={6}
-                    className='btn bg-primary' >
-                    <i className="icofont-notification"
-                    />
+                    className='btn bg-primary tooltipWrap topTooltip' >
+                    <span className="tooltip">Notifications</span>
+                    <i className="icofont-notification" />
                   </Button>
                 </div>
                 <div style={{ marginLeft: 5 }}>
@@ -57,7 +57,8 @@ const Report = (props) => (
                     e.stopPropagation();
                     props.editUser()
                     props.history.push(`/editUser/${props.item.id}`)
-                  }} xl={6} className='btn bg-dark'>
+                  }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
+                    <span className="tooltip">Edit User</span>
                     <i className="icofont-ui-edit" />
                   </Button>
                 </div>
@@ -66,7 +67,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openConfirmModal()
-                  }} xl={6} className='btn bg-danger'>
+                  }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
+                    <span className="tooltip">Delete User</span>
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>
@@ -75,7 +77,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.assignCar()
-                  }} xl={6} className='btn bg-success'>
+                  }} xl={6} className='btn bg-success tooltipWrap topTooltip'>
+                    <span className="tooltip">Assign Vehicle</span>
                     <i className="fa fa-car" />
                   </Button>
                 </div>
