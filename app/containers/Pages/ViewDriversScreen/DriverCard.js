@@ -49,7 +49,8 @@ const Report = (props) => (
                   }}
                     style={{ visibility: 'visible' }}
                     xl={6}
-                    className='btn bg-primary' >
+                    className='btn bg-primary tooltipWrap topTooltip' >
+                    <span className="tooltip">Notifications</span>
                     <i className="icofont-notification"
                     />
                   </Button>
@@ -59,7 +60,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.editDriver()
-                  }} xl={6} className='btn bg-dark'>
+                  }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
+                    <span className="tooltip">Edit Driver</span>
                     <i className="icofont-ui-edit" />
                   </Button>
                 </div>
@@ -68,7 +70,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openConfirmModal()
-                  }} xl={6} className='btn bg-danger'>
+                  }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
+                    <span className="tooltip">Delete Driver</span>
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>
@@ -78,7 +81,8 @@ const Report = (props) => (
                       e.preventDefault();
                       e.stopPropagation();
                       props.assignCarToDriver()
-                    }} xl={6} className='btn bg-success'>
+                    }} xl={6} className='btn bg-success tooltipWrap topTooltip'>
+                      <span className="tooltip">Assign Vehicle</span>
                       <i className="fa fa-car" />
                     </Button>
                   </div> : <div style={{ marginLeft: 5 }}>
@@ -86,8 +90,9 @@ const Report = (props) => (
                         e.preventDefault();
                         e.stopPropagation();
                         props.openConfirmUnAssignModal()
-                      }} xl={6} className='btn bg-secondary'>
-                        <i className="fa fa-user-times" />
+                      }} xl={6} className='btn bg-secondary tooltipWrap topTooltip'>
+                        <span className="tooltip">Unassign Vehicle</span>
+                        <i className="fa fa-car" />
                       </Button>
                     </div>
                 }

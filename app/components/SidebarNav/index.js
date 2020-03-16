@@ -82,21 +82,21 @@ const SidebarNav = props => {
         },
       ]
     },
-    {
-      // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
-      icon: ana,
-      iconHover: anaH,
-      id: 129,
-      alwaysexpand: true,
-      menus: [
-        {
-          icon: ana,
-          name: `Route History`,
-          link: '/routesHistory',
-          id: 1291
-        },
-      ]
-    },
+    // {
+    //   // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
+    //   icon: ana,
+    //   iconHover: anaH,
+    //   id: 129,
+    //   alwaysexpand: true,
+    //   menus: [
+    //     {
+    //       icon: ana,
+    //       name: `Route History`,
+    //       link: '/routesHistory',
+    //       id: 1291
+    //     },
+    //   ]
+    // },
     {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
@@ -211,25 +211,25 @@ const SidebarNav = props => {
         },
       ],
     },
-    {
-      // name: `${props.intl.formatMessage({ ...messages.Route })}`,
-      icon: fontawesome,
-      iconHover: fontawesomeH,
-      alwaysexpand: true,
-      id: 32,
-      menus: [
-        {
-          name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
-          link: '/addRoute',
-          id: 321,
-        },
-        {
-          name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
-          link: '/viewRoutes',
-          id: 322,
-        },
-      ],
-    },
+    // {
+    //   // name: `${props.intl.formatMessage({ ...messages.Route })}`,
+    //   icon: fontawesome,
+    //   iconHover: fontawesomeH,
+    //   alwaysexpand: true,
+    //   id: 32,
+    //   menus: [
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
+    //       link: '/addRoute',
+    //       id: 321,
+    //     },
+    //     {
+    //       name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
+    //       link: '/viewRoutes',
+    //       id: 322,
+    //     },
+    //   ],
+    // },
   ];
 
   const [parent_expanded, setParentExpanded] = useState('1');
