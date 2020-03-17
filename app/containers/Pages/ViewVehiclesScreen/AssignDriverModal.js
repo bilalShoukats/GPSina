@@ -141,11 +141,7 @@ class AssignDriver extends Component {
                         <ul>
                           <li><Button className="btn bg-default btn-radius" style={{ textAlign: 'center' }} onClick={this.loadMoreHandler}>Load More</Button></li>
                         </ul>
-                      ) : (
-                          <ul>
-                            <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                          </ul>
-                        )}
+                      ) : null}
                     </Grid>) : null
                 }
               </div>

@@ -82,7 +82,6 @@ export default class SettingsModal extends Component {
     }
   }
   render() {
-    console.log('state - tttt', this.state)
     return (
       <Fragment>
         <Dialog

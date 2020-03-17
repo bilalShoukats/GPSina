@@ -30,7 +30,11 @@ export default class FuelGraph extends Component {
             }
         },
         title: {
-            text: "FUEL"
+            text: "FUEL",
+            style: {
+                color: '#FFFFFF',
+                fontSize: "14px",
+            }
         },
         subtitle: false,
         // xAxis: {
@@ -51,7 +55,7 @@ export default class FuelGraph extends Component {
         legend: {
             enabled: false,
             itemStyle: {
-                color: "#676B79",
+                color: "#FFFFFF",
                 fontSize: "14px",
                 fontWeight: "400",
             },
@@ -67,7 +71,7 @@ export default class FuelGraph extends Component {
             gridLineWidth: 1,
             labels: {
                 style: {
-                    color: '#676B79',
+                    color: '#FFFFFF',
                     fontSize: '14px',
                     fontWeight: "400",
                 },
@@ -177,6 +181,9 @@ export default class FuelGraph extends Component {
     componentWillReceiveProps = (nextProps) => {
         nextProps.data.forEach((item) => {
             if (item.deviceId == nextProps.selectedId) {
+                if (this.fuelInfo.length > 10) {
+                    this.fuelInfo.shift();
+                }
                 this.fuelInfo.push(item.fuelReading);
             }
         });

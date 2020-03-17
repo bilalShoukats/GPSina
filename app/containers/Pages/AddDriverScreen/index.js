@@ -5,10 +5,9 @@ import { SuperHOC } from '../../../HOC';
 import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
-import Switch from '@material-ui/core/Switch';
 import Dialog from '@material-ui/core/Dialog';
 
 // images
@@ -30,17 +29,6 @@ class AddUserScreen extends Component {
     gender: 1,
     driverBloodGroup: 1,
     loading: false,
-    addUser: false,
-    viewUser: false,
-    editUser: false,
-    addRoute: false,
-    viewRoutes: false,
-    addDriver: false,
-    viewDrivers: false,
-    addVehicle: false,
-    viewVehicle: false,
-    assignDriver: false,
-    attachDevice: false,
   }
 
   schema = {
@@ -161,12 +149,7 @@ class AddUserScreen extends Component {
           driverAge: parseInt(this.state.driverAge),
           role: 0,
           gender: parseInt(this.state.gender),
-          // driverOwner: this.state.driverOwner,
           companyEmail: this.props.user.companyEmail,
-          // companyName: this.state.companyName,
-          // email: this.state.companyEmail,
-          // director: this.state.directorName,
-          // companyLogo: this.state.companyLogo,
         }
         this.props.apiManager.makeCall("addDriver", body, (response) => {
           console.log("response: ", response);
@@ -175,9 +158,10 @@ class AddUserScreen extends Component {
             this.setState({ loading: false })
             toast.success('Driver added successfully!')
           }
-          else
+          else {
             this.setState({ loading: false })
-          toast.error(response.id)
+            toast.error(response.id)
+          }
         });
       } else {
         console.log(error);
@@ -193,9 +177,7 @@ class AddUserScreen extends Component {
       file: URL.createObjectURL(event.target.files[0])
     })
   }
-  handleSwitchChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
+
   renderLoading = () => {
     return (
       <Dialog
@@ -333,7 +315,6 @@ class AddUserScreen extends Component {
                     InputLabelProps={{
                       shrink: true,
                     }}
-
                     className="formInput"
                   />
                 </Grid>
@@ -411,7 +392,6 @@ class AddUserScreen extends Component {
                     helperText={this.state.error.driverAge && this.state.error.driverAge}
                     className="formInput"
                   />
-
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
@@ -449,23 +429,6 @@ class AddUserScreen extends Component {
     );
   }
 }
-
-// const mapStateToProps = createStructuredSelector({
-//   addUserScreen: makeSelectAddUserScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(AddUserScreen);
 
 function mapDispatchToProps(dispatch) {
   return {

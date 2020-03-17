@@ -64,7 +64,7 @@ class AddUserScreen extends Component {
             err.message = "Last name must be more than 3 character";
             break;
           default:
-            err.message = "Please enter ast name";
+            err.message = "Please enter last name";
             break;
         }
       });
