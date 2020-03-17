@@ -116,10 +116,10 @@ const WithAuthenticate = OriginalComponent => {
             bool={true}
           />
           <SweetAlertSingle
-            title="Request Timed Out!"
+            title="Request timed out!"
             show={this.state.showModal}
-            type="error"
-            error
+            type="warning"
+            warning
             confirmButtonText="Retry"
             cancelButtonText='Cancel'
             showCancelButton={true}
