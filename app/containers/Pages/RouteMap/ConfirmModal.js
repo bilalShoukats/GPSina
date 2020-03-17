@@ -26,8 +26,8 @@ export default class ConfirmModal extends Component {
           show={this.props.open}
           type="error"
           error
-          confirmButtonText="YES"
-          cancelButtonText='NO'
+          confirmButtonText="Yes"
+          cancelButtonText='No'
           showCancelButton={true}
           onConfirm={() => {
             this.deleteCar()

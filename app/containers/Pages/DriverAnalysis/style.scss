@@ -280,226 +280,10 @@
   }
 }
 
-
-    .notificationList {
-      padding: 0px;
-
-      h5 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0;
-        height: 60px;
-        background: #3c54db;
-        color: #fff;
-        padding: 0 20px;
-        font-size: 16px;
-        text-transform: capitalize;
-        font-weight: 600;
-        margin-bottom: 0;
-
-        span {
-          font-weight: 400;
-          color: #fff;
-          cursor: pointer;
-          font-size: 13px;
-        }
-      }
-
-      .seeAll {
-        display: flex;
-        height: 50px;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        text-transform: uppercase;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        border-top: 1px solid #f1f1f1;
-        color: $baseColor;
-        border-radius: 0px;
-
-        &:hover {
-          background: #fafafa;
-        }
-      }
-    }
-
 .scrollbarArea {
   height: 260px;
 }
 
-.notificationItems {
-  li {
-    .buttonClass {
-      padding: 15px 20px;
-      display: block;
-      padding-left: 65px;
-      position: relative;
-      color: $textColor;
-      border-radius: 0px;
-      width: 100%;
-
-      &:hover {
-        background: #fbfbfb;
-      }
-
-      .icon {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        height: 30px;
-        width: 30px;
-        background: $baseColor;
-        color: #fff;
-        font-size: 12px;
-        text-align: center;
-        border-radius: 50%;
-        line-height: 29px;
-      }
-
-      span {
-        display: block;
-        font-size: 14px;
-        text-transform: capitalize;
-        font-weight: 500;
-        width: 100%;
-        text-align: start;
-
-        span {
-          line-height: 15px;
-          margin-top: 3px;
-          font-size: 12px;
-          font-weight: 400;
-        }
-      }
-    }
-    .selectedButtonClass {
-      padding: 15px 20px;
-      display: block;
-      padding-left: 65px;
-      position: relative;
-      color: $textColor;
-      border-radius: 0px;
-      width: 100%;
-      background: #e4e4e4;
-
-      .icon {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        height: 30px;
-        width: 30px;
-        background: $baseColor;
-        color: #fff;
-        font-size: 12px;
-        text-align: center;
-        border-radius: 50%;
-        line-height: 29px;
-      }
-
-      span {
-        display: block;
-        font-size: 14px;
-        text-transform: capitalize;
-        font-weight: 500;
-        width: 100%;
-        text-align: start;
-
-        span {
-          line-height: 15px;
-          margin-top: 3px;
-          font-size: 12px;
-          font-weight: 400;
-        }
-      }
-    }
-  }
-}
-
-.profileWrap {
-  display: flex;
-  align-items: center;
-
-  span {
-    &.profileImg {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-      border-radius: 50%;
-      overflow: hidden;
-      box-shadow: 0 0 11px rgba(0,0,0,0.15);
-
-      img {
-        max-width: 100%;
-      }
-    }
-
-    &.name {
-      display: inline-block;
-      cursor: pointer;
-      color: $headingColor;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 21px;
-
-      span.text {
-        @media (max-width: 400px) {
-          display: none;
-        }
-      }
-
-      i {
-        margin-left: 5px;
-      }
-    }
-  }
-}
-
-.profileWrapper {
-  .profilePaper {
-    width: 200px;
-
-    .profileList {
-      padding: 0px 0;
-
-      li {
-        a {
-          border-radius: 0px;
-          display: block;
-          text-transform: capitalize;
-          padding: 10px 15px;
-          font-size: 15px;
-          width: 100%;
-          text-align: left;
-
-          i {
-            margin-right: 10px;
-          }
-
-          &:hover {
-            background: #fafafa;
-            color: $baseColor;
-          }
-        }
-      }
-    }
-  }
-}
-.selectedItemContainer{
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  margin: 10px 0px 10px 0px;
-  background-color: rgba(211, 211, 211, 0.3); 
-  width: 100%;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.39);
-  padding: 5px;
-}
 .itemContainer{
   display: flex  !important; 
   flex-direction: column !important;
@@ -509,6 +293,18 @@
   text-align: center !important;
   background-color: white !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.39) !important; 
+  padding: 5px !important;
+  height: 50px !important;
+  box-shadow:none !important
+}
+.selectedItemContainer{
+  display: flex  !important; 
+  flex-direction: column !important;
+  cursor: pointer !important;
+  margin: 10px 0px 10px 0px !important;
+  width: 100% !important;
+  text-align: center !important;
+  background-color: rgb(245, 245, 245) !important; 
   padding: 5px !important;
   height: 50px !important;
   box-shadow:none !important

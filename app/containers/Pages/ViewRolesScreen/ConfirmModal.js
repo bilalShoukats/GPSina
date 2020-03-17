@@ -1,19 +1,17 @@
 import React, { Component, Fragment } from 'react'
 import { toast } from 'react-toastify';
 import SweetAlertSingle from '../../../../app/components/UI_Elements/SweetAlert/alert';
-import { SuperHOC } from '../../../HOC';
 
-class ConfirmModal extends Component {
+export default class ConfirmModal extends Component {
   deleteCar = () => {
     let body = {
-      registrationNo: this.props.registrationNo,
+      email: this.props.registrationNo,
     }
-    this.props.apiManager.makeCall('deleteCar', body, res => {
-      console.log('assign cars - view', res)
-      console.log('assign cars - view', this.props)
+    this.props.apiManager.makeCall('deleteUser', body, res => {
+      console.log('assign Users - view', res)
+      console.log('assign Users - view', this.props)
       if (res) {
-        this.props.getAllDrivers()
-        toast.success(res.id)
+        alert('baawwa')
       }
       else {
         toast.error(res.id);
@@ -24,7 +22,7 @@ class ConfirmModal extends Component {
     return (
       <Fragment>
         <SweetAlertSingle
-          title="Are you sure you want to delete this driver?"
+          title="Are you sure you want to delete this role?"
           show={this.props.open}
           type="error"
           error
@@ -44,5 +42,3 @@ class ConfirmModal extends Component {
     )
   }
 }
-export default SuperHOC(ConfirmModal)
-

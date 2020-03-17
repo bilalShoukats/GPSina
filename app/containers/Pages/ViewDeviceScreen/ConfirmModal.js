@@ -22,12 +22,12 @@ export default class ConfirmModal extends Component {
     return (
       <Fragment>
         <SweetAlertSingle
-          title="Are You Sure?"
+          title="Are you sure you want to delete this vehicle?"
           show={this.props.open}
           type="error"
           error
-          confirmButtonText="YES"
-          cancelButtonText='NO'
+          confirmButtonText="Yes"
+          cancelButtonText='No'
           showCancelButton={true}
           onConfirm={() => {
             this.deleteCar()

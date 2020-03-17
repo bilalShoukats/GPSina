@@ -11,7 +11,7 @@ import './style.scss';
 
 
 const Report = (props) => (
-  <Card >
+  <Card>
     <Grid className="responsiveTable">
       <Table className="postTable" aria-label="simple table">
         <TableHead>

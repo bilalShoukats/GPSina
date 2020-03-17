@@ -186,15 +186,16 @@
   box-shadow:none !important
 }
 .selectedItemContainer{
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  margin: 10px 0px 10px 0px;
-  background-color: rgba(211, 211, 211, 0.3); 
-  width: 100%;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.39);
-  padding: 5px;
+  display: flex  !important; 
+  flex-direction: column !important;
+  cursor: pointer !important;
+  margin: 10px 0px 10px 0px !important;
+  width: 100% !important;
+  text-align: center !important;
+  background-color: rgb(245, 245, 245) !important; 
+  padding: 5px !important;
+  height: 50px !important;
+  box-shadow:none !important
 }
 
 .headerArea {
@@ -437,75 +438,6 @@
   }
 }
 
-.profileWrap {
-  display: flex;
-  align-items: center;
-
-  span {
-    &.profileImg {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-      border-radius: 50%;
-      overflow: hidden;
-      box-shadow: 0 0 11px rgba(0,0,0,0.15);
-
-      img {
-        max-width: 100%;
-      }
-    }
-
-    &.name {
-      display: inline-block;
-      cursor: pointer;
-      color: $headingColor;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 21px;
-
-      span.text {
-        @media (max-width: 400px) {
-          display: none;
-        }
-      }
-
-      i {
-        margin-left: 5px;
-      }
-    }
-  }
-}
-
-.profileWrapper {
-  .profilePaper {
-    width: 200px;
-
-    .profileList {
-      padding: 0px 0;
-
-      li {
-        a {
-          border-radius: 0px;
-          display: block;
-          text-transform: capitalize;
-          padding: 10px 15px;
-          font-size: 15px;
-          width: 100%;
-          text-align: left;
-
-          i {
-            margin-right: 10px;
-          }
-
-          &:hover {
-            background: #fafafa;
-            color: $baseColor;
-          }
-        }
-      }
-    }
-  }
-}
 .responsiveRechart {
   width: 100%;
   height: 300px;
@@ -538,4 +470,282 @@
   flex-direction: column; 
   padding: 10px 20px 10px 20px;
   background-color: rgba(0,0,0,0.2);
+}
+.companiesListt {
+  .companiesLink {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-top: 1px solid #EAEAF5;
+    border-bottom: 1px solid #EAEAF5;
+    border-right: 1px solid #EAEAF5;
+    border-left: 1px solid #EAEAF5;
+    margin-top: -1px;
+    padding-right: 80px;
+    position: relative;
+    transition: all .4s ease;
+    cursor: default;
+
+    @media (max-width: 1600px) {
+      display: block;
+    }
+
+    @media (max-width: 767px) {
+      padding: 20px 0px;
+    }
+
+    &:hover {
+      box-shadow: 1px 0px 15px rgba(0, 0, 0, .1);
+    }
+
+    .companiesAutorImg {
+      width: 150px;
+
+      img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+      }
+    }
+
+    .companiesAutorContent {
+      h4 {
+        font-size: 18px;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        line-height: 35px;
+        text-transform: capitalize;
+        justify-content: space-between;
+
+        @media (max-width: 1600px) {
+          font-size: 16px;
+          line-height: 22px;
+          margin-bottom: 10px;
+          margin-top: 20px;
+          justify-content: space-between;
+
+        }
+
+        @media (max-width: 767px) {
+          display: flex;
+        }
+
+      }
+
+      h5 {
+        color: $headingColor;
+        font-weight: 400;
+        margin-bottom: 0;
+        font-size: 12px;
+        line-height: 18px;
+
+        span {
+          display: inline-block;
+          margin-left: 15px;
+        }
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 24px;
+        margin-bottom: 0;
+        margin-top: 5px;
+        color: $textColor;
+      }
+
+      .commentsWrap {
+        font-size: 14px;
+        font-weight: 400;
+        color: #98a6ad;
+
+        @media (max-width: 767px) {
+          top: 75px;
+          transform: translateY(0);
+        }
+
+        i {
+          margin-right: 3px;
+        }
+      }
+    }
+  }
+
+  &:last-child {
+    a {
+      border-bottom: none;
+    }
+  }
+}
+
+.cardWrap {
+  background: #000000 !important;
+  padding: 0px !important;
+  min-height: 100%;
+  // background: #ffffff;
+  box-shadow: 0px 7px 30px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 9px;
+  transition: all 0.4s ease-in-out 0s;
+  @media (max-width: 767px) {
+    padding: 25px 15px;
+  }
+
+  &.p-0 {
+    padding: 0 !important;
+
+    .cardHeader {
+      padding-top: 30px;
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+
+    @media (max-width: 1700px) {
+      margin-bottom: 25px;
+    }
+
+    h3 {
+      font-size: 16px;
+      line-height: 28px;
+      text-transform: capitalize;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      line-height: 15px;
+      letter-spacing: 0.118182px;
+      color: #646079;
+      display: block;
+    }
+
+    .cartTabs {
+      border-bottom: 1px solid #f0f0f9;
+
+      @media (max-width: 767px) {
+        margin-top: 20px;
+      }
+
+      button {
+        min-width: unset;
+        min-height: 40px;
+        height: 40px;
+        padding: 0 25px;
+        font-size: 16px;
+        color: $textColor;
+        text-transform: capitalize;
+        opacity: 1;
+
+        &[aria-selected="true"] {
+          color: $baseColor;
+        }
+      }
+
+      .indigator {
+        height: 3px;
+        background: $baseColor;
+      }
+    }
+  }
+
+  &.paddingOut {
+    padding: 30px 0px;
+
+    h3 {
+      padding: 0px 30px;
+    }
+  }
+
+  .dropDownSelect {
+    @media (max-width: 767px) {
+      margin-top: 20px;
+    }
+
+    .MuiInputBase-root {
+      background: transparent;
+      background: #ffffff;
+      border: 1px solid #eff2f4;
+      border-radius: 3px;
+
+      &.Mui-focused {
+        border-color: $baseColor;
+        background: #fff;
+      }
+
+      &::before,
+      &::after {
+        display: none;
+      }
+
+      .MuiSelect-root {
+        padding: 0;
+        width: 120px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        padding: 0px 10px;
+
+        &:focus {
+          background: #fff;
+        }
+      }
+    }
+  }
+}
+
+.squareBoxCard {
+  .cardWrapper {
+    border-radius: 0px;
+  }
+}
+
+.withoutShadowCard {
+  .cardWrapper {
+    box-shadow: none;
+  }
+}
+
+.seeAll {
+  a {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.1px;
+    color: #878aa0;
+
+    &:hover {
+      color: #3b53db;
+    }
+  }
+}
+
+.hasBorderBottom {
+  position: relative;
+  z-index: 1;
+}
+.selectedCardWrap {
+  background: #000000 !important;
+  padding: 0px !important;
+  min-height: 100%;
+  // background: #ffffff;
+  box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 9px;
+  transition: all 0.4s ease-in-out 0s;
+  @media (max-width: 767px) {
+    padding: 25px 15px;
+   
+  }
+  .cardHeader {
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
 }

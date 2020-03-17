@@ -6,6 +6,7 @@ import Chart from "./Chart";
 import Map from "./basic";
 import { SuperHOC } from '../../../HOC';
 import './style.scss'
+import Card from 'components/Card/Loadable'
 
 class index extends Component {
   constructor(props) {
@@ -45,8 +46,9 @@ class index extends Component {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
+      console.log('asdasd', res.response)
       if (res.code === 1019) {
-        this.setState({ drivers: res.response, carDeviceId: res.response[0].AttachedCarInformation[0].deviceID }, () => this.getGraphsData(this.state.carDeviceId));
+        this.setState({ drivers: res.response, carDeviceId: res.response[0].AttachedCarInformation[0] && res.response[0].AttachedCarInformation[0].deviceID ? res.response[0].AttachedCarInformation[0].deviceID : '' }, () => this.getGraphsData(this.state.carDeviceId));
       }
       else {
         // this.setState({ loading: false });
@@ -145,20 +147,27 @@ class index extends Component {
 
   renderDriver = () => {
     return (
-      this.state.drivers.map((item, index) => {
-        return (
-          <div
-            key={index}
-            className={item._id === this.state.slectedDriver ? 'selectedItemContainer' : 'itemContainer'}
-            onClick={(e) => {
-              e.preventDefault()
-              this.selectDriver(item)
-            }}
-          >
-            <h5 >{item.driverName}</h5>
-          </div>
-        )
-      })
+      <ul className="forumItemss" style={{ margin: 10 }}>
+        <li className="companiesListt" >
+          {this.state.drivers.map((item, index) => {
+            console.log('assssdas', item)
+            return (
+              <Card className='cardWrap' style={{ padding: 0 }} key={index}>
+                <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                  this.setState({ registrationNo: item.registrationNo }, () => {
+                    this.getGraphsData(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
+                  })
+                }}>
+                  <Grid className='text'>
+                    <h4>{item.driverName}</h4>
+                    {/* <p>{item.driverEmail}</p> */}
+                  </Grid>
+                </Grid>
+              </Card>
+            )
+          })}
+        </li>
+      </ul>
     )
   }
 

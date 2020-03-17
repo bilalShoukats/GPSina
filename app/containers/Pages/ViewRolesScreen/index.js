@@ -16,7 +16,7 @@ import Switch from '@material-ui/core/Switch';
 import UserCard from './UserCard'
 // images
 
-class ViewUsersScreen extends Component {
+class ViewRolesScreen extends Component {
 
   state = {
     search: "",
@@ -262,7 +262,7 @@ class ViewUsersScreen extends Component {
 
     return (
       <Fragment>
-        <h2 className="breadcumbTitle">Your Users</h2>
+        <h2 className="breadcumbTitle">Your Roles</h2>
         <Grid className="viewCompaniesApp">
           {(this.state.users[0]) ? (
             <Grid className="viewCompaniesLeft">
@@ -274,7 +274,7 @@ class ViewUsersScreen extends Component {
                 value={this.state.search}
                 name="search"
                 onChange={this.changeHandler}
-                placeholder="Search Users"
+                placeholder="Search Roles"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment
@@ -314,7 +314,7 @@ class ViewUsersScreen extends Component {
             </Grid>
           ) : (
               <Card title="No Company Found!">
-                <p className="subText">Don't have any Users? <Link to="/addUser">Create User</Link></p>
+                <p className="subText">Don't have any Roles? <Link to="/addRoles">Add Role</Link></p>
               </Card>
             )}
         </Grid>
@@ -331,6 +331,7 @@ class ViewUsersScreen extends Component {
           close={() => this.setState({ showConfirmModal: false })}
           {...this.props}
           registrationNo={this.state.registrationNo}
+        // history={this.props.history}
         />
         <NotificationsModal
           open={this.state.showNotificationsModal}
@@ -355,4 +356,4 @@ const withConnect = connect(
   null,
   mapDispatchToProps,
 );
-export default SuperHOC((withConnect)(ViewUsersScreen));
+export default SuperHOC((withConnect)(ViewRolesScreen));

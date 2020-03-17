@@ -5,6 +5,7 @@ import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
 import Button from '@material-ui/core/Button';
 import { Grid, CircularProgress } from '@material-ui/core';
+import Card from 'components/Card/Loadable'
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './basic'
@@ -174,7 +175,7 @@ class ChatApp extends Component {
       if (res) {
         this.setState({ drivers: [] }, () => {
           this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
-            this.getDailyProfile(res.response[0].AttachedCarInformation[0].deviceID)
+            this.getDailyProfile(res.response[0].AttachedCarInformation[0] && res.response[0].AttachedCarInformation[0].deviceID ? res.response[0].AttachedCarInformation[0].deviceID : '')
           });
         })
       }
@@ -220,7 +221,6 @@ class ChatApp extends Component {
     )
   }
 
-
   render() {
     this.barItems = [
       { class: <BarChart data={this.state.dailyProfileDat} />, key: 0 },
@@ -240,20 +240,27 @@ class ChatApp extends Component {
               contentClassName='chatScrollBarContent'
               horizontal={false}
             >
-              {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
-                console.log('sate drivers-', item)
-                return (
-                  <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
-                    this.socketComponent.disconnectSocketServer();
-                    this.getDailyProfile(item.AttachedCarInformation[0].deviceID)
-                  }}>
-                    <Grid className='text'>
-                      <h4>{item.driverName}</h4>
-                      {/* <p>{item.driverEmail}</p> */}
-                    </Grid>
-                  </Grid>
-                )
-              }) : ''}
+              <ul className="forumItemss" style={{ margin: 10 }}>
+                <li className="companiesListt" >
+                  {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
+                    console.log('sate drivers-', item)
+                    return (
+                      <Card className='cardWrap' style={{ padding: 0 }} key={index}>
+                        <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                          this.setState({ registrationNo: item.registrationNo }, () => {
+                            this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
+                          })
+                        }}>
+                          <Grid className='text'>
+                            <h4>{item.driverName}</h4>
+                            {/* <p>{item.driverEmail}</p> */}
+                          </Grid>
+                        </Grid>
+                      </Card>
+                    )
+                  }) : ''}
+                </li>
+              </ul>
               {
                 (this.state.drivers[0]) ? (
                   <Grid className="buttonGrid" style={{ marginTop: 20 }}>
@@ -288,9 +295,6 @@ class ChatApp extends Component {
                 this.barItems.length > 0 && this.barItems[this.state.selectedIndex].class
               }
             </Grid>
-            {/* <GMap
-              data={[...this.state.mapObject.values()]}
-            /> */}
           </Grid>
         </Grid>
         <ConfirmModal
