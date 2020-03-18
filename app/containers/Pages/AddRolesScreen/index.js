@@ -439,7 +439,6 @@ class AddRoleScreen extends Component {
     );
   }
 }
-s
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,

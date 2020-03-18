@@ -270,9 +270,7 @@ const SidebarNav = props => {
           <PerfectScrollbar>
             {navigations.map(nav => {
               console.log('nav', nav)
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (5464145555522)) return null;
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (54641455555223)) return null;
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (546414555552234)) return null;
+              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((nav.id === 5464145555522) || (nav.id === 54641455555223) || (nav.id === 546414555552234))) return null;
               return (
                 <Fragment key={nav.id}>
                   <ExpansionPanel
