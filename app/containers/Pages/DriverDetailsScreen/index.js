@@ -5,6 +5,7 @@ import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
 import Button from '@material-ui/core/Button';
 import { Grid, CircularProgress } from '@material-ui/core';
+import Card from 'components/Card/Loadable'
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './basic'
@@ -16,10 +17,6 @@ import BarChart from './barchart'
 import Bar from './bar'
 import DistanceDriven from './distanceDriven'
 import WeeklyProfile from './weeklyProfile'
-import { response } from './data'
-import { hoursDriven } from './hoursDriven'
-import { weeklyDriven } from './weeklyDriven'
-import { distanceDrivenData } from './distanceDrivenData'
 // const searchingFor = search => drivers => drivers.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 class ChatApp extends Component {
   constructor(props) {
@@ -52,11 +49,7 @@ class ChatApp extends Component {
       weeklyDrivenData: [],
       distanceDrivenArr: [],
     }
-
-
   }
-
-  // barItems = [];
 
   recieveData = (deviceId, engineStatus, Lat, Lng) => {
     let mapObject = this.state.mapObject;
@@ -134,11 +127,6 @@ class ChatApp extends Component {
           }
           else {
           }
-          // let day = new Date(item.tripStartTime).getDay()
-          // if (this.state.weeklyGraphData[day][0] === day) {
-          //   let i = this.state.weeklyGraphData[day][1]
-          //   this.state.weeklyGraphData[day][1] = i + 1
-          // }
         });
         this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
       }
@@ -163,7 +151,6 @@ class ChatApp extends Component {
     }
     this.socketComponent = new SocketComponent();
     this.getMyEmail();
-
   }
 
   componentWillUnmount = () => {
@@ -182,14 +169,13 @@ class ChatApp extends Component {
     let body = {
       page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
       console.log('View Drivers - ', res)
       if (res) {
         this.setState({ drivers: [] }, () => {
           this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
-            this.getDailyProfile(res.response[0].AttachedCarInformation[0].deviceID)
+            this.getDailyProfile(res.response[0].AttachedCarInformation[0] && res.response[0].AttachedCarInformation[0].deviceID ? res.response[0].AttachedCarInformation[0].deviceID : '')
           });
         })
       }
@@ -199,10 +185,6 @@ class ChatApp extends Component {
       }
     })
   }
-
-  handleInputChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  };
 
   getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
@@ -221,13 +203,6 @@ class ChatApp extends Component {
   openAssignDriverModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
   }
-  handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
-  addRouteApi = (data) => {
-    console.log("request to add route: ", data);
-
-  }
 
   renderLoading = () => {
     return (
@@ -245,7 +220,6 @@ class ChatApp extends Component {
       </Dialog>
     )
   }
-
 
   render() {
     this.barItems = [
@@ -266,20 +240,27 @@ class ChatApp extends Component {
               contentClassName='chatScrollBarContent'
               horizontal={false}
             >
-              {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
-                console.log('sate drivers-', item)
-                return (
-                  <Grid key={index} className={item.driverID === this.state.driverID ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
-                    this.socketComponent.disconnectSocketServer();
-                    this.getDailyProfile(item.AttachedCarInformation[0].deviceID)
-                  }}>
-                    <Grid className='text'>
-                      <h4>{item.driverName}</h4>
-                      {/* <p>{item.driverEmail}</p> */}
-                    </Grid>
-                  </Grid>
-                )
-              }) : ''}
+              <ul className="forumItemss" style={{ margin: 10 }}>
+                <li className="companiesListt" >
+                  {this.state.drivers.length > 0 ? this.state.drivers.map((item, index) => {
+                    console.log('sate drivers-', item)
+                    return (
+                      <Card className='cardWrap' style={{ padding: 0 }} key={index}>
+                        <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                          this.setState({ registrationNo: item.registrationNo }, () => {
+                            this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
+                          })
+                        }}>
+                          <Grid className='text'>
+                            <h4>{item.driverName}</h4>
+                            {/* <p>{item.driverEmail}</p> */}
+                          </Grid>
+                        </Grid>
+                      </Card>
+                    )
+                  }) : ''}
+                </li>
+              </ul>
               {
                 (this.state.drivers[0]) ? (
                   <Grid className="buttonGrid" style={{ marginTop: 20 }}>
@@ -287,11 +268,7 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>
@@ -318,9 +295,6 @@ class ChatApp extends Component {
                 this.barItems.length > 0 && this.barItems[this.state.selectedIndex].class
               }
             </Grid>
-            {/* <GMap
-              data={[...this.state.mapObject.values()]}
-            /> */}
           </Grid>
         </Grid>
         <ConfirmModal

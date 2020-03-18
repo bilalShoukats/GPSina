@@ -16,6 +16,7 @@ import SettingsModal from './SettingsModal';
 import NotificationsModal from './NotificationsModal';
 import ViewModal from './ViewModal';
 import AssignDriverModal from './AssignDriverModal';
+import AttachDeviceModal from './AttachDeviceModal';
 import ConfirmModal from './ConfirmModal';
 
 class ViewVehiclesScreen extends Component {
@@ -85,7 +86,7 @@ class ViewVehiclesScreen extends Component {
   }
 
   openConfirmModal = (item) => {
-    this.setState({ carID: item.carID, showConfirmModal: true })
+    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showConfirmModal: true })
   }
 
   viewVehicle = (item) => {
@@ -218,6 +219,12 @@ class ViewVehiclesScreen extends Component {
           history={this.props.history}
           {...this.props}
         />
+        <AttachDeviceModal
+          open={this.state.showAttachDeviceModal}
+          close={() => this.setState({ showAttachDeviceModal: false })}
+          registrationNo={this.state.registrationNo}
+          {...this.props}
+        />
         <NotificationsModal
           open={this.state.showNotificationsModal}
           close={() => this.setState({ showNotificationsModal: false })}
@@ -231,7 +238,7 @@ class ViewVehiclesScreen extends Component {
         />
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={() => this.setState({ showConfirmModal: false })}
+          close={this.close}
           registrationNo={this.state.registrationNo}
           getAllMyVehicles={this.getAllMyVehicles}
           {...this.props}

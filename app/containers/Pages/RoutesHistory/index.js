@@ -6,7 +6,6 @@ import 'sass/elements/sweet-alerts.scss';
 import { Grid, CircularProgress } from '@material-ui/core';
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
-import ConfirmModal from './ConfirmModal';
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
@@ -21,8 +20,6 @@ class ChatApp extends Component {
       totalPages: 0,
       itemsInPage: 10,
       routes: [],
-      carID: '',
-      registrationNo: '',
       mapObject: new Map(),
       drivers: [],
       selectedIndex: 1,
@@ -91,10 +88,7 @@ class ChatApp extends Component {
     console.log('routes show-', item)
     this.setState({ driverID: item.driverID, deviceID: item && item.AttachedCarInformation && item.AttachedCarInformation[0] ? item.AttachedCarInformation[0].deviceID : '' }, () => {
       let body = {
-        // page: 1,
-        // companyEmail: this.props.user.companyEmail,
         deviceid: this.state.deviceID.toString()
-        // companyEmail:this.state.email
       }
       this.props.apiManager.makeCall('driverTripStats', body, res => {
         console.log('routes show-', body)
@@ -110,33 +104,9 @@ class ChatApp extends Component {
     })
   }
 
-  handleInputChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
-  };
-
   getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllDrivers());
-  }
-
-  openSettingsModal = (item) => {
-    this.setState({ carID: item.carID, showSettingsModal: true })
-  }
-  openConfirmModal = (item) => {
-    this.setState({ carID: item.carID, showConfirmModal: true })
-  }
-  openNotificationsModal = (item) => {
-    this.setState({ carID: item.carID, showNotificationsModal: true })
-  }
-  openAssignDriverModal = (item) => {
-    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
-  }
-  handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
-  };
-  addRouteApi = (data) => {
-    console.log("request to add route: ", data);
-
   }
 
   renderLoading = () => {
@@ -156,9 +126,7 @@ class ChatApp extends Component {
     )
   }
 
-
   render() {
-    console.log('bawaa item', this.state.selectedIndex)
     return (
       <Fragment >
         <h2 className="breadcumbTitle">Route History</h2>
@@ -180,7 +148,6 @@ class ChatApp extends Component {
                   }}>
                     <Grid className='text'>
                       <h4>{item.driverName}</h4>
-                      {/* <p>{item.driverEmail}</p> */}
                     </Grid>
                   </Grid>
                 )
@@ -192,11 +159,7 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>
@@ -220,7 +183,6 @@ class ChatApp extends Component {
                       }}>
                         <Grid className='text'>
                           <h4>{item.tripid}</h4>
-                          {/* <p>{item.driverEmail}</p> */}
                         </Grid>
                       </Grid>
                       : ''
@@ -231,12 +193,13 @@ class ChatApp extends Component {
                     }}>
                       <Grid className='text'>
                         <h4>{item.tripid}</h4>
-                        {/* <p>{item.driverEmail}</p> */}
                       </Grid>
                     </Grid>
                 )
-              }) : <Grid style={{ textAlign: 'center', marginTop: 10 }}>
-                  <h4>Please Select Driver First</h4>
+              }) : <Grid style={{ textAlign: 'center', marginTop: 10, marginBottom: 10, borderBottom: '1px solid black' }}>
+                  <Grid className='text'>
+                    <h4>Please Select Driver First</h4>
+                  </Grid>
                 </Grid>}
               {this.state.routes.length > 5 ? <h6 style={{ color: 'rgb(224, 106, 66)', cursor: 'pointer', textAlign: 'center' }} onClick={() => this.setState({ viewLess: !this.state.viewLess })}>{this.state.viewLess ? 'View More' : 'View Less'}</h6> : ''}
               {
@@ -246,29 +209,12 @@ class ChatApp extends Component {
                       <ul>
                         <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
                       </ul>
-                    ) : (
-                        <ul>
-                          <li><div className="btn bg-default btn-radius" style={{ textAlign: 'center' }}>You have seen it all!</div></li>
-                        </ul>
-                      )}
+                    ) : null}
                   </Grid>) : null
               }
             </ScrollArea>
           </Grid>
-          {/* <Grid className="modalFooter">
-            <Button style={{ padding: '10px 25px', }} disabled={this.state.tripid !== '' ? false : true} className="btn bg-default" onClick={() => this.props.history.push(`RouteMap/${this.state.tripid}`)}>
-              See Route
-              </Button>
-          </Grid> */}
         </Grid>
-        <ConfirmModal
-          open={this.state.showConfirmModal}
-          close={() => this.setState({ showConfirmModal: false })}
-          registrationNo={this.state.registrationNo}
-          history={this.props.history}
-          getAllMyVehicles={this.getAllDrivers}
-          {...this.props}
-        />
         {this.renderLoading()}
       </Fragment >
     )

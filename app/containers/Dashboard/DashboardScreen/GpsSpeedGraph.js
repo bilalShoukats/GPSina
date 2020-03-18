@@ -8,8 +8,7 @@ import data from 'utils/json/range.json'
 
 
 export default class GpsSpeedGraph extends Component {
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
     }
 
@@ -31,7 +30,11 @@ export default class GpsSpeedGraph extends Component {
             }
         },
         title: {
-            text: "GPS SPEED"
+            text: "GPS SPEED",
+            style: {
+                color: '#FFFFFF',
+                fontSize: "14px",
+            }
         },
         subtitle: false,
         // xAxis: {
@@ -52,7 +55,7 @@ export default class GpsSpeedGraph extends Component {
         legend: {
             enabled: false,
             itemStyle: {
-                color: "#676B79",
+                color: "#FFFFFF",
                 fontSize: "14px",
                 fontWeight: "400",
             },
@@ -68,7 +71,7 @@ export default class GpsSpeedGraph extends Component {
             gridLineWidth: 1,
             labels: {
                 style: {
-                    color: '#676B79',
+                    color: '#FFFFFF',
                     fontSize: '14px',
                     fontWeight: "400",
                 },
@@ -179,12 +182,15 @@ export default class GpsSpeedGraph extends Component {
         console.log("GRAPHS: ", nextProps);
         nextProps.data.forEach((item) => {
             if (item.deviceId == nextProps.selectedId) {
-                this.gpsSpeed.push(item.gpsSpeed);
+                if (this.gpsSpeed.length > 10) {
+                    this.gpsSpeed.shift();
+                }
+                this.gpsSpeed.push(item.gpsSpeed)
             }
         });
     }
 
-    render(){
+    render() {
         return (
             <HighchartsReact
                 highcharts={Highcharts}

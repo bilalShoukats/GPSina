@@ -4,28 +4,11 @@ const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 class AnalysisMap extends React.Component {
   state = {
     progress: [],
-    markers: [
-      { lat: 18.555818, lng: -68.389916, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
-      { lat: 18.558853, lng: -68.395000, url: ('http://maps.google.com/mapfiles/ms/icons/purple-dot.png'), text: 'harsh swe' },
-      { lat: 18.558375, lng: -68.390999, url: ('http://maps.google.com/mapfiles/ms/icons/red-dot.png'), text: 'harsh acc' },
-      { lat: 18.558032, lng: -68.399192, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
-      { lat: 18.558050, lng: -68.388623, url: ('http://maps.google.com/mapfiles/ms/icons/purple-dot.png'), text: 'harsh swe' },
-      { lat: 18.557256, lng: -68.393000, url: ('http://maps.google.com/mapfiles/ms/icons/red-dot.png'), text: 'harsh acc' },
-      { lat: 18.558744, lng: -68.385949, url: ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'), text: 'break' },
-    ],
   }
   path = [
-    // { lat: 18.558908, lng: -68.389916 },
-    // { lat: 18.558853, lng: -68.389922 },
-    // { lat: 18.558375, lng: -68.389729 },
-    // { lat: 18.558032, lng: -68.389182 },
-    // { lat: 18.558050, lng: -68.388613 },
-    // { lat: 18.558256, lng: -68.388213 },
-    // { lat: 18.558744, lng: -68.387929 },
   ]
   constructor(props) {
     super(props);
-
   }
 
   velocity = 5
@@ -42,7 +25,6 @@ class AnalysisMap extends React.Component {
   }
 
   componentWillUnmount = () => {
-
     window.clearInterval(this.interval)
   }
 
@@ -86,13 +68,13 @@ class AnalysisMap extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     let array = []
-    console.log('componentWillps', nextProps.data.length);
+    console.log('componentWill1ps', nextProps.data.length);
     if (nextProps.data.length === 2) {
-      console.log('componentWillps', nextProps);
+      console.log('componentWillps', nextProps.data);
       nextProps.data.map((item, i) => {
         item.map((subItem, i) => {
           let latlng = subItem.startGpsLocation.split(',')
-          let A = { 'lat': parseFloat(latlng[0]), 'lng': parseFloat(latlng[1]), 'text': subItem.isHarshAcc ? 'harshacc' : 'harshbreak' }
+          let A = { 'lat': parseFloat(latlng[0]), 'lng': parseFloat(latlng[1]), 'text': subItem.isHarshAcc === true ? 'harshacc' : 'harshbreak', 'url': subItem.isHarshAcc === true ? ('http://maps.google.com/mapfiles/ms/icons/red-dot.png') : ('http://maps.google.com/mapfiles/ms/icons/blue-dot.png') }
           this.path.push(A)
         })
       })
@@ -187,12 +169,6 @@ class AnalysisMap extends React.Component {
 
 
   render = () => {
-    console.log('bawaaa', this.path)
-    const icon = {
-      url: require('./car.png'),
-      scaledSize: new window.google.maps.Size(30, 30),
-      anchor: { x: 10, y: 10 }
-    }
     // const defaultMapOptions = {
     //     disableDefaultUI: true
     // };
@@ -203,33 +179,19 @@ class AnalysisMap extends React.Component {
         // defaultOptions={defaultMapOptions}
         defaultOptions={{ styles: demoFancyMapStyles, disableDefaultUI: true, scaleControl: true, zoomControl: true }}
       >
-        {/* {this.state.progress && (
-          <>
-            <Polyline path={this.state.progress} options={{ strokeColor: "#FF0000" }} />
-            <Marker icon={icon} position={this.state.progress[this.state.progress.length - 1]} />
-          </>
-        )} */}
         {this.path.map((marker, index) => {
-          // console.log("bawaaaaaaaaaaa", marker)
-          if (index < 10) {
+          if (index < 15) {
             return (
               <Marker
-                // icon={marker.url}
+                icon={marker.url}
                 key={index}
                 defaultVisible={true}
                 // defaultPosition={props.center}
                 position={marker}
-              // onClick={marker}
-              // defaultDraggable={true}
-              // draggable={true}
-              // ref={props.onMarkerMounted.bind(this)}
-              // onDragEnd={() => props.onDragEnd((values) => this.props.handleDragEnd(values))}
-              // onClick={props.onToggleOpen}
 
               >
                 <InfoWindow >
                   <div>
-                    {/* <i className="fa fa-anchor"></i> */}
                     <span style={{ color: marker.text === 'harsh acc' ? 'red' : marker.text === 'harsh swe' ? 'purple' : 'blue' }} > {' ' + marker.text + ' '}</span>
                     {marker.lat.toFixed(4)}
                   </div>
@@ -248,11 +210,6 @@ const MapComponent = withScriptjs(withGoogleMap(AnalysisMap))
 export default (props) => (
   < MapComponent
     data={props.data}
-    // selectedMarker={this.state.selectedMarker}
-    // defulatLat={this.state.defulatLat}
-    // defulatLng={this.state.defulatLng}
-    // initialData={this.state.initialData}
-    // onClick={this.handleClick}
     googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI&libraries=geometry,drawing,places"
     loadingElement={< div style={{ height: `100%` }} />}
     containerElement={< div style={{ height: `400px` }} />}
