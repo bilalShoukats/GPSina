@@ -36,106 +36,106 @@ export default class ViewModal extends Component {
                   contentClassName="scrollbarContent"
                   horizontal={false}
                 >
-                <ul className="notificationItems">
-                  <Card>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car ID:
+                  <ul className="notificationItems">
+                    <Card>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car ID:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.carID}
+                        <h4>
+                          {this.props.vehicleDetail.carID}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Model:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Model:
+                        <h4>
+                          {this.props.vehicleDetail.carModel}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Owner Email:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.carModel}
+                        <h4>
+                          {this.props.vehicleDetail.carOwnerEmail}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Owner Name:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Owner Email:
+                        <h4>
+                          {this.props.vehicleDetail.carOwnerName}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Chassis:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.carOwnerEmail}
+                        <h4>
+                          {this.props.vehicleDetail.chassis}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Color:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Owner Name:
+                        <h4>
+                          {this.props.vehicleDetail.color}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Status:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.carOwnerName}
+                        <h4>
+                          {this.props.vehicleDetail.deviceActive == true ? "Active" : "Pendimg"}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Device ID:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Chassis:
+                        <h4>
+                          {this.props.vehicleDetail.deviceID}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Engine No:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.chassis}
+                        <h4>
+                          {this.props.vehicleDetail.engineNo}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Fuel Type:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Color:
+                        <h4>
+                          {this.props.vehicleDetail.fuelType}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(231, 232, 250)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Mileage:
                       </h4>
-                      <h4>
-                        {this.props.vehicleDetail.color}
+                        <h4>
+                          {this.props.vehicleDetail.mileage}
+                        </h4>
+                      </div>
+                      <div style={{ display: 'flex', backgroundColor: "rgb(245, 245, 245)", flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <h4>
+                          Car Registration No:
                       </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Status:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.deviceActive == true ? "Active" : "Pendimg"}
-                      </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Device ID:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.deviceID}
-                      </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Engine No:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.engineNo}
-                      </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Fuel Type:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.fuelType}
-                      </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Mileage:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.mileage}
-                      </h4>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <h4>
-                        Car Registration No:
-                      </h4>
-                      <h4>
-                        {this.props.vehicleDetail.registrationNo}
-                      </h4>
-                    </div>
-                  </Card>
-                </ul>
+                        <h4>
+                          {this.props.vehicleDetail.registrationNo}
+                        </h4>
+                      </div>
+                    </Card>
+                  </ul>
                 </ScrollArea>
               </div>
             </DialogContent>
