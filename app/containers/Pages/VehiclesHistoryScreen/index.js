@@ -85,7 +85,7 @@ class VehiclesHistoryScreen extends Component {
   render() {
     let searchingFor = null;
     if (this.state.history.length > 0) {
-      searchingFor = search => history => history.registrationNo.toLowerCase().includes(search.toLowerCase()) || !search;
+      searchingFor = search => history => (history.registrationNo.toLowerCase().includes(search.toLowerCase()) || history.companyEmail.toLowerCase().includes(search.toLowerCase())) || !search;
     }
     return (
       <Fragment>

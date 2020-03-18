@@ -136,7 +136,7 @@ class ViewVehiclesScreen extends Component {
     let searchingFor = null;
 
     if (this.state.vehicles.length > 0) {
-      searchingFor = search => vehicles => vehicles.registrationNo.toLowerCase().includes(search.toLowerCase()) || !search;
+      searchingFor = search => vehicles => (vehicles.registrationNo.toLowerCase().includes(search.toLowerCase()) || vehicles.carOwnerName.toLowerCase().includes(search.toLowerCase())) || !search;
     }
     return (
       <Fragment>
@@ -244,7 +244,7 @@ class ViewVehiclesScreen extends Component {
         />
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={this.close}
+          close={() => this.setState({ showConfirmModal: false })}
           registrationNo={this.state.registrationNo}
           getAllMyVehicles={this.getAllMyVehicles}
           {...this.props}

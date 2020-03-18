@@ -313,7 +313,7 @@ class ViewUsersScreen extends Component {
               </ScrollArea>
             </Grid>
           ) : (
-              <Card title="No Company Found!">
+              <Card title="No User Found!">
                 <p className="subText">Don't have any Users? <Link to="/addUser">Create User</Link></p>
               </Card>
             )}
