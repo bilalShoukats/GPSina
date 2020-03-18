@@ -105,6 +105,16 @@ const VehicleCard = (props) => {
                     <Button disabled={!deviceEnabled} onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      props.openAttachDeviceModal()
+                    }} xl={6} className='btn bg-success tooltipWrap topTooltip'>
+                      <span className="tooltip">Attach Device</span>
+                      <i className="fa fa-bolt" />
+                    </Button>
+                  </div>
+                  <div style={{ marginLeft: 5 }}>
+                    <Button disabled={!deviceEnabled} onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       props.openAssignDriverModal()
                     }} xl={6} className='btn bg-success tooltipWrap topTooltip'>
                       <span className="tooltip">Assign Driver</span>

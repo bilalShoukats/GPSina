@@ -33,6 +33,7 @@ class ViewVehiclesScreen extends Component {
     showVehicleViewModal: false,
     showAssignDriverModal: false,
     showConfirmModal: false,
+    showAttachDeviceModal: false,
     carID: '',
     vehicleDetail: "",
     search: "",
@@ -99,6 +100,10 @@ class ViewVehiclesScreen extends Component {
 
   openAssignDriverModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
+  }
+
+  openAttachDeviceModal = (item) => {
+    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAttachDeviceModal: true })
   }
 
   handleChange = (name) => (event) => {
@@ -179,6 +184,7 @@ class ViewVehiclesScreen extends Component {
                             openVehicleSettings={() => this.openVehicleSettings(item)}
                             openConfirmModal={() => this.openConfirmModal(item)}
                             openAssignDriverModal={() => this.openAssignDriverModal(item)}
+                            openAttachDeviceModal={() => this.openAttachDeviceModal(item)}
                           // openVehicleHistoryModal={() => this.openVehicleHistoryModal(item)}
                           />
                         )
