@@ -133,7 +133,7 @@ class VehiclesHistoryScreen extends Component {
               </ScrollArea>
             </Grid>
           ) : (
-              <Card title="No Driver Found!">
+              <Card title="No Vehicle history found!">
                 <p className="subText">Don't have any vehicle history</p>
               </Card>
             )}

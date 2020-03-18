@@ -297,3 +297,188 @@
     }
   }
 }
+
+.scrollbarArea {
+  height: 260px;
+}
+
+.notificationItems {
+  li {
+    .buttonClass {
+      padding: 15px 20px;
+      display: block;
+      padding-left: 65px;
+      position: relative;
+      color: $textColor;
+      border-radius: 0px;
+      width: 100%;
+
+      &:hover {
+        background: #fbfbfb;
+      }
+
+      .icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 30px;
+        width: 30px;
+        background: $baseColor;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        border-radius: 50%;
+        line-height: 29px;
+      }
+
+      span {
+        display: block;
+        font-size: 14px;
+        text-transform: capitalize;
+        font-weight: 500;
+        width: 100%;
+        text-align: start;
+
+        span {
+          line-height: 15px;
+          margin-top: 3px;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+    }
+    .selectedButtonClass {
+      padding: 15px 20px;
+      display: block;
+      padding-left: 65px;
+      position: relative;
+      color: $textColor;
+      border-radius: 0px;
+      width: 100%;
+      background: #e4e4e4;
+
+      .icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 30px;
+        width: 30px;
+        background: $baseColor;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        border-radius: 50%;
+        line-height: 29px;
+      }
+
+      span {
+        display: block;
+        font-size: 14px;
+        text-transform: capitalize;
+        font-weight: 500;
+        width: 100%;
+        text-align: start;
+
+        span {
+          line-height: 15px;
+          margin-top: 3px;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .modalHead{
+    max-width: 350px;
+  }
+}
+.modalHead{
+  width: 600px;
+}
+
+.modalWrapper {
+  overflow-y: auto;
+
+  h2 {
+    display: flex;
+    justify-content: space-between;
+
+    .closeModal {
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+
+  .modalInner {
+    background: #fff;
+    padding: 30px 50px;
+    box-shadow: none;
+    outline: none;
+    width: 700px;
+    max-width: 95%;
+    margin: 50px auto;
+    border-radius: 5px;
+
+    form {
+      margin-top: 50px;
+
+      button {
+        margin-top: 20px;
+      }
+    }
+
+    .formInput {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.notificationList {
+  padding: 0px;
+
+  h5 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    height: 60px;
+    background: #3c54db;
+    color: #fff;
+    padding: 0 20px;
+    font-size: 16px;
+    text-transform: capitalize;
+    font-weight: 600;
+    margin-bottom: 0;
+
+    span {
+      font-weight: 400;
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+  }
+
+  .seeAll {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-top: 1px solid #f1f1f1;
+    color: $baseColor;
+    border-radius: 0px;
+
+    &:hover {
+      background: #fafafa;
+    }
+  }
+}

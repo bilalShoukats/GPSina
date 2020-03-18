@@ -14,6 +14,7 @@ import VehicleCard from './VehicleCard';
 import { Link } from 'react-router-dom';
 import SettingsModal from './SettingsModal';
 import NotificationsModal from './NotificationsModal';
+import ViewModal from './ViewModal';
 import AssignDriverModal from './AssignDriverModal';
 import ConfirmModal from './ConfirmModal';
 
@@ -28,9 +29,11 @@ class ViewVehiclesScreen extends Component {
     itemsInPage: 10,
     showSettingsModal: false,
     showNotificationsModal: false,
+    showVehicleViewModal: false,
     showAssignDriverModal: false,
     showConfirmModal: false,
     carID: '',
+    vehicleDetail: "",
     search: "",
     registrationNo: '',
   }
@@ -83,6 +86,10 @@ class ViewVehiclesScreen extends Component {
 
   openConfirmModal = (item) => {
     this.setState({ carID: item.carID, showConfirmModal: true })
+  }
+
+  viewVehicle = (item) => {
+    this.setState({ vehicleDetail: item, carID: item.carID, showVehicleViewModal: true })
   }
 
   openNotificationsModal = (item) => {
@@ -165,12 +172,13 @@ class ViewVehiclesScreen extends Component {
                           <VehicleCard
                             key={i}
                             item={item}
+                            viewVehicle={() => this.viewVehicle(item)}
                             openNotificationsModal={() => this.openNotificationsModal(item)}
                             editVehicle={() => this.props.history.push(`/editVehicle/${enc}`)}
                             openVehicleSettings={() => this.openVehicleSettings(item)}
                             openConfirmModal={() => this.openConfirmModal(item)}
                             openAssignDriverModal={() => this.openAssignDriverModal(item)}
-                            // openVehicleHistoryModal={() => this.openVehicleHistoryModal(item)}
+                          // openVehicleHistoryModal={() => this.openVehicleHistoryModal(item)}
                           />
                         )
                       }
@@ -215,6 +223,11 @@ class ViewVehiclesScreen extends Component {
           close={() => this.setState({ showNotificationsModal: false })}
           carID={this.state.carID}
           {...this.props}
+        />
+        <ViewModal
+          open={this.state.showVehicleViewModal}
+          close={() => this.setState({ showVehicleViewModal: false })}
+          vehicleDetail={this.state.vehicleDetail}
         />
         <ConfirmModal
           open={this.state.showConfirmModal}

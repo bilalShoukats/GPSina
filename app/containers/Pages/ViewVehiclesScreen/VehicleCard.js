@@ -11,8 +11,11 @@ import './style.scss';
 
 const VehicleCard = (props) => {
   let deviceEnabled = true;
-  if (props.item.deviceActive == false)
+  let statusStyle = {};
+  if (props.item.deviceActive == false) {
     deviceEnabled = false;
+    statusStyle = { color: "red" }
+  }
   return (
     <Card>
       <Grid className="responsiveTable">
@@ -31,7 +34,7 @@ const VehicleCard = (props) => {
                 <strong className="uThum">{props.item.registrationNo}</strong>
               </TableCell>
               <TableCell>
-                <strong className="uThum">{(deviceEnabled == true) ? "Active" : "Pending"}</strong>
+                <strong className="uThum" style={statusStyle}>{(deviceEnabled == true) ? "Active" : "Pending"}</strong>
               </TableCell>
               <TableCell>
                 <strong className="uThum">{props.item.carOwnerName}</strong>
@@ -42,11 +45,24 @@ const VehicleCard = (props) => {
                     <Button disabled={!deviceEnabled} onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      props.viewVehicle()
+                    }}
+                      style={{ visibility: 'visible' }}
+                      xl={6}
+                      className='btn bg-warning tooltipWrap topTooltip' >
+                      <span className="tooltip">View Vehicle</span>
+                      <i className="fa fa-eye" />
+                    </Button>
+                  </div>
+                  <div style={{ marginLeft: 5 }}>
+                    <Button disabled={!deviceEnabled} onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       props.editVehicle()
                     }}
                       style={{ visibility: 'visible' }}
                       xl={6}
-                      className='btn bg-primary tooltipWrap topTooltip' >
+                      className='btn bg-dark tooltipWrap topTooltip' >
                       <span className="tooltip">Edit Vehicle</span>
                       <i className="fa fa-edit" />
                     </Button>
