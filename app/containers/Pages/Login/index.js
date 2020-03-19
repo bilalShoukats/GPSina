@@ -129,6 +129,14 @@ class Login extends Component {
       }
     })
   }
+  componentDidMount() {
+    console.log('check login-', this.props)
+    if (this.props.apiManager.token !== '') {
+      this.props.history.push('/dashboard')
+    }
+  }
+
+
   renderLoading = () => {
     return (
       <Dialog
@@ -201,17 +209,6 @@ class Login extends Component {
                 }}
               />
               <Grid className="loginAction">
-                <FormControlLabel
-                  className="remambar"
-                  control={
-                    <Checkbox
-                      checked={this.state.remember}
-                      onChange={this.checkHandler}
-                      disableRipple
-                    />
-                  }
-                  label="Remember Me"
-                />
                 <Link to="/forgotPassword">Forgot Password?</Link>
               </Grid>
               <Button type="submit" className="btn bg-default accountBtn">login</Button>

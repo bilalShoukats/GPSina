@@ -107,6 +107,7 @@ class ViewUsersScreen extends Component {
         toast.error(res.id)
         this.setState({ loading: false });
       }
+      this.setState({ showCarAssignModal: false });
     })
   }
 

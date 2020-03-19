@@ -17,6 +17,7 @@ class AddRoleScreen extends Component {
   state = {
     roleName: '',
     roleDetail: '',
+    roleID: '',
     error: {},
     loading: false,
     addUser: false,
@@ -31,6 +32,8 @@ class AddRoleScreen extends Component {
     viewVehicle: false,
     assignDriver: false,
     attachDevice: false,
+    drivingAnalysis: false,
+    fleetUtilization: false,
   }
 
   schema = {
@@ -47,11 +50,11 @@ class AddRoleScreen extends Component {
       });
       return errors;
     }),
-    roleDetail: Joi.string().regex(/^[a-zA-Z ]{50}/).required().error(errors => {
+    roleDetail: Joi.string().regex(/^[a-zA-Z ]{30}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Role Detail must be more than 50 characters";
+            err.message = "Role Detail must be more than 30 characters";
             break;
           default:
             err.message = "Please enter role detail";
@@ -75,6 +78,18 @@ class AddRoleScreen extends Component {
       error
     })
   };
+  componentDidMount() {
+    let a = this.props.location.search
+    let b = a.split('?name=')
+    let c = b[1].split('?desc=')
+    let d = c[1].split('?id=')
+    let name = window.atob(c[0])
+    let description = window.atob(d[0])
+    let id = window.atob(d[1])
+    this.setState({ roleName: name, roleDetail: description, roleID: id })
+
+    // this.getList()
+  }
 
   validationProperty = event => {
     const Obj = { [event.target.name]: event.target.value };
@@ -97,80 +112,24 @@ class AddRoleScreen extends Component {
     return errors;
   };
 
-
-  getSingleRoleDetail = () => {
-    let dec = window.atob(this.props.match.params.item)
-    let body = {
-      companyEmail: this.props.user.companyEmail,
-      email: dec
-    }
-    // console.log('alssssl', body)
-    this.props.apiManager.makeCall(`getEmployeeDetail`, body, res => {
-      console.log('alssssl', res.response.userPermissions[body.companyEmail])
-      if (res.code === 5056) {
-        this.setState({
-          userDetail: res.response, currentPage: res.currentPage, totalPages: res.totalPages, loading: false,
-          roleName: res.response.roleName,
-          roleDetail: res.response.roleDetail,
-          addUser: res.response.userPermissions[body.companyEmail].apiOperation[0],
-          viewUser: res.response.userPermissions[body.companyEmail].apiOperation[1],
-          editUser: res.response.userPermissions[body.companyEmail].apiOperation[2],
-          addRoute: res.response.userPermissions[body.companyEmail].apiOperation[3],
-          viewRoutes: res.response.userPermissions[body.companyEmail].apiOperation[4],
-          addDriver: res.response.userPermissions[body.companyEmail].apiOperation[5],
-          viewDrivers: res.response.userPermissions[body.companyEmail].apiOperation[6],
-          addVehicle: res.response.userPermissions[body.companyEmail].apiOperation[7],
-          viewVehicle: res.response.userPermissions[body.companyEmail].apiOperation[8],
-          assignDriver: res.response.userPermissions[body.companyEmail].apiOperation[9],
-          attachDevice: res.response.userPermissions[body.companyEmail].apiOperation[10],
-        });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    })
-  }
   submitHandler = (e) => {
     e.preventDefault()
     console.log("submitting add user form");
     const error = this.validate()
     this.setState({ loading: true }, () => {
       if (!error) {
-        let emaill = this.props.user.companyEmail
         let body = {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          userName: this.state.userName,
-          password: this.state.password,
-          email: this.state.email,
-          phone: this.state.phone,
-          avatar: this.state.file,
-          companyEmail: emaill,
-          userPermissions: {
-            [emaill]: {
-              apiOperation: [
-                this.state.addUser === true ? 1 : 0,
-                this.state.viewUser === true ? 1 : 0,
-                this.state.editUser === true ? 1 : 0,
-                this.state.addRoute === true ? 1 : 0,
-                this.state.viewRoutes === true ? 1 : 0,
-                this.state.addDriver === true ? 1 : 0,
-                this.state.viewDrivers === true ? 1 : 0,
-                this.state.addVehicle === true ? 1 : 0,
-                this.state.viewVehicle === true ? 1 : 0,
-                this.state.assignDriver === true ? 1 : 0,
-                this.state.attachDevice === true ? 1 : 0,
-              ]
-            }
-          }
+          title: this.state.roleName,
+          description: this.state.roleDetail,
+          roleID: parseInt(this.state.roleID),
+          companyEmail: 'usman.malik@adad.com'
         }
-        this.props.apiManager.makeCall("updateEmployee", body, (response) => {
-          console.log('adddddd', response)
-          console.log('adddddd', body)
+        this.props.apiManager.makeCall("updateRole", body, (response) => {
+          console.log('update role', response)
+          console.log('update role', body)
           if (response.code === 1014) {
             this.setState({ loading: false })
-            toast.success('User added successfully!')
+            toast.success('Role updated successfully!')
           }
           else {
             this.setState({ loading: false })
@@ -186,14 +145,10 @@ class AddRoleScreen extends Component {
       }
     })
   }
-  componentDidMount() {
-    this.getSingleRoleDetail()
-  }
 
   handleSwitchChange = (name) => (event) => {
     this.setState({ [name]: event.target.checked });
   };
-
   renderLoading = () => {
     return (
       <Dialog
@@ -224,7 +179,7 @@ class AddRoleScreen extends Component {
               className="addCompany"
             >
               <Grid container spacing={3}>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={4} xs={12}>
                   <TextField
                     label="Role Name"
                     placeholder="Role name here.."
@@ -241,13 +196,11 @@ class AddRoleScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                <Grid item sm={12} xs={12}>
+                <Grid item sm={8} xs={12}>
                   <TextField
                     type="description"
                     label="Role Details"
                     placeholder="Role detail here.."
-                    rows={10}
-                    multiline={true}
                     fullWidth
                     variant="outlined"
                     name="roleDetail"
@@ -261,218 +214,8 @@ class AddRoleScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Add User:
-                </h4>
-                    <Switch
-                      checked={this.state.addUser}
-                      onChange={this.handleSwitchChange('addUser')}
-                      value="addUser"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      View User:
-                </h4>
-                    <Switch
-                      checked={this.state.viewUser}
-                      onChange={this.handleSwitchChange('viewUser')}
-                      value="viewUser"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Edit User:
-                </h4>
-                    <Switch
-                      checked={this.state.editUser}
-                      onChange={this.handleSwitchChange('editUser')}
-                      value="editUser"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Add Route:
-                </h4>
-                    <Switch
-                      checked={this.state.addRoute}
-                      onChange={this.handleSwitchChange('addRoute')}
-                      value="addRoute"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      View Route:
-                </h4>
-                    <Switch
-                      checked={this.state.viewRoutes}
-                      onChange={this.handleSwitchChange('viewRoutes')}
-                      value="viewRoutes"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Add Driver:
-                </h4>
-                    <Switch
-                      checked={this.state.addDriver}
-                      onChange={this.handleSwitchChange('addDriver')}
-                      value="addDriver"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      View Drivers:
-                </h4>
-                    <Switch
-                      checked={this.state.viewDrivers}
-                      onChange={this.handleSwitchChange('viewDrivers')}
-                      value="viewDrivers"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Add Vehicle:
-                </h4>
-                    <Switch
-                      checked={this.state.addVehicle}
-                      onChange={this.handleSwitchChange('addVehicle')}
-                      value="addVehicle"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      View Vehicle:
-                </h4>
-                    <Switch
-                      checked={this.state.viewVehicle}
-                      onChange={this.handleSwitchChange('viewVehicle')}
-                      value="viewVehicle"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Assign Driver:
-                </h4>
-                    <Switch
-                      checked={this.state.assignDriver}
-                      onChange={this.handleSwitchChange('assignDriver')}
-                      value="assignDriver"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Attach Device:
-                </h4>
-                    <Switch
-                      checked={this.state.attachDevice}
-                      onChange={this.handleSwitchChange('attachDevice')}
-                      value="attachDevice"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-
                 <Grid item xs={12}>
-                  <Button className="btn bg-default" onClick={this.submitHandler}>Edit Role</Button>
+                  <Button className="btn bg-default" onClick={this.submitHandler}>Update Role</Button>
                 </Grid>
               </Grid>
             </Card>
@@ -483,7 +226,6 @@ class AddRoleScreen extends Component {
     );
   }
 }
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
