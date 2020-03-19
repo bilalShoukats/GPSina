@@ -3,19 +3,20 @@ import { toast } from 'react-toastify';
 import SweetAlertSingle from '../../../../app/components/UI_Elements/SweetAlert/alert';
 
 export default class ConfirmModal extends Component {
-  deleteCar = () => {
+  deleteRole = () => {
     let body = {
-      email: this.props.registrationNo,
+      roleID: this.props.roleID,
     }
-    this.props.apiManager.makeCall('deleteUser', body, res => {
-      console.log('assign Users - view', res)
-      console.log('assign Users - view', this.props)
-      if (res) {
-        alert('baawwa')
+    this.props.apiManager.makeCall('deleteRole', body, res => {
+      console.log('Delete Role - view', res)
+      console.log('Delete Role - view', body)
+      if (res.code === 1016) {
+        toast.success('Deleted Successfully')
       }
       else {
         toast.error(res.id);
       }
+      this.props.close()
     })
   }
   render() {
@@ -30,7 +31,7 @@ export default class ConfirmModal extends Component {
           cancelButtonText='No'
           showCancelButton={true}
           onConfirm={() => {
-            this.deleteCar()
+            this.deleteRole()
           }}
           onCancel={() => {
             this.props.close()

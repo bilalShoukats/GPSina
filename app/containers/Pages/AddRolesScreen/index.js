@@ -17,6 +17,7 @@ class AddRoleScreen extends Component {
   state = {
     roleName: '',
     roleDetail: '',
+    roleID: '',
     error: {},
     loading: false,
     addUser: false,
@@ -31,6 +32,8 @@ class AddRoleScreen extends Component {
     viewVehicle: false,
     assignDriver: false,
     attachDevice: false,
+    drivingAnalysis: false,
+    fleetUtilization: false,
   }
 
   schema = {
@@ -47,11 +50,11 @@ class AddRoleScreen extends Component {
       });
       return errors;
     }),
-    roleDetail: Joi.string().regex(/^[a-zA-Z ]{50}/).required().error(errors => {
+    roleDetail: Joi.string().regex(/^[a-zA-Z ]{30}/).required().error(errors => {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "Role Detail must be more than 50 characters";
+            err.message = "Role Detail must be more than 30 characters";
             break;
           default:
             err.message = "Please enter role detail";
@@ -75,6 +78,21 @@ class AddRoleScreen extends Component {
       error
     })
   };
+  componentDidMount() {
+    // this.getList()
+  }
+  getList = () => {
+    let body
+    this.props.apiManager.makeCall(`getApisInfo`, body, (response) => {
+      if (response.code === 1019) {
+        this.setState({ apiList: res.response })
+      }
+      else {
+        console.log('getlist', response)
+      }
+    }, true)
+  }
+
 
   validationProperty = event => {
     const Obj = { [event.target.name]: event.target.value };
@@ -103,34 +121,35 @@ class AddRoleScreen extends Component {
     const error = this.validate()
     this.setState({ loading: true }, () => {
       if (!error) {
-        let emaill = this.props.user.companyEmail
         let body = {
-          roleName: this.state.roleName,
-          roleDetail: this.state.roleDetail,
-          userPermissions: {
-            [emaill]: {
-              apiOperation: [
-                this.state.addUser === true ? 1 : 0,
-                this.state.viewUser === true ? 1 : 0,
-                this.state.editUser === true ? 1 : 0,
-                this.state.addRoute === true ? 1 : 0,
-                this.state.viewRoutes === true ? 1 : 0,
-                this.state.addDriver === true ? 1 : 0,
-                this.state.viewDrivers === true ? 1 : 0,
-                this.state.addVehicle === true ? 1 : 0,
-                this.state.viewVehicle === true ? 1 : 0,
-                this.state.assignDriver === true ? 1 : 0,
-                this.state.attachDevice === true ? 1 : 0,
-              ]
-            }
-          }
+          title: this.state.roleName,
+          description: this.state.roleDetail,
+          roleID:1,
+          companyEmail: this.props.match.params.item
+          // userPermissions: {
+          //   "apiOperation": [
+          //     this.state.addUser.toString(),
+          //     this.state.viewUser.toString(),
+          //     this.state.editUser.toString(),
+          //     this.state.addRoute.toString(),
+          //     this.state.viewRoutes.toString(),
+          //     this.state.addDriver.toString(),
+          //     this.state.viewDrivers.toString(),
+          //     this.state.addVehicle.toString(),
+          //     this.state.viewVehicle.toString(),
+          //     this.state.assignDriver.toString(),
+          //     this.state.attachDevice.toString(),
+          //     this.state.drivingAnalysis.toString(),
+          //     this.state.fleetUtilization.toString(),
+          //   ]
+          // }
         }
-        this.props.apiManager.makeCall("addEmployeeUserToCompany", body, (response) => {
-          console.log('adddddd', response)
-          console.log('adddddd', body)
-          if (response.code === 1006) {
+        this.props.apiManager.makeCall("addRole", body, (response) => {
+          console.log('add role', response)
+          console.log('add role', body)
+          if (response.code === 1008) {
             this.setState({ loading: false })
-            toast.success('User added successfully!')
+            toast.success('Role added successfully!')
           }
           else {
             this.setState({ loading: false })
@@ -180,7 +199,7 @@ class AddRoleScreen extends Component {
               className="addCompany"
             >
               <Grid container spacing={3}>
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={4} xs={12}>
                   <TextField
                     label="Role Name"
                     placeholder="Role name here.."
@@ -197,13 +216,11 @@ class AddRoleScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                <Grid item sm={12} xs={12}>
+                <Grid item sm={8} xs={12}>
                   <TextField
                     type="description"
                     label="Role Details"
                     placeholder="Role detail here.."
-                    rows={10}
-                    multiline={true}
                     fullWidth
                     variant="outlined"
                     name="roleDetail"
@@ -217,7 +234,7 @@ class AddRoleScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                {/* <Grid item sm={6} xs={12}>
                   <div className="modalContent">
                     <h4>
                       Add User:
@@ -426,7 +443,44 @@ class AddRoleScreen extends Component {
                     />
                   </div>
                 </Grid>
-
+                <Grid item sm={6} xs={12}>
+                  <div className="modalContent">
+                    <h4>
+                      Fleet Utilization:
+                </h4>
+                    <Switch
+                      checked={this.state.fleetUtilization}
+                      onChange={this.handleSwitchChange('fleetUtilization')}
+                      value="fleetUtilization"
+                      classes={{
+                        root: 'switchDefault',
+                        switchBase: 'switchBase',
+                        thumb: 'switchThumb',
+                        track: 'switchTrack',
+                        checked: 'switchChecked'
+                      }}
+                    />
+                  </div>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <div className="modalContent">
+                    <h4>
+                      Driving Analysis:
+                </h4>
+                    <Switch
+                      checked={this.state.drivingAnalysis}
+                      onChange={this.handleSwitchChange('drivingAnalysis')}
+                      value="drivingAnalysis"
+                      classes={{
+                        root: 'switchDefault',
+                        switchBase: 'switchBase',
+                        thumb: 'switchThumb',
+                        track: 'switchTrack',
+                        checked: 'switchChecked'
+                      }}
+                    />
+                  </div>
+                </Grid> */}
                 <Grid item xs={12}>
                   <Button className="btn bg-default" onClick={this.submitHandler}>Add Role</Button>
                 </Grid>
@@ -439,7 +493,6 @@ class AddRoleScreen extends Component {
     );
   }
 }
-s
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
