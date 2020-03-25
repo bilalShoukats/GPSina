@@ -81,6 +81,8 @@ import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
 import AddDeviceScreen from 'containers/Pages/AddDeviceScreen/Loadable';
 import ViewDeviceScreen from 'containers/Pages/ViewDeviceScreen/Loadable';
 import EditCompanyScreen from 'containers/Pages/EditCompanyScreen/Loadable';
+import AddApiInfoScreen from 'containers/Pages/AddApiInfoScreen/Loadable';
+import AddScreenScreen from 'containers/Pages/AddScreenScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
 import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
 import EditRouteScreen from 'containers/Pages/EditRouteScreen/Loadable';
@@ -135,13 +137,17 @@ const Routes = props => (
     <PrivateRoute exact path={`/editUser/:item`} component={EditUserScreen} />
     <PrivateRoute exact path="/viewUsers" component={ViewUsersScreen} />
     {/* Roles Links */}
-    <PrivateRoute exact path="/addRoles" component={AddRolesScreen} />
+    <PrivateRoute exact path={`/addRoles/:item`} component={AddRolesScreen} />
     <PrivateRoute exact path={`/editRole/:item`} component={EditRolesScreen} />
     <PrivateRoute exact path="/viewRoles" component={ViewRolesScreen} />
     {/*Driver*/}
     <PrivateRoute exact path="/addDriver" component={AddDriverScreen} />
     <PrivateRoute exact path={`/editDriver/:item`} component={EditDriverScreen} />
     <PrivateRoute exact path="/viewDrivers" component={ViewDriversScreen} />
+    {/*apiInfo*/}
+    <PrivateRoute exact path="/addApiInfo" component={AddApiInfoScreen} />
+    {/*addScreen*/}
+    <PrivateRoute exact path="/addScreen" component={AddScreenScreen} />
     {/* Vehicle Links */}
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />

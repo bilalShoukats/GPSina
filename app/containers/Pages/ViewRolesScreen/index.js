@@ -1,19 +1,16 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core'
+import { Grid, Button, CircularProgress, } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 import './style.scss'
 import { toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
-import NotificationsModal from './NotificationsModal'
-import Switch from '@material-ui/core/Switch';
-import UserCard from './UserCard'
+import RolesTable from './RolesTable'
 // images
 
 class ViewRolesScreen extends Component {
@@ -21,8 +18,8 @@ class ViewRolesScreen extends Component {
   state = {
     search: "",
     value: 0,
-    users: [],
-    cars: [],
+    companies: [],
+    roles: [],
     loading: true,
     showAlert: false,
     currentPage: 1,
@@ -35,13 +32,12 @@ class ViewRolesScreen extends Component {
     registrationNo: '',
     assignCar: false,
     carModel: '',
-    switches: []
+    selectedCompany: ''
 
   }
 
   componentDidMount = () => {
-    this.getAllUsers();
-    this.getCars()
+    this.getAllRoles();
   }
   componentDidUpdate(prevProps) {
     if (this.props.timeout !== prevProps.timeout) {
@@ -50,64 +46,41 @@ class ViewRolesScreen extends Component {
       }
     }
   }
+  getAllCompanies = () => {
+    let body
+    this.props.apiManager.makeCall(`getAllCompanies`, body, res => {
+      console.log('get all companies-', res)
+      if (res.code === 1019) {
+        this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+      }
+      else {
+        this.setState({ loading: false });
+        toast.error(res.id);
+      }
+    }, true)
+  }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
         console.log(this.state.currentPage);
-        this.getAllUsers();
+        this.getAllRoles();
       })
     }
   }
 
-  getAllUsers = () => {
-    let body = {
-      companyEmail: this.props.user.companyEmail,
-    }
-    this.props.apiManager.makeCall(`viewCompanyUserDetails`, body, res => {
-      console.log('alssssl', res.response)
+  getAllRoles = () => {
+    let body
+    this.props.apiManager.makeCall(`getAllRoles`, body, res => {
+      console.log('get all roles-', res.response)
       if (res.code === 1019) {
-        this.setState({ users: this.state.users.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        this.setState({ roles: res.response, currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => this.getAllCompanies());
       }
       else {
-        this.setState({ loading: false });
+        this.setState({ loading: false }, () => this.getAllCompanies());
         toast.error(res.id);
       }
-    })
-  }
-
-  getCars = () => {
-    let body = {
-      companyEmail: this.props.user.companyEmail,
-    }
-    this.props.apiManager.makeCall('viewCars', body, res => {
-      console.log('cars', res)
-      if (res.code === 1019) {
-        this.setState({ cars: res.response, loading: false });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    })
-  }
-  assignVehicle = () => {
-    let body = {
-      companyEmail: this.props.user.companyEmail,
-      email: this.state.userEmail,
-      vehicleIDs: this.state.switches
-    }
-    console.log('carssss', body)
-    this.props.apiManager.makeCall('assignVehicleToEmployee', body, res => {
-      console.log('carssss', res)
-      if (res.code === 1014) {
-        toast.success(res.id)
-      }
-      else {
-        toast.error(res.id)
-        this.setState({ loading: false });
-      }
-    })
+    }, true)
   }
 
   changeHandler = (e) => {
@@ -117,9 +90,6 @@ class ViewRolesScreen extends Component {
   }
   openConfirmModal = (item) => {
     this.setState({ carID: item.carID, showConfirmModal: true })
-  }
-  openNotificationsModal = (item) => {
-    this.setState({ carID: item.carID, showNotificationsModal: true })
   }
 
   renderLoading = () => {
@@ -138,153 +108,45 @@ class ViewRolesScreen extends Component {
     )
   }
 
-  handleSwitchChange = (item) => (event) => {
-    if (event.target.checked === true) {
-      var newStateArray = this.state.switches.slice();
-      newStateArray.push(item);
-      this.setState({ switches: newStateArray }, () => console.log('bawa array dkha', this.state.switches)
-      );
-    }
-    else {
-      var result = arrayRemove(this.state.switches, item);
-      this.setState({ switches: result }, () => console.log('bawa array dkha', this.state.switches)
-      );
-    }
-    function arrayRemove(arr, value) {
-      return arr.filter(function (ele) {
-        return ele !== value;
-      });
-    }
-  };
-
-  renderAssignCarModal = () => {
-    return (
-      <Fragment>
-        <Dialog
-          open={this.state.showCarAssignModal}
-          onClose={() => this.setState({ showCarAssignModal: false })}
-          className="modalWrapper"
-        >
-          <div className="modalHead">
-            <DialogContent style={{ padding: 0 }}>
-              <div className="notificationList">
-                <h5>
-                  Assign Car
-                </h5>
-                <ScrollArea
-                  speed={1}
-                  className="scrollbarArea"
-                  contentClassName="scrollbarContent"
-                  horizontal={false}
-                >
-                  <ul className="notificationItems">
-                    {this.state.cars.map((item, i) => {
-                      console.log('bawaa', item)
-                      return (
-                        <Card key={i}>
-                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <h4>
-                              Car Model:
-                          </h4>
-                            <h4>
-                              {item.carModel}
-                            </h4>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                            <h4>
-                              Car Owner Name:
-                          </h4>
-                            <h4>
-                              {item.carOwnerName}
-                            </h4>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                            <h4>
-                              Car Color:
-                          </h4>
-                            <h4>
-                              {item.color}
-                            </h4>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
-                            <h4>
-                              Car Registration No:
-                          </h4>
-                            <h4>
-                              {item.registrationNo}
-                            </h4>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
-                            <Switch
-                              checked={this.state[item.carModel]}
-                              onChange={this.handleSwitchChange(item.registrationNo)}
-                              value={item.carModel}
-                              classes={{
-                                root: 'switchDefault',
-                                switchBase: 'switchBase',
-                                thumb: 'switchThumb',
-                                track: 'switchTrack',
-                                checked: 'switchChecked'
-                              }}
-                            />
-                          </div>
-                        </Card>
-                      )
-                    })}
-                  </ul>
-                </ScrollArea>
-              </div>
-            </DialogContent>
-            <Grid className="modalFooter">
-              <Button
-                style={{ padding: '5px 20px' }}
-                className="bg-warning"
-                onClick={() => this.setState({ showCarAssignModal: false })}
-              >
-                Cancel
-              </Button>
-              <Button style={{ padding: '5px 20px' }} className="bg-success" onClick={this.assignVehicle}>
-                Assign
-              </Button>
-            </Grid>
-          </div>
-        </Dialog>
-      </Fragment>
-    )
+  close = () => {
+    this.setState({ showConfirmModal: false })
+    this.getAllRoles
   }
 
   render() {
     let searchingFor = null;
 
-    if (this.state.users.length > 0) {
-      searchingFor = search => users => users.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+    if (this.state.roles.length > 0) {
+      searchingFor = search => users => users.title.toLowerCase().includes(search.toLowerCase()) || !search;
     }
 
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Roles</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.users[0]) ? (
+          {(this.state.roles[0]) ? (
             <Grid className="viewCompaniesLeft">
-              <TextField
-                fullWidth
-                classes={{
-                  root: 'searchUsers',
-                }}
-                value={this.state.search}
-                name="search"
-                onChange={this.changeHandler}
-                placeholder="Search Roles"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment
-                      className="searchCompaniesIcon"
-                      position="end">
-                      <i className="fa fa-search"></i>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <Grid item xl={3} lg={6} md={4} sm={6} xs={12} className='mainDropDown'>
+                <h5 style={{ display: 'flex', alignItems: 'center', marginLeft: 10 }}>Add New Company Role For</h5>
+                <Grid className="dropdownWrapper hover">
+                  <Button style={{ backgroundColor: "rgba(211, 211, 211, 1)", color: 'black' }}>
+                    {this.state.selectedCompany !== '' ? this.state.selectedCompany : 'Select Company'}
+                    <i className="fa fa-angle-down" />
+                  </Button>
+                  <ul className="dropdown bottom">
+                    {this.state.companies.map((item, index) => (
+                      <li onClick={() => this.setState({ selectedCompany: item.companyName, companyEmail: item.email })} key={index}>{item.companyName}</li>
+                    ))}
+                  </ul>
+                </Grid>
+                <Button onClick={() => {
+                  this.state.selectedCompany !== '' ?
+                    this.props.history.push(`addRoles/${this.state.companyEmail}`)
+                    : toast.error('Please select company first')
+                }} style={{ backgroundColor: "rgba(211, 211, 211, 1)", color: 'black', height: '35px' }}>
+                  Add
+                  </Button>
+              </Grid>
               <ScrollArea
                 speed={.5}
                 className="companiesScrollBar"
@@ -293,55 +155,39 @@ class ViewRolesScreen extends Component {
               >
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
-                    {this.state.users.filter(searchingFor(this.state.search)).map((item, i) => {
-                      var enc = window.btoa(item.email);
-                      console.log('user ', item)
-                      return (
-                        <UserCard
-                          key={i}
-                          item={item}
-                          openNotificationsModal={() => this.openNotificationsModal(item)}
-                          editUser={() => this.props.history.push(`/editUser/${enc}`)}
-                          openConfirmModal={() => this.openConfirmModal(item)}
-                          assignCar={() => this.setState({ showCarAssignModal: true, userEmail: item.email })}
-                        />
-                      )
-                    }
-                    )}
+                    <RolesTable
+                      data={this.state.roles}
+                      {...this.props}
+                      openConfirmModal={(id) => { this.setState({ showConfirmModal: true, roleID: id }) }}
+                    />
                   </li>
                 </ul>
               </ScrollArea>
             </Grid>
           ) : (
-              <Card title="No Company Found!">
+              <Card title="No Roles Found!">
                 <p className="subText">Don't have any Roles? <Link to="/addRoles">Add Role</Link></p>
               </Card>
             )}
         </Grid>
-        {(this.state.users[0]) ? (
-          <Grid className="buttonGrid">
-            {(this.state.currentPage < this.state.totalPages) ? (
-              <ul>
-                <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
-              </ul>
-            ) : null}
-          </Grid>) : null}
+        {
+          (this.state.roles[0]) ? (
+            <Grid className="buttonGrid">
+              {(this.state.currentPage < this.state.totalPages) ? (
+                <ul>
+                  <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
+                </ul>
+              ) : null}
+            </Grid>) : null
+        }
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={() => this.setState({ showConfirmModal: false })}
+          close={this.close}
           {...this.props}
-          registrationNo={this.state.registrationNo}
-        // history={this.props.history}
-        />
-        <NotificationsModal
-          open={this.state.showNotificationsModal}
-          close={() => this.setState({ showNotificationsModal: false })}
-          carID={this.state.carID}
-          {...this.props}
+          roleID={this.state.roleID}
         />
         {this.renderLoading()}
-        {this.renderAssignCarModal()}
-      </Fragment>
+      </Fragment >
     );
   }
 }

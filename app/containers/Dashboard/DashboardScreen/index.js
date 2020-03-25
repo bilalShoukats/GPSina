@@ -67,6 +67,7 @@ class DashboardScreen extends Component {
         * fetching user data and calling api to get all vehicles data and passing vehicle Ids to websocket.
         */
   componentDidMount = () => {
+    console.log('userrr',this.props.user)
     this.socketComponent = new SocketComponent();
     Manager.getItemCallback('user', true, (user) => {
       let body = {

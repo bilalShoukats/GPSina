@@ -26,8 +26,8 @@ class ConfirmModal extends Component {
         <SweetAlertSingle
           title="Are you sure you want to un-assign this driver?"
           show={this.props.open}
-          type="error"
-          error
+          type="warning"
+          warning
           confirmButtonText="Yes"
           cancelButtonText='No'
           showCancelButton={true}

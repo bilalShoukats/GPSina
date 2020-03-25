@@ -18,7 +18,7 @@ const Report = (props) => (
           <TableRow>
             <TableCell>Image</TableCell>
             <TableCell style={{ minWidth: '140px' }}>Name</TableCell>
-            <TableCell>Liscense</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Liscense</TableCell>
             <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -41,7 +41,7 @@ const Report = (props) => (
             </TableCell> */}
             <TableCell>
               <strong className="uThum">
-                {props.item.licenceNumber}
+                {props.item.licenceNumber.substring(0,15)}
               </strong>
             </TableCell>
             <TableCell>
