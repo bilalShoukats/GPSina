@@ -58,6 +58,19 @@ const VehicleCard = (props) => {
                     <Button disabled={!deviceEnabled} onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      props.editFence()
+                    }}
+                      style={{ visibility: 'visible' }}
+                      xl={6}
+                      className='btn bg-dark tooltipWrap topTooltip' >
+                      <span className="tooltip">Assign Fence</span>
+                      <i className="fa fa-arrows" />
+                    </Button>
+                  </div>
+                  <div style={{ marginLeft: 5 }}>
+                    <Button disabled={!deviceEnabled} onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       props.editVehicle()
                     }}
                       style={{ visibility: 'visible' }}

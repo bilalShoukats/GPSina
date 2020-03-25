@@ -96,6 +96,7 @@ import ViewDriversScreen from 'containers/Pages/ViewDriversScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
 import ViewVehiclesScreen from 'containers/Pages/ViewVehiclesScreen/Loadable';
 import VehiclesHistoryScreen from 'containers/Pages/VehiclesHistoryScreen/Loadable';
+// import FenceScreen from 'containers/Pages/FenceScreen/Loadable';
 import VehicleMapScreen from 'containers/Pages/VehicleMapScreen/Loadable';
 import DriverAnalysis from 'containers/Pages/DriverAnalysis/Loadable';
 import LockScreen from 'containers/Pages/LockScreen/Loadable';
@@ -145,14 +146,15 @@ const Routes = props => (
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />
     <PrivateRoute exact path={`/vehiclesHistory`} component={VehiclesHistoryScreen} />
+    {/* <PrivateRoute exact path={`/editFence/:item`} component={FenceScreen} /> */}
     <PrivateRoute exact path={`/vehicleMap/:registrationNo`} component={VehicleMapScreen} />
     <PrivateRoute exact path="/fleetUtilization" component={DriverDetails} />
     {/* <PrivateRoute exact path="/routesHistory" component={DriverRoutes} /> */}
     <PrivateRoute exact path={`/RouteMap/:item`} component={RouteMap} />
     {/* Route Links */}
-    {/* <PrivateRoute exact path="/addRoute" component={AddRouteScreen} /> */}
-    {/* <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} /> */}
-    {/* <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} /> */}
+    <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
+    <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
+    <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} />
     <PrivateRoute exact path={`/driving-analysis`} component={DriverAnalysis} />
     <Route exact path="/forgotPassword" component={ForgotPassword} />
     <PrivateRoute
@@ -465,12 +467,12 @@ const Routes = props => (
     {/* icons end */}
 
     {/* map start */}
-    <PrivateRoute
+    {/* <PrivateRoute
       exact
       path="/google-map"
       title={props.intl.formatMessage({ ...messages.googlemap })}
       component={GoogleMapsComponent}
-    />
+    /> */}
     {/* <PrivateRoute
       exact
       path="/google-map"

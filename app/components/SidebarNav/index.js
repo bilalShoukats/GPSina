@@ -212,29 +212,29 @@ const SidebarNav = props => {
         {
           name: `Vehicles History`,
           link: '/vehiclesHistory',
-          id: 222,
+          id: 223,
         },
       ],
     },
-    // {
-    //   // name: `${props.intl.formatMessage({ ...messages.Route })}`,
-    //   icon: fontawesome,
-    //   iconHover: fontawesomeH,
-    //   alwaysexpand: true,
-    //   id: 32,
-    //   menus: [
-    //     {
-    //       name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
-    //       link: '/addRoute',
-    //       id: 321,
-    //     },
-    //     {
-    //       name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
-    //       link: '/viewRoutes',
-    //       id: 322,
-    //     },
-    //   ],
-    // },
+    {
+      // name: `${props.intl.formatMessage({ ...messages.Route })}`,
+      icon: fontawesome,
+      iconHover: fontawesomeH,
+      alwaysexpand: true,
+      id: 32,
+      menus: [
+        {
+          name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
+          link: '/addRoute',
+          id: 321,
+        },
+        {
+          name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
+          link: '/viewRoutes',
+          id: 322,
+        },
+      ],
+    },
   ];
 
   const [parent_expanded, setParentExpanded] = useState('1');
