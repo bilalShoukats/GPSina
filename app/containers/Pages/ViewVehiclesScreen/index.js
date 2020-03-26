@@ -180,8 +180,8 @@ class ViewVehiclesScreen extends Component {
                             item={item}
                             viewVehicle={() => this.viewVehicle(item)}
                             openNotificationsModal={() => this.openNotificationsModal(item)}
-                            editFence={() => this.props.history.push(`/editFence/${enc}`)}
-                            editVehicle={() => this.props.history.push(`/editVehicle/${enc}`)}
+                            //editFence={() => this.props.history.push(`/editFence/${enc}`)}
+                            // editVehicle={() => this.props.history.push(`/editVehicle/${enc}`)}
                             openVehicleSettings={() => this.openVehicleSettings(item)}
                             openConfirmModal={() => this.openConfirmModal(item)}
                             openAssignDriverModal={() => this.openAssignDriverModal(item)}

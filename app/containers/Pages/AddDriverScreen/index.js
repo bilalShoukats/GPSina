@@ -204,10 +204,10 @@ class AddUserScreen extends Component {
         value: '2',
         label: 'Female',
       },
-      {
-        value: '3',
-        label: 'Transgender',
-      },
+      // {
+      //   value: '3',
+      //   label: 'Transgender',
+      // },
     ];
     const bloodGorupItems = [
       {

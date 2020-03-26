@@ -163,7 +163,10 @@ export default class SettingsModal extends Component {
               </div>
             </DialogContent>
             <Grid className="modalFooter">
-              <Button style={{ padding: '5px 20px' }} className="bg-success" >
+              <Button style={{ padding: '5px 20px' }} className="bg-warning" onClick={this.props.close}>
+                Cancel
+              </Button>
+              <Button style={{ padding: '5px 20px' }} className="bg-success" onClick={this.props.close}>
                 Assign
               </Button>
             </Grid>

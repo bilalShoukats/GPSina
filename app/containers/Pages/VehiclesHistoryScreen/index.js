@@ -84,14 +84,14 @@ class VehiclesHistoryScreen extends Component {
 
   render() {
     let searchingFor = null;
-    if (this.state.history.length > 0) {
+    if (this.state.history) {
       searchingFor = search => history => (history.registrationNo.toLowerCase().includes(search.toLowerCase()) || history.companyEmail.toLowerCase().includes(search.toLowerCase())) || !search;
     }
     return (
       <Fragment>
         <h2 className="breadcumbTitle">All Vehicles History</h2>
         <Grid className="viewVehiclesHistory">
-          {(this.state.history[0] !== undefined && this.state.history.length > 0) ? (
+          {(this.state.history && this.state.history.length > 0) ? (
             <Grid className="viewVehiclesHistoryLeft">
               <TextField
                 fullWidth
@@ -139,7 +139,7 @@ class VehiclesHistoryScreen extends Component {
             )}
         </Grid>
         {
-          (this.state.history.length > 0) ? (
+          (this.state.history && this.state.history.length > 0) ? (
             <Grid className="buttonGrid">
               {(this.state.currentPage < this.state.totalPages) ? (
                 <ul>
