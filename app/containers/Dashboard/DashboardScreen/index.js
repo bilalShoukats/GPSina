@@ -1,4 +1,5 @@
 import React, { Fragment, Component } from 'react';
+import { Manager } from '../../../StorageManager/Storage';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
@@ -8,7 +9,6 @@ import './style.scss'
 import GMap from './mapHead'
 import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
-import { Manager } from '../../../StorageManager/Storage';
 import { toast } from 'react-toastify';
 
 class DashboardScreen extends Component {
@@ -54,11 +54,10 @@ class DashboardScreen extends Component {
     let data = {
       deviceId, engineStatus, Lat, Lng, gpsSpeed, obdSpeed, carTemperature, fuelReading, rpm
     }
-    try{
+    try {
       this.mainMap(data, this.state.vehicleDetails);
     }
-    catch (e)
-    {
+    catch (e) {
       console.log("dashboard screen render not called yet");
     }
   }
@@ -67,26 +66,27 @@ class DashboardScreen extends Component {
         * fetching user data and calling api to get all vehicles data and passing vehicle Ids to websocket.
         */
   componentDidMount = () => {
-    console.log('userrr',this.props.user)
     this.socketComponent = new SocketComponent();
-    Manager.getItemCallback('user', true, (user) => {
-      let body = {
-        companyEmail: user.companyEmail
-      }
-      this.props.apiManager.makeCall('viewCars', body, (res) => {
-        this.setState({ loading: false });
-        if (res.code === 1019) {
-          this.state.vehicleDetails = res.response;
-          let companyVehicleIDs = [];
-          res.response.forEach((item) => {
-            companyVehicleIDs.push(item.deviceID.toString());
-          });
-          this.socketComponent.connectSocketServer(user.hash, companyVehicleIDs, this.recieveData);
-        } else {
-          toast.error(res.id);
+    setTimeout(() => {
+      Manager.getItemCallback('user', true, (user) => {
+        let body = {
+          companyEmail: user.companyEmail
         }
+        this.props.apiManager.makeCall('viewCars', body, (res) => {
+          this.setState({ loading: false });
+          if (res.code === 1019) {
+            this.state.vehicleDetails = res.response;
+            let companyVehicleIDs = [];
+            res.response.forEach((item) => {
+              companyVehicleIDs.push(item.deviceID.toString());
+            });
+            this.socketComponent.connectSocketServer(user.hash, companyVehicleIDs, this.recieveData);
+          } else {
+            toast.error(res.id);
+          }
+        });
       });
-    });
+    }, 400);
   }
 
   /**
