@@ -22,6 +22,7 @@ class ViewDriversScreen extends Component {
   state = {
     search: "",
     driverId: '',
+    driverEmail: "",
     value: 0,
     companies: [],
     drivers: [],
@@ -75,7 +76,7 @@ class ViewDriversScreen extends Component {
     })
   }
   openConfirmModal = (item) => {
-    this.setState({ carID: item.carID, showConfirmModal: true })
+    this.setState({ carID: item.carID, showConfirmModal: true, driverEmail: item.driverEmail })
   }
   openConfirmUnAssignModal = (item) => {
     this.setState({ registrationNo: item.registrationNo, showConfirmUnAssignModal: true })
@@ -220,6 +221,7 @@ class ViewDriversScreen extends Component {
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
           getAllDrivers={() => this.getAllDrivers()}
+          driverEmail={this.state.driverEmail}
         />
         <AssignDriverModal
           open={this.state.showAssignDriverModal}

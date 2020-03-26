@@ -6,9 +6,9 @@ import { SuperHOC } from '../../../HOC';
 class ConfirmModal extends Component {
   deleteCar = () => {
     let body = {
-      registrationNo: this.props.registrationNo,
+      driverEmail: this.props.driverEmail,
     }
-    this.props.apiManager.makeCall('deleteCar', body, res => {
+    this.props.apiManager.makeCall('deleteDriver', body, res => {
       console.log('assign cars - view', res)
       console.log('assign cars - view', this.props)
       if (res) {
@@ -18,6 +18,7 @@ class ConfirmModal extends Component {
       else {
         toast.error(res.id);
       }
+      this.props.close();
     })
   }
   render() {

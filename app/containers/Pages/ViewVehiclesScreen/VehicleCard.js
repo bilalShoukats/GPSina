@@ -54,7 +54,7 @@ const VehicleCard = (props) => {
                       <i className="fa fa-eye" />
                     </Button>
                   </div>
-                  {/* <div style={{ marginLeft: 5 }}>
+                  <div style={{ marginLeft: 5 }}>
                     <Button disabled={!deviceEnabled} onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -67,7 +67,7 @@ const VehicleCard = (props) => {
                       <i className="fa fa-arrows" />
                     </Button>
                   </div>
-                  <div style={{ marginLeft: 5 }}>
+                  {/* <div style={{ marginLeft: 5 }}>
                     <Button disabled={!deviceEnabled} onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
