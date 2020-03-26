@@ -209,27 +209,32 @@ const SidebarNav = props => {
           link: '/viewVehicles',
           id: 222,
         },
+        {
+          name: `Vehicles History`,
+          link: '/vehiclesHistory',
+          id: 223,
+        },
       ],
     },
-    // {
-    //   // name: `${props.intl.formatMessage({ ...messages.Route })}`,
-    //   icon: fontawesome,
-    //   iconHover: fontawesomeH,
-    //   alwaysexpand: true,
-    //   id: 32,
-    //   menus: [
-    //     {
-    //       name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
-    //       link: '/addRoute',
-    //       id: 321,
-    //     },
-    //     {
-    //       name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
-    //       link: '/viewRoutes',
-    //       id: 322,
-    //     },
-    //   ],
-    // },
+    {
+      // name: `${props.intl.formatMessage({ ...messages.Route })}`,
+      icon: fontawesome,
+      iconHover: fontawesomeH,
+      alwaysexpand: true,
+      id: 32,
+      menus: [
+        {
+          name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
+          link: '/addRoute',
+          id: 321,
+        },
+        {
+          name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
+          link: '/viewRoutes',
+          id: 322,
+        },
+      ],
+    },
   ];
 
   const [parent_expanded, setParentExpanded] = useState('1');
@@ -265,9 +270,7 @@ const SidebarNav = props => {
           <PerfectScrollbar>
             {navigations.map(nav => {
               console.log('nav', nav)
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (5464145555522)) return null;
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (54641455555223)) return null;
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && nav.id === (546414555552234)) return null;
+              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((nav.id === 5464145555522) || (nav.id === 54641455555223) || (nav.id === 546414555552234))) return null;
               return (
                 <Fragment key={nav.id}>
                   <ExpansionPanel

@@ -3,58 +3,41 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SuperHOC } from '../../../HOC';
 import 'sass/elements/sweet-alerts.scss';
-import Button from '@material-ui/core/Button';
-import { Grid, CircularProgress } from '@material-ui/core';
+import { Grid, TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core'
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
-import GMap from './basic'
-import SettingsModal from './SettingsModal';
-import NotificationsModal from './NotificationsModal';
-import AssignDriverModal from './AssignDriverModal';
-import AttachDeviceModal from './AttachDeviceModal';
-import ConfirmModal from './ConfirmModal';
-import SocketComponent from '../../../components/WebSocket';
+import Card from 'components/Card/Loadable'
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
 import { toast } from 'react-toastify';
+import VehicleCard from './VehicleCard';
+import { Link } from 'react-router-dom';
+import SettingsModal from './SettingsModal';
+import NotificationsModal from './NotificationsModal';
+import ViewModal from './ViewModal';
+import AssignDriverModal from './AssignDriverModal';
+import AttachDeviceModal from './AttachDeviceModal';
+import ConfirmModal from './ConfirmModal';
 
-// const searchingFor = search => vehicles => vehicles.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
-
-class ChatApp extends Component {
+class ViewVehiclesScreen extends Component {
   state = {
-    companyIdsSet: "",
-    email: "",
-    hash: "",
-    companyEmail: "",
     value: 0,
     vehicles: [],
     loading: true,
     vibrateNotification: false,
-    overSpeed: false,
-    acc: false,
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
     showSettingsModal: false,
     showNotificationsModal: false,
+    showVehicleViewModal: false,
     showAssignDriverModal: false,
     showConfirmModal: false,
+    showAttachDeviceModal: false,
     carID: '',
+    vehicleDetail: "",
+    search: "",
     registrationNo: '',
-    showAttahDeviceModal: false,
-    mapObject: new Map(),
-    showAttachDeviceModal:false
-  }
-
-  recieveData = (deviceId, engineStatus, Lat, Lng) => {
-    let mapObject = this.state.mapObject;
-    mapObject.set(
-      deviceId,
-      [deviceId, engineStatus, Lat[0], Lng[0]]
-    );
-    this.setState({ mapObject }, () => {
-      console.log('MapData: ', this.state.mapObject);
-    });
   }
 
   componentDidUpdate(prevProps) {
@@ -66,79 +49,77 @@ class ChatApp extends Component {
   }
 
   componentDidMount = () => {
-    this.socketComponent = new SocketComponent();
-    this.getMyEmail();
+    this.getAllMyVehicles();
   }
 
-  componentWillUnmount = () => {
-    this.socketComponent.disconnectSocketServer();
+  getAllMyVehicles = () => {
+    Manager.getItemCallback('user', true, (user) => {
+      let body = {
+        page: this.state.currentPage,
+        companyEmail: user.companyEmail
+      }
+      this.props.apiManager.makeCall('getPendingCarsActive', body, (res) => {
+        this.setState({ loading: false });
+        if (res.code === 1019) {
+          this.setState({ vehicles: this.state.vehicles.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
+        } else {
+          this.setState({ loading: false });
+          toast.error(res.id);
+        }
+      });
+    });
   }
 
   loadMoreHandler = () => {
     if (this.state.currentPage < this.state.totalPages) {
       this.setState({ currentPage: this.state.currentPage + 1 }, () => {
-        console.log(this.state.currentPage);
         this.getAllMyVehicles();
       })
     }
   }
 
-  getAllMyVehicles = () => {
-    let body = {
-      page: this.state.currentPage,
-      companyEmail: this.state.companyEmail
-    }
-    this.props.apiManager.makeCall('getPendingCarsActive', body, res => {
-      console.log('get cars - v', res)
-      console.log('get cars - v', body)
-      if (res.code === 1019) {
-        this.setState({ vehicles: this.state.vehicles.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false }, () => {
-          let companyIdSet = [];
-          this.state.vehicles.map((item, index) => {
-            companyIdSet.push("" + item.deviceID);
-          });
-          this.setState({ companyIdSet }, () => {
-            this.socketComponent.connectSocketServer(this.state.hash, this.state.companyIdSet, this.recieveData);
-          });
-        });
-      }
-      else {
-        this.setState({ loading: false });
-        toast.error(res.id);
-      }
-    }, false)
-  }
+  handleInputChange = ({ target }) => {
+    this.setState({ [target.name]: target.value });
+  };
 
-  getMyEmail = async () => {
-    let user = await Manager.getItem('user', true);
-    this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllMyVehicles());
-  }
-
-  openSettingsModal = (item) => {
+  openVehicleSettings = (item) => {
     this.setState({ carID: item.carID, showSettingsModal: true })
   }
+
   openConfirmModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showConfirmModal: true })
   }
+
+  viewVehicle = (item) => {
+    this.setState({ vehicleDetail: item, carID: item.carID, showVehicleViewModal: true })
+  }
+
   openNotificationsModal = (item) => {
     this.setState({ carID: item.carID, showNotificationsModal: true })
   }
+
   openAssignDriverModal = (item) => {
     this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
   }
+
   openAttachDeviceModal = (item) => {
-    this.setState({ registrationNo: item.registrationNo, showAttachDeviceModal: true })
+    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAttachDeviceModal: true })
   }
 
-  close = () => {
-    this.setState({ showConfirmModal: false, showNotificationsModal: false, showAttachDeviceModal: false, showAssignDriverModal: false, showSettingsModal: false, vehicles: [] }, () => this.getAllMyVehicles())
+  handleChange = (name) => (event) => {
+    this.setState({ [name]: event.target.checked });
+  };
+
+  changeHandler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
   }
 
   renderLoading = () => {
     return (
       <Dialog
         open={this.state.loading}
-        // onClose={this.state.loading}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
@@ -152,96 +133,85 @@ class ChatApp extends Component {
   }
 
   render() {
+    let searchingFor = null;
+
+    if (this.state.vehicles.length > 0) {
+      searchingFor = search => vehicles => (vehicles.registrationNo.toLowerCase().includes(search.toLowerCase()) || vehicles.carOwnerName.toLowerCase().includes(search.toLowerCase())) || !search;
+    }
     return (
       <Fragment>
         <h2 className="breadcumbTitle">Your Vehicles</h2>
-        <Grid className="chatAppp">
-          <Grid className="chatAppLeftt">
-            <ScrollArea
-              speed={1}
-              className="chatScrollBarr"
-              contentClassName='chatScrollBarContentt'
-              horizontal={false}
-            >
-              {this.state.vehicles.map((item, index) => {
-                return (
-                  <Grid key={index} className='itemContainerr'
-                    style={{ background: item.deviceActive !== false ? '' : 'rgba(211,211,215,.9)' }}
-                    onClick={() => {
-                      if (item.deviceActive !== false) {
-                        this.socketComponent.disconnectSocketServer()
-                        this.props.history.push(`/vehicleMap/${item.deviceID}`)
+        <Grid className="viewVehiclesApp">
+          {(this.state.vehicles[0]) ? (
+            <Grid className="viewVehiclesLeft">
+              <TextField
+                fullWidth
+                classes={{
+                  root: 'searchVehicles',
+                }}
+                value={this.state.search}
+                name="search"
+                onChange={this.changeHandler}
+                placeholder="Search Vehicle"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      className="searchVehiclesIcon"
+                      position="end">
+                      <i className="fa fa-search"></i>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <ScrollArea
+                speed={.5}
+                className="vehiclesScrollBar"
+                contentClassName='vehiclesScrollBarContent'
+                horizontal={false}
+              >
+                <ul className="forumItems" style={{ margin: 10 }}>
+                  <li className="vehiclesList" >
+                    {
+                      this.state.vehicles.filter(searchingFor(this.state.search)).map((item, i) => {
+                        var enc = window.btoa(item.registrationNo);
+                        return (
+                          <VehicleCard
+                            key={i}
+                            item={item}
+                            viewVehicle={() => this.viewVehicle(item)}
+                            openNotificationsModal={() => this.openNotificationsModal(item)}
+                            //editFence={() => this.props.history.push(`/editFence/${enc}`)}
+                            // editVehicle={() => this.props.history.push(`/editVehicle/${enc}`)}
+                            openVehicleSettings={() => this.openVehicleSettings(item)}
+                            openConfirmModal={() => this.openConfirmModal(item)}
+                            openAssignDriverModal={() => this.openAssignDriverModal(item)}
+                            openAttachDeviceModal={() => this.openAttachDeviceModal(item)}
+                          // openVehicleHistoryModal={() => this.openVehicleHistoryModal(item)}
+                          />
+                        )
                       }
-                      else toast.error('Car is in pending status')
-                    }}>
-                    <Grid style={{ display: 'flex', width: '100%', justifyContent: 'space-between', padding: '10px 20px 0px 20px', }}>
-                      <h4>{item.carOwnerName}</h4>
-                      <p style={{ color: 'red' }}>{item.deviceActive !== false ? "" : 'Pending'}</p>
-                      <p>{item.registrationNo}</p>
-                    </Grid>
-                    <Grid style={{ display: 'flex', width: '100%', justifyContent: 'space-around', marginTop: 'auto' }}>
-                      <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.openSettingsModal(item)
-                      }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
-                        <i className="icofont-ui-edit" />
-                        <span className="tooltip">Edit Vehicle</span>
-                      </Button>
-                      <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.openNotificationsModal(item)
-                      }} xl={6} className='btn bg-primary tooltipWrap topTooltip' >
-                        <i className="icofont-notification" />
-                        <span className="tooltip">Notifications</span>
-                      </Button>
-                      <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.openConfirmModal(item)
-                      }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
-                        <i className="icofont-ui-delete" />
-                        <span className="tooltip">Delete</span>
-                      </Button>
-                      <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.openAttachDeviceModal(item)
-                      }} xl={6} className='btn bg-secondary tooltipWrap topTooltip' >
-                        <i className="icofont-thunder-light" />
-                        <span className="tooltip">Attach Device</span>
-                      </Button>
-                      <Button disabled={item.deviceActive !== false ? false : true} onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.openAssignDriverModal(item)
-                      }} xl={6} className='btn bg-info tooltipWrap topTooltip' >
-                        <i className="icofont-ui-user" />
-                        <span className="tooltip">Assign Driver</span>
-                      </Button>
-                    </Grid>
-                  </Grid>
-                )
-              })}
-              {
-                (this.state.vehicles[0]) ? (
-                  <Grid className="buttonGrid" style={{ marginTop: 20 }}>
-                    {(this.state.currentPage < this.state.totalPages) ? (
-                      <ul>
-                        <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
-                      </ul>
-                    ) : null}
-                  </Grid>) : null
-              }
-            </ScrollArea>
-          </Grid>
-          <Grid className="chatAppRightt">
-            <GMap
-              data={[...this.state.mapObject.values()]}
-            />
-          </Grid>
+                      )}
+                  </li>
+                </ul>
+              </ScrollArea>
+            </Grid>
+          ) : (
+              <Card title="No Vehicle Found!">
+                <p className="subText">Don't have any Vehicle? <Link to="/addVehicle">Create Vehicle</Link></p>
+              </Card>
+            )}
         </Grid>
+        {(this.state.vehicles[0]) ? (
+          <Grid className="buttonGrid">
+            {(this.state.currentPage < this.state.totalPages) ? (
+              <ul>
+                <li><Button className="btn bg-default btn-radius" onClick={this.loadMoreHandler}>Load More</Button></li>
+              </ul>
+            ) : (
+                <ul>
+                </ul>
+              )}
+          </Grid>) : null}
         <SettingsModal
           open={this.state.showSettingsModal}
           close={() => this.setState({ showSettingsModal: false })}
@@ -268,11 +238,15 @@ class ChatApp extends Component {
           carID={this.state.carID}
           {...this.props}
         />
+        <ViewModal
+          open={this.state.showVehicleViewModal}
+          close={() => this.setState({ showVehicleViewModal: false })}
+          vehicleDetail={this.state.vehicleDetail}
+        />
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={this.close}
+          close={() => this.setState({ showConfirmModal: false })}
           registrationNo={this.state.registrationNo}
-          history={this.props.history}
           getAllMyVehicles={this.getAllMyVehicles}
           {...this.props}
         />
@@ -282,7 +256,7 @@ class ChatApp extends Component {
   }
 }
 
-ChatApp.propTypes = {
+ViewVehiclesScreen.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -297,4 +271,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC((withConnect)(ChatApp));
+export default SuperHOC((withConnect)(ViewVehiclesScreen));

@@ -81,6 +81,8 @@ import ViewCompaniesScreen from 'containers/Pages/ViewCompaniesScreen/Loadable';
 import AddDeviceScreen from 'containers/Pages/AddDeviceScreen/Loadable';
 import ViewDeviceScreen from 'containers/Pages/ViewDeviceScreen/Loadable';
 import EditCompanyScreen from 'containers/Pages/EditCompanyScreen/Loadable';
+import AddApiInfoScreen from 'containers/Pages/AddApiInfoScreen/Loadable';
+import AddScreenScreen from 'containers/Pages/AddScreenScreen/Loadable';
 import AddRouteScreen from 'containers/Pages/AddRouteScreen/Loadable';
 import ViewRoutesScreen from 'containers/Pages/ViewRoutesScreen/Loadable';
 import EditRouteScreen from 'containers/Pages/EditRouteScreen/Loadable';
@@ -88,13 +90,15 @@ import AddUserScreen from 'containers/Pages/AddUserScreen/Loadable';
 import EditUserScreen from 'containers/Pages/EditUserScreen/Loadable';
 import ViewUsersScreen from 'containers/Pages/ViewUsersScreen/Loadable';
 import AddRolesScreen from 'containers/Pages/AddRolesScreen/Loadable';
-// import EditRolesScreen from 'containers/Pages/EditRolesScreen/Loadable';
-// import ViewRolesScreen from 'containers/Pages/ViewRolesScreen/Loadable';
+import EditRolesScreen from 'containers/Pages/EditRolesScreen/Loadable';
+import ViewRolesScreen from 'containers/Pages/ViewRolesScreen/Loadable';
 import AddDriverScreen from 'containers/Pages/AddDriverScreen/Loadable';
 import EditDriverScreen from 'containers/Pages/EditDriverScreen/Loadable';
 import ViewDriversScreen from 'containers/Pages/ViewDriversScreen/Loadable';
 import AddVehicleScreen from 'containers/Pages/AddVehicleScreen/Loadable';
 import ViewVehiclesScreen from 'containers/Pages/ViewVehiclesScreen/Loadable';
+import VehiclesHistoryScreen from 'containers/Pages/VehiclesHistoryScreen/Loadable';
+// import FenceScreen from 'containers/Pages/FenceScreen/Loadable';
 import VehicleMapScreen from 'containers/Pages/VehicleMapScreen/Loadable';
 import DriverAnalysis from 'containers/Pages/DriverAnalysis/Loadable';
 import LockScreen from 'containers/Pages/LockScreen/Loadable';
@@ -133,24 +137,30 @@ const Routes = props => (
     <PrivateRoute exact path={`/editUser/:item`} component={EditUserScreen} />
     <PrivateRoute exact path="/viewUsers" component={ViewUsersScreen} />
     {/* Roles Links */}
-    <PrivateRoute exact path="/addRoles" component={AddRolesScreen} />
-    {/* <PrivateRoute exact path={`/editRoles/:item`} component={EditRolesScreen} />
-    <PrivateRoute exact path="/viewRoles" component={ViewRolesScreen} /> */}
+    <PrivateRoute exact path={`/addRoles/:item`} component={AddRolesScreen} />
+    <PrivateRoute exact path={`/editRole/:item`} component={EditRolesScreen} />
+    <PrivateRoute exact path="/viewRoles" component={ViewRolesScreen} />
     {/*Driver*/}
     <PrivateRoute exact path="/addDriver" component={AddDriverScreen} />
     <PrivateRoute exact path={`/editDriver/:item`} component={EditDriverScreen} />
     <PrivateRoute exact path="/viewDrivers" component={ViewDriversScreen} />
+    {/*apiInfo*/}
+    <PrivateRoute exact path="/addApiInfo" component={AddApiInfoScreen} />
+    {/*addScreen*/}
+    <PrivateRoute exact path="/addScreen" component={AddScreenScreen} />
     {/* Vehicle Links */}
     <PrivateRoute exact path="/addVehicle" component={AddVehicleScreen} />
     <PrivateRoute exact path="/viewVehicles" component={ViewVehiclesScreen} />
+    <PrivateRoute exact path={`/vehiclesHistory`} component={VehiclesHistoryScreen} />
+    {/* <PrivateRoute exact path={`/editFence/:item`} component={FenceScreen} /> */}
     <PrivateRoute exact path={`/vehicleMap/:registrationNo`} component={VehicleMapScreen} />
     <PrivateRoute exact path="/fleetUtilization" component={DriverDetails} />
     {/* <PrivateRoute exact path="/routesHistory" component={DriverRoutes} /> */}
     <PrivateRoute exact path={`/RouteMap/:item`} component={RouteMap} />
     {/* Route Links */}
-    {/* <PrivateRoute exact path="/addRoute" component={AddRouteScreen} /> */}
-    {/* <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} /> */}
-    {/* <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} /> */}
+    <PrivateRoute exact path="/addRoute" component={AddRouteScreen} />
+    <PrivateRoute exact path="/viewRoutes" component={ViewRoutesScreen} />
+    <PrivateRoute exact path={`/editRoute/:item`} component={EditRouteScreen} />
     <PrivateRoute exact path={`/driving-analysis`} component={DriverAnalysis} />
     <Route exact path="/forgotPassword" component={ForgotPassword} />
     <PrivateRoute
@@ -463,12 +473,12 @@ const Routes = props => (
     {/* icons end */}
 
     {/* map start */}
-    <PrivateRoute
+    {/* <PrivateRoute
       exact
       path="/google-map"
       title={props.intl.formatMessage({ ...messages.googlemap })}
       component={GoogleMapsComponent}
-    />
+    /> */}
     {/* <PrivateRoute
       exact
       path="/google-map"

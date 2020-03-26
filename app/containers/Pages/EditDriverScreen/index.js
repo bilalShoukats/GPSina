@@ -233,10 +233,10 @@ class AddUserScreen extends Component {
         value: '1',
         label: 'Female',
       },
-      {
-        value: '2',
-        label: 'Transgender',
-      },
+      // {
+      //   value: '2',
+      //   label: 'Transgender',
+      // },
     ];
     const bloodGorupItems = [
       {
@@ -437,8 +437,10 @@ class AddUserScreen extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
+                    style={{ backgroundColor: '#8080801c' }}
                     select
                     label="Gender"
+                    disabled={true}
                     className='formInput'
                     value={this.state.gender}
                     fullWidth

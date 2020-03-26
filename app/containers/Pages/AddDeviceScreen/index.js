@@ -187,7 +187,7 @@ class AddCompanyScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     label="Device Id"
-                    placeholder="Your company email here.."
+                    placeholder="Your device id here.."
                     fullWidth
                     variant="outlined"
                     name="deviceId"

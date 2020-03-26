@@ -1,5 +1,5 @@
 import React from 'react';
-import { withGoogleMap, withScriptjs, GoogleMap, Polyline, Marker } from 'react-google-maps'
+import { withGoogleMap, withScriptjs, GoogleMap, InfoWindow, Marker } from 'react-google-maps'
 import DashboardVehicleInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleInfo';
 import DashboardVehicleEngineInfo from 'components/Dashboard/DashboardScreen/DashboardVehicleEngineInfo';
 import { Button, Grid } from '@material-ui/core'
@@ -26,6 +26,7 @@ export default class DashboardMap extends React.Component {
         deviceCounter: 0,
     }
 
+    isOpen = false;
     showGraph = false;
     bool = false;
     zoomValue = false;
@@ -51,6 +52,7 @@ export default class DashboardMap extends React.Component {
         this.mapCenterValue = markerCurrentPos;
         this.currentMarkerClicked = clickedDeviceId;
         this.showGraph = true;
+        this.isOpen = true;
     }
 
     /**
@@ -74,10 +76,10 @@ export default class DashboardMap extends React.Component {
         this.dataReceived(data);
     }
 
-     /**
-        * Creating vehicle data array and setting array for all vehicle socket data.
-        * @param data array of data that contains vehicle websocket data.
-        */
+    /**
+       * Creating vehicle data array and setting array for all vehicle socket data.
+       * @param data array of data that contains vehicle websocket data.
+       */
     dataReceived = (data) => {
         console.log("data recieved: ", data);
         var flag = false;
@@ -108,9 +110,9 @@ export default class DashboardMap extends React.Component {
         }
     }
 
-     /**
-        * Render with map that render all the UI elements.
-        */
+    /**
+       * Render with map that render all the UI elements.
+       */
     renderWithMap = () => {
         return (
             <div>
@@ -126,7 +128,14 @@ export default class DashboardMap extends React.Component {
                         this.state.devicesData.length > 0 && this.state.devicesData.map((item) => {
                             let lastLineLatLng = new window.google.maps.LatLng(item.Lat, item.Lng)
                             return (
-                                <Marker icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }} />
+                                <Marker icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
+                                    {this.isOpen &&
+                                        <InfoWindow onCloseClick={() => { this.isOpen = false; }}>
+                                            <span>{item.deviceId}</span>
+                                        </InfoWindow>
+                                    }
+                                </Marker>
+
                             )
                         })
                     }
@@ -165,7 +174,7 @@ export default class DashboardMap extends React.Component {
                                     e.stopPropagation();
                                 }}
                             >
-                                <FuelReadingGraph data={this.state.devicesData} selectedId={this.currentMarkerClicked}/>
+                                <FuelReadingGraph data={this.state.devicesData} selectedId={this.currentMarkerClicked} />
                             </Grid>
                         </div >
                     ) : null

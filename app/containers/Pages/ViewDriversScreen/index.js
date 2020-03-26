@@ -1,10 +1,10 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import { SuperHOC } from '../../../HOC';
-import { Grid, TextField, Button, Tabs, InputAdornment, CircularProgress } from '@material-ui/core'
+import { Grid, TextField, Button, InputAdornment, CircularProgress } from '@material-ui/core'
 import Card from 'components/Card/Loadable'
 import './style.scss'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'sass/elements/sweet-alerts.scss';
 import { Link } from 'react-router-dom';
 import ScrollArea from 'react-scrollbar';
@@ -14,8 +14,6 @@ import ConfirmUnAssignModal from './ConfirmUnAssignModal'
 import NotificationsModal from './NotificationsModal'
 import Dialog from '@material-ui/core/Dialog';
 import DriverCard from './DriverCard'
-// images
-import profile from 'images/team/img1.jpg'
 
 // const searchingFor = search => companies => companies.companyName.toLowerCase().includes(search.toLowerCase()) || !search;
 
@@ -40,12 +38,6 @@ class ViewDriversScreen extends Component {
     showNotificationsModal: false
   }
 
-  handleChange = (event, newValue) => {
-    this.setState({
-      value: newValue
-    })
-  }
-
   componentDidMount = () => {
     this.getAllDrivers();
   }
@@ -62,7 +54,6 @@ class ViewDriversScreen extends Component {
     let body = {
       page: this.state.currentPage,
       companyEmail: this.props.user.companyEmail
-      // companyEmail:this.state.email
     }
     this.props.apiManager.makeCall('viewDrivers', body, res => {
       console.log('View Drivers - ', res)

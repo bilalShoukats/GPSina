@@ -4,7 +4,7 @@ import SweetAlertSingle from '../../../components/UI_Elements/SweetAlert/alert';
 import { SuperHOC } from '../../../HOC';
 
 class ConfirmModal extends Component {
-  deleteCar = () => {
+  unAssignCar = () => {
     let body = {
       registrationNo: this.props.registrationNo,
     }
@@ -24,15 +24,15 @@ class ConfirmModal extends Component {
     return (
       <Fragment>
         <SweetAlertSingle
-          title="Are You Sure?"
+          title="Are you sure you want to un-assign this driver?"
           show={this.props.open}
-          type="error"
-          error
-          confirmButtonText="YES"
-          cancelButtonText='NO'
+          type="warning"
+          warning
+          confirmButtonText="Yes"
+          cancelButtonText='No'
           showCancelButton={true}
           onConfirm={() => {
-            this.deleteCar()
+            this.unAssignCar()
           }}
           onCancel={() => {
             this.props.close()
