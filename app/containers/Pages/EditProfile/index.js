@@ -164,10 +164,6 @@ class EditProfile extends Component {
                 value: '1',
                 label: 'Female',
             },
-            {
-                value: '2',
-                label: 'Transgender',
-            },
         ];
 
         return (

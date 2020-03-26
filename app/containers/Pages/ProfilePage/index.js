@@ -163,7 +163,7 @@ class ProfilePage extends Component {
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <span>Gender</span>
-                  <h4>{gender === 0 ? "Male" : (gender === 1) ? "Female" : "Transgender"}</h4>
+                  <h4>{gender === 0 ? "Male" : "Female"}</h4>
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <span>Age</span>
