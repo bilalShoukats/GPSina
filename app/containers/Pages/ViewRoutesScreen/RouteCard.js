@@ -33,7 +33,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.editRoute()
-                  }} xl={6} className='btn bg-dark'>
+                  }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
+                    <span className="tooltip">Edit Route</span>
                     <i className="icofont-ui-edit" />
                   </Button>
                 </div>
@@ -42,7 +43,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openConfirmModal()
-                  }} xl={6} className='btn bg-danger'>
+                  }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
+                    <span className="tooltip">Delete Route</span>
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>
