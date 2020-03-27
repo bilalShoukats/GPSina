@@ -172,12 +172,12 @@
   margin-bottom: 10px; 
   align-items: center;
 }
-.itemContainer{
+.itemFleetContainer{
   h4 {
     color: black !important;
   }
   label {
-    color: black;
+    color: black !important;
   }
   // display: flex  !important; 
   flex-direction: column !important;
@@ -193,12 +193,12 @@
 
 
 }
-.selectedItemContainer{
+.selectedItemFleetContainer{
   h4 {
     color: white !important;
   }
   label {
-    color: white;
+    color: white !important;
   }
 
   // display: flex  !important; 

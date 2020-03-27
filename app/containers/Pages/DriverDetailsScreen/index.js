@@ -207,7 +207,7 @@ class ChatApp extends Component {
                     console.log('sate drivers-', item)
                     return (
                       <Card className='cardWrap' style={{ padding: 0 }} key={index}>
-                        <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                        <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemFleetContainer' : 'itemFleetContainer'} onClick={() => {
                           this.setState({ registrationNo: item.registrationNo }, () => {
                             this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
                           })

@@ -34,6 +34,7 @@ class index extends Component {
   componentDidMount() {
     this.getCarDriverDetails()
   }
+
   getGraphsData = (id) => {
     this.harshBraking(id)
     this.harshAcceleration(id)
@@ -152,15 +153,14 @@ class index extends Component {
             console.log('render drivers: ', item)
             return (
               <Card className='cardWrap' style={{ padding: 0 }} key={index}>
-                <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
+                <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemDriverContainer' : 'itemDriverContainer'} onClick={() => {
                   this.setState({ registrationNo: item.registrationNo }, () => {
                     this.getGraphsData(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
                   })
                 }}>
-                  <Grid className='text'>
-                    <h4>{item.driverName}</h4>
-                    {/* <p>{item.driverEmail}</p> */}
-                  </Grid>
+                  <h4>{item.driverName}</h4>
+                  <label style={{ float: "left" }}>{item.AttachedCarInformation[0].deviceID}</label>
+                  <label style={{ float: "right" }}>{item.AttachedCarInformation[0].registrationNo}</label>
                 </Grid>
               </Card>
             )
