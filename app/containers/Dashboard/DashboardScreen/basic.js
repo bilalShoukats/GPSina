@@ -129,11 +129,16 @@ export default class DashboardMap extends React.Component {
                             let lastLineLatLng = new window.google.maps.LatLng(item.Lat, item.Lng)
                             return (
                                 <Marker icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
-                                    {this.isOpen &&
-                                        <InfoWindow onCloseClick={() => { this.isOpen = false; }}>
-                                            <span>{item.deviceId}</span>
-                                        </InfoWindow>
-                                    }
+                                    {/* {
+                                        this.isOpen ? (
+                                            return (
+                                                <InfoWindow onCloseClick={() => { this.isOpen = false; }}>
+                                                    <span>{item.deviceId}</span>
+                                                </InfoWindow>
+                                            )
+                                        ) : null
+                                        
+                                    } */}
                                 </Marker>
 
                             )
