@@ -67,26 +67,24 @@ class DashboardScreen extends Component {
         */
   componentDidMount = () => {
     this.socketComponent = new SocketComponent();
-    setTimeout(() => {
-      Manager.getItemCallback('user', true, (user) => {
-        let body = {
-          companyEmail: user.companyEmail
+    Manager.getItemCallback('user', true, (user) => {
+      let body = {
+        companyEmail: user.companyEmail
+      }
+      this.props.apiManager.makeCall('viewCars', body, (res) => {
+        this.setState({ loading: false });
+        if (res.code === 1019) {
+          this.state.vehicleDetails = res.response;
+          let companyVehicleIDs = [];
+          res.response.forEach((item) => {
+            companyVehicleIDs.push(item.deviceID.toString());
+          });
+          this.socketComponent.connectSocketServer(user.hash, companyVehicleIDs, this.recieveData);
+        } else {
+          toast.error(res.id);
         }
-        this.props.apiManager.makeCall('viewCars', body, (res) => {
-          this.setState({ loading: false });
-          if (res.code === 1019) {
-            this.state.vehicleDetails = res.response;
-            let companyVehicleIDs = [];
-            res.response.forEach((item) => {
-              companyVehicleIDs.push(item.deviceID.toString());
-            });
-            this.socketComponent.connectSocketServer(user.hash, companyVehicleIDs, this.recieveData);
-          } else {
-            toast.error(res.id);
-          }
-        });
       });
-    }, 400);
+    });
   }
 
   /**

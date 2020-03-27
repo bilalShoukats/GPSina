@@ -111,9 +111,11 @@ class Login extends Component {
         }
         this.props.apiManager.makeCall("login", body, (response) => {
           if (response.response.hash && response.code === 2003) {
-            this.setState({ loading: false })
-            toast.success('Successfully logged in!')
-            this.props.history.push('/dashboard')
+            setTimeout(() => {
+              this.setState({ loading: false })
+              toast.success('Successfully logged in!')
+              this.props.history.push('/dashboard')
+            }, 1000);
             //window.location.href = "/dashboard";
           }
           else {
