@@ -224,54 +224,95 @@ class AddUserScreen extends Component {
   }
 
   render() {
-    const genderItems = [
-      {
-        value: '0',
-        label: 'Male',
-      },
-      {
-        value: '1',
-        label: 'Female',
-      },
-      // {
-      //   value: '2',
-      //   label: 'Transgender',
-      // },
-    ];
-    const bloodGorupItems = [
-      {
-        value: '1',
-        label: 'A RhD positive (A+)',
-      },
-      {
-        value: '2',
-        label: 'A RhD negative (A-)',
-      },
-      {
-        value: '3',
-        label: 'B RhD positive (B+)',
-      },
-      {
-        value: '4',
-        label: 'B RhD negative (B-)',
-      },
-      {
-        value: '5',
-        label: 'O RhD positive (O+)',
-      },
-      {
-        value: '6',
-        label: 'O RhD negative (O-)',
-      },
-      {
-        value: '7',
-        label: 'AB RhD positive (AB+)',
-      },
-      {
-        value: '8',
-        label: 'AB RhD negative (AB-)',
-      },
-    ];
+    let genderValue = "";
+    if(this.state.gender == 0)
+    {
+      genderValue = "Male";
+    }
+    else
+    {
+      genderValue = "Female";
+    }
+    // const genderItems = [
+    //   {
+    //     value: '0',
+    //     label: 'Male',
+    //   },
+    //   {
+    //     value: '1',
+    //     label: 'Female',
+    //   },
+    //   // {
+    //   //   value: '2',
+    //   //   label: 'Transgender',
+    //   // },
+    // ];
+
+    let bloodGroupValue = "";
+    switch(this.state.driverBloodGroup)
+    {
+      case 1:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 2:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 3:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 4:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 5:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 6:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 7:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      case 8:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+      default:
+          bloodGroupValue = "A RhD positive (A+)";
+          break;
+    }
+    // const bloodGorupItems = [
+    //   {
+    //     value: '1',
+    //     label: 'A RhD positive (A+)',
+    //   },
+    //   {
+    //     value: '2',
+    //     label: 'A RhD negative (A-)',
+    //   },
+    //   {
+    //     value: '3',
+    //     label: 'B RhD positive (B+)',
+    //   },
+    //   {
+    //     value: '4',
+    //     label: 'B RhD negative (B-)',
+    //   },
+    //   {
+    //     value: '5',
+    //     label: 'O RhD positive (O+)',
+    //   },
+    //   {
+    //     value: '6',
+    //     label: 'O RhD negative (O-)',
+    //   },
+    //   {
+    //     value: '7',
+    //     label: 'AB RhD positive (AB+)',
+    //   },
+    //   {
+    //     value: '8',
+    //     label: 'AB RhD negative (AB-)',
+    //   },
+    // ];
     return (
       <Fragment>
         <Helmet>
@@ -394,27 +435,18 @@ class AddUserScreen extends Component {
                   <TextField
                     style={{ backgroundColor: '#8080801c' }}
                     disabled={true}
-                    select
                     label="Blood Group"
-                    className='formInput'
-                    value={this.state.driverBloodGroup}
+                    placeholder="Your blood group here.."
                     fullWidth
-                    onChange={event => {
-                      const { value } = event.target;
-                      console.log('lolololol', event.target.value)
-                      this.setState({ driverBloodGroup: Number(value) });
-                    }}
-                    SelectProps={{
-                      native: true,
-                    }}
                     variant="outlined"
-                  >
-                    {bloodGorupItems.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
+                    name="bloodGroup"
+                    onChange={this.changeHandler}
+                    value={bloodGroupValue}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    className="formInput"
+                  />
                 </Grid>
                 <Grid item sm={6} xs={12}>
                   <TextField
@@ -438,27 +470,19 @@ class AddUserScreen extends Component {
                 <Grid item sm={6} xs={12}>
                   <TextField
                     style={{ backgroundColor: '#8080801c' }}
-                    select
-                    label="Gender"
                     disabled={true}
-                    className='formInput'
-                    value={this.state.gender}
+                    label="Gender"
+                    placeholder="Your gender here.."
                     fullWidth
-                    onChange={event => {
-                      const { value } = event.target;
-                      this.setState({ gender: Number(value) });
-                    }}
-                    SelectProps={{
-                      native: true,
-                    }}
                     variant="outlined"
-                  >
-                    {genderItems.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
+                    name="gender"
+                    onChange={this.changeHandler}
+                    value={genderValue}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    className="formInput"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Button className="btn bg-default" onClick={this.editDriver}>Edit Driver</Button>

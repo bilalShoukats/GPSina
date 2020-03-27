@@ -35,8 +35,8 @@ const getItem = async (key, makeParse) => {
   }
 }
 
-function getItemCallback (key, makeParse, _callback) {
-  let data = localStorage.getItem(key);
+const getItemCallback = async (key, makeParse, _callback) => {
+  let data = await localStorage.getItem(key);
   if (data) {
     let plainText = decrypt(data);
     plainText = typeof plainText === 'string' && makeParse ? JSON.parse(plainText) : plainText;
