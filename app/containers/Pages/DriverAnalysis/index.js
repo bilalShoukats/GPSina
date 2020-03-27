@@ -46,7 +46,7 @@ class index extends Component {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
-      console.log('asdasd', res.response)
+      console.log('getCarDriverDetails: ', res.response)
       if (res.code === 1019) {
         this.setState({ drivers: res.response, carDeviceId: res.response[0].AttachedCarInformation[0] && res.response[0].AttachedCarInformation[0].deviceID ? res.response[0].AttachedCarInformation[0].deviceID : '' }, () => this.getGraphsData(this.state.carDeviceId));
       }
@@ -62,8 +62,7 @@ class index extends Component {
       deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshAccerlationTimeBase', body, res => {
-      console.log('harshAccelerationTimeBase', body)
-      console.log('harshAccelerationTimeBase', res)
+      console.log('harshAccerlationTimeBase: ', res)
       if (res) {
         for (let index = 0; index < 31; index++) {
           this.state.harshAccData[index] = [];
@@ -92,7 +91,7 @@ class index extends Component {
       deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshBreakingTimeBase', body, res => {
-      console.log('harshBreakingTimeBase', res)
+      console.log('harshBreakingTimeBase: ', res)
       if (res) {
         for (let index = 0; index < 31; index++) {
           this.state.breakData[index] = [];
@@ -121,7 +120,7 @@ class index extends Component {
       deviceid: id.toString(),
     }
     this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
-      console.log('harshSwervingTimeBase', res)
+      console.log('harshSwervingTimeBase: ', res)
       if (res) {
         for (let index = 0; index < 31; index++) {
           this.state.harshSwerData[index] = [];
@@ -150,7 +149,7 @@ class index extends Component {
       <ul className="forumItemss" style={{ margin: 10 }}>
         <li className="companiesListt" >
           {this.state.drivers.map((item, index) => {
-            console.log('assssdas', item)
+            console.log('render drivers: ', item)
             return (
               <Card className='cardWrap' style={{ padding: 0 }} key={index}>
                 <Grid className={item.registrationNo === this.state.registrationNo ? 'selectedItemContainer' : 'itemContainer'} onClick={() => {
