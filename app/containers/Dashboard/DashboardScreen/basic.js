@@ -8,6 +8,7 @@ import GpsSpeedGraph from './GpsSpeedGraph'
 import ObdSpeedGraph from './ObdSpeedGraph'
 import RpmGraph from './RpmGraph'
 import ruoteImg from 'images/routeIcon.png';
+import ruoteImgOff from 'images/routeIconOff.png';
 const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
 const { MarkerWithLabel } = require("react-google-maps/lib/components/addons/MarkerWithLabel");
 
@@ -130,7 +131,7 @@ export default class DashboardMap extends React.Component {
                             let lastLineLatLng = new window.google.maps.LatLng(item.Lat, item.Lng)
                             return (
                                 <MarkerWithLabel labelAnchor={new google.maps.Point(0, 50)}
-                                    labelStyle={{ backgroundColor: "white", fontSize: "16px", padding: "2px" }} icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
+                                    labelStyle={{ backgroundColor: "white", fontSize: "16px", padding: "2px" }} icon={item.engineStatus ? ruoteImg:ruoteImgOff} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
                                     <div>{item.deviceId}</div>
                                 </MarkerWithLabel>
 
