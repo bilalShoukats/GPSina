@@ -9,6 +9,7 @@ import ObdSpeedGraph from './ObdSpeedGraph'
 import RpmGraph from './RpmGraph'
 import ruoteImg from 'images/routeIcon.png';
 const demoFancyMapStyles = require("../../../MapStyle/MapStyle.json");
+const { MarkerWithLabel } = require("react-google-maps/lib/components/addons/MarkerWithLabel");
 
 export default class DashboardMap extends React.Component {
     constructor(props) {
@@ -128,18 +129,10 @@ export default class DashboardMap extends React.Component {
                         this.state.devicesData.length > 0 && this.state.devicesData.map((item) => {
                             let lastLineLatLng = new window.google.maps.LatLng(item.Lat, item.Lng)
                             return (
-                                <Marker icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
-                                    {/* {
-                                        this.isOpen ? (
-                                            return (
-                                                <InfoWindow onCloseClick={() => { this.isOpen = false; }}>
-                                                    <span>{item.deviceId}</span>
-                                                </InfoWindow>
-                                            )
-                                        ) : null
-                                        
-                                    } */}
-                                </Marker>
+                                <MarkerWithLabel labelAnchor={new google.maps.Point(0, 50)}
+                                    labelStyle={{ backgroundColor: "white", fontSize: "16px", padding: "2px" }} icon={ruoteImg} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
+                                    <div>{item.deviceId}</div>
+                                </MarkerWithLabel>
 
                             )
                         })
