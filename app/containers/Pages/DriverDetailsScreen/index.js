@@ -9,8 +9,6 @@ import Card from 'components/Card/Loadable'
 import ScrollArea from 'react-scrollbar'
 import './style.scss'
 import GMap from './basic'
-import ConfirmModal from './ConfirmModal';
-import SocketComponent from '../../../components/WebSocket';
 import Dialog from '@material-ui/core/Dialog';
 import { Manager } from '../../../StorageManager/Storage';
 import BarChart from './barchart'
@@ -26,18 +24,10 @@ class ChatApp extends Component {
       email: "",
       hash: "",
       companyEmail: "",
-      value: 0,
       loading: true,
-      vibrateNotification: false,
-      overSpeed: false,
-      acc: false,
       currentPage: 1,
       totalPages: 0,
       itemsInPage: 10,
-      showSettingsModal: false,
-      showNotificationsModal: false,
-      showAssignDriverModal: false,
-      showConfirmModal: false,
       carID: '',
       registrationNo: '',
       mapObject: new Map(),
@@ -49,17 +39,6 @@ class ChatApp extends Component {
       weeklyDrivenData: [],
       distanceDrivenArr: [],
     }
-  }
-
-  recieveData = (deviceId, engineStatus, Lat, Lng) => {
-    let mapObject = this.state.mapObject;
-    mapObject.set(
-      deviceId,
-      [deviceId, engineStatus, Lat[0], Lng[0]]
-    );
-    this.setState({ mapObject }, () => {
-      console.log('MapData: ', this.state.mapObject);
-    });
   }
 
   componentDidUpdate(prevProps) {
@@ -149,12 +128,7 @@ class ChatApp extends Component {
       newArray[0] = index
       newArray[1] = 0
     }
-    this.socketComponent = new SocketComponent();
     this.getMyEmail();
-  }
-
-  componentWillUnmount = () => {
-    this.socketComponent.disconnectSocketServer();
   }
 
   loadMoreHandler = () => {
@@ -189,19 +163,6 @@ class ChatApp extends Component {
   getMyEmail = async () => {
     let user = await Manager.getItem('user', true);
     this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllDrivers());
-  }
-
-  openSettingsModal = (item) => {
-    this.setState({ carID: item.carID, showSettingsModal: true })
-  }
-  openConfirmModal = (item) => {
-    this.setState({ carID: item.carID, showConfirmModal: true })
-  }
-  openNotificationsModal = (item) => {
-    this.setState({ carID: item.carID, showNotificationsModal: true })
-  }
-  openAssignDriverModal = (item) => {
-    this.setState({ carID: item.carID, registrationNo: item.registrationNo, showAssignDriverModal: true })
   }
 
   renderLoading = () => {
@@ -251,10 +212,9 @@ class ChatApp extends Component {
                             this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
                           })
                         }}>
-                          <Grid className='text'>
-                            <h4>{item.driverName}</h4>
-                            {/* <p>{item.driverEmail}</p> */}
-                          </Grid>
+                          <h4>{item.driverName}</h4>
+                          <label style={{ float: "left" }}>{item.AttachedCarInformation[0].deviceID}</label>
+                          <label style={{ float: "right" }}>{item.AttachedCarInformation[0].registrationNo}</label>
                         </Grid>
                       </Card>
                     )
@@ -297,14 +257,6 @@ class ChatApp extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <ConfirmModal
-          open={this.state.showConfirmModal}
-          close={() => this.setState({ showConfirmModal: false })}
-          registrationNo={this.state.registrationNo}
-          history={this.props.history}
-          getAllMyVehicles={this.getAllDrivers}
-          {...this.props}
-        />
         {this.renderLoading()}
       </Fragment >
     )
@@ -327,4 +279,3 @@ const withConnect = connect(
 );
 
 export default SuperHOC((withConnect)(ChatApp));
-
