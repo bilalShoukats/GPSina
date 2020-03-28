@@ -17,8 +17,8 @@ const Report = (props) => (
         <TableHead>
           <TableRow>
             <TableCell>Image</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Director</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Name</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Director</TableCell>
             <TableCell style={{ display: 'flex', justifyContent: 'center' }}>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -31,12 +31,12 @@ const Report = (props) => (
             </TableCell>
             <TableCell>
               <strong className="uThum">
-                {props.item.companyName.substring(0, 5)}
+                {props.item.companyName}
               </strong>
             </TableCell>
             <TableCell>
               <strong className="uThum">
-                {props.item.director.substring(0, 5)}
+                {props.item.director}
               </strong>
             </TableCell>
             <TableCell>
@@ -46,7 +46,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openAssignCompanyModal()
-                  }} disabled={props.item.owner === '' ? false : true} xl={6} className='btn bg-success'>
+                  }} disabled={props.item.owner === '' ? false : true} xl={6} className='btn bg-success tooltipWrap topTooltip'>
+                    <span className="tooltip">Assign Company</span>
                     <i className="fa fa-user" />
                   </Button>
                 </div>
@@ -55,7 +56,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.editCompany()
-                  }} xl={6} className='btn bg-dark'>
+                  }} xl={6} className='btn bg-dark tooltipWrap topTooltip'>
+                    <span className="tooltip">Edit Company</span>
                     <i className="icofont-ui-edit" />
                   </Button>
                 </div>
@@ -64,7 +66,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openConfirmModal()
-                  }} xl={6} className='btn bg-danger'>
+                  }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
+                    <span className="tooltip">Delete Company</span>
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>

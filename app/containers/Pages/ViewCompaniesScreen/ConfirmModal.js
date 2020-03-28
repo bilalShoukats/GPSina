@@ -8,15 +8,13 @@ export default class ConfirmModal extends Component {
       companyEmail: this.props.companyEmail,
     }
     this.props.apiManager.makeCall('deleteCompany', body, res => {
-      console.log('assign cars - view', res)
-      console.log('assign cars - view', body)
       if (res.code === 1016) {
         toast.success(res.id);
-        this.props.close()
+        this.props.reloadCompanyList()
       }
       else {
         toast.error(res.id);
-        this.props.close()
+        this.props.closeConfirmModal()
       }
     })
   }
@@ -35,9 +33,8 @@ export default class ConfirmModal extends Component {
             this.deleteCompany()
           }}
           onCancel={() => {
-            this.props.close()
+            this.props.closeConfirmModal()
           }}
-          // text={<span>Please check your internet connection.</span>}
           showLoaderOnConfirm={true}
         />
       </Fragment>

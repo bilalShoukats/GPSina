@@ -13,11 +13,9 @@ import ScrollArea from 'react-scrollbar';
 import ConfirmModal from './ConfirmModal';
 import NotificationsModal from './NotificationsModal'
 import Switch from '@material-ui/core/Switch';
-import UserCard from './UserCard'
-// images
-import profile from 'images/team/img1.jpg'
+import DeviceCard from './DeviceCard';
 
-class ViewDevicessScreen extends Component {
+class ViewDevicesScreen extends Component {
 
   state = {
     search: "",
@@ -29,7 +27,7 @@ class ViewDevicessScreen extends Component {
     currentPage: 1,
     totalPages: 0,
     itemsInPage: 10,
-    carID: '',
+    deviceID: '',
     showConfirmModal: false,
     showNotificationsModal: false,
     showCarAssignModal: false,
@@ -39,7 +37,6 @@ class ViewDevicessScreen extends Component {
     softwareVer: ''
 
   }
-
 
   handleChange = (event, newValue) => {
     this.setState({
@@ -51,6 +48,7 @@ class ViewDevicessScreen extends Component {
     this.getAllDevices();
     this.getCars()
   }
+
   componentDidUpdate(prevProps) {
     if (this.props.timeout !== prevProps.timeout) {
       if (this.props.timeout === true) {
@@ -68,15 +66,12 @@ class ViewDevicessScreen extends Component {
     }
   }
 
-
   getAllDevices = () => {
-    console.log('alssssl', this.props.user.companyEmail)
     let body = {
       companyEmail: this.props.user.companyEmail
     }
     this.props.apiManager.makeCall('getAllCompanyDevices', body, res => {
-      console.log('alssssl', body)
-      console.log('alssssl', res)
+      console.log('getAllCompanyDevices', res);
       if (res.code === 1019) {
         this.setState({ devices: this.state.devices.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
@@ -92,7 +87,7 @@ class ViewDevicessScreen extends Component {
       companyEmail: this.props.user.companyEmail,
     }
     this.props.apiManager.makeCall('getPendingCarsActive', body, res => {
-      console.log('cars', res)
+      console.log('getPendingCarsActive', res)
       if (res.code === 1019) {
         this.setState({ cars: res.response, loading: false });
       }
@@ -102,6 +97,7 @@ class ViewDevicessScreen extends Component {
       }
     })
   }
+
   attachDevice = () => {
     let body = {
       // companyEmail: this.props.user.companyEmail,
@@ -109,9 +105,7 @@ class ViewDevicessScreen extends Component {
       registrationNo: this.state.registrationNo,
       softwareVer: this.state.softwareVer
     }
-    console.log('carssss', body)
     this.props.apiManager.makeCall('attachDevice', body, res => {
-      console.log('carssss', res)
       if (res.code === 5024) {
         toast.success(res.id)
       }
@@ -127,12 +121,13 @@ class ViewDevicessScreen extends Component {
       [e.target.name]: e.target.value
     })
   }
-  openConfirmModal = (item) => {
-    console.log('kasldkalskdj', item)
-    this.setState({ carID: item.carID, showConfirmModal: true })
+
+  reloadDevicesList = () => {
+    this.setState({ showConfirmModal: false, devices: [], currentPage:0, totalPages: 1 }, () => { this.getAllDevices() })
   }
-  openNotificationsModal = (item) => {
-    this.setState({ carID: item.carID, showNotificationsModal: true })
+
+  openConfirmModal = (item) => {
+    this.setState({ deviceID: item.deviceID, showConfirmModal: true })
   }
 
   renderLoading = () => {
@@ -150,7 +145,6 @@ class ViewDevicessScreen extends Component {
       </Dialog>
     )
   }
-
 
   renderAssignCarModal = () => {
     return (
@@ -182,7 +176,7 @@ class ViewDevicessScreen extends Component {
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                               <h4>
                                 Car Model:
-                          </h4>
+                              </h4>
                               <h4>
                                 {item.carModel}
                               </h4>
@@ -190,7 +184,7 @@ class ViewDevicessScreen extends Component {
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
                               <h4>
                                 Car Owner Name:
-                          </h4>
+                              </h4>
                               <h4>
                                 {item.carOwnerName}
                               </h4>
@@ -198,7 +192,7 @@ class ViewDevicessScreen extends Component {
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
                               <h4>
                                 Car Color:
-                          </h4>
+                              </h4>
                               <h4>
                                 {item.color}
                               </h4>
@@ -206,7 +200,7 @@ class ViewDevicessScreen extends Component {
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 }}>
                               <h4>
                                 Car Registration No:
-                          </h4>
+                              </h4>
                               <h4>
                                 {item.registrationNo}
                               </h4>
@@ -280,14 +274,11 @@ class ViewDevicessScreen extends Component {
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
                     {this.state.devices.filter(searchingFor(this.state.search)).map((item, i) => {
-                      console.log('lokokl', item)
                       var enc = window.btoa(item.email);
                       return (
-                        <UserCard
+                        <DeviceCard
                           key={i}
                           item={item}
-                          // openNotificationsModal={() => this.openNotificationsModal(item)}
-                          // editUser={() => this.props.history.push(`/editUser/${enc}`)}
                           openConfirmModal={() => this.openConfirmModal(item)}
                           assignCar={() => this.setState({ showCarAssignModal: true, userEmail: item.email, deviceID: item.deviceID, softwareVer: item.softwareVer })}
                         />
@@ -315,14 +306,7 @@ class ViewDevicessScreen extends Component {
         <ConfirmModal
           open={this.state.showConfirmModal}
           close={() => this.setState({ showConfirmModal: false })}
-          {...this.props}
-          registrationNo={this.state.registrationNo}
-        // history={this.props.history}
-        />
-        <NotificationsModal
-          open={this.state.showNotificationsModal}
-          close={() => this.setState({ showNotificationsModal: false })}
-          carID={this.state.carID}
+          reloadDevicesList={this.reloadDevicesList}
           {...this.props}
         />
         {this.renderLoading()}
@@ -342,4 +326,5 @@ const withConnect = connect(
   null,
   mapDispatchToProps,
 );
-export default SuperHOC((withConnect)(ViewDevicessScreen));
+
+export default SuperHOC((withConnect)(ViewDevicesScreen));

@@ -43,18 +43,9 @@ class ViewCompaniesScreen extends Component {
     this.getAllMyCompanies();
   }
 
-  loadMoreHandler = () => {
-    if (this.state.currentPage < this.state.totalPages) {
-      this.setState({ currentPage: this.state.currentPage + 1 }, () => {
-        console.log(this.state.currentPage);
-        this.getAllMyCompanies();
-      })
-    }
-  }
-
   getAllMyCompanies = () => {
     this.props.apiManager.makeCall(`getAllCompanies?page=${this.state.currentPage}`, {}, res => {
-      console.log('lkjkl', res.response)
+      console.log('getAllMyCompanies: ', res.response)
       if (res.code === 1019) {
         this.setState({ companies: this.state.companies.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
       }
@@ -65,11 +56,20 @@ class ViewCompaniesScreen extends Component {
     }, true)
   }
 
+  loadMoreHandler = () => {
+    if (this.state.currentPage < this.state.totalPages) {
+      this.setState({ currentPage: this.state.currentPage + 1 }, () => {
+        this.getAllMyCompanies();
+      })
+    }
+  }
+
   changeHandler = (e) => {
     this.setState({
       [e.target.name]: e.target.value
     })
   }
+
   renderLoading = () => {
     return (
       <Dialog
@@ -85,18 +85,31 @@ class ViewCompaniesScreen extends Component {
       </Dialog>
     )
   }
+
+  closeConfirmModal = () => {
+    this.setState({ showConfirmModal: false, showAssignCompanyModal: false });
+  }
+
+  reloadCompanyList = () => {
+    this.setState({ showConfirmModal: false, showAssignCompanyModal: false, companies: [], currentPage: 1, totalPages: 0 }, () => this.getAllMyCompanies())
+  }
+
   openConfirmModal = (item) => {
     this.setState({ companyEmail: item.email, showConfirmModal: true })
   }
+
   openConfirmUnAssignModal = (item) => {
     this.setState({ registrationNo: item.registrationNo, showConfirmUnAssignModal: true })
   }
-  close = () => {
-    this.setState({ showConfirmModal: false, showAssignCompanyModal: false, companies: [] }, () => this.getAllMyCompanies())
+
+  closeAssignCompanyModal = () => {
+    this.setState({ showConfirmModal: false, showAssignCompanyModal: false});
   }
+
   openAssignCompanyModal = (item) => {
     this.setState({ companyEmail: item.email, showAssignCompanyModal: true })
   }
+
   render() {
     let searchingFor = null;
     if (this.state.loading)
@@ -141,7 +154,6 @@ class ViewCompaniesScreen extends Component {
                 <ul className="forumItems" style={{ margin: 10 }}>
                   <li className="companiesList" >
                     {this.state.companies.filter(searchingFor(this.state.search)).map((item, i) => {
-                      console.log('nadeem', item)
                       var enc = window.btoa(item.driverEmail);
                       return (
                         <CompanyCard key={i}
@@ -174,14 +186,16 @@ class ViewCompaniesScreen extends Component {
         {this.renderLoading()}
         <ConfirmModal
           open={this.state.showConfirmModal}
-          close={this.close}
+          closeConfirmModal={this.closeConfirmModal}
+          reloadCompanyList={this.reloadCompanyList}
           companyEmail={this.state.companyEmail}
           {...this.props}
         // history={this.props.history}
         />
         <AssignCompany
           open={this.state.showAssignCompanyModal}
-          close={this.close}
+          reloadCompanyList={this.reloadCompanyList}
+          closeAssignCompanyModal={this.closeAssignCompanyModal}
           companyEmail={this.state.companyEmail}
           {...this.props}
         />
