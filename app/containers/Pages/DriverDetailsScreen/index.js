@@ -236,9 +236,12 @@ class FleetUtilization extends Component {
                                     return (
                                         <div key={index}>
                                             <ListItem selected={item.driverID === this.state.selectedDriverId} button onClick={() => {
-                                                this.setState({ registrationNo: item.registrationNo, selectedDriverId: item.driverID }, () => {
-                                                    this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
-                                                })
+                                                if(item.driverID !== this.state.selectedDriverId)
+                                                {
+                                                    this.setState({ registrationNo: item.registrationNo, selectedDriverId: item.driverID }, () => {
+                                                        this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
+                                                    })
+                                                }
                                             }} alignItems="flex-start">
                                                 <ListItemAvatar>
                                                     <Avatar alt={item.driverName} src={img3} />
