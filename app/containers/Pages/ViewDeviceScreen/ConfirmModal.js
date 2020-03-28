@@ -3,26 +3,29 @@ import { toast } from 'react-toastify';
 import SweetAlertSingle from '../../../components/UI_Elements/SweetAlert/alert';
 
 export default class ConfirmModal extends Component {
-  deleteCar = () => {
+
+  deleteDevice = () => {
     let body = {
-      email: this.props.registrationNo,
+      email: this.props.deviceID,
     }
-    this.props.apiManager.makeCall('deleteUser', body, res => {
-      console.log('assign Users - view', res)
-      console.log('assign Users - view', this.props)
-      if (res) {
-        alert('baawwa')
+
+    this.props.apiManager.makeCall('deleteDevice', body, res => {
+      if (res.code === 1016) {
+        toast.success(res.id);
+        this.props.reloadDevicesList()
       }
       else {
         toast.error(res.id);
+        this.props.close()
       }
     })
   }
+
   render() {
     return (
       <Fragment>
         <SweetAlertSingle
-          title="Are you sure you want to delete this vehicle?"
+          title="Are you sure you want to delete this device?"
           show={this.props.open}
           type="error"
           error
@@ -30,12 +33,11 @@ export default class ConfirmModal extends Component {
           cancelButtonText='No'
           showCancelButton={true}
           onConfirm={() => {
-            this.deleteCar()
+            this.deleteDevice()
           }}
           onCancel={() => {
             this.props.close()
           }}
-          // text={<span>Please check your internet connection.</span>}
           showLoaderOnConfirm={true}
         />
       </Fragment>

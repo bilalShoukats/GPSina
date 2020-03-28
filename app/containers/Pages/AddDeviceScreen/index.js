@@ -10,16 +10,12 @@ import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Dialog from '@material-ui/core/Dialog';
 
-// images
-import companyLogo from 'images/team/img1.jpg'
-
-class AddCompanyScreen extends Component {
+class AddDeviceScreen extends Component {
 
   state = {
     deviceId: Math.floor(100000000 + Math.random() * 900000000),
     softwareVer: '',
     directorName: '',
-    companyLogo: '',
     error: {},
     loading: false,
     file: ''
@@ -30,10 +26,10 @@ class AddCompanyScreen extends Component {
       errors.forEach(err => {
         switch (err.type) {
           case "string.regex.base":
-            err.message = "softwareVersion name must be more than 7 character";
+            err.message = "Software version must be more than 7 character";
             break;
           default:
-            err.message = "Please enter softwareVersion";
+            err.message = "Please enter software version";
             break;
         }
       });
@@ -91,7 +87,6 @@ class AddCompanyScreen extends Component {
 
   submitHandler = (e) => {
     e.preventDefault()
-    console.log('add Devicess', this.state.deviceId);
     const error = this.validate()
     this.setState({ loading: true }, () => {
       if (!error) {
@@ -100,8 +95,6 @@ class AddCompanyScreen extends Component {
           deviceId: this.state.deviceId,
         }
         this.props.apiManager.makeCall("addDevice", body, (response) => {
-          console.log('add Device', response)
-          console.log('add Device', body)
           if (response.code === 1008) {
             this.setState({ loading: false })
             toast.success('Device added successfully!')
@@ -120,6 +113,7 @@ class AddCompanyScreen extends Component {
       }
     })
   }
+
   renderLoading = () => {
     return (
       <Dialog
@@ -135,32 +129,22 @@ class AddCompanyScreen extends Component {
       </Dialog>
     )
   }
+
   handleChange = (event) => {
     this.setState({
       file: URL.createObjectURL(event.target.files[0])
     })
   }
+
   render() {
     return (
       <Fragment>
         <Helmet>
           <title>Add Device</title>
-          <meta name="description" content="Description of AddCompanyScreen" />
+          <meta name="description" content="Description of AddDeviceScreen" />
         </Helmet>
         <h2 className="breadcumbTitle">Add Device</h2>
         <Grid container spacing={3}>
-          {/* <Grid item xl={3} lg={4} xs={12}>
-            <Grid className="companyInfoWrap">
-              <Grid className="companyInfoImg">
-                <img style={{ borderRadius: " 200px", width: "130px", height: "130px" }} src={this.state.file !== '' ? this.state.file : companyLogo} alt='' />
-              </Grid>
-              <input id="file" name="file" style={{ display: 'none' }} type="file" onChange={this.handleChange} />
-              <label style={{ color: 'blue', cursor: 'pointer' }} htmlFor="file">Edit Image</label>
-              <Grid className="companyInfoContent">
-                <h4>Please upload Device logo</h4>
-              </Grid>
-            </Grid>
-          </Grid> */}
           <Grid item xl={12} lg={12} xs={12}>
             <Card
               title="Add Device"
@@ -215,23 +199,6 @@ class AddCompanyScreen extends Component {
   }
 }
 
-// const mapStateToProps = createStructuredSelector({
-//   addCompanyScreen: makeSelectAddCompanyScreen(),
-// });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     dispatch,
-//   };
-// }
-
-// const withConnect = connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// );
-
-// export default compose(withConnect)(AddCompanyScreen);
-
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
@@ -242,4 +209,4 @@ const withConnect = connect(
   null,
   mapDispatchToProps,
 );
-export default SuperHOC((withConnect)(AddCompanyScreen));
+export default SuperHOC((withConnect)(AddDeviceScreen));

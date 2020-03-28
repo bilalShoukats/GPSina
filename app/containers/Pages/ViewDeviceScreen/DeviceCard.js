@@ -9,15 +9,15 @@ import Card from '../../../components/Card';
 import img from '../../../images/team/task_member.png'
 import './style.scss';
 
-
-const Report = (props) => (
+const DeviceCard = (props) => (
   <Card>
     <Grid className="responsiveTable">
       <Table className="postTable" aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Image</TableCell>
             <TableCell style={{ minWidth: '140px' }}>Device Id</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Software Version</TableCell>
+            <TableCell style={{ minWidth: '140px' }}>Company Email</TableCell>
             <TableCell style={{ minWidth: '140px' }}>Registration No</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
@@ -25,12 +25,13 @@ const Report = (props) => (
         <TableBody>
           <TableRow>
             <TableCell>
-              <Grid className="icon">
-                <img src={img} alt="thumb" />
-              </Grid>
+              <strong className="uThum">{props.item.deviceID}</strong>
             </TableCell>
             <TableCell>
-              <strong className="uThum">{props.item.deviceID}</strong>
+              <strong className="uThum">{props.item.softwareVer}</strong>
+            </TableCell>
+            <TableCell>
+              <strong className="uThum">{props.item.companyEmail}</strong>
             </TableCell>
             <TableCell>
               <strong className="uThum">{props.item.registrationNo}</strong>
@@ -42,7 +43,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.openConfirmModal()
-                  }} xl={6} className='btn bg-danger'>
+                  }} xl={6} className='btn bg-danger tooltipWrap topTooltip'>
+                    <span className="tooltip">Delete Device</span>
                     <i className="icofont-ui-delete" />
                   </Button>
                 </div>
@@ -51,7 +53,8 @@ const Report = (props) => (
                     e.preventDefault();
                     e.stopPropagation();
                     props.assignCar()
-                  }} xl={6} className='btn bg-success'>
+                  }} xl={6} className='btn bg-success tooltipWrap topTooltip'>
+                    <span className="tooltip">Attach Vehicle</span>
                     <i className="fa fa-car" />
                   </Button>
                 </div>
@@ -63,5 +66,4 @@ const Report = (props) => (
     </Grid>
   </Card>
 )
-export default Report;
-
+export default DeviceCard;

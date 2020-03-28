@@ -41,14 +41,14 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      id: 11031,
+      id: 1,
       alwaysexpand: true,
       menus: [
         {
           icon: ana,
           name: `${props.intl.formatMessage({ ...messages.DashboardScreen })}`,
           link: '/dashboard',
-          id: 5968568
+          id: 11
         },
       ]
     },
@@ -56,14 +56,14 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      id: 110311,
+      id: 2,
       alwaysexpand: true,
       menus: [
         {
           icon: ana,
           name: `Fleet Utilization`,
           link: '/fleetUtilization',
-          id: 59685682
+          id: 21
         },
       ]
     },
@@ -71,14 +71,14 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.dashboard })}`,
       icon: ana,
       iconHover: anaH,
-      id: 231656533,
+      id: 3,
       alwaysexpand: true,
       menus: [
         {
           icon: ana,
           name: `Driving Analysis`,
           link: '/driving-analysis',
-          id: 123123
+          id: 31
         },
       ]
     },
@@ -101,18 +101,18 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
       iconHover: uiH,
-      id: 5464145555522,
+      id: 4,
       alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddCompanyScreen })}`,
           link: '/addCompany',
-          id: 2586584214528525
+          id: 41
         },
         {
           name: `${props.intl.formatMessage({ ...messages.ViewCompaniesScreen })}`,
           link: '/viewCompanies',
-          id: 7456832452412
+          id: 42
         },
       ],
     },
@@ -120,18 +120,18 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
       iconHover: uiH,
-      id: 54641455555223,
+      id: 5,
       alwaysexpand: true,
       menus: [
         {
           name: `Add Device`,
           link: '/addDevice',
-          id: 25865842145285253
+          id: 51
         },
         {
-          name: `View Device`,
-          link: '/viewDevice',
-          id: 74568324524123
+          name: `View Devices`,
+          link: '/viewDevices',
+          id: 52
         },
       ],
     },
@@ -139,18 +139,18 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Company })}`,
       icon: ui,
       iconHover: uiH,
-      id: 546414555552234,
+      id: 6,
       alwaysexpand: true,
       menus: [
         {
           name: `Add Roles`,
           link: '/addRoles',
-          id: 258658421452852534
+          id: 61
         },
         {
           name: `View Roles`,
           link: '/viewRoles',
-          id: 745683245241234
+          id: 62
         },
       ],
     },
@@ -158,18 +158,18 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Users })}`,
       icon: pricing,
       iconHover: pricingH,
-      id: 12,
+      id: 7,
       alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddUserScreen })}`,
           link: '/addUser',
-          id: 121,
+          id: 71,
         },
         {
           name: `${props.intl.formatMessage({ ...messages.ViewUsersScreen })}`,
           link: '/viewUsers',
-          id: 122,
+          id: 72,
         },
       ],
     },
@@ -178,17 +178,17 @@ const SidebarNav = props => {
       icon: form,
       iconHover: formH,
       alwaysexpand: true,
-      id: 23,
+      id: 8,
       menus: [
         {
           name: `Add Driver`,
           link: '/addDriver',
-          id: 231,
+          id: 81,
         },
         {
           name: `View Driver`,
           link: '/viewDrivers',
-          id: 232,
+          id: 82,
         },
       ],
     },
@@ -196,23 +196,23 @@ const SidebarNav = props => {
       // name: `${props.intl.formatMessage({ ...messages.Vehicle })}`,
       icon: table,
       iconHover: tableH,
-      id: 22,
+      id: 9,
       alwaysexpand: true,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddVehicleScreen })}`,
           link: '/addVehicle',
-          id: 221,
+          id: 91,
         },
         {
           name: `${props.intl.formatMessage({ ...messages.ViewVehiclesScreen })}`,
           link: '/viewVehicles',
-          id: 222,
+          id: 92,
         },
         {
           name: `Vehicles History`,
           link: '/vehiclesHistory',
-          id: 223,
+          id: 93,
         },
       ],
     },
@@ -221,17 +221,17 @@ const SidebarNav = props => {
       icon: fontawesome,
       iconHover: fontawesomeH,
       alwaysexpand: true,
-      id: 32,
+      id: 10,
       menus: [
         {
           name: `${props.intl.formatMessage({ ...messages.AddRouteScreen })}`,
           link: '/addRoute',
-          id: 321,
+          id: 101,
         },
         {
           name: `${props.intl.formatMessage({ ...messages.ViewRoutesScreen })}`,
           link: '/viewRoutes',
-          id: 322,
+          id: 102,
         },
       ],
     },
@@ -267,7 +267,7 @@ const SidebarNav = props => {
         <Grid className="sidebarMenu" style={{ background: `url(${sidenavBg}) center/cover repeat` }}>
           <PerfectScrollbar>
             {navigations.map(nav => {
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((nav.id === 5464145555522) || (nav.id === 54641455555223) || (nav.id === 546414555552234))) return null;
+              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((nav.id === 4) || (nav.id === 5) || (nav.id === 6))) return null;
               return (
                 <Fragment key={nav.id}>
                   <ExpansionPanel

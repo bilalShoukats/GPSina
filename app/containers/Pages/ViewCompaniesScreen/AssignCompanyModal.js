@@ -5,7 +5,7 @@ import Joi from 'joi-browser'
 import { Grid, TextField, Button, CircularProgress } from '@material-ui/core'
 import { toast } from 'react-toastify';
 
-class AddRouteModal extends Component {
+class AssignCompanyModal extends Component {
   state = {
     email: '',
     disabled: true,
@@ -19,9 +19,9 @@ class AddRouteModal extends Component {
       errors.forEach(err => {
         switch (err.type) {
           case "string.email":
-            err.message = "Email Mast be a Valid email";
+            err.message = "Please enter valid email";
             break;
-          default: err.message = "Email can not be empty";
+          default: err.message = "Email cannot be empty";
             break;
         }
       });
@@ -76,12 +76,12 @@ class AddRouteModal extends Component {
           console.log('lkjkl', response)
           console.log('lkjkl', body)
           if (response.code === 1014) {
-            toast.success('Route added successfully!');
-            this.props.close();
+            toast.success('Company assigned successfully!');
+            this.props.reloadCompanyList();
           }
           else {
             toast.error(response.id)
-            this.props.close();
+            this.props.closeAssignComapnyModal();
           }
         });
       } else {
@@ -100,6 +100,7 @@ class AddRouteModal extends Component {
   showModal = (data) => {
     this.setState({ disabled: false, data: data })
   }
+
   renderLoading = () => {
     return (
       <Dialog
@@ -121,7 +122,7 @@ class AddRouteModal extends Component {
       <Fragment>
         <Dialog
           onClose={() => {
-            this.props.close()
+            this.props.closeAssignComapnyModal()
           }}
           open={this.props.open}
           className="modalWrapper"
@@ -162,4 +163,4 @@ class AddRouteModal extends Component {
   }
 }
 
-export default (AddRouteModal);
+export default (AssignCompanyModal);
