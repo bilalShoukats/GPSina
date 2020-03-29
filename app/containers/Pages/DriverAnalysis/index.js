@@ -92,20 +92,26 @@ class DrivingAnalysis extends Component {
                     newArray[0] = index
                     newArray[1] = 0
                 }
-                res.response.map((item, index) => {
-                    let date = new Date(item.time).getDate()
-                    if (this.state.harshAccData[date][0] === date) {
-                        let i = this.state.harshAccData[date][1]
-                        this.state.harshAccData[date][1] = i + 1
-                    }
-                    else {
-                    }
-                    this.state.mapData.push(item);
-                })
-                this.setState({ harshAccData: this.state.harshAccData, }, () => {
-                    // this.state.mapData[1] = (res.response)
-                    // console.log("ACC MAP DATA: ", this.state.mapData);
-                })
+                if (res.response === null) {
+                    console.log('asdhakjsdhka')
+                    this.setState({ harshAccData: this.state.harshAccData })
+                }
+                else {
+                    res.response.map((item, index) => {
+                        let date = new Date(item.time).getDate()
+                        if (this.state.harshAccData[date][0] === date) {
+                            let i = this.state.harshAccData[date][1]
+                            this.state.harshAccData[date][1] = i + 1
+                        }
+                        else {
+                        }
+                        this.state.mapData.push(item);
+                    })
+                    this.setState({ harshAccData: this.state.harshAccData, }, () => {
+                        // this.state.mapData[1] = (res.response)
+                        // console.log("ACC MAP DATA: ", this.state.mapData);
+                    })
+                }
             }
         })
     }
@@ -123,20 +129,26 @@ class DrivingAnalysis extends Component {
                     newArray[0] = index
                     newArray[1] = 0
                 }
-                res.response.map((item, index) => {
-                    let date = new Date(item.time).getDate()
-                    if (this.state.breakData[date][0] === date) {
-                        let i = this.state.breakData[date][1]
-                        this.state.breakData[date][1] = i + 1
-                    }
-                    else {
-                    }
-                    this.state.mapData.push(item);
-                })
-                this.setState({ breakData: this.state.breakData, }, () => {
-                    // this.state.mapData[0] = (res.response)
-                    // console.log("BRAKE MAP DATA: ", this.state.mapData);
-                })
+                if (res.response === null) {
+                    console.log('asdhakjsdhka')
+                    this.setState({ breakData: this.state.breakData })
+                }
+                else {
+                    res.response.map((item, index) => {
+                        let date = new Date(item.time).getDate()
+                        if (this.state.breakData[date][0] === date) {
+                            let i = this.state.breakData[date][1]
+                            this.state.breakData[date][1] = i + 1
+                        }
+                        else {
+                        }
+                        this.state.mapData.push(item);
+                    })
+                    this.setState({ breakData: this.state.breakData, }, () => {
+                        // this.state.mapData[0] = (res.response)
+                        // console.log("BRAKE MAP DATA: ", this.state.mapData);
+                    })
+                }
             }
         })
     }
@@ -146,7 +158,7 @@ class DrivingAnalysis extends Component {
             deviceid: id.toString(),
         }
         this.props.apiManager.makeCall('harshSwervingTimeBase', body, res => {
-            console.log('harshSwervingTimeBase: ', res)
+            console.log('harshSwervingTimeBase: ', res.response)
             if (res) {
                 for (let index = 0; index < 31; index++) {
                     this.state.harshSwerData[index] = [];
@@ -154,19 +166,25 @@ class DrivingAnalysis extends Component {
                     newArray[0] = index
                     newArray[1] = 0
                 }
-                res.response.map((item, index) => {
-                    let date = new Date(item.startTime).getDate()
-                    if (this.state.harshSwerData[date][0] === date) {
-                        let i = this.state.harshSwerData[date][1]
-                        this.state.harshSwerData[date][1] = i + 1
-                    }
-                    else {
-                    }
-                })
-                this.setState({ harshSwerData: this.state.harshSwerData, }, () => {
-                    //this.state.mapData[2] = (res.response)
-                    // console.log("SWER MAP DATA: ", this.state.mapData);
-                })
+                if (res.response === null) {
+                    console.log('asdhakjsdhka')
+                    this.setState({ harshSwerData: this.state.harshSwerData })
+                }
+                else {
+                    res.response.map((item, index) => {
+                        let date = new Date(item.startTime).getDate()
+                        if (this.state.harshSwerData[date][0] === date) {
+                            let i = this.state.harshSwerData[date][1]
+                            this.state.harshSwerData[date][1] = i + 1
+                        }
+                        else {
+                        }
+                    })
+                    this.setState({ harshSwerData: this.state.harshSwerData, }, () => {
+                        //this.state.mapData[2] = (res.response)
+                        // console.log("SWER MAP DATA: ", this.state.mapData);
+                    })
+                }
             }
         })
     }
@@ -246,7 +264,7 @@ class DrivingAnalysis extends Component {
                                         <div key={index}>
                                             <ListItem selected={item.driverID === this.state.selectedDriverId} button onClick={() => {
                                                 if (item.driverID !== this.state.selectedDriverId) {
-                                                    this.setState({ selectedDriverId: item.driverID }, () => {
+                                                    this.setState({ selectedDriverId: item.driverID, mapData: [] }, () => {
                                                         this.getGraphsData(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
                                                     })
                                                 }

@@ -74,28 +74,38 @@ class FleetUtilization extends Component {
         this.props.apiManager.makeCall('driverTripStats', body, res => {
             console.log("driverTripStats: ", res)
             if (res) {
-                for (let index = 0; index < 31; index++) {
+                for (let index = 1; index < 31; index++) {
                     this.state.dailyProfileDat[index] = [];
                     var newArray = this.state.dailyProfileDat[index]
                     newArray[0] = index
                     newArray[1] = 0
                 }
-                res.response.map((item, index) => {
-                    let date = new Date(item.tripStartTime).getDate()
-                    if (this.state.dailyProfileDat[date][0] === date) {
-                        let i = this.state.dailyProfileDat[date][1]
-                        this.state.dailyProfileDat[date][1] = i + 1
-                    }
-                    else {
-                    }
-                    let day = new Date(item.tripStartTime).getDay()
-                    if (this.state.weeklyGraphData[day][0] === day) {
-                        let i = this.state.weeklyGraphData[day][1]
-                        this.state.weeklyGraphData[day][1] = i + 1
-                    }
-
-                });
-                this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
+                for (let index = 1; index < 8; index++) {
+                    this.state.weeklyGraphData[index] = [];
+                    var newArray = this.state.weeklyGraphData[index]
+                    newArray[0] = index
+                    newArray[1] = 0
+                }
+                if (res.response !== null) {
+                    res.response.map((item, index) => {
+                        let date = new Date(item.tripStartTime).getDate()
+                        if (this.state.dailyProfileDat[date][0] === date) {
+                            let i = this.state.dailyProfileDat[date][1]
+                            this.state.dailyProfileDat[date][1] = i + 1
+                        }
+                        else {
+                        }
+                        let day = new Date(item.tripStartTime).getDay()
+                        if (this.state.weeklyGraphData[day][0] === day) {
+                            let i = this.state.weeklyGraphData[day][1]
+                            this.state.weeklyGraphData[day][1] = i + 1
+                        }
+                    });
+                    this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
+                }
+                else {
+                    this.setState({ dailyProfileDat: this.state.dailyProfileDat, weeklyGraphData: this.state.weeklyGraphData })
+                }
             }
             else {
                 toast.error(res.id);
@@ -118,16 +128,21 @@ class FleetUtilization extends Component {
                     newArray[0] = index
                     newArray[1] = 0
                 }
-                res.response.map((item, index) => {
-                    let date = new Date(item.starttime).getDate()
-                    if (this.state.hoursDrivenData[date][0] === date) {
-                        let i = this.state.hoursDrivenData[date][1]
-                        this.state.hoursDrivenData[date][1] = i + item.totalsum
-                    }
-                    else {
-                    }
-                });
-                this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
+                if (res.response !== null) {
+                    res.response.map((item, index) => {
+                        let date = new Date(item.starttime).getDate()
+                        if (this.state.hoursDrivenData[date][0] === date) {
+                            let i = this.state.hoursDrivenData[date][1]
+                            this.state.hoursDrivenData[date][1] = i + item.totalsum
+                        }
+                        else {
+                        }
+                    });
+                    this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
+                }
+                else {
+                    this.setState({ hoursDrivenData: this.state.hoursDrivenData, })
+                }
             }
             else {
                 toast.error(res.id);
