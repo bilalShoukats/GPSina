@@ -22,17 +22,11 @@ class FleetUtilization extends Component {
         this.state = {
             search: "",
             selectedDriverId: 0,
-            value: 0,
-            companyIdsSet: "",
-            email: "",
-            hash: "",
             companyEmail: "",
             loading: true,
             currentPage: 1,
             totalPages: 0,
             itemsInPage: 10,
-            carID: '',
-            registrationNo: '',
             mapObject: new Map(),
             drivers: [],
             selectedIndex: 1,
@@ -46,7 +40,7 @@ class FleetUtilization extends Component {
 
     componentDidMount = () => {
         Manager.getItemCallback('user', true, (user) => {
-            this.setState({ email: user.email, companyEmail: user.companyEmail, hash: user.hash }, () => this.getAllDrivers());
+            this.setState({ companyEmail: user.companyEmail }, () => this.getAllDrivers());
         });
     }
 
@@ -149,7 +143,7 @@ class FleetUtilization extends Component {
         }
         this.props.apiManager.makeCall('getCarDriverDetails', body, res => {
             console.log("getCarDriverDetails: ", res);
-            if (res) {
+            if (res.code === 1019) {
                 this.setState({ drivers: [] }, () => {
                     this.setState({ drivers: this.state.drivers.concat(res.response), currentPage: res.currentPage, totalPages: res.totalPages, loading: false });
                 })
@@ -175,12 +169,6 @@ class FleetUtilization extends Component {
                 <CircularProgress className="text-dark" />
             </Dialog>
         )
-    }
-
-    handleChange = (event, newValue) => {
-        this.setState({
-            value: newValue
-        })
     }
 
     changeHandler = (e) => {
@@ -236,9 +224,8 @@ class FleetUtilization extends Component {
                                     return (
                                         <div key={index}>
                                             <ListItem selected={item.driverID === this.state.selectedDriverId} button onClick={() => {
-                                                if(item.driverID !== this.state.selectedDriverId)
-                                                {
-                                                    this.setState({ registrationNo: item.registrationNo, selectedDriverId: item.driverID }, () => {
+                                                if (item.driverID !== this.state.selectedDriverId) {
+                                                    this.setState({ selectedDriverId: item.driverID }, () => {
                                                         this.getDailyProfile(item.AttachedCarInformation[0] && item.AttachedCarInformation[0].deviceID ? item.AttachedCarInformation[0].deviceID : '')
                                                     })
                                                 }

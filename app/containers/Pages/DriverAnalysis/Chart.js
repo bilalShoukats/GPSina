@@ -1,27 +1,27 @@
 import React from 'react';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import './style.scss'
-
-
-// json 
-import data from 'utils/json/range.json'
 
 const AreaRange = (props) => {
   const options = {
+    minWidth: '100%',
+    width: '100%',
+    height: '100%',
     chart: {
       type: 'arearange',
       zoomType: 'x',
       scrollablePlotArea: {
-        minWidth: 200,
+        height: '100%',
+        minWidth: '100%',
+        width: '100%',
         scrollPositionX: 1
       }
     },
     title: false,
     subtitle: false,
     xAxis: {
-      // min: 0,
-      // max: 30,
+      min: 0,
+      max: 30,
       gridLineColor: '#DCE0EE',
       gridLineDashStyle: 'solid',
       gridLineWidth: 0,
@@ -29,7 +29,7 @@ const AreaRange = (props) => {
       labels: {
         style: {
           color: '#676B79',
-          fontSize: '10px',
+          fontSize: '14px',
           fontWeight: "400",
         }
       },
@@ -40,7 +40,7 @@ const AreaRange = (props) => {
       enabled: true,
       itemStyle: {
         color: "#676B79",
-        fontSize: "10px",
+        fontSize: "14px",
         fontWeight: "400",
       },
 
@@ -50,14 +50,14 @@ const AreaRange = (props) => {
     },
     yAxis: {
       min: 0,
-      // max: 5,
+      tickInterval: 1,
       title: false,
       gridLineColor: '#DCE0EE',
       gridLineWidth: 1,
       labels: {
         style: {
           color: '#676B79',
-          fontSize: '10px',
+          fontSize: '14px',
           fontWeight: "400",
         },
         formatter: function () {
@@ -70,7 +70,7 @@ const AreaRange = (props) => {
       className: 'heighChartTooltip',
       headerFormat: '<h4 className="tooltipTitle">{point.key}</h4><ul className="chatTooltip">',
       pointFormat: '<li><span style="color:{series.color};padding:0">{series.name}: </span>' +
-        '<span style="padding:0"><b>{point.y:.1f} </b></span></li>',
+        '<span style="padding:0"><b>{point.y:.1f}</b></span></li>',
       footerFormat: '</ul>',
       shared: true,
       useHTML: true
@@ -87,8 +87,8 @@ const AreaRange = (props) => {
           enabled: false,
           enabledThreshold: 4,
           fillColor: "#fff",
-          height: 10,
-          width: 10,
+          height: 20,
+          width: 20,
           lineColor: '#6A69FF',
           lineWidth: 2,
           radius: 4,
@@ -123,16 +123,20 @@ const AreaRange = (props) => {
     },
 
     series: [{
-      type: props.type,
+      type: 'area',
       name: props.name,
-      data: props.data,
+      data: props.data
     }],
     responsive: {
       rules: [{
         condition: {
+          minWidth: '100%',
+          width: '100%',
           maxWidth: 'auto'
         },
         chartOptions: {
+          minWidth: '100%',
+          width: '100%',
           legend: {
             align: 'center',
             verticalAlign: 'bottom',
@@ -164,8 +168,10 @@ const AreaRange = (props) => {
       allowChartUpdate
       immutable={false}
       updateArgs={[true, true, true]}
-      containerProps={{ className: 'chartContainer-driving' }}
+      containerProps={{ className: 'chartContainer' }}
       options={options}
+      height='100%'
+      width='100%'
     />
   );
 }

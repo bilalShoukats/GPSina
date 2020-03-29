@@ -7,126 +7,128 @@
 .driver-list{
   background: linear-gradient(45deg,  rgb(66,100,134),rgb(107, 154, 193)) !important;
 }
-.chatApp {
-    //background: #fff;
-    background-color: rgb(245,246,250);
-    display: flex;
-  //  flex-wrap: wrap;
-    box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
 
-    .chatAppLeft-driving {
-        width: 350px;
-        background-color: white;
-        @media (max-width:767px) {
-            width: 100%;
-        }
+.dAnalysisApp {
+  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
 
-        .searchContact {
-            background: #ebedfb;
+  .dAnalysisAppLeft {
+      width: 300px !important;
 
-            div {
-                min-height: 70px;
+      @media (max-width:767px) {
+          width: 100%;
+      }
 
-                &::before,
-                &::after {
-                    display: none;
-                }
+      .searchDAnalysis {
+          background: #ebedfb;
 
-                input {
-                    padding: 0 20px;
+          div {
+              min-height: 70px;
 
-                    &::placeholder {
-                        opacity: 1;
+              &::before,
+              &::after {
+                  display: none;
+              }
 
-                    }
-                }
-            }
+              input {
+                  padding: 0 20px;
 
-            .searchContactIcon {
-                width: 70px;
-                margin-left: 0;
-                justify-content: center;
-                cursor: pointer;
-            }
-        }
+                  &::placeholder {
+                      opacity: 1;
 
-        .chatScrollBar {
-           height: 500px;
-           overflow-y: scroll;
-            .chatScrollBarContent {
-                .chatTabWrapper {
-                    .chatTabContainer {
-                        .chatTabItem {
-                            max-width: 100%;
-                            opacity: 1;
-                            padding: 10px 15px;
-                            border: 1px solid rgba(152, 166, 173, 0.07);
-                            margin-top: -1px;
-                            text-align: left;
+                  }
+              }
+          }
 
-                            &[aria-selected="true"] {
-                                background: #ebedfb;
-                                color: $baseColor;
-                            }
+          .searchDAnalysisIcon {
+              width: 70px;
+              margin-left: 0;
+              justify-content: center;
+              cursor: pointer;
+          }
+      }
 
-                            span {
-                                display: flex;
-                                flex-direction: row;
-                                justify-content: flex-start;
-                                text-transform: capitalize;
-                                font-weight: 400;
-                                font-size: 14px;
+      .dAnalysisScrollBar {
+          height: 550px !important;
 
-                                &.chatThumbImg {
-                                    margin-bottom: 0;
-                                    margin-right: 15px;
+          .dAnalysisScrollBarContent {
+              .dAnalysisTabWrapper {
+                  .dAnalysisTabContainer {
+                      .dAnalysisTabItem {
+                          max-width: 100%;
+                          opacity: 1;
+                          padding: 10px 15px;
+                          border: 1px solid rgba(152, 166, 173, 0.07);
+                          margin-top: -1px;
+                          text-align: left;
 
-                                    img {
-                                        width: 50px;
-                                        height: 50px;
-                                        border-radius: 50%;
-                                        object-fit: cover;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                          &[aria-selected="true"] {
+                              background: #ebedfb;
+                              color: $baseColor;
+                          }
 
-                    .chatIndicator {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
+                          span {
+                              display: flex;
+                              flex-direction: row;
+                              justify-content: flex-start;
+                              text-transform: capitalize;
+                              font-weight: 400;
+                              font-size: 14px;
 
-    .chatAppRight {
-        width: calc(100% - 350px);
-        background-color: rgb(242,243,247);
+                              &.dAnalysisThumbImg {
+                                  margin-bottom: 0;
+                                  margin-right: 15px;
 
-        @media (max-width:767px) {
-            width: 100%;
-        }
-    }
+                                  img {
+                                      width: 50px;
+                                      height: 50px;
+                                      border-radius: 50%;
+                                      object-fit: cover;
+                                  }
+                              }
+                          }
+                      }
+                  }
+
+                  .dAnalysisIndicator {
+                      display: none;
+                  }
+              }
+          }
+      }
+  }
+
+  .dAnalysisAppRight {
+      width: calc(100% - 300px);
+      padding-bottom: 30px;
+
+      @media (max-width:767px) {
+          width: 100%;
+      }
+  }
+
 }
 
-.chatAppHead {
-    min-height: 71px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e5e5;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0px 30px;
+.dAnalysisAppHead {
+  min-height: 71px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 30px;
 
-    @media (max-width:767px) {
-        border-left: none;
-    }
+  @media (max-width:767px) {
+      border-left: none;
+  }
 
-    h3 {
-        text-transform: capitalize;
-    }
+  h3 {
+      text-transform: capitalize;
+  }
 }
+
 .modalWrapper {
   overflow-y: auto;
 
