@@ -119,7 +119,7 @@ export default class DashboardMap extends React.Component {
         return (
             <div>
                 <GoogleMap
-                    zoom={this.zoomValue ? 10 : 4}
+                    zoom={this.zoomValue ? 10 : 2}
                     ref={mp => this.mapRef = mp}
                     defaultZoom={6}
                     defaultCenter={{ lat: 31.407209396362305, lng: 73.7656021118164 }}
@@ -129,9 +129,13 @@ export default class DashboardMap extends React.Component {
                     {
                         this.state.devicesData.length > 0 && this.state.devicesData.map((item) => {
                             let lastLineLatLng = new window.google.maps.LatLng(item.Lat, item.Lng)
+                            if(this.currentMarkerClicked == item.deviceId)
+                            {
+                                this.mapCenterValue = lastLineLatLng;
+                            }
                             return (
                                 <MarkerWithLabel labelAnchor={new google.maps.Point(0, 50)}
-                                    labelStyle={{ backgroundColor: "white", fontSize: "16px", padding: "2px" }} icon={item.engineStatus ? ruoteImg:ruoteImgOff} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
+                                    labelStyle={{ backgroundColor: "white", fontSize: "16px", padding: "2px" }} icon={item.engineStatus ? ruoteImg : ruoteImgOff} id={item.deviceId} key={item.deviceId} position={lastLineLatLng} onClick={() => { this.mapMarkerClicked(lastLineLatLng, item.deviceId) }}>
                                     <div>{item.deviceId}</div>
                                 </MarkerWithLabel>
 
