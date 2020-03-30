@@ -146,14 +146,14 @@ class ViewDriversScreen extends Component {
   }
   render() {
     let searchingFor = null;
-    if (this.state.drivers.length > 0) {
+    if (this.state.drivers[0] !== undefined && this.state.drivers[0] !== null && this.state.drivers.length > 0) {
       searchingFor = search => drivers => drivers.driverName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
     return (
       < Fragment >
         <h2 className="breadcumbTitle">Your Drivers</h2>
         <Grid className="viewCompaniesApp">
-          {(this.state.drivers[0] !== undefined && this.state.drivers.length > 0) ? (
+          {(this.state.drivers[0] !== undefined && this.state.drivers[0] !== null && this.state.drivers.length > 0) ? (
             <Grid className="viewCompaniesLeft">
               <TextField
                 fullWidth

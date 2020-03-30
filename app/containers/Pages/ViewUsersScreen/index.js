@@ -159,6 +159,7 @@ class ViewUsersScreen extends Component {
   };
 
   renderAssignCarModal = () => {
+    console.log('bawaa', this.state.cars)
     return (
       <Fragment>
         <Dialog
@@ -179,7 +180,7 @@ class ViewUsersScreen extends Component {
                   horizontal={false}
                 >
                   <ul className="notificationItems">
-                    {this.state.cars.map((item, i) => {
+                    {this.state.cars !== null && this.state.cars.map((item, i) => {
                       console.log('bawaa', item)
                       return (
                         <Card key={i}>

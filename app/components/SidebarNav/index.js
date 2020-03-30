@@ -267,79 +267,60 @@ const SidebarNav = props => {
         <Grid className="sidebarMenu" style={{ background: `url(${sidenavBg}) center/cover repeat` }}>
           <PerfectScrollbar>
             {navigations.map(nav => {
-              if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((nav.id === 4) || (nav.id === 5) || (nav.id === 6))) return null;
               return (
                 <Fragment key={nav.id}>
-                  <ExpansionPanel
-                    classes={{
-                      root: 'navItems',
-                      expanded: 'navItemsExpanded',
-                    }}
-                    square
-                    expanded={parent_expanded === nav.id || nav.alwaysexpand === true}
-                    onChange={parent_handleChange(nav.id)}
+                  <div className="navItems"
+                    style={{ backgroundColor: 'rgba(0,0,0,0.1)', margin: 5 }}
                   >
-                    <ExpansionPanelSummary
-                      style={{ minHeight: '5px', height: '5px' }}
-                      classes={{
-                        root: 'navItemsText',
-                        expanded: 'navItemsTextExpanded',
-                        expandIcon: 'navItemsTextIcon',
-                        content: 'navItemsTextContent',
-                      }}
-                      expandIcon={nav.alwaysexpand ? '' : <i className="fa fa-angle-down" />}
-                    >
-                      {/* <span className="icon">
-                      <img className="normal" src={nav.icon} alt="" />
-                      <img className="hover" src={nav.iconHover} alt="" />
-                    </span> */}
-                      <span className="name">{nav.name}</span>
-                    </ExpansionPanelSummary>
                     <ul className="submenu">
-                      {nav.menus.map((menu, i) => (
-                        <li key={i}>{menu.link ?
-                          <NavLink className="navItem" activeClassName="active" exact onClick={window.scrollTo(0, 0)}
-                            to={menu.link}>
-                            <span className="name">
-                              {menu.name}
-                            </span>
-                            {menu.value && <span style={{ background: menu.color }} className="value">{menu.value}</span>}
-                          </NavLink> :
-                          <ExpansionPanel
-                            classes={{
-                              root: 'navItems',
-                              expanded: 'navItemsExpanded',
-                            }}
-                            square
-                            expanded={expanded === menu.id}
-                            onChange={handleChange(menu.id)}
-                          >
-                            <ExpansionPanelSummary
+                      {nav.menus.map((menu, i) => {
+                        console.log('asd', menu)
+                        if ((props.user.role === 1 || props.user.role === 0 || props.user.role === 3) && ((menu.id === 41) || (menu.id === 42) || (menu.id === 61) || (menu.id === 62) || (menu.id === 51) || (menu.id === 52))) return null;
+                        else return (
+                          <li key={i}>{menu.link ?
+                            <NavLink className="navItem" activeClassName="active" exact onClick={window.scrollTo(0, 0)}
+                              to={menu.link}>
+                              <span className="name">
+                                {menu.name}
+                              </span>
+                              {menu.value && <span style={{ background: menu.color }} className="value">{menu.value}</span>}
+                            </NavLink> :
+                            <ExpansionPanel
                               classes={{
-                                root: 'navItemsText',
-                                expanded: 'navItemsTextExpanded',
-                                expandIcon: 'navItemsTextIcon',
-                                content: 'navItemsTextContent',
+                                root: 'navItems',
+                                expanded: 'navItemsExpanded',
                               }}
-                              expandIcon={<i className="fa fa-angle-down" />}
+                              square
+                              expanded={expanded === menu.id}
+                              onChange={handleChange(menu.id)}
                             >
-                              <span className="name">{menu.name}</span>
-                            </ExpansionPanelSummary>
-                            <ul className="thirdmenuItems">
-                              {menu.submenus.map((submenu, i) => (
-                                <li key={i}>
-                                  <NavLink onClick={window.scrollTo(0, 0)} activeClassName="active" exact
-                                    to={submenu.link}>
-                                    {submenu.name}
-                                  </NavLink>
-                                </li>
-                              ))}
-                            </ul>
-                          </ExpansionPanel>
-                        }</li>
-                      ))}
+                              <ExpansionPanelSummary
+                                classes={{
+                                  root: 'navItemsText',
+                                  expanded: 'navItemsTextExpanded',
+                                  expandIcon: 'navItemsTextIcon',
+                                  content: 'navItemsTextContent',
+                                }}
+                                expandIcon={<i className="fa fa-angle-down" />}
+                              >
+                                <span className="name">{menu.name}</span>
+                              </ExpansionPanelSummary>
+                              <ul className="thirdmenuItems">
+                                {menu.submenus.map((submenu, i) => {
+                                  <li key={i}>
+                                    <NavLink onClick={window.scrollTo(0, 0)} activeClassName="active" exact
+                                      to={submenu.link}>
+                                      {submenu.name}
+                                    </NavLink>
+                                  </li>
+                                })}
+                              </ul>
+                            </ExpansionPanel>
+                          }</li>
+                        )
+                      })}
                     </ul>
-                  </ExpansionPanel>
+                  </div>
                 </Fragment>
               )
             })}

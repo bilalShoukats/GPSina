@@ -10,7 +10,7 @@ import 'sass/elements/sweet-alerts.scss';
 import Joi from 'joi-browser'
 import Switch from '@material-ui/core/Switch';
 import Dialog from '@material-ui/core/Dialog';
-
+import { navigation } from './Navigation'
 // images
 class AddRoleScreen extends Component {
 
@@ -20,20 +20,7 @@ class AddRoleScreen extends Component {
     roleID: '',
     error: {},
     loading: false,
-    addUser: false,
-    addUser: false,
-    viewUser: false,
-    editUser: false,
-    addRoute: false,
-    viewRoutes: false,
-    addDriver: false,
-    viewDrivers: false,
-    addVehicle: false,
-    viewVehicle: false,
-    assignDriver: false,
-    attachDevice: false,
-    drivingAnalysis: false,
-    fleetUtilization: false,
+    switches:[],
   }
 
   schema = {
@@ -124,25 +111,13 @@ class AddRoleScreen extends Component {
         let body = {
           title: this.state.roleName,
           description: this.state.roleDetail,
-          roleID:1,
-          companyEmail: this.props.match.params.item
-          // userPermissions: {
-          //   "apiOperation": [
-          //     this.state.addUser.toString(),
-          //     this.state.viewUser.toString(),
-          //     this.state.editUser.toString(),
-          //     this.state.addRoute.toString(),
-          //     this.state.viewRoutes.toString(),
-          //     this.state.addDriver.toString(),
-          //     this.state.viewDrivers.toString(),
-          //     this.state.addVehicle.toString(),
-          //     this.state.viewVehicle.toString(),
-          //     this.state.assignDriver.toString(),
-          //     this.state.attachDevice.toString(),
-          //     this.state.drivingAnalysis.toString(),
-          //     this.state.fleetUtilization.toString(),
-          //   ]
-          // }
+          roleID: 1,
+          companyEmail: this.props.match.params.item,
+          userPermissions: {
+            "apiOperation": [
+              this.state.switches
+            ]
+          }
         }
         this.props.apiManager.makeCall("addRole", body, (response) => {
           console.log('add role', response)
@@ -165,9 +140,23 @@ class AddRoleScreen extends Component {
       }
     })
   }
-
-  handleSwitchChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked });
+  handleSwitchChange = (item) => (event) => {
+    if (event.target.checked === true) {
+      var newStateArray = this.state.switches.slice();
+      newStateArray.push(item);
+      this.setState({ switches: newStateArray }, () => console.log('bawa array dkha', this.state.switches)
+      );
+    }
+    else {
+      var result = arrayRemove(this.state.switches, item);
+      this.setState({ switches: result }, () => console.log('bawa array dkha', this.state.switches)
+      );
+    }
+    function arrayRemove(arr, value) {
+      return arr.filter(function (ele) {
+        return ele !== value;
+      });
+    }
   };
   renderLoading = () => {
     return (
@@ -185,6 +174,7 @@ class AddRoleScreen extends Component {
     )
   }
   render() {
+    console.log('werqwrwrqwe', navigation)
     return (
       <Fragment>
         <Helmet>
@@ -234,26 +224,32 @@ class AddRoleScreen extends Component {
                     className="formInput"
                   />
                 </Grid>
-                {/* <Grid item sm={6} xs={12}>
-                  <div className="modalContent">
-                    <h4>
-                      Add User:
-                </h4>
-                    <Switch
-                      checked={this.state.addUser}
-                      onChange={this.handleSwitchChange('addUser')}
-                      value="addUser"
-                      classes={{
-                        root: 'switchDefault',
-                        switchBase: 'switchBase',
-                        thumb: 'switchThumb',
-                        track: 'switchTrack',
-                        checked: 'switchChecked'
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item sm={6} xs={12}>
+                {navigation.map((item, index) => {
+                  console.log('fqwf', item)
+                  return (
+                    <Grid item sm={6} xs={12}>
+                      <div className="modalContent">
+                        <h4>
+                          {item.name}
+                        </h4>
+                        <Switch
+                          checked={this.state[item.name]}
+                          onChange={this.handleSwitchChange(item.id)}
+                          value={item.name}
+                          classes={{
+                            root: 'switchDefault',
+                            switchBase: 'switchBase',
+                            thumb: 'switchThumb',
+                            track: 'switchTrack',
+                            checked: 'switchChecked'
+                          }}
+                        />
+                      </div>
+                    </Grid>
+                  )
+                })}
+
+                {/*<Grid item sm={6} xs={12}>
                   <div className="modalContent">
                     <h4>
                       View User:
