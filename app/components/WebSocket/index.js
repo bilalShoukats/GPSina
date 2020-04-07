@@ -47,7 +47,8 @@ export default class SocketComponent extends Component {
         */
     connectSocketServer = async (hash, deviceIds, callBackFunc) => {
         // this.socket = new WebSocket('ws://13.228.129.207:8091'); //develop
-        this.socket = new WebSocket('ws://13.233.162.122:8091'); //live
+        // this.socket = new WebSocket('ws://13.233.162.122:8091'); //live
+        this.socket = new WebSocket('ws://13.234.11.55:8091'); //live NEW
         // this.socket = new WebSocket('ws://192.168.88.49:8091'); //local
         this.token = hash;
         this.deviceIDs = deviceIds;
