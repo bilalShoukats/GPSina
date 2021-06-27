@@ -1,37 +1,30 @@
-/**
- *
- * Tests for Footer
- *
- * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
- *
- */
-
 import React from 'react';
-import { render } from 'react-testing-library';
-// import 'jest-dom/extend-expect'; // add some helpful assertions
+import renderer from 'react-test-renderer';
+import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
+import { browserHistory } from 'react-router-dom';
 
 import Footer from '../index';
+import configureStore from '../../../configureStore';
 
 describe('<Footer />', () => {
-  it('Expect to not log errors in console', () => {
-    const spy = jest.spyOn(global.console, 'error');
-    render(<Footer />);
-    expect(spy).not.toHaveBeenCalled();
+  let store;
+
+  beforeAll(() => {
+    store = configureStore({}, browserHistory);
   });
 
-  it('Expect to have additional unit tests specified', () => {
-    expect(true).toEqual(false);
-  });
+  it('should render and match the snapshot', () => {
+    const renderedComponent = renderer
+      .create(
+        <Provider store={store}>
+          <IntlProvider locale="en">
+            <Footer />
+          </IntlProvider>
+        </Provider>,
+      )
+      .toJSON();
 
-  /**
-   * Unskip this test to use it
-   *
-   * @see {@link https://jestjs.io/docs/en/api#testskipname-fn}
-   */
-  it.skip('Should render and match the snapshot', () => {
-    const {
-      container: { firstChild },
-    } = render(<Footer />);
-    expect(firstChild).toMatchSnapshot();
+    expect(renderedComponent).toMatchSnapshot();
   });
 });

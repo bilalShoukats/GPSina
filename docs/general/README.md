@@ -115,7 +115,7 @@ and [`App/styles.css`](../../app/containers/App/styles.css))
 
 1.  Either add the `@font-face` declaration to `App/styles.css` or add a `<link>`
     tag to the [`index.html`](../../app/index.html). (Don't forget to remove the `<link>`
-    for Open Sans from the [`index.html`](../../app/index.html)!)
+    for Roboto from the [`index.html`](../../app/index.html)!)
 
 2.  In `App/styles.css`, specify your initial `font-family` in the `body` tag
     with only web-save fonts. In the `body.jsFontLoaded` tag, specify your
