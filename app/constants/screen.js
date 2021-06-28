@@ -4,7 +4,7 @@ const SCREENS = {
   RESETPASSWORD: '/reset-password',
   NOTFOUND: '/404',
 
-  HOME: '/home',
+  HOME: '/',
   DASHBOARD: '/dashboard',
   LOCATE: '/locate',
   FENCE: '/fence',

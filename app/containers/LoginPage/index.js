@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
@@ -38,6 +39,9 @@ export function LoginPage(props) {
 
   return (
     <div className={classes.root}>
+      <Helmet>
+        <title>Login</title>
+      </Helmet>
       <Img
         src={GPSinaLogoGrey}
         alt="GPSina Grey Logo"

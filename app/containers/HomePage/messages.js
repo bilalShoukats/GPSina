@@ -8,25 +8,24 @@ import { defineMessages } from 'react-intl';
 export const scope = 'boilerplate.containers.HomePage';
 
 export default defineMessages({
-  startProjectHeader: {
-    id: `${scope}.start_project.header`,
-    defaultMessage: 'Start your next react project in seconds',
+  addDevice: {
+    id: `${scope}.tryme.addDevice`,
+    defaultMessage: 'Add Device',
   },
-  startProjectMessage: {
-    id: `${scope}.start_project.message`,
-    defaultMessage:
-      'A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices',
+  vehicleNo: {
+    id: `${scope}.tryme.vehicleNo`,
+    defaultMessage: 'Vehicle No',
   },
-  trymeHeader: {
-    id: `${scope}.tryme.header`,
-    defaultMessage: 'Try me!',
+  trackerNo: {
+    id: `${scope}.tryme.trackerNo`,
+    defaultMessage: 'Tracker No',
   },
-  trymeMessage: {
-    id: `${scope}.tryme.message`,
-    defaultMessage: 'Show Github repositories by',
+  search: {
+    id: `${scope}.tryme.search`,
+    defaultMessage: 'Search',
   },
-  trymeAtPrefix: {
-    id: `${scope}.tryme.atPrefix`,
-    defaultMessage: '@',
+  status: {
+    id: `${scope}.tryme.status`,
+    defaultMessage: 'Status',
   },
 });

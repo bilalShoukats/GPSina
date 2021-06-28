@@ -1,6 +1,6 @@
 /**
  *
- * Tests for Header
+ * Tests for Map
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -10,12 +10,12 @@ import React from 'react';
 import { render } from 'react-testing-library';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import Header from '../index';
+import Map from '../index';
 
-describe('<Header />', () => {
+describe('<Map />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
-    render(<Header />);
+    render(<Map />);
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -31,7 +31,7 @@ describe('<Header />', () => {
   it.skip('Should render and match the snapshot', () => {
     const {
       container: { firstChild },
-    } = render(<Header />);
+    } = render(<Map />);
     expect(firstChild).toMatchSnapshot();
   });
 });

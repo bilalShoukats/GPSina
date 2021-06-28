@@ -4,13 +4,15 @@
  * This is the first thing users see of our App, at the '/' route
  */
 
-import React, { useEffect, memo } from 'react';
+import React, { useEffect, memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSortUp, faCog } from '@fortawesome/free-solid-svg-icons';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
@@ -19,102 +21,176 @@ import {
   makeSelectLoading,
   makeSelectError,
 } from 'containers/App/selectors';
-import H2 from 'components/H2';
-import ReposList from 'components/ReposList';
-import AtPrefix from './AtPrefix';
-import CenteredSection from './CenteredSection';
-import Form from './Form';
-import Input from './Input';
-import Section from './Section';
+import { Button, Grid, Input, Paper, Typography } from '@material-ui/core';
 import messages from './messages';
 import { loadRepos } from '../App/actions';
 import { changeUsername } from './actions';
 import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { useStyles } from './styles.js';
+import Img from '../../components/Img';
+import SCREENS from '../../constants/screen';
+
+import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
+import Map from '../../components/Map';
+import DeviceList from '../../components/DeviceList';
 
 const key = 'home';
 
-export function HomePage({
-  username,
-  loading,
-  error,
-  repos,
-  onSubmitForm,
-  onChangeUsername,
-}) {
+export function HomePage({ loading, ...props }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
-  useEffect(() => {
-    // When initial state username is not null, submit the form to load repos
-    if (username && username.trim().length > 0) onSubmitForm();
-  }, []);
+  const classes = useStyles(props);
+  const [isMarkerShown, setIsMarkerShown] = useState(true);
 
-  const reposListProps = {
-    loading,
-    error,
-    repos,
+  const handleMarkerClick = () => {
+    setIsMarkerShown(!isMarkerShown);
+    console.log('isMarkerShown', isMarkerShown);
   };
 
   return (
-    <article>
-      <Helmet>
-        <title>Home Page</title>
-        <meta
-          name="description"
-          content="A React.js Boilerplate application homepage"
-        />
+    <div>
+      <Helmet className={classes.root}>
+        <title>Home</title>
       </Helmet>
-      <div>
-        <CenteredSection>
-          <H2>
-            <FormattedMessage {...messages.startProjectHeader} />
-          </H2>
-          <p>
-            <FormattedMessage {...messages.startProjectMessage} />
-          </p>
-        </CenteredSection>
-        <Section>
-          <H2>
-            <FormattedMessage {...messages.trymeHeader} />
-          </H2>
-          <Form onSubmit={onSubmitForm}>
-            <label htmlFor="username">
-              <FormattedMessage {...messages.trymeMessage} />
-              <AtPrefix>
-                <FormattedMessage {...messages.trymeAtPrefix} />
-              </AtPrefix>
-              <Input
-                id="username"
-                type="text"
-                placeholder="mxstbr"
-                value={username}
-                onChange={onChangeUsername}
-              />
-            </label>
-          </Form>
-          <ReposList {...reposListProps} />
-        </Section>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+        className={classes.topBar}
+      >
+        <FontAwesomeIcon icon={faCog} size="2x" />
+        <Img
+          src={GPSinaLogoGrey}
+          alt="GPSina Grey Logo"
+          className={classes.logo}
+        />
+        <div />
+      </Grid>
+
+      <div className={classes.container}>
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <Grid container spacing={2} justify="space-between" direction="row">
+              <Grid item xs={9}>
+                <Grid container spacing={2}>
+                  <Grid item xs={3}>
+                    <Typography variant="body1" color="initial">
+                      <FormattedMessage {...messages.vehicleNo} />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={9}>
+                    <Input
+                      className={classes.textfield}
+                      // defaultValue={"email"}
+                      // placeholder="Enter Vehicle No"
+                      disableUnderline
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={2}>
+                  <Grid item xs={3}>
+                    <Typography variant="body1" color="initial">
+                      <FormattedMessage {...messages.trackerNo} />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={9}>
+                    <Input
+                      className={classes.textfield}
+                      // defaultValue={"email"}
+                      // placeholder="Enter Tracker No"
+                      disableUnderline
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={2}>
+                  <Grid item xs={3}>
+                    <Typography variant="body1" color="initial">
+                      <FormattedMessage {...messages.search} />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={9}>
+                    <Input
+                      className={classes.textfield}
+                      // defaultValue={"email"}
+                      // placeholder="Enter Search Key"
+                      disableUnderline
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={3}>
+                <Button className={classes.btn} variant="contained">
+                  <FormattedMessage {...messages.addDevice} />
+                </Button>
+              </Grid>
+            </Grid>
+
+            <div className={classes.paginationContainer}>
+              <Grid
+                container
+                spacing={1}
+                justify="space-around"
+                direction="row"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Typography
+                    variant="body1"
+                    style={{ color: 'grey', fontSize: '14px' }}
+                  >
+                    <FormattedMessage {...messages.vehicleNo} />
+                    <FontAwesomeIcon
+                      icon={faSortUp}
+                      style={{ marginLeft: '0.25em' }}
+                      size="lg"
+                    />
+                  </Typography>
+                </Grid>
+
+                <Typography
+                  variant="body1"
+                  style={{ color: 'grey', fontSize: '14px' }}
+                >
+                  <FormattedMessage {...messages.trackerNo} />
+                </Typography>
+
+                <Typography
+                  variant="body1"
+                  style={{ color: 'grey', fontSize: '14px' }}
+                >
+                  <FormattedMessage {...messages.status} />
+                </Typography>
+              </Grid>
+            </div>
+
+            <DeviceList />
+            <DeviceList />
+            <DeviceList />
+          </Grid>
+          <Grid item xs={8}>
+            <Map
+              isMarkerShown={isMarkerShown}
+              onMarkerClick={handleMarkerClick}
+            />
+          </Grid>
+        </Grid>
       </div>
-    </article>
+    </div>
   );
 }
 
 HomePage.propTypes = {
   loading: PropTypes.bool,
-  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  repos: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  onSubmitForm: PropTypes.func,
-  username: PropTypes.string,
-  onChangeUsername: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  repos: makeSelectRepos(),
-  username: makeSelectUsername(),
   loading: makeSelectLoading(),
-  error: makeSelectError(),
 });
 
 export function mapDispatchToProps(dispatch) {

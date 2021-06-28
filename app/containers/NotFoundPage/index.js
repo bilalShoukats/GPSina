@@ -6,16 +6,16 @@
 
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Typography } from '@material-ui/core';
 
-import H1 from 'components/H1';
 import messages from './messages';
 
 export default function NotFound() {
   return (
     <article>
-      <H1>
+      <Typography variant="h1" color="initial">
         <FormattedMessage {...messages.header} />
-      </H1>
+      </Typography>
     </article>
   );
 }

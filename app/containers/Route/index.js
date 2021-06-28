@@ -13,6 +13,7 @@ import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import ResetPasswordPage from 'containers/ResetPasswordPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import HomePage from 'containers/HomePage/Loadable';
+import AlertPage from 'containers/AlertPage/Loadable';
 import PublicRoute from '../../components/PublicRoute';
 import PrivateRoute from '../../components/PrivateRoute';
 
@@ -23,8 +24,8 @@ import LoginPage from '../LoginPage/Loadable';
 import ForgotPasswordPage from '../ForgotPasswordPage/Loadable';
 
 export function Route() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRestricted, setIsRestricted] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isRestricted, setIsRestricted] = useState(false);
 
   const login = () => {
     setIsLoggedIn(prevState => !prevState);
@@ -57,6 +58,13 @@ export function Route() {
           isAuthenticated={isLoggedIn}
           restricted={isRestricted}
           component={HomePage}
+        />
+        <PrivateRoute
+          exact
+          path="/alert"
+          isAuthenticated={isLoggedIn}
+          restricted={isRestricted}
+          component={AlertPage}
         />
 
         {/* If url doesn't exist, redirect to 404 */}
