@@ -8,9 +8,12 @@ const SCREENS = {
   DASHBOARD: '/dashboard',
   LOCATE: '/locate',
   FENCE: '/fence',
-  PROFILE: '/profile',
+  SETTINGS: '/settings',
   ALERT: '/alert',
   HISTORY: '/history',
+  CONTACTUS: '/contact-us',
+  REFUNDDELIVERY: '/refund-delivery',
+  EXPIREDDEVICES: '/expired-devices',
 };
 
 export default SCREENS;

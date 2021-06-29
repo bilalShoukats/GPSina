@@ -10,10 +10,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 
-import ResetPasswordPage from 'containers/ResetPasswordPage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import HomePage from 'containers/HomePage/Loadable';
-import AlertPage from 'containers/AlertPage/Loadable';
 import PublicRoute from '../../components/PublicRoute';
 import PrivateRoute from '../../components/PrivateRoute';
 
@@ -22,6 +18,11 @@ import SCREENS from '../../constants/screen';
 // SCREENS/PAGE
 import LoginPage from '../LoginPage/Loadable';
 import ForgotPasswordPage from '../ForgotPasswordPage/Loadable';
+import ResetPasswordPage from '../ResetPasswordPage/Loadable';
+import NotFoundPage from '../NotFoundPage/Loadable';
+import HomePage from '../HomePage/Loadable';
+import AlertPage from '../AlertPage/Loadable';
+import SettingsPage from '../SettingsPage/Loadable';
 
 export function Route() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -61,10 +62,17 @@ export function Route() {
         />
         <PrivateRoute
           exact
-          path="/alert"
+          path={SCREENS.ALERT}
           isAuthenticated={isLoggedIn}
           restricted={isRestricted}
           component={AlertPage}
+        />
+        <PrivateRoute
+          exact
+          path={SCREENS.SETTINGS}
+          isAuthenticated={isLoggedIn}
+          restricted={isRestricted}
+          component={SettingsPage}
         />
 
         {/* If url doesn't exist, redirect to 404 */}

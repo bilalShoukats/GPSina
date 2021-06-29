@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button, Grid, Typography } from '@material-ui/core';
@@ -18,14 +18,21 @@ import { useStyles } from './styles.js';
 
 const propTypes = {
   title: PropTypes.string,
+  showClearBtn: PropTypes.bool,
 };
 
 const defaultProps = {
   title: '',
+  showClearBtn: false,
 };
 
 const Header = ({ ...props }) => {
   const classes = useStyles(props);
+  const history = useHistory();
+
+  const goBack = () => {
+    history.goBack();
+  };
 
   return (
     <Grid
@@ -34,7 +41,7 @@ const Header = ({ ...props }) => {
       justify="space-between"
       alignItems="center"
     >
-      <Link to={SCREENS.HOME} className={classes.link}>
+      <Button onClick={goBack}>
         <FontAwesomeIcon
           icon={faChevronLeft}
           color="#FFFFFF"
@@ -44,17 +51,21 @@ const Header = ({ ...props }) => {
         <Typography className={classes.textStyle} display="inline">
           <FormattedMessage {...messages.back} />
         </Typography>
-      </Link>
+      </Button>
 
       <Typography className={classes.titleStyle} variant="h6">
         {props.title}
       </Typography>
 
-      <Button className={classes.btnStyle} size="small">
-        <Typography className={classes.btnTextStyle}>
-          <FormattedMessage {...messages.clear} />
-        </Typography>
-      </Button>
+      {props.showClearBtn ? (
+        <Button className={classes.btnStyle} size="small">
+          <Typography className={classes.btnTextStyle}>
+            <FormattedMessage {...messages.clear} />
+          </Typography>
+        </Button>
+      ) : (
+        <div className={classes.emptyBtnStyle} />
+      )}
     </Grid>
   );
 };

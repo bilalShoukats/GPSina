@@ -5,16 +5,15 @@ const useStyles = makeStyles(theme => ({
     padding: '0.5em 1em',
     backgroundColor: '#000000',
   },
-  link: {
-    textDecoration: 'none',
-  },
   textStyle: {
     color: '#FFFFFF',
     fontWeight: '300',
     marginLeft: '0.25em',
+    textTransform: 'capitalize',
   },
   titleStyle: {
     color: '#FFFFFF',
+    textTransform: 'capitalize',
     // fontWeight: 'bold',
   },
   btnStyle: {
@@ -23,6 +22,9 @@ const useStyles = makeStyles(theme => ({
   },
   btnTextStyle: {
     textTransform: 'capitalize',
+  },
+  emptyBtnStyle: {
+    width: '5em',
   },
 }));
 

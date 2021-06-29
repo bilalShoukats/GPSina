@@ -33,7 +33,7 @@ export function AlertPage(props) {
       <Helmet>
         <title>Alert</title>
       </Helmet>
-      <Header title="Alert" />
+      <Header title={<FormattedMessage {...messages.alert} />} showClearBtn />
       <Grid className={classes.container}>
         <Typography variant="body1" align="center">
           <FormattedMessage {...messages.noAlertFound} />
