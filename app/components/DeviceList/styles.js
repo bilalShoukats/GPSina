@@ -6,7 +6,7 @@ const useStyles = makeStyles(theme => ({
   },
   btn: {
     color: '#28ACEA',
-    borderColor: '#28ACEA',
+    border: '2px solid #28ACEA',
   },
   btnContainer: {
     padding: '0.5em 0.5em',
@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     textTransform: 'capitalize',
+    cursor: 'pointer',
   },
   logoStyle: {
     width: '30px',

@@ -39,6 +39,9 @@ const useStyles = makeStyles(theme => ({
   paginationContainer: {
     marginTop: '1em',
   },
+  settingsBtn: {
+    cursor: 'pointer',
+  },
 }));
 
 export { useStyles };

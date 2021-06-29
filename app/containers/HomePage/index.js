@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,6 +36,7 @@ import SCREENS from '../../constants/screen';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import Map from '../../components/Map';
 import DeviceList from '../../components/DeviceList';
+import CustomModal from '../../components/CustomModal';
 
 const key = 'home';
 
@@ -42,12 +44,27 @@ export function HomePage({ loading, ...props }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
-  const classes = useStyles(props);
   const [isMarkerShown, setIsMarkerShown] = useState(true);
+  const [isModalShown, setIsModalShown] = useState(false);
+
+  const classes = useStyles(props);
+  const history = useHistory();
+
+  const goToSettingsScreen = () => {
+    history.push(SCREENS.SETTINGS);
+  };
 
   const handleMarkerClick = () => {
     setIsMarkerShown(!isMarkerShown);
-    console.log('isMarkerShown', isMarkerShown);
+    // console.log('isMarkerShown', isMarkerShown);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalShown(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalShown(false);
   };
 
   return (
@@ -62,7 +79,9 @@ export function HomePage({ loading, ...props }) {
         alignItems="center"
         className={classes.topBar}
       >
-        <FontAwesomeIcon icon={faCog} size="2x" />
+        <Grid item onClick={goToSettingsScreen} className={classes.settingsBtn}>
+          <FontAwesomeIcon icon={faCog} size="2x" />
+        </Grid>
         <Img
           src={GPSinaLogoGrey}
           alt="GPSina Grey Logo"
@@ -70,6 +89,14 @@ export function HomePage({ loading, ...props }) {
         />
         <div />
       </Grid>
+
+      <CustomModal
+        open={isModalShown}
+        handleClose={handleCloseModal}
+        title="expired"
+        deviceName="3353 - M3"
+        type="simple"
+      />
 
       <div className={classes.container}>
         <Grid container spacing={3}>
@@ -169,9 +196,9 @@ export function HomePage({ loading, ...props }) {
               </Grid>
             </div>
 
-            <DeviceList />
-            <DeviceList />
-            <DeviceList />
+            <DeviceList onOpenModal={handleOpenModal} />
+            <DeviceList onOpenModal={handleOpenModal} />
+            <DeviceList onOpenModal={handleOpenModal} />
           </Grid>
           <Grid item xs={8}>
             <Map
