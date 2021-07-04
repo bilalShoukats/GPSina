@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -26,6 +26,9 @@ import { useStyles } from './styles.js';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 import UserAvatar from '../../components/UserAvatar';
 import SCREENS from '../../constants/screen';
+import { Manager } from '../../StorageManager/Storage';
+import { SuperHOC } from '../../HOC';
+import APIURLS from '../../ApiManager/apiUrl';
 
 export function SettingsPage(props) {
   useInjectReducer({ key: 'settingsPage', reducer });
@@ -33,6 +36,39 @@ export function SettingsPage(props) {
 
   const classes = useStyles(props);
   const history = useHistory();
+
+  const [userName, setUserName] = useState();
+  const [email, setEmail] = useState();
+  const [mobileNo, setMobileNo] = useState();
+  const [oldPassword, setOldPassword] = useState();
+  const [newPassword, setNewPassword] = useState();
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    const { name, value } = event.target;
+
+    switch (name) {
+      case 'username':
+        setUserName(value);
+        break;
+
+      case 'email':
+        setEmail(value);
+        break;
+
+      case 'mobileNo':
+        setMobileNo(value);
+        break;
+      
+      case 'oldPassword':
+        setOldPassword(value);
+        break;
+
+      case 'newPassword':
+        setNewPassword(value);
+        break;
+    }
+  }
 
   const goToContactUsScreen = () => {
     history.push(SCREENS.CONTACTUS);
@@ -46,6 +82,23 @@ export function SettingsPage(props) {
     history.push(SCREENS.EXPIREDDEVICES);
   };
 
+  const logOut = () => {
+    // console.log('remove token and use from localStorage');
+    Manager.removeItem('token');
+    Manager.removeItem('user');
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    console.log('useEffect Settings');
+    Manager.getItemCallback('user', true, (res) => {
+      console.log(res);
+      setUserName(res.userName);
+      setEmail(res.email);
+      setMobileNo(res.phone);
+    })
+  }, []);
+
   return (
     <div>
       <Helmet>
@@ -55,10 +108,9 @@ export function SettingsPage(props) {
 
       <div>
         <Grid
-          container
+          item
           sm={8}
           md={6}
-          direction="column"
           className={classes.root}
         >
           <Grid
@@ -77,8 +129,10 @@ export function SettingsPage(props) {
               </Typography>
               <Input
                 className={classes.textInput}
-                // defaultValue={"email"}
-                // placeholder="Enter User Name"
+                value={userName}
+                name="username"
+                placeholder="Enter User Name"
+                onChange={handleChange}
                 disableUnderline
               />
             </Grid>
@@ -89,8 +143,10 @@ export function SettingsPage(props) {
               </Typography>
               <Input
                 className={classes.textInput}
-                // defaultValue={"email"}
-                // placeholder="Enter User Name"
+                value={email}
+                name="email"
+                placeholder="Enter email"
+                onChange={handleChange}
                 disableUnderline
               />
             </Grid>
@@ -101,8 +157,10 @@ export function SettingsPage(props) {
               </Typography>
               <Input
                 className={classes.textInput}
-                // defaultValue={"email"}
-                // placeholder="Enter User Name"
+                value={mobileNo}
+                name="mobileNo"
+                placeholder="Enter mobile no"
+                onChange={handleChange}
                 disableUnderline
               />
             </Grid>
@@ -118,8 +176,10 @@ export function SettingsPage(props) {
               </Typography>
               <Input
                 className={classes.textInput}
-                // defaultValue={"email"}
-                // placeholder="Enter User Name"
+                name="oldPassword"
+                value={oldPassword}
+                placeholder="Enter old password"
+                onChange={handleChange}
                 disableUnderline
               />
             </Grid>
@@ -129,8 +189,10 @@ export function SettingsPage(props) {
               </Typography>
               <Input
                 className={classes.textInput}
-                // defaultValue={"email"}
-                // placeholder="Enter User Name"
+                name="newPassword"
+                value={newPassword}
+                placeholder="Enter new password"
+                onChange={handleChange}
                 disableUnderline
               />
             </Grid>
@@ -157,7 +219,7 @@ export function SettingsPage(props) {
               <Button
                 className={classes.btnYellow}
                 variant="contained"
-                onClick={goToExpiredDevicesScreen}
+                onClick={goToRefundDeliveryScreen}
               >
                 <Typography variant="body1">
                   <FormattedMessage {...messages.refundDeliveryMethod} />
@@ -174,7 +236,11 @@ export function SettingsPage(props) {
                 </Typography>
               </Button>
 
-              <Button className={classes.btnRed} variant="contained">
+              <Button
+                className={classes.btnRed}
+                variant="contained"
+                onClick={logOut}
+              >
                 <Typography variant="body1">
                   <FormattedMessage {...messages.logOut} />
                 </Typography>
@@ -214,4 +280,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(SettingsPage);
+export default SuperHOC(compose(withConnect)(SettingsPage));

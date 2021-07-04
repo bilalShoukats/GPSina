@@ -60,44 +60,36 @@ const CustomModal = ({ ...props }) => {
             direction="column"
             alignItems="center"
           >
-            <Typography
-              variant="body1"
-              align="center"
-              className={classes.textContainer}
-            >
-              {props.title === 'expired' ? (
-                <FormattedMessage {...messages.expired} />
-              ) : (
-                <FormattedMessage {...messages.title} />
-              )}
-            </Typography>
+            <div className={classes.textContainer}>
+              <Typography
+                variant="body1"
+                align="center"
+              >
+                {props.title}
+              </Typography>
+              {props.description &&
+                <Typography
+                  variant="body2"
+                  align="center"
+                >
+                  {props.description}
+                </Typography>
+              }
+            </div>
             <Grid
               container
               direction="row"
               justify="center"
               alignItems="center"
             >
-              {props.title === 'expired' ? (
-                <Button
-                  onClick={props.handleClose}
-                  className={classes.btnContainer}
-                >
-                  <Typography variant="body1" align="center">
-                    <FormattedMessage {...messages.ok} />
-                  </Typography>
-                </Button>
-              ) : (
-                <div className={classes.btnContainer}>
-                  <Button
-                    onClick={props.handleClose}
-                    className={classes.center}
-                  >
-                    <Typography variant="body2" align="center">
-                      <FormattedMessage {...messages.ok} />
-                    </Typography>
-                  </Button>
-                </div>
-              )}
+              <Button
+                onClick={props.handleClose}
+                className={classes.btnContainer}
+              >
+                <Typography variant="body1" align="center">
+                  <FormattedMessage {...messages.ok} />
+                </Typography>
+              </Button>
             </Grid>
           </Grid>
         </div>

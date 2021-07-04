@@ -57,6 +57,13 @@ const useStyles = makeStyles(theme => ({
     padding: '0.25em 0.5em',
     marginBottom: '1em',
   },
+  textfieldSignUp: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    borderRadius: '5px',
+    padding: '0.25em 0.5em',
+    marginBottom: '0.25em',
+  },
   link: {
     display: 'inline-flex',
     padding: '0.25em 1em',
@@ -64,6 +71,9 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
     outline: 0,
     color: 'grey',
+  },
+  error: {
+    color: 'red',
   },
   inlineContainer: {
     display: 'flex',
@@ -76,6 +86,9 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'uppercase',
     fontWeight: 'bold',
   },
+  textStyle: {
+    textTransform: 'capitalize',
+  }
 }));
 
 export { useStyles };

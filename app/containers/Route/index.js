@@ -4,16 +4,17 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import PublicRoute from '../../components/PublicRoute';
 import PrivateRoute from '../../components/PrivateRoute';
 
 import SCREENS from '../../constants/screen';
+import { SuperHOC } from '../../HOC';
 
 // SCREENS/PAGE
 import LoginPage from '../LoginPage/Loadable';
@@ -23,17 +24,34 @@ import NotFoundPage from '../NotFoundPage/Loadable';
 import HomePage from '../HomePage/Loadable';
 import AlertPage from '../AlertPage/Loadable';
 import SettingsPage from '../SettingsPage/Loadable';
+import ContactUsPage from '../ContactUsPage/Loadable';
+import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
+import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
 
-export function Route() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [isRestricted, setIsRestricted] = useState(false);
+export function Route(props) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isRestricted, setIsRestricted] = useState(true);
 
-  const login = () => {
-    setIsLoggedIn(prevState => !prevState);
-  };
-  const restricted = () => {
-    setIsRestricted(prevState => !prevState);
-  };
+  const history = useHistory();
+
+  useEffect(() => {
+    console.log('useEffect Route');
+    console.log('props.apiManager.token', props.apiManager.token);
+    if (props.apiManager.token == '') {
+      console.log('Set login and restricted to default');
+      setIsLoggedIn(false);
+      setIsRestricted(true);
+      history.push(SCREENS.LOGIN);
+    } else {
+      console.log('allow login and disable restriction on certain screen');
+      if(!isLoggedIn){
+        setIsLoggedIn(true);
+      }
+      if(isRestricted){
+        setIsRestricted(false);
+      }
+    }
+  }, []);
 
   return (
     <Router>
@@ -74,6 +92,27 @@ export function Route() {
           restricted={isRestricted}
           component={SettingsPage}
         />
+        <PrivateRoute
+          exact
+          path={SCREENS.CONTACTUS}
+          isAuthenticated={isLoggedIn}
+          restricted={isRestricted}
+          component={ContactUsPage}
+        />
+        <PrivateRoute
+          exact
+          path={SCREENS.REFUNDDELIVERY}
+          isAuthenticated={isLoggedIn}
+          restricted={isRestricted}
+          component={RefundDeliveryPage}
+        />
+        <PrivateRoute
+          exact
+          path={SCREENS.EXPIREDDEVICES}
+          isAuthenticated={isLoggedIn}
+          restricted={isRestricted}
+          component={ExpiredDevicePage}
+        />
 
         {/* If url doesn't exist, redirect to 404 */}
         <Redirect to={SCREENS.NOTFOUND} />
@@ -98,4 +137,4 @@ export function Route() {
 // );
 
 // export default compose(withConnect)(Route);
-export default Route;
+export default SuperHOC(Route);

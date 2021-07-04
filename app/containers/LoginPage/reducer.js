@@ -4,15 +4,50 @@
  *
  */
 import produce from 'immer';
-import { DEFAULT_ACTION } from './constants';
+import {
+  CHANGE_EMAIL,
+  CHANGE_PASSWORD,
+  CHANGE_NEW_EMAIL,
+  CHANGE_NEW_PASSWORD,
+  CHANGE_NEW_CONFIRM_PASSWORD,
+  REMEMBER_ME,
+  AUTO_LOGIN,
+} from './constants';
 
-export const initialState = {};
+export const initialState = {
+  email: '',
+  password: '',
+  newEmail: '',
+  newPassword: '',
+  newConfirmPassword: '',
+  rememberMe: false,
+  autoLogin: false,
+};
 
 /* eslint-disable default-case, no-param-reassign */
 const loginPageReducer = (state = initialState, action) =>
-  produce(state, (/* draft */) => {
+  produce(state, draft => {
     switch (action.type) {
-      case DEFAULT_ACTION:
+      case CHANGE_EMAIL:
+        draft.email = action.email;
+        break;
+      case CHANGE_PASSWORD:
+        draft.password = action.password;
+        break;
+      case CHANGE_NEW_EMAIL:
+        draft.newEmail = action.newEmail;
+        break;
+      case CHANGE_NEW_PASSWORD:
+        draft.newPassword = action.newPassword;
+        break;
+      case CHANGE_NEW_CONFIRM_PASSWORD:
+        draft.newConfirmPassword = action.newConfirmPassword;
+        break;
+      case REMEMBER_ME:
+        draft.rememberMe = action.rememberMe;
+        break;
+      case AUTO_LOGIN:
+        draft.autoLogin = action.autoLogin;
         break;
     }
   });

@@ -14,13 +14,13 @@ const useStyles = makeStyles(theme => ({
   },
   btnOutline: {
     border: '2px solid #28ACEA',
-    display: 'flex',
+    textAlign: 'center',
     width: '19%',
     height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: '0.4em 0.25em',
     textTransform: 'capitalize',
     cursor: 'pointer',
+    minHeight: '70px'
   },
   logoStyle: {
     width: '30px',

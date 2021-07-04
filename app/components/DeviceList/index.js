@@ -119,8 +119,6 @@ const DeviceList = ({ ...props }) => {
             alignItems="center"
           >
             <Grid
-              item
-              direction="column"
               onClick={goToLocateScreen}
               className={classes.btnOutline}
             >
@@ -134,8 +132,6 @@ const DeviceList = ({ ...props }) => {
               </Typography>
             </Grid>
             <Grid
-              item
-              direction="column"
               onClick={goToFenceScreen}
               className={classes.btnOutline}
             >
@@ -150,8 +146,6 @@ const DeviceList = ({ ...props }) => {
               </Typography>
             </Grid>
             <Grid
-              item
-              direction="column"
               onClick={goToHistoryScreen}
               className={classes.btnOutline}
             >
@@ -165,8 +159,6 @@ const DeviceList = ({ ...props }) => {
               </Typography>
             </Grid>
             <Grid
-              item
-              direction="column"
               onClick={showMoreModal}
               className={classes.btnOutline}
             >
@@ -180,8 +172,6 @@ const DeviceList = ({ ...props }) => {
               </Typography>
             </Grid>
             <Grid
-              item
-              direction="column"
               onClick={goToAlertScreen}
               className={classes.btnOutline}
             >

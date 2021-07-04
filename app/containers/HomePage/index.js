@@ -67,6 +67,10 @@ export function HomePage({ loading, ...props }) {
     setIsModalShown(false);
   };
 
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <div>
       <Helmet className={classes.root}>

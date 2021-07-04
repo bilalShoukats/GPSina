@@ -33,6 +33,10 @@ export default defineMessages({
     id: `${scope}.rememberMe`,
     defaultMessage: 'Remember Me',
   },
+  autoLogin: {
+    id: `${scope}.autoLogin`,
+    defaultMessage: 'Auto login',
+  },
   forgotPassword: {
     id: `${scope}.forgotPassword`,
     defaultMessage: 'Forgot Password',
@@ -48,5 +52,33 @@ export default defineMessages({
   confirmPassword: {
     id: `${scope}.confirmPassword`,
     defaultMessage: 'Confirm Password',
+  },
+  notValidEmail: {
+    id: `${scope}.notValidEmail`,
+    defaultMessage: 'Email is not valid!',
+  },
+  atLeast8Character: {
+    id: `${scope}.atLeast8Character`,
+    defaultMessage: 'Password must be at least 8 characters long!',
+  },
+  mismatchPassword: {
+    id: `${scope}.mismatchPassword`,
+    defaultMessage: 'Mismatch password',
+  },
+  loginFailed: {
+    id: `${scope}.loginFailed`,
+    defaultMessage: 'Login Failed',
+  },
+  invalidEmailPassword: {
+    id: `${scope}.invalidEmailPassword`,
+    defaultMessage: 'Invalid Email and Password',
+  },
+  validationError: {
+    id: `${scope}.validationError`,
+    defaultMessage: 'Validation Error',
+  },
+  pleaseCheckEmailAndPassword: {
+    id: `${scope}.pleaseCheckEmailAndPassword`,
+    defaultMessage: 'Please Check Email and Password',
   },
 });
