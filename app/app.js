@@ -16,6 +16,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
+// import { initializeFirebase } from './utils/push-notification';
 
 // Import root app
 import App from 'containers/App';
@@ -58,6 +59,7 @@ const render = messages => {
     </Provider>,
     MOUNT_NODE,
   );
+  // initializeFirebase();
 };
 
 if (module.hot) {
