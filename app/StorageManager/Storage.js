@@ -1,15 +1,13 @@
-import CryptoJS from "crypto-js";
+import CryptoJS from 'crypto-js';
 
-const key = ''//'Haider-Hassan+1994'
+const key = ''; // 'Haider-Hassan+1994'
 
-const encrypt = (data) => {
-  return CryptoJS.AES.encrypt(data, key).toString();
-}
+const encrypt = data => CryptoJS.AES.encrypt(data, key).toString();
 
-const decrypt = (ciphertext) => {
-  var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), key);
+const decrypt = ciphertext => {
+  const bytes = CryptoJS.AES.decrypt(ciphertext.toString(), key);
   return bytes.toString(CryptoJS.enc.Utf8);
-}
+};
 
 const setItem = (key, value, makeStringifiy = true) => {
   let data = '';
@@ -20,40 +18,45 @@ const setItem = (key, value, makeStringifiy = true) => {
   } else {
     data = value;
   }
-  let encrypted = encrypt(data);
+  const encrypted = encrypt(data);
   localStorage.setItem(key, encrypted);
-}
+};
 
 const getItem = async (key, makeParse) => {
-  let data = await localStorage.getItem(key);
+  const data = await localStorage.getItem(key);
   if (data) {
     let plainText = decrypt(data);
-    plainText = typeof plainText === 'string' && makeParse ? JSON.parse(plainText) : plainText;
+    plainText =
+      typeof plainText === 'string' && makeParse
+        ? JSON.parse(plainText)
+        : plainText;
     return plainText;
-  } else {
-    return '';
   }
-}
+  return '';
+};
 
 const getItemCallback = async (key, makeParse, _callback) => {
-  let data = await localStorage.getItem(key);
+  const data = await localStorage.getItem(key);
   if (data) {
     let plainText = decrypt(data);
-    plainText = typeof plainText === 'string' && makeParse ? JSON.parse(plainText) : plainText;
+    plainText =
+      typeof plainText === 'string' && makeParse
+        ? JSON.parse(plainText)
+        : plainText;
     _callback(plainText);
   } else {
-    _callback('')
+    _callback('');
   }
-}
+};
 
-const removeItem = async (key) => {
+const removeItem = async key => {
   localStorage.removeItem(key);
-}
+};
 
 const Manager = {
   setItem,
   getItem,
   removeItem,
-  getItemCallback
-}
+  getItemCallback,
+};
 export { Manager };

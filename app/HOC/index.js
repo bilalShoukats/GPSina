@@ -1,5 +1,3 @@
-import SuperHOC from "./SuperHOC";
+import SuperHOC from './SuperHOC';
 
-export {
-  SuperHOC,
-};
+export { SuperHOC };
