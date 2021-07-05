@@ -81,4 +81,36 @@ export default defineMessages({
     id: `${scope}.pleaseCheckEmailAndPassword`,
     defaultMessage: 'Please Check Email and Password',
   },
+  firstname: {
+    id: `${scope}.firstname`,
+    defaultMessage: 'first name',
+  },
+  lastname: {
+    id: `${scope}.lastname`,
+    defaultMessage: 'last name',
+  },
+  username: {
+    id: `${scope}.username`,
+    defaultMessage: 'username',
+  },
+  atLeast5Character: {
+    id: `${scope}.atLeast5Character`,
+    defaultMessage: 'must at least 5 characters',
+  },
+  invalidMobileNo: {
+    id: `${scope}.invalidMobileNo`,
+    defaultMessage: 'invalid mobile no',
+  },
+  mobileNo: {
+    id: `${scope}.mobileNo`,
+    defaultMessage: 'mobile no',
+  },
+  pleaseLoginUsingThisCredential: {
+    id: `${scope}.pleaseLoginUsingThisCredential`,
+    defaultMessage: 'Please login using this credentials',
+  },
+  registerSuccessful: {
+    id: `${scope}.registerSuccessful`,
+    defaultMessage: 'Registration Successful',
+  },
 });

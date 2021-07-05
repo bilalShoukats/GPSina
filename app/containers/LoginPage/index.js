@@ -36,12 +36,20 @@ export function LoginPage(props) {
     newEmail: '',
     newPassword: '',
     newConfirmPassword: '',
+    newUsername: '',
+    newFirstname: '',
+    newLastname: '',
+    newMobileNo: '',
   });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newConfirmPassword, setNewConfirmPassword] = useState('');
+  const [newFirstname, setNewFirstname] = useState('');
+  const [newLastname, setNewLastname] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [newMobileNo, setNewMobileNo] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
   const [isModalShown, setIsModalShown] = useState(false);
@@ -95,6 +103,42 @@ export function LoginPage(props) {
         
         setNewConfirmPassword(value);
         break;
+
+      case 'newFirstname':
+        error.newFirstname = 
+          value.length < 5
+            ? props.intl.formatMessage({ ...messages.atLeast5Character })
+            : ''
+        
+        setNewFirstname(value);
+        break;
+
+      case 'newLastname':
+        error.newLastname = 
+          value.length < 5
+            ? props.intl.formatMessage({ ...messages.atLeast5Character })
+            : ''
+        
+        setNewLastname(value);
+        break;
+
+      case 'newUsername':
+        error.newUsername = 
+          value.length < 5
+            ? props.intl.formatMessage({ ...messages.atLeast5Character })
+            : ''
+
+        setNewUsername(value);
+        break;
+
+      case 'newMobileNo':
+        error.newMobileNo = 
+          value.length < 9
+            ? props.intl.formatMessage({ ...messages.invalidMobileNo })
+            : ''
+        
+        setNewMobileNo(value);
+        break;
     }
 
     setErrors(error);
@@ -146,8 +190,23 @@ export function LoginPage(props) {
           // setModalTitle(props.intl.formatMessage({ ...messages.loginFailed }));
           // setModalDescription(props.intl.formatMessage({ ...messages.invalidEmailPassword }))
           // handleOpenModal();
-          
-
+          let body = {
+            firstName: newFirstname,
+            lastName: newLastname,
+            userName: newUsername,
+            password: newPassword,
+            email: newEmail,
+            phone: newMobileNo,
+            role: 0
+          };
+          props.apiManager.callApi(APIURLS.register, 'POST', body, (res) => {
+            console.log(res);
+            if(res.code === 1006){
+              setModalTitle(props.intl.formatMessage({ ...messages.registerSuccessful }));
+              setModalDescription(props.intl.formatMessage({ ...messages.pleaseLoginUsingThisCredential }))
+              handleOpenModal();
+            }
+          })
         } else {
           console.log(errors);
           setModalTitle(props.intl.formatMessage({ ...messages.validationError }));
@@ -170,6 +229,9 @@ export function LoginPage(props) {
 
   const handleCloseModal = () => {
     setIsModalShown(false);
+    if(props.intl.formatMessage({ ...messages.registerSuccessful })){
+      window.location.reload();
+    }
   };
 
   const goToForgotPasswordScreen = () => {
@@ -208,7 +270,7 @@ export function LoginPage(props) {
 
         <form id="login" onSubmit={handleSubmit} noValidate autoComplete="off">
           <div className={classes.content}>
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
               <FormattedMessage {...messages.email} />
             </Typography>
             <Input
@@ -222,7 +284,7 @@ export function LoginPage(props) {
               disableUnderline
             />
             
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
               <FormattedMessage {...messages.password} />
             </Typography>
             <Input
@@ -290,12 +352,62 @@ export function LoginPage(props) {
 
         <form id="signUp" noValidate autoComplete="off" onSubmit={handleSubmit}>
           <div className={classes.content}>
-            <Typography variant="body1" color="initial">
+          <Typography variant="body1" color="initial" className={classes.textStyle}>
+              <FormattedMessage {...messages.firstname} />
+            </Typography>
+            <Input
+              id="newFirstname"
+              type="text"
+              name="newFirstname"
+              className={classes.textfieldSignUp}
+              value={newFirstname}
+              onChange={handleChange}
+              type="email"
+              placeholder="Enter firstname"
+              disableUnderline
+            />
+            {errors.newFirstname.length > 0 && 
+                <span className={classes.error}>{errors.newFirstname}</span>}
+
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
+              <FormattedMessage {...messages.lastname} />
+            </Typography>
+            <Input
+              id="newLastname"
+              type="text"
+              name="newLastname"
+              className={classes.textfieldSignUp}
+              value={newLastname}
+              onChange={handleChange}
+              type="email"
+              placeholder="Enter lastname"
+              disableUnderline
+            />
+            {errors.newLastname.length > 0 && 
+                <span className={classes.error}>{errors.newLastname}</span>}
+
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
+              <FormattedMessage {...messages.username} />
+            </Typography>
+            <Input
+              id="newUsername"
+              type="text"
+              name="newUsername"
+              className={classes.textfieldSignUp}
+              value={newUsername}
+              onChange={handleChange}
+              type="text"
+              placeholder="Enter username"
+              disableUnderline
+            />
+            {errors.newUsername.length > 0 && 
+                <span className={classes.error}>{errors.newUsername}</span>}
+
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
               <FormattedMessage {...messages.email} />
             </Typography>
             <Input
               id="newEmail"
-              type="text"
               name="newEmail"
               className={classes.textfieldSignUp}
               value={newEmail}
@@ -307,7 +419,23 @@ export function LoginPage(props) {
             {errors.newEmail.length > 0 && 
                 <span className={classes.error}>{errors.newEmail}</span>}
 
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
+              <FormattedMessage {...messages.mobileNo} />
+            </Typography>
+            <Input
+              id="newMobileNo"
+              type="number"
+              name="newMobileNo"
+              className={classes.textfieldSignUp}
+              value={newMobileNo}
+              onChange={handleChange}
+              placeholder="Enter Mobile No"
+              disableUnderline
+            />
+            {errors.newMobileNo.length > 0 && 
+                <span className={classes.error}>{errors.newMobileNo}</span>}
+
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
               <FormattedMessage {...messages.password} />
             </Typography>
             <Input
@@ -323,7 +451,7 @@ export function LoginPage(props) {
             {errors.newPassword.length > 0 && 
                 <span className={classes.error}>{errors.newPassword}</span>}
 
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1" color="initial" className={classes.textStyle}>
               <FormattedMessage {...messages.confirmPassword} />
             </Typography>
             <Input
