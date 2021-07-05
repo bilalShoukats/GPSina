@@ -4,10 +4,7 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import PublicRoute from '../../components/PublicRoute';
@@ -28,30 +25,7 @@ import ContactUsPage from '../ContactUsPage/Loadable';
 import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
 import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
 
-export function Route(props) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRestricted, setIsRestricted] = useState(true);
-
-  const history = useHistory();
-
-  useEffect(() => {
-    console.log('useEffect Route');
-    console.log('props.apiManager.token', props.apiManager.token);
-    if (props.apiManager.token == '') {
-      console.log('Set login and restricted to default');
-      setIsLoggedIn(false);
-      setIsRestricted(true);
-      history.push(SCREENS.LOGIN);
-    } else {
-      console.log('allow login and disable restriction on certain screen');
-      if(!isLoggedIn){
-        setIsLoggedIn(true);
-      }
-      if(isRestricted){
-        setIsRestricted(false);
-      }
-    }
-  }, []);
+export function Route() {
 
   return (
     <Router>
@@ -74,43 +48,31 @@ export function Route(props) {
         <PrivateRoute
           exact
           path="/"
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={HomePage}
         />
         <PrivateRoute
           exact
           path={SCREENS.ALERT}
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={AlertPage}
         />
         <PrivateRoute
           exact
           path={SCREENS.SETTINGS}
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={SettingsPage}
         />
         <PrivateRoute
           exact
           path={SCREENS.CONTACTUS}
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={ContactUsPage}
         />
         <PrivateRoute
           exact
           path={SCREENS.REFUNDDELIVERY}
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={RefundDeliveryPage}
         />
         <PrivateRoute
           exact
           path={SCREENS.EXPIREDDEVICES}
-          isAuthenticated={isLoggedIn}
-          restricted={isRestricted}
           component={ExpiredDevicePage}
         />
 
