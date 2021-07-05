@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import { SuperHOC } from '../../HOC';
@@ -23,7 +23,7 @@ export function ContactUsPage(props) {
   return (
     <div>
       <Helmet>
-        <title>Contact Us</title>
+        <title>{props.intl.formatMessage({...messages.contactUs})}</title>
       </Helmet>
       <Header title={<FormattedMessage {...messages.contactUs} />} />
 
@@ -160,4 +160,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC(compose(withConnect)(ContactUsPage));
+export default SuperHOC(compose(withConnect)(injectIntl(ContactUsPage)));

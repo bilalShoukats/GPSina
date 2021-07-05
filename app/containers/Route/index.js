@@ -24,6 +24,7 @@ import SettingsPage from '../SettingsPage/Loadable';
 import ContactUsPage from '../ContactUsPage/Loadable';
 import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
 import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
+import FencePage from '../FencePage/Loadable';
 
 export function Route() {
 
@@ -32,49 +33,18 @@ export function Route() {
       <Switch>
         {/* Public Route that can be accessed without token, not restricted screen */}
         <PublicRoute exact path={SCREENS.LOGIN} component={LoginPage} />
-        <PublicRoute
-          exact
-          path={SCREENS.FORGOTPASSWORD}
-          component={ForgotPasswordPage}
-        />
-        <PublicRoute
-          exact
-          path={SCREENS.RESETPASSWORD}
-          component={ResetPasswordPage}
-        />
+        <PublicRoute exact path={SCREENS.FORGOTPASSWORD} component={ForgotPasswordPage} />
+        <PublicRoute exact path={SCREENS.RESETPASSWORD} component={ResetPasswordPage} />
         <PublicRoute exact path={SCREENS.NOTFOUND} component={NotFoundPage} />
 
         {/* Private Route, restricted screen that required token to access */}
-        <PrivateRoute
-          exact
-          path="/"
-          component={HomePage}
-        />
-        <PrivateRoute
-          exact
-          path={SCREENS.ALERT}
-          component={AlertPage}
-        />
-        <PrivateRoute
-          exact
-          path={SCREENS.SETTINGS}
-          component={SettingsPage}
-        />
-        <PrivateRoute
-          exact
-          path={SCREENS.CONTACTUS}
-          component={ContactUsPage}
-        />
-        <PrivateRoute
-          exact
-          path={SCREENS.REFUNDDELIVERY}
-          component={RefundDeliveryPage}
-        />
-        <PrivateRoute
-          exact
-          path={SCREENS.EXPIREDDEVICES}
-          component={ExpiredDevicePage}
-        />
+        <PrivateRoute exact path="/" component={HomePage} />
+        <PrivateRoute exact path={SCREENS.ALERT} component={AlertPage}/>
+        <PrivateRoute exact path={SCREENS.SETTINGS} component={SettingsPage} />
+        <PrivateRoute exact path={SCREENS.CONTACTUS} component={ContactUsPage} />
+        <PrivateRoute exact path={SCREENS.REFUNDDELIVERY} component={RefundDeliveryPage} />
+        <PrivateRoute exact path={SCREENS.EXPIREDDEVICES} component={ExpiredDevicePage} />
+        <PrivateRoute exact path={SCREENS.FENCE} component={FencePage} />
 
         {/* If url doesn't exist, redirect to 404 */}
         <Redirect to={SCREENS.NOTFOUND} />

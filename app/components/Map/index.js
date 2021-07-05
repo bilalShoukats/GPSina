@@ -21,6 +21,10 @@ const propTypes = {
   isMarkerShown: PropTypes.bool,
   markerPosition: PropTypes.object,
   onMarkerClick: PropTypes.func,
+  showMapTypeControl: PropTypes.bool,
+  showFullScreenControl: PropTypes.bool,
+  showStreetViewControl: PropTypes.bool,
+  mapTypeId: PropTypes.string,
 };
 
 const defaultProps = {
@@ -31,6 +35,10 @@ const defaultProps = {
   onMarkerClick: () => {
     console.log('onMarkerClick');
   },
+  showMapTypeControl: true,
+  showFullScreenControl: true,
+  showStreetViewControl: true,
+  mapTypeId: 'roadmap',  // roadmap, hybrid, default to roadmap
 };
 
 const Map = compose(
@@ -38,7 +46,7 @@ const Map = compose(
     googleMapURL:
       'https://maps.googleapis.com/maps/api/js?key=AIzaSyAywCpAjtueU2fVwjArfZMm_4RAf7BqZBI',
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `800px` }} />,
+    containerElement: <div style={{ height: `100%` }} />,
     mapElement: <div style={{ height: `100%` }} />,
   }),
   withScriptjs,
@@ -47,6 +55,13 @@ const Map = compose(
   <GoogleMap
     defaultZoom={props.defaultZoom}
     defaultCenter={props.defaultCenter}
+    options={{ 
+      mapTypeControl: props.showMapTypeControl,
+      fullscreenControl: props.showFullScreenControl, 
+      streetViewControl: props.showStreetViewControl,
+      mapTypeId: props.mapTypeId,
+      gestureHandling: 'greedy',
+    }}
   >
     {props.isMarkerShown && (
       <Marker position={props.markerPosition} onClick={props.onMarkerClick} />
