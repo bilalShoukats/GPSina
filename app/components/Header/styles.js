@@ -26,6 +26,21 @@ const useStyles = makeStyles(theme => ({
   emptyBtnStyle: {
     width: '5em',
   },
+  btnFenceCircleStyle: {
+    display: 'inline-block',
+    padding: '0.25em 0.5em',
+    minHeight: 0,
+    minWidth: 0,
+    backgroundColor: 'transparent',
+    border: '1px solid #FFFFFF',
+  },
+  btnFenceStyle: {
+    display: 'inline-block',
+    padding: '0.25em 0.5em',
+    minHeight: 0,
+    marginLeft: '1em',
+    minWidth: 0,
+  }
 }));
 
 export { useStyles };

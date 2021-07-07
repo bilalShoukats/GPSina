@@ -14,6 +14,7 @@ import {
   GoogleMap,
   Marker,
 } from 'react-google-maps';
+import { LATITUDE, LONGITUDE } from '../../constants/maps';
 
 const propTypes = {
   defaultZoom: PropTypes.number,
@@ -28,10 +29,10 @@ const propTypes = {
 };
 
 const defaultProps = {
-  defaultZoom: 8,
-  defaultCenter: { lat: -34.397, lng: 150.644 },
+  defaultZoom: 16,
+  defaultCenter: { lat: LATITUDE, lng: LONGITUDE },
   isMarkerShown: false,
-  markerPosition: { lat: -34.397, lng: 150.644 },
+  markerPosition: { lat: LATITUDE, lng: LONGITUDE },
   onMarkerClick: () => {
     console.log('onMarkerClick');
   },

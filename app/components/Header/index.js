@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Button, Grid, Typography } from '@material-ui/core';
 // import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -19,11 +19,13 @@ import { useStyles } from './styles.js';
 const propTypes = {
   title: PropTypes.string,
   showClearBtn: PropTypes.bool,
+  showFenceBtn: PropTypes.bool,
 };
 
 const defaultProps = {
   title: '',
   showClearBtn: false,
+  showFenceBtn: false,
 };
 
 const Header = ({ ...props }) => {
@@ -63,9 +65,28 @@ const Header = ({ ...props }) => {
             <FormattedMessage {...messages.clear} />
           </Typography>
         </Button>
+      ) : ( props.showFenceBtn ? (
+          <div>
+            <Button className={classes.btnFenceCircleStyle} size="small">
+              <FontAwesomeIcon
+                icon={faPlus}
+                color="#FFFFFF"
+                // style={{ marginRight: '5px' }}
+                size="lg"
+              />
+            </Button>
+            <Button className={classes.btnFenceStyle} size="small">
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                color="red"
+                style={{ marginRight: '5px' }}
+                size="lg"
+              />
+            </Button>
+          </div>
       ) : (
         <div className={classes.emptyBtnStyle} />
-      )}
+      ))}
     </Grid>
   );
 };

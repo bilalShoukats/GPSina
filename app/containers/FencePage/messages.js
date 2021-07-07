@@ -13,4 +13,12 @@ export default defineMessages({
     id: `${scope}.fence`,
     defaultMessage: 'Fence',
   },
+  seeAllFence: {
+    id: `${scope}.seeAllFence`,
+    defaultMessage: 'See All Fence',
+  },
+  fenceName: {
+    id: `${scope}.fenceName`,
+    defaultMessage: 'Fence name',
+  }
 });
