@@ -22,6 +22,9 @@ import {
   makeSelectLoading,
   makeSelectError,
 } from 'containers/App/selectors';
+import {
+  Marker,
+} from 'react-google-maps';
 import { Button, Grid, Input, Paper, Typography } from '@material-ui/core';
 import messages from './messages';
 import { loadRepos } from '../App/actions';
@@ -37,6 +40,7 @@ import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import Map from '../../components/Map';
 import DeviceList from '../../components/DeviceList';
 import CustomModal from '../../components/CustomModal';
+import { LATITUDE, LONGITUDE } from '../../constants/maps';
 
 const key = 'home';
 
@@ -46,6 +50,7 @@ export function HomePage({ loading, ...props }) {
 
   const [isMarkerShown, setIsMarkerShown] = useState(true);
   const [isModalShown, setIsModalShown] = useState(false);
+  const [coordinate, setICoordinate] = useState({ lat: LATITUDE, lng: LONGITUDE });
 
   const classes = useStyles(props);
   const history = useHistory();
@@ -203,12 +208,20 @@ export function HomePage({ loading, ...props }) {
             <DeviceList onOpenModal={handleOpenModal} />
             <DeviceList onOpenModal={handleOpenModal} />
             <DeviceList onOpenModal={handleOpenModal} />
+            <DeviceList onOpenModal={handleOpenModal} />
+            <DeviceList onOpenModal={handleOpenModal} />
+            <DeviceList onOpenModal={handleOpenModal} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={8} className={classes.mapContainer}>
             <Map
               isMarkerShown={isMarkerShown}
               onMarkerClick={handleMarkerClick}
-            />
+              center={coordinate}
+            >
+              { isMarkerShown &&
+                <Marker position={coordinate} onClick={handleMarkerClick} />
+              }
+              </Map>
           </Grid>
         </Grid>
       </div>

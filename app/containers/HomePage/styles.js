@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
+const mapHeight = (window.innerHeight -55) * 0.9 + 'px';
+
 const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '100vh',
@@ -42,6 +44,9 @@ const useStyles = makeStyles(theme => ({
   settingsBtn: {
     cursor: 'pointer',
   },
+  mapContainer: {
+    height: mapHeight,
+  }
 }));
 
 export { useStyles };

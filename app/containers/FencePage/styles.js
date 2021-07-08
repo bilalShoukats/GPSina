@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const width = window.innerWidth/2 + 'px';
 const height = (window.innerHeight - 55)*0.8 + 'px';
 
-const useStyles = makeStyles(theme => (
-  console.log('theme', theme), {
+const useStyles = theme => ({
   drawer: {
     width: width,
     heigth: '100%',
@@ -130,6 +129,6 @@ const useStyles = makeStyles(theme => (
     padding: '0 0.25em',
     fontSize: '14px'
   }
-}));
+});
 
 export { useStyles };

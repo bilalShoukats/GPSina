@@ -4,11 +4,10 @@
  *
  */
 
-import React, { useEffect, useState} from 'react';
+import React, { Component} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import Geocode from "react-geocode";
 import { SuperHOC } from '../../HOC';
@@ -23,71 +22,101 @@ import Map from '../../components/Map';
 
 import mapIcon from '../../../assets/images/icons/map.png';
 import Img from '../../components/Img';
-import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
+import { GoogleMapsAPI, height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
+import { withStyles } from '@material-ui/styles';
+import {
+  Marker,
+} from 'react-google-maps';
 
-Geocode.setApiKey("AIzaSyAbq8yVUGOp7j7rCp2YJfRhYv5326OJZYg");
+Geocode.setApiKey(GoogleMapsAPI);
 Geocode.enableDebug();
 
-export function FencePage(props) {
-  const classes = useStyles(props);
-  const [coordinate, setCoordinate] = useState({ lat: LATITUDE, lng: LONGITUDE });
-  const [isMarkerShown, setIsMarkerShown] = useState(true);
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-  const [mapType, setMapType] = useState('roadmap');
-  const [fenceSwitch, setFenceSwitch] = useState(false);
-  const [searchPlace, setSearchPlace] = useState('');
-  const [showSearchPlace, setShowSearchPlace] = useState(false);
-
-  const handlefenceSwitch = (event) => {
-    // console.log(event.target.checked);
-    setFenceSwitch(event.target.checked);
+class FencePage extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      coordinate: {
+        lat: LATITUDE,
+        lng: LONGITUDE
+      },
+      isMarkerShown: true,
+      isOpenDrawer: false,
+      mapType: 'roadmap',
+      fenceSwitch: false,
+      searchPlace: '',
+      showSearchPlace: false,
+    }
   }
 
-  const handleChange = (event) => {
+  handleFenceSwitch = (event) => {
+    // console.log(event.target.checked);
+    this.setState({
+      fenceSwitch: event.target.checked
+    });
+  }
+
+  handleChange = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
 
     switch (name) {
       case 'searchPlace':
-        setSearchPlace(value);
+        this.setState({
+          searchPlace: value
+        });
         break;
     }
 
   }
 
-  const handleMapTypeClick = () => {
-    if(mapType == 'roadmap'){
-      setMapType('hybrid');
+  handleMapTypeClick = () => {
+    if(this.state.mapType == 'roadmap'){
+      this.setState({
+        mapType: 'hybrid'
+      });
     } else {
-      setMapType('roadmap');
+      this.setState({
+        mapType: 'roadmap'
+      });
     }
   }
 
-  const handleMarkerClick = () => {
-    setIsMarkerShown(!isMarkerShown);
+  handleMarkerClick = () => {
+    this.setState({
+      isMarkerShown: !this.state.isMarkerShown
+    });
     // console.log('isMarkerShown', isMarkerShown);
   };
 
-  const toggleDrawer = () => {
-    setIsOpenDrawer(!isOpenDrawer);
+  toggleDrawer = () => {
+    this.setState({
+      isOpenDrawer: !this.state.isOpenDrawer
+    });
   };
 
-  const handleShowSearchPlace = (newState) => {
-    setShowSearchPlace(newState);
+  handleShowSearchPlace = (newState) => {
+    this.setState({
+      showSearchPlace: newState
+    });
   };
 
-  const getPlaceCoordinate = (venue) => {
+  getPlaceCoordinate = (venue) => {
     // Get latitude & longitude from address.
     Geocode.fromAddress(venue).then(
       (response) => {
         const { lat, lng } = response.results[0].geometry.location;
         console.log('venue', venue);
         console.log(lat, lng);
-        let newCoordinate = coordinate;
+        let newCoordinate = this.state.coordinate;
         newCoordinate.lat = lat;
         newCoordinate.lng = lng;
-        setCoordinate(newCoordinate);
-        console.log(coordinate);
+        this.setState({
+          coordinate: {
+            lat: lat,
+            lng: lng
+          }
+        });
+        console.log(this.state.coordinate);
       },
       (error) => {
         console.error(error);
@@ -95,180 +124,190 @@ export function FencePage(props) {
     );
   }
 
-  const handleSearchPlace = (event) => {
-    if(searchPlace.length > 0){
-      console.log(searchPlace);
-      getPlaceCoordinate(searchPlace);
+  handleSearchPlace = () => {
+    if(this.state.searchPlace.length > 0){
+      this.getPlaceCoordinate(this.state.searchPlace);
     }
   }
 
-  useEffect(() => {
-    
-  }, []);
+  render(){
+    const {
+      coordinate,
+      isMarkerShown,
+      isOpenDrawer,
+      mapType,
+      fenceSwitch,
+      searchPlace,
+      showSearchPlace,
+    } = this.state;
+    const { classes } = this.props;
 
-  return (
-    <div>
-      <Helmet>
-        <title>{props.intl.formatMessage({...messages.fence})}</title>
-      </Helmet>
-      <Header title={<FormattedMessage {...messages.fence} />} showFenceBtn />
-
+    return (
       <div>
-        <Grid
-          container
-          style={{ width: width, height: height }}
-        >
-          <Drawer
-            open={isOpenDrawer}
-            onClose={toggleDrawer}
-            variant="temporary"
-            classes={{ paper: classes.paper }}
+        <Helmet>
+          <title>{this.props.intl.formatMessage({...messages.fence})}</title>
+        </Helmet>
+        <Header title={<FormattedMessage {...messages.fence} />} showFenceBtn />
+
+        <div>
+          <Grid
+            container
+            style={{ width: width, height: height }}
           >
-            <div 
-              className={classes.drawer}
-              onClick={toggleDrawer}
+            <Drawer
+              open={isOpenDrawer}
+              onClose={this.toggleDrawer}
+              variant="temporary"
+              classes={{ paper: classes.paper }}
             >
-              <Typography variant="body1" className={classes.textTitleStyle} align="center">
-                <FormattedMessage {...messages.fence} />
-              </Typography>
-              <Divider className={classes.dividerTitle} />
-              <Grid
-                container
-                direction="row"
-                justify="space-between"
-                align="center"
-                className={classes.drawerItemContainer}
+              <div 
+                className={classes.drawer}
+                onClick={this.toggleDrawer}
               >
-                <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('show this fence')}>
-                  <FormattedMessage {...messages.fenceName} />
+                <Typography variant="body1" className={classes.textTitleStyle} align="center">
+                  <FormattedMessage {...messages.fence} />
                 </Typography>
-                <FontAwesomeIcon
-                  icon={faPencilAlt}
-                  color="green"
-                  size="md"
-                  onClick={() => console.log('pencil clicked')}
-                />
-              </Grid>
-              <Divider className={classes.divider} />
-              <Grid
-                container
-                direction="row"
-                justify="space-between"
-                align="center"
-                className={classes.drawerItemContainer}
-              >
-                <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('see ll fence')}>
-                  <FormattedMessage {...messages.seeAllFence} />
-                </Typography>
-                <div />
-              </Grid>
-              <Divider className={classes.divider} />
-            </div>
-          </Drawer>
-          <Grid item xs>
-            <div>
-              <Grid
-                container
-                direction="row"
-                className={classes.topHeaderLeft}
-              >
-                <Button className={classes.btnMenu} onClick={toggleDrawer}>
-                  <FontAwesomeIcon
-                    icon={faBars}
-                    color="#FFFFFF"
-                    size="lg"
-                  />
-                </Button>
-                <Switch
-                  checked={fenceSwitch}
-                  onChange={handlefenceSwitch}
-                  name="fenceSwitch"
-                  className={classes.switch}
+                <Divider className={classes.dividerTitle} />
+                <Grid
+                  container
+                  direction="row"
+                  justify="space-between"
+                  align="center"
+                  className={classes.drawerItemContainer}
                 >
-                  <Typography variant="body1" className={classes.title}>
-                    <FormattedMessage {...messages.fence} />
+                  <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('show this fence')}>
+                    <FormattedMessage {...messages.fenceName} />
                   </Typography>
-                </Switch>
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                className={classes.topHeaderRight}
-              >
-                {showSearchPlace ? 
-                  <div className={classes.searchInput}>
-                    <Input
-                      id="searchPlace"
-                      type="text"
-                      name="searchPlace"
-                      className={classes.textfield}
-                      value={searchPlace}
-                      onChange={handleChange}
-                      disableUnderline
-                    />
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    color="green"
+                    size="md"
+                    onClick={() => console.log('pencil clicked')}
+                  />
+                </Grid>
+                <Divider className={classes.divider} />
+                <Grid
+                  container
+                  direction="row"
+                  justify="space-between"
+                  align="center"
+                  className={classes.drawerItemContainer}
+                >
+                  <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('see ll fence')}>
+                    <FormattedMessage {...messages.seeAllFence} />
+                  </Typography>
+                  <div />
+                </Grid>
+                <Divider className={classes.divider} />
+              </div>
+            </Drawer>
+            <Grid item xs>
+              <div>
+                <Grid
+                  container
+                  direction="row"
+                  className={classes.topHeaderLeft}
+                >
+                  <Button className={classes.btnMenu} onClick={this.toggleDrawer}>
                     <FontAwesomeIcon
-                      icon={faSearch}
+                      icon={faBars}
                       color="#FFFFFF"
-                      style={{ marginLeft: '5px', cursor: 'pointer' }}
-                      onClick={handleSearchPlace}
                       size="lg"
                     />
-                  </div>
-                  : <div />
+                  </Button>
+                  <Switch
+                    checked={fenceSwitch}
+                    onChange={this.handleFenceSwitch}
+                    name="fenceSwitch"
+                    className={classes.switch}
+                  >
+                    <Typography variant="body1" className={classes.title}>
+                      <FormattedMessage {...messages.fence} />
+                    </Typography>
+                  </Switch>
+                </Grid>
+                <Grid
+                  container
+                  direction="row"
+                  className={classes.topHeaderRight}
+                >
+                  {showSearchPlace ? 
+                    <div className={classes.searchInput}>
+                      <Input
+                        id="searchPlace"
+                        type="text"
+                        name="searchPlace"
+                        className={classes.textfield}
+                        value={searchPlace}
+                        onChange={this.handleChange}
+                        disableUnderline
+                      />
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        color="#FFFFFF"
+                        style={{ marginLeft: '5px', cursor: 'pointer' }}
+                        onClick={this.handleSearchPlace}
+                        size="lg"
+                      />
+                    </div>
+                    : <div />
+                  }
+                  <Button className={classes.btnGrey} onClick={this.handleMapTypeClick}>
+                    {/* <Typography variant="body1" className={classes.title}>
+                      <FormattedMessage {...messages.fence} />
+                    </Typography> */}
+                    <Img
+                      src={mapIcon}
+                      className={classes.logo}
+                      alt="Map icon"
+                    />
+                  </Button>
+                  <Button className={classes.btnGrey} onClick={() => this.handleShowSearchPlace(!showSearchPlace)}>
+                    {/* <Typography variant="body1" className={classes.title}>
+                      <FormattedMessage {...messages.fence} />
+                    </Typography> */}
+                    <FontAwesomeIcon
+                      icon={!showSearchPlace ? faSearch : faTimes}
+                      color="#FFFFFF"
+                      size="lg"
+                    />
+                  </Button>
+                  <Button className={classes.btn}>
+                    {/* <Typography variant="body1" className={classes.title}>
+                      <FormattedMessage {...messages.fence} />
+                    </Typography> */}
+                    <FontAwesomeIcon
+                      icon={faHandPaper}
+                      color="lightgrey"
+                      size="lg"
+                    />
+                  </Button>
+                  <Button className={classes.btn} size="small">
+                    <FontAwesomeIcon
+                      icon={faCircle}
+                      color="#28ACEA"
+                      size="lg"
+                    />
+                  </Button>
+                </Grid>
+              </div>
+              <Map
+                showMapTypeControl={false}
+                showFullScreenControl={false}
+                showStreetViewControl={false}
+                mapTypeId={mapType}
+                center={coordinate}
+              >
+                { isMarkerShown &&
+                  <Marker position={coordinate} onClick={this.handleMarkerClick} />
                 }
-                <Button className={classes.btnGrey} onClick={handleMapTypeClick}>
-                  {/* <Typography variant="body1" className={classes.title}>
-                    <FormattedMessage {...messages.fence} />
-                  </Typography> */}
-                  <Img
-                    src={mapIcon}
-                    className={classes.logo}
-                    alt="Map icon"
-                  />
-                </Button>
-                <Button className={classes.btnGrey} onClick={() => handleShowSearchPlace(!showSearchPlace)}>
-                  {/* <Typography variant="body1" className={classes.title}>
-                    <FormattedMessage {...messages.fence} />
-                  </Typography> */}
-                  <FontAwesomeIcon
-                    icon={!showSearchPlace ? faSearch : faTimes}
-                    color="#FFFFFF"
-                    size="lg"
-                  />
-                </Button>
-                <Button className={classes.btn}>
-                  {/* <Typography variant="body1" className={classes.title}>
-                    <FormattedMessage {...messages.fence} />
-                  </Typography> */}
-                  <FontAwesomeIcon
-                    icon={faHandPaper}
-                    color="lightgrey"
-                    size="lg"
-                  />
-                </Button>
-                <Button className={classes.btn} size="small">
-                  <FontAwesomeIcon
-                    icon={faCircle}
-                    color="#28ACEA"
-                    size="lg"
-                  />
-                </Button>
-              </Grid>
-            </div>
-            <Map 
-              isMarkerShown={isMarkerShown}
-              onMarkerClick={handleMarkerClick}
-              showMapTypeControl={false}
-              showFullScreenControl={false}
-              showStreetViewControl={false}
-              mapTypeId={mapType}
-              defaultCenter={coordinate}
-            />
+              </Map>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
-    </div>
-  );
+    )
+  }
 }
 
 FencePage.propTypes = {
@@ -286,4 +325,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC(compose(withConnect)(injectIntl(FencePage)));
+export default SuperHOC((withConnect)(injectIntl(withStyles(useStyles)(FencePage))));

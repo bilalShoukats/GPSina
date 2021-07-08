@@ -17,8 +17,11 @@ import {
 import { LATITUDE, LONGITUDE } from '../../constants/maps';
 
 const propTypes = {
+  children: PropTypes.node,
   defaultZoom: PropTypes.number,
+  zoom: PropTypes.number,
   defaultCenter: PropTypes.object,
+  center: PropTypes.object,
   isMarkerShown: PropTypes.bool,
   markerPosition: PropTypes.object,
   onMarkerClick: PropTypes.func,
@@ -30,7 +33,9 @@ const propTypes = {
 
 const defaultProps = {
   defaultZoom: 16,
+  zoom: 16,
   defaultCenter: { lat: LATITUDE, lng: LONGITUDE },
+  center: { lat: LATITUDE, lng: LONGITUDE },
   isMarkerShown: false,
   markerPosition: { lat: LATITUDE, lng: LONGITUDE },
   onMarkerClick: () => {
@@ -53,21 +58,21 @@ const Map = compose(
   withScriptjs,
   withGoogleMap,
 )(props => (
-  <GoogleMap
-    defaultZoom={props.defaultZoom}
-    defaultCenter={props.defaultCenter}
-    options={{ 
-      mapTypeControl: props.showMapTypeControl,
-      fullscreenControl: props.showFullScreenControl, 
-      streetViewControl: props.showStreetViewControl,
-      mapTypeId: props.mapTypeId,
-      gestureHandling: 'greedy',
-    }}
-  >
-    {props.isMarkerShown && (
-      <Marker position={props.markerPosition} onClick={props.onMarkerClick} />
-    )}
-  </GoogleMap>
+    <GoogleMap
+      // defaultZoom={props.defaultZoom}
+      // defaultCenter={props.defaultCenter}
+      options={{ 
+        mapTypeControl: props.showMapTypeControl,
+        fullscreenControl: props.showFullScreenControl,
+        streetViewControl: props.showStreetViewControl,
+        mapTypeId: props.mapTypeId,
+        gestureHandling: 'greedy',
+      }}
+      center={props.center}
+      zoom={props.zoom}
+    >
+      {props.children}
+    </GoogleMap>
 ));
 
 Map.propTypes = propTypes;
