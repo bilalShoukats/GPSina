@@ -64,13 +64,6 @@ class FencePage extends Component{
     this.handleSearchPlace = this.handleSearchPlace.bind(this);
   }
 
-  getInfoWindowString = (title) => `
-    <div style="background-color: '#000000">
-      <h1 style="font-size: 16px; color: '#000000">
-        ${title}
-      </h1>
-    </div>`;
-
   // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
   handleApiLoaded = (map, google, places) => {
     console.log('map', map);
@@ -316,29 +309,6 @@ class FencePage extends Component{
   handleSearchPlace = () => {
     if(this.state.searchPlace.length > 0){
       this.getPlaceCoordinate(this.state.searchPlace);
-    }
-  }
-
-  createMapOptions = (maps) => {
-    console.log(maps);
-    // next props are exposed at maps
-    // "Animation", "ControlPosition", "MapTypeControlStyle", "MapTypeId",
-    // "NavigationControlStyle", "ScaleControlStyle", "StrokePosition", "SymbolPath", "ZoomControlStyle",
-    // "DirectionsStatus", "DirectionsTravelMode", "DirectionsUnitSystem", "DistanceMatrixStatus",
-    // "DistanceMatrixElementStatus", "ElevationStatus", "GeocoderLocationType", "GeocoderStatus", "KmlLayerStatus",
-    // "MaxZoomStatus", "StreetViewStatus", "TransitMode", "TransitRoutePreference", "TravelMode", "UnitSystem"
-    return {
-      zoomControlOptions: {
-        position: maps.ControlPosition.RIGHT_CENTER,
-        style: maps.ZoomControlStyle.SMALL
-      },
-      mapTypeControlOptions: {
-        position: maps.ControlPosition.TOP_RIGHT
-      },
-      mapTypeControl: true
-    };
-    return {
-      mapTypeId: 'roadmap'
     }
   }
 

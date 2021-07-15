@@ -56,8 +56,8 @@ class LocatePage extends Component{
 
     const trafficLayer = new google.TrafficLayer();
     // trafficLayer.setMap(map);
-    
-    google.event.addDomListener(document.querySelector('#trafficToggle'), 'click', this.toggleTrafficLayer(trafficLayer, map));
+
+    google.event.addDomListener(document.getElementById('trafficToggle'), 'click', () => this.toggleTrafficLayer(trafficLayer, map));
   }
 
   toggleTrafficLayer = (trafficLayer, map) => {
@@ -67,6 +67,18 @@ class LocatePage extends Component{
       trafficLayer.setMap(null);
     }
   };
+
+  handleMapTypeClick = () => {
+    if(this.state.mapType == 'roadmap'){
+      this.setState({
+        mapType: 'hybrid'
+      });
+    } else {
+      this.setState({
+        mapType: 'roadmap'
+      });
+    }
+  }
 
   render(){
     const {
@@ -147,7 +159,7 @@ class LocatePage extends Component{
                     size="lg"
                   />
                 </Button>
-                <Button className={classes.btn}>
+                <Button className={classes.btn} onClick={this.handleMapTypeClick}>
                   <Img
                     src={mapIcon}
                     className={classes.icon}
