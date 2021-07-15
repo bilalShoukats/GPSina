@@ -16,7 +16,7 @@ const useStyles = theme => ({
   topHeaderRight: {
     position: 'absolute',
     top: '70px',
-    right: '10px',
+    right: '60px',
     width: 'auto',
     backgroundColor: 'transparent',
     zIndex: 999
@@ -128,7 +128,7 @@ const useStyles = theme => ({
     borderRadius: '10px',
     padding: '0 0.25em',
     fontSize: '14px'
-  }
+  },
 });
 
 export { useStyles };

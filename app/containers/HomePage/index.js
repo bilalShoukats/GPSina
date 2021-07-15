@@ -22,9 +22,6 @@ import {
   makeSelectLoading,
   makeSelectError,
 } from 'containers/App/selectors';
-import {
-  Marker,
-} from 'react-google-maps';
 import { Button, Grid, Input, Paper, Typography } from '@material-ui/core';
 import messages from './messages';
 import { loadRepos } from '../App/actions';
@@ -50,7 +47,7 @@ export function HomePage({ loading, ...props }) {
 
   const [isMarkerShown, setIsMarkerShown] = useState(true);
   const [isModalShown, setIsModalShown] = useState(false);
-  const [coordinate, setICoordinate] = useState({ lat: LATITUDE, lng: LONGITUDE });
+  const [coordinate, setIs] = useState({ lat: LATITUDE, lng: LONGITUDE });
 
   const classes = useStyles(props);
   const history = useHistory();
@@ -217,11 +214,7 @@ export function HomePage({ loading, ...props }) {
               isMarkerShown={isMarkerShown}
               onMarkerClick={handleMarkerClick}
               center={coordinate}
-            >
-              { isMarkerShown &&
-                <Marker position={coordinate} onClick={handleMarkerClick} />
-              }
-              </Map>
+            />
           </Grid>
         </Grid>
       </div>

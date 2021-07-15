@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -24,10 +24,7 @@ import mapIcon from '../../../assets/images/icons/map.png';
 import Img from '../../components/Img';
 import { GoogleMapsAPI, height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import { withStyles } from '@material-ui/styles';
-import {
-  Marker,
-} from 'react-google-maps';
-
+import { fenceList } from '../../constants/dummy';
 Geocode.setApiKey(GoogleMapsAPI);
 Geocode.enableDebug();
 
@@ -45,6 +42,193 @@ class FencePage extends Component{
       fenceSwitch: false,
       searchPlace: '',
       showSearchPlace: false,
+
+      createFence: false, // Indicate user is now creating the fence
+      isFenceMode: false,
+      radius: 0,
+      fenceName: '',
+      newFence: null,
+      startPos: { x: 0, y: 0 },
+      fences: fenceList, // list of all available fences
+
+      showAddFenceModal: false,
+      showDeleteFenceModal: false,
+      modalTitle: '',
+      modalDesc: '',
+      editing: null,
+    };
+
+    this.mapRef = null;
+    this.circleRef = [];
+    this.markerRef = [];
+    this.handleSearchPlace = this.handleSearchPlace.bind(this);
+  }
+
+  getInfoWindowString = (title) => `
+    <div style="background-color: '#000000">
+      <h1 style="font-size: 16px; color: '#000000">
+        ${title}
+      </h1>
+    </div>`;
+
+  // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
+  handleApiLoaded = (map, google, places) => {
+    console.log('map', map);
+    console.log('google', google);
+    console.log('places', places);
+    var radius = 0;
+    var circle;
+    var newFence = { lat: 0, lng: 0 };
+    const circleFence = [];
+    const markers = [];
+
+    places.forEach((place) => {
+      circleFence.push(new google.Circle({
+        strokeColor: '#28ACEA',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#545B62',
+        fillOpacity: 0.8,
+        map: map,
+        center: new google.LatLng(place.coordinates[0].lat, place.coordinates[0].lng),
+        radius: place.radius,
+        title: place.name,
+      }));
+
+      markers.push(new google.Marker({
+        position: new google.LatLng(place.coordinates[0].lat, place.coordinates[0].lng),
+        map,
+        title: place.name,
+        label: {
+          text: place.name,
+          color: '#FF6700',
+          fontWeight: 'bold'
+        },
+        icon: 'none',
+        labelOrigin: new google.Point(0,0),
+      }));
+    });
+
+    circleFence.forEach((fence, i) => {
+      google.event.addListener(fence, 'click', function() {
+        // console.log(fence, i);
+        map.setZoom(12);
+        map.panTo(fence.getCenter());
+      });
+    });
+
+    markers.forEach((marker, i) => {
+      google.event.addListener(marker, 'click', function() {
+        // console.log(marker, i);
+        // infoWindow.close();
+        // infoWindow.setContent(marker.getTitle());
+        // infoWindow.open(map, marker)
+        // map.panTo(marker.getPosition());
+      });
+    });
+
+    const drawingManager =  new google.drawing.DrawingManager({
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.ControlPosition.TOP_RIGHT,
+        drawingModes: [
+          google.drawing.OverlayType.CIRCLE,
+        ],
+      },
+      circleOptions: {
+        fillColor: "#28ACEA",
+        fillOpacity: 0.2,
+        strokeColor: '#28ACEA',
+        strokeWeight: 2,
+        clickable: true,
+        zIndex: 1,
+      },
+    });
+
+    google.event.addListener(drawingManager, 'circlecomplete', function(event) {
+      radius = event.getRadius().toFixed(0),
+      newFence.lat = event.getCenter().lat().toFixed(3);
+      newFence.lng = event.getCenter().lng().toFixed(3);
+      console.log(newFence, radius);
+      console.log('circle', circle);
+      if(circle != null){
+        circle.setMap(null);
+      }
+
+      circle = event;
+    });
+
+    drawingManager.setMap(map);
+
+    this.setState({
+      radius: radius,
+      newFence: newFence
+    });
+    console.log(radius, newFence);
+  };
+
+  finish = async () => {
+    const { fences, editing } = this.state;
+    editing.radius = this.state.radius;
+    editing.name = this.state.fenceName;
+    this.setState({
+      fences: [...fences, editing],
+    }, console.log('fences', this.state.fences));
+    this.clear();
+  }
+
+  getRadius = (startingPoint, endPoint) => {
+    if (startingPoint === undefined || endPoint === undefined) return 0;
+    let radius = Math.abs(endPoint.x - startingPoint.x);
+    return radius;
+  }
+
+  // Reset editing state
+  clear = () => {
+    this.setState({
+      editing: null,
+      createFence: false,
+      radius: 0
+    })
+  }
+
+  onPan = (e) => {
+    if(this.state.isFenceMode){
+      let { lat, lng, x, y } = e;
+      const { editing, createFence } = this.state;
+      const postion = { x: x, y: y };
+      const coordinates = { lat: lat, lng: lng };
+      console.log(e);
+      
+      if (!editing) {
+        // console.log('!editing', this.state.editing)
+        this.setState({
+          editing: {
+            coordinates: coordinates,
+            startPos: position
+          },
+          createFence: true,
+          startPos: position
+        })
+      } else {
+        if(createFence){
+          const radiusFromCurrentPoint = this.getRadius(this.state.startPos, position);
+          const radiusCircle = this.state.radius / this.state.dragMultiplier;
+
+          // Check if the radius different is less than 100, assume the existing circle to be resize, else will be reset and form new circle
+        if((Math.abs(radiusFromCurrentPoint - radiusCircle) < 100)){
+          this.setState({
+            editing: {
+              ...editing,
+              coordinates: [...editing.coordinates, coordinates]
+            },
+            radius: this.getRadius(this.state.startPos, position) * this.state.dragMultiplier
+          })
+        } else {
+          this.clear();
+        }
+        }
+      }
     }
   }
 
@@ -88,6 +272,13 @@ class FencePage extends Component{
     // console.log('isMarkerShown', isMarkerShown);
   };
 
+  handleIsFenceMode = (state) => {
+    this.setState({
+      isFenceMode: state
+    });
+    // console.log('isMarkerShown', isMarkerShown);
+  };
+
   toggleDrawer = () => {
     this.setState({
       isOpenDrawer: !this.state.isOpenDrawer
@@ -107,14 +298,12 @@ class FencePage extends Component{
         const { lat, lng } = response.results[0].geometry.location;
         console.log('venue', venue);
         console.log(lat, lng);
+        console.log(this.state.coordinate);
         let newCoordinate = this.state.coordinate;
         newCoordinate.lat = lat;
         newCoordinate.lng = lng;
         this.setState({
-          coordinate: {
-            lat: lat,
-            lng: lng
-          }
+          coordinate: newCoordinate
         });
         console.log(this.state.coordinate);
       },
@@ -130,17 +319,59 @@ class FencePage extends Component{
     }
   }
 
+  createMapOptions = (maps) => {
+    console.log(maps);
+    // next props are exposed at maps
+    // "Animation", "ControlPosition", "MapTypeControlStyle", "MapTypeId",
+    // "NavigationControlStyle", "ScaleControlStyle", "StrokePosition", "SymbolPath", "ZoomControlStyle",
+    // "DirectionsStatus", "DirectionsTravelMode", "DirectionsUnitSystem", "DistanceMatrixStatus",
+    // "DistanceMatrixElementStatus", "ElevationStatus", "GeocoderLocationType", "GeocoderStatus", "KmlLayerStatus",
+    // "MaxZoomStatus", "StreetViewStatus", "TransitMode", "TransitRoutePreference", "TravelMode", "UnitSystem"
+    return {
+      zoomControlOptions: {
+        position: maps.ControlPosition.RIGHT_CENTER,
+        style: maps.ZoomControlStyle.SMALL
+      },
+      mapTypeControlOptions: {
+        position: maps.ControlPosition.TOP_RIGHT
+      },
+      mapTypeControl: true
+    };
+    return {
+      mapTypeId: 'roadmap'
+    }
+  }
+
   render(){
     const {
+      fences,
       coordinate,
-      isMarkerShown,
       isOpenDrawer,
-      mapType,
       fenceSwitch,
       searchPlace,
       showSearchPlace,
+      isFenceMode,
     } = this.state;
     const { classes } = this.props;
+    const mapOptions = {
+      panControl: true,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      scrollwheel: true,
+      mapTypeId: 'roadmap'
+    };
+
+    if(this.state.isFenceMode) {
+      mapOptions.panControl = false,
+      mapOptions.zoomControl = false
+    };
+
+    if(this.state.mapType == 'hybrid'){
+      mapOptions.mapTypeId = 'hybrid';
+    } else {
+      mapOptions.mapTypeId = 'roadmap';
+    }
 
     return (
       <div>
@@ -272,35 +503,16 @@ class FencePage extends Component{
                       size="lg"
                     />
                   </Button>
-                  <Button className={classes.btn}>
-                    {/* <Typography variant="body1" className={classes.title}>
-                      <FormattedMessage {...messages.fence} />
-                    </Typography> */}
-                    <FontAwesomeIcon
-                      icon={faHandPaper}
-                      color="lightgrey"
-                      size="lg"
-                    />
-                  </Button>
-                  <Button className={classes.btn} size="small">
-                    <FontAwesomeIcon
-                      icon={faCircle}
-                      color="#28ACEA"
-                      size="lg"
-                    />
-                  </Button>
                 </Grid>
               </div>
               <Map
-                showMapTypeControl={false}
-                showFullScreenControl={false}
-                showStreetViewControl={false}
-                mapTypeId={mapType}
+                draggable={!isFenceMode}
+                options={mapOptions}
                 center={coordinate}
+                ref={(ref) => { this.mapRef.current = ref }}
+                yesIWantToUseGoogleMapApiInternals
+                onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps, fences)}
               >
-                { isMarkerShown &&
-                  <Marker position={coordinate} onClick={this.handleMarkerClick} />
-                }
               </Map>
             </Grid>
           </Grid>

@@ -267,8 +267,8 @@ const fenceList = [
     {
         coordinates: [
             {
-                latitude: 37.788218104826086,
-                longitude: -122.46161330491303
+                lat: 37.788218104826086,
+                lng: -122.46161330491303
             }
         ],
         name: 'Home',
@@ -281,8 +281,8 @@ const fenceList = [
     {
         coordinates: [
             {
-                latitude: 37.73509527036696,
-                longitude: -122.40480780601503
+                lat: 37.73509527036696,
+                lng: -122.40480780601503
             }
         ],
         name: 'Mid Valley',
@@ -295,8 +295,8 @@ const fenceList = [
     {
         coordinates: [
             {
-                latitude: 37.59140539904739,
-                longitude: -122.4879690259695
+                lat: 37.59140539904739,
+                lng: -122.4879690259695
             }
         ],
         name: 'Mahkota Cheras',
