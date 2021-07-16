@@ -14,6 +14,7 @@ const SCREENS = {
   CONTACTUS: '/contact-us',
   REFUNDDELIVERY: '/refund-delivery',
   EXPIREDDEVICES: '/expired-devices',
+  SELECTDATE: '/select-date',
 };
 
 export default SCREENS;

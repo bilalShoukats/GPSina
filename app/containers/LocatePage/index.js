@@ -44,7 +44,6 @@ class LocatePage extends Component{
         lat: LATITUDE,
         lng: LONGITUDE
       },
-      showTrafficLayer: true
     }
     this.mapRef = null;
   }

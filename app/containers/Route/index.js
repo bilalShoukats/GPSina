@@ -26,6 +26,8 @@ import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
 import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
 import FencePage from '../FencePage/Loadable';
 import LocatePage from '../LocatePage/Loadable';
+import HistoryPage from '../HistoryPage/Loadable';
+import SelectDatePage from '../SelectDatePage/Loadable';
 
 export function Route() {
 
@@ -47,6 +49,8 @@ export function Route() {
         <PrivateRoute exact path={SCREENS.EXPIREDDEVICES} component={ExpiredDevicePage} />
         <PrivateRoute exact path={SCREENS.FENCE} component={FencePage} />
         <PrivateRoute exact path={SCREENS.LOCATE} component={LocatePage} />
+        <PrivateRoute exact path={SCREENS.HISTORY} component={HistoryPage} />
+        <PrivateRoute exact path={SCREENS.SELECTDATE} component={SelectDatePage} />
 
         {/* If url doesn't exist, redirect to 404 */}
         <Redirect to={SCREENS.NOTFOUND} />
