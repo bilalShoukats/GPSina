@@ -114,7 +114,7 @@ const useStyles = theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'grey',
-    right: '90px',
+    right: '5px',
     top: '45px',
     width: '250px',
     padding: '0.15em 0.5em',
@@ -129,6 +129,17 @@ const useStyles = theme => ({
     padding: '0 0.25em',
     fontSize: '14px'
   },
+  btnDrawer: {
+    display: 'inline-block',
+    padding:0,
+    minHeight: 0,
+    minWidth: 0,
+    backgroundColor: 'transparent',
+    textTransform: 'capitalize'
+  },
+  loadingSpinner: {
+    color: '#FFFFFF'
+  }
 });
 
 export { useStyles };

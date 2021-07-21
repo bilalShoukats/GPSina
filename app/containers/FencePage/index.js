@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet';
 import Geocode from "react-geocode";
 import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
-import { Button, Divider, Drawer, Grid, Input, Switch, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Divider, Drawer, Grid, Input, Switch, Typography } from '@material-ui/core';
 import { useStyles } from './styles.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCircle, faHandPaper, faPencilAlt, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -22,9 +22,10 @@ import Map from '../../components/Map';
 
 import mapIcon from '../../../assets/images/icons/map.png';
 import Img from '../../components/Img';
-import { GoogleMapsAPI, height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
+import { GoogleMapsAPI, height, LATITUDE, LONGITUDE, PADDING, width } from '../../constants/maps';
 import { withStyles } from '@material-ui/styles';
 import { fenceList } from '../../constants/dummy';
+import APIURLS from '../../ApiManager/apiUrl';
 Geocode.setApiKey(GoogleMapsAPI);
 Geocode.enableDebug();
 
@@ -49,31 +50,37 @@ class FencePage extends Component{
       fenceName: '',
       newFence: null,
       startPos: { x: 0, y: 0 },
-      fences: fenceList, // list of all available fences
+      fences: [], // list of all available fences
 
       showAddFenceModal: false,
       showDeleteFenceModal: false,
       modalTitle: '',
       modalDesc: '',
       editing: null,
+      loading: true,
     };
 
     this.mapRef = null;
     this.circleRef = [];
     this.markerRef = [];
-    this.handleSearchPlace = this.handleSearchPlace.bind(this);
+  }
+
+  componentDidMount = () => {
+    console.log('ComponentDidMount - Fence');
+    this.getAllFence();
   }
 
   // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
   handleApiLoaded = (map, google, places) => {
-    console.log('map', map);
+    // console.log('map', map);
     console.log('google', google);
-    console.log('places', places);
+    // console.log('places', places);
     var radius = 0;
     var circle;
     var newFence = { lat: 0, lng: 0 };
     const circleFence = [];
     const markers = [];
+    var bounds = new google.LatLngBounds();
 
     places.forEach((place) => {
       circleFence.push(new google.Circle({
@@ -83,17 +90,17 @@ class FencePage extends Component{
         fillColor: '#545B62',
         fillOpacity: 0.8,
         map: map,
-        center: new google.LatLng(place.coordinates[0].lat, place.coordinates[0].lng),
-        radius: place.radius,
-        title: place.name,
+        center: new google.LatLng(place.location.coordinates[0], place.location.coordinates[1]),
+        radius: place.fenceRadius,
+        title: place.fenceName,
       }));
 
       markers.push(new google.Marker({
-        position: new google.LatLng(place.coordinates[0].lat, place.coordinates[0].lng),
+        position: new google.LatLng(place.location.coordinates[0], place.location.coordinates[1]),
         map,
-        title: place.name,
+        title: place.fenceName,
         label: {
-          text: place.name,
+          text: place.fenceName,
           color: '#FF6700',
           fontWeight: 'bold'
         },
@@ -103,6 +110,7 @@ class FencePage extends Component{
     });
 
     circleFence.forEach((fence, i) => {
+      bounds.union(fence.getBounds());
       google.event.addListener(fence, 'click', function() {
         // console.log(fence, i);
         map.setZoom(12);
@@ -112,13 +120,15 @@ class FencePage extends Component{
 
     markers.forEach((marker, i) => {
       google.event.addListener(marker, 'click', function() {
-        // console.log(marker, i);
+        console.log(marker, i);
         // infoWindow.close();
         // infoWindow.setContent(marker.getTitle());
         // infoWindow.open(map, marker)
         // map.panTo(marker.getPosition());
       });
     });
+
+    const geocoder = new google.Geocoder();
 
     const drawingManager =  new google.drawing.DrawingManager({
       drawingControl: true,
@@ -150,8 +160,14 @@ class FencePage extends Component{
 
       circle = event;
     });
+    
+    // console.log(document.getElementById('seeAllFence'));
+
+    // google.event.addDomListener(document.getElementById('seeAllFence'), 'click', () => this.seeAllFence(map, bounds, google));
+    google.event.addDomListener(document.getElementById('searchPlace'), 'click', () => this.getPlaceCoordinate(geocoder, map, google))
 
     drawingManager.setMap(map);
+    map.fitBounds(bounds, PADDING);
 
     this.setState({
       radius: radius,
@@ -160,76 +176,10 @@ class FencePage extends Component{
     console.log(radius, newFence);
   };
 
-  finish = async () => {
-    const { fences, editing } = this.state;
-    editing.radius = this.state.radius;
-    editing.name = this.state.fenceName;
-    this.setState({
-      fences: [...fences, editing],
-    }, console.log('fences', this.state.fences));
-    this.clear();
-  }
-
-  getRadius = (startingPoint, endPoint) => {
-    if (startingPoint === undefined || endPoint === undefined) return 0;
-    let radius = Math.abs(endPoint.x - startingPoint.x);
-    return radius;
-  }
-
-  // Reset editing state
-  clear = () => {
-    this.setState({
-      editing: null,
-      createFence: false,
-      radius: 0
-    })
-  }
-
-  onPan = (e) => {
-    if(this.state.isFenceMode){
-      let { lat, lng, x, y } = e;
-      const { editing, createFence } = this.state;
-      const postion = { x: x, y: y };
-      const coordinates = { lat: lat, lng: lng };
-      console.log(e);
-      
-      if (!editing) {
-        // console.log('!editing', this.state.editing)
-        this.setState({
-          editing: {
-            coordinates: coordinates,
-            startPos: position
-          },
-          createFence: true,
-          startPos: position
-        })
-      } else {
-        if(createFence){
-          const radiusFromCurrentPoint = this.getRadius(this.state.startPos, position);
-          const radiusCircle = this.state.radius / this.state.dragMultiplier;
-
-          // Check if the radius different is less than 100, assume the existing circle to be resize, else will be reset and form new circle
-        if((Math.abs(radiusFromCurrentPoint - radiusCircle) < 100)){
-          this.setState({
-            editing: {
-              ...editing,
-              coordinates: [...editing.coordinates, coordinates]
-            },
-            radius: this.getRadius(this.state.startPos, position) * this.state.dragMultiplier
-          })
-        } else {
-          this.clear();
-        }
-        }
-      }
-    }
-  }
-
-  handleFenceSwitch = (event) => {
-    // console.log(event.target.checked);
-    this.setState({
-      fenceSwitch: event.target.checked
-    });
+  seeAllFence = (map, bounds, google) => {
+    console.log('see All fence')
+    // map.fitBounds(bounds, PADDING);
+    google.event.trigger(map, 'resize');
   }
 
   handleChange = (event) => {
@@ -258,20 +208,6 @@ class FencePage extends Component{
     }
   }
 
-  handleMarkerClick = () => {
-    this.setState({
-      isMarkerShown: !this.state.isMarkerShown
-    });
-    // console.log('isMarkerShown', isMarkerShown);
-  };
-
-  handleIsFenceMode = (state) => {
-    this.setState({
-      isFenceMode: state
-    });
-    // console.log('isMarkerShown', isMarkerShown);
-  };
-
   toggleDrawer = () => {
     this.setState({
       isOpenDrawer: !this.state.isOpenDrawer
@@ -284,32 +220,43 @@ class FencePage extends Component{
     });
   };
 
-  getPlaceCoordinate = (venue) => {
-    // Get latitude & longitude from address.
-    Geocode.fromAddress(venue).then(
-      (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        console.log('venue', venue);
-        console.log(lat, lng);
-        console.log(this.state.coordinate);
-        let newCoordinate = this.state.coordinate;
-        newCoordinate.lat = lat;
-        newCoordinate.lng = lng;
-        this.setState({
-          coordinate: newCoordinate
+  getPlaceCoordinate = (geoCoder, map, google) => {
+    console.log('searchPlace', this.state.searchPlace)
+    geoCoder
+      .geocode({ address: this.state.searchPlace })
+      .then(({ results }) => {
+        console.log('results', results);
+        map.setCenter(results[0].geometry.location);
+        new google.Marker({
+          map: map,
+          position: results[0].geometry.location,
         });
-        console.log(this.state.coordinate);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+        this.setState({
+          showSearchPlace: false
+        })
+      })
+      .catch((e) => {
+        alert("Geocode was not successful for the following reason: " + e);
+        this.setState({
+          showSearchPlace: false
+        })
+      });
   }
 
-  handleSearchPlace = () => {
-    if(this.state.searchPlace.length > 0){
-      this.getPlaceCoordinate(this.state.searchPlace);
-    }
+  getAllFence = async () => {
+    this.props.apiManager.callApi(APIURLS.getAllGeoFence, 'GET', null, res => {
+      console.log(res);
+      if(res.code == '1019'){
+        this.setState({
+          fences: res.response,
+          coordinate: {
+            lat: res.response[0].location.coordinates[0],
+            lng: res.response[0].location.coordinates[1]
+          },
+          loading: false
+        })
+      }
+    })
   }
 
   render(){
@@ -321,6 +268,7 @@ class FencePage extends Component{
       searchPlace,
       showSearchPlace,
       isFenceMode,
+      loading
     } = this.state;
     const { classes } = this.props;
     const mapOptions = {
@@ -344,6 +292,20 @@ class FencePage extends Component{
     }
 
     return (
+      loading ?
+        <Grid
+          style={{ width: width, height: height }}
+          container
+          justify="center"
+          alignItems="center"
+        >
+          <CircularProgress
+            className={classes.loadingSpinner}
+            size="4rem"
+            thickness={5}
+          />
+        </Grid>
+      :
       <div>
         <Helmet>
           <title>{this.props.intl.formatMessage({...messages.fence})}</title>
@@ -355,11 +317,13 @@ class FencePage extends Component{
             container
             style={{ width: width, height: height }}
           >
+            <div id="seeAllFence" style={{ visibility: 'hidden'}} />
             <Drawer
               open={isOpenDrawer}
               onClose={this.toggleDrawer}
               variant="temporary"
               classes={{ paper: classes.paper }}
+              style={isOpenDrawer ? {visibility: 'visible'} : {visibility: 'none'}}
             >
               <div 
                 className={classes.drawer}
@@ -369,35 +333,48 @@ class FencePage extends Component{
                   <FormattedMessage {...messages.fence} />
                 </Typography>
                 <Divider className={classes.dividerTitle} />
+                  {fences.map((fence) => (
+                    <>
+                      <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        align="center"
+                        className={classes.drawerItemContainer}
+                      >
+                        <Typography 
+                          variant="body2" 
+                          className={classes.textStyle} 
+                          onClick={() => this.setState({ 
+                            coordinate: { 
+                              lat: fence.location.coordinates[0], 
+                              lng: fence.location.coordinates[1] 
+                            }
+                          })}
+                        >
+                          {fence.fenceName}
+                        </Typography>
+                        <FontAwesomeIcon
+                          icon={faPencilAlt}
+                          color="green"
+                          size="md"
+                          onClick={() => console.log('pencil clicked')}
+                        />
+                      </Grid>
+                      <Divider className={classes.divider} />
+                    </>
+                  ))}
                 <Grid
                   container
                   direction="row"
-                  justify="space-between"
                   align="center"
                   className={classes.drawerItemContainer}
                 >
-                  <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('show this fence')}>
-                    <FormattedMessage {...messages.fenceName} />
-                  </Typography>
-                  <FontAwesomeIcon
-                    icon={faPencilAlt}
-                    color="green"
-                    size="md"
-                    onClick={() => console.log('pencil clicked')}
-                  />
-                </Grid>
-                <Divider className={classes.divider} />
-                <Grid
-                  container
-                  direction="row"
-                  justify="space-between"
-                  align="center"
-                  className={classes.drawerItemContainer}
-                >
-                  <Typography variant="body2" className={classes.textStyle} onClick={() => console.log('see ll fence')}>
-                    <FormattedMessage {...messages.seeAllFence} />
-                  </Typography>
-                  <div />
+                  <Button id="seeAllFence" className={classes.btnDrawer}>
+                    <Typography variant="body2" className={classes.textStyle}>
+                      <FormattedMessage {...messages.seeAllFence} />
+                    </Typography>
+                  </Button>
                 </Grid>
                 <Divider className={classes.divider} />
               </div>
@@ -432,31 +409,25 @@ class FencePage extends Component{
                   direction="row"
                   className={classes.topHeaderRight}
                 >
-                  {showSearchPlace ? 
-                    <div className={classes.searchInput}>
-                      <Input
-                        id="searchPlace"
-                        type="text"
-                        name="searchPlace"
-                        className={classes.textfield}
-                        value={searchPlace}
-                        onChange={this.handleChange}
-                        disableUnderline
-                      />
+                  <div className={classes.searchInput} style={ showSearchPlace ? { visibility: 'visible' } : { visibility: 'hidden'}}>
+                    <Input
+                      type="text"
+                      name="searchPlace"
+                      className={classes.textfield}
+                      value={searchPlace}
+                      onChange={this.handleChange}
+                      disableUnderline
+                    />
+                    <Button className={classes.searchBtn} id="searchPlace">
                       <FontAwesomeIcon
                         icon={faSearch}
                         color="#FFFFFF"
                         style={{ marginLeft: '5px', cursor: 'pointer' }}
-                        onClick={this.handleSearchPlace}
                         size="lg"
                       />
-                    </div>
-                    : <div />
-                  }
+                    </Button>
+                  </div>
                   <Button className={classes.btnGrey} onClick={this.handleMapTypeClick}>
-                    {/* <Typography variant="body1" className={classes.title}>
-                      <FormattedMessage {...messages.fence} />
-                    </Typography> */}
                     <Img
                       src={mapIcon}
                       className={classes.logo}
@@ -464,9 +435,6 @@ class FencePage extends Component{
                     />
                   </Button>
                   <Button className={classes.btnGrey} onClick={() => this.handleShowSearchPlace(!showSearchPlace)}>
-                    {/* <Typography variant="body1" className={classes.title}>
-                      <FormattedMessage {...messages.fence} />
-                    </Typography> */}
                     <FontAwesomeIcon
                       icon={!showSearchPlace ? faSearch : faTimes}
                       color="#FFFFFF"
@@ -478,6 +446,7 @@ class FencePage extends Component{
               <Map
                 draggable={!isFenceMode}
                 options={mapOptions}
+                resetBoundsOnResize
                 center={coordinate}
                 ref={(ref) => { this.mapRef.current = ref }}
                 yesIWantToUseGoogleMapApiInternals

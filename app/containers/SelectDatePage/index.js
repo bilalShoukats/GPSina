@@ -10,13 +10,12 @@
  import { FormattedMessage, injectIntl } from 'react-intl';
  import { Helmet } from 'react-helmet';
  import { withStyles } from '@material-ui/styles';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
 import messages from './messages';
-import { useHistory } from 'react-router-dom';
 import SCREENS from '../../constants/screen';
 
 class SelectDatePage extends Component{
