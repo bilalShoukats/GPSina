@@ -28,4 +28,8 @@ export default defineMessages({
     id: `${scope}.tryme.status`,
     defaultMessage: 'Status',
   },
+  home: {
+    id: `${scope}.tryme.home`,
+    defaultMessage: 'Home',
+  },
 });

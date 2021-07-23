@@ -1,15 +1,16 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const mapHeight = (window.innerHeight -55) * 0.9 + 'px';
+const mapHeight = (window.innerHeight - 95) * 0.9 + 'px';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
   root: {
-    minHeight: '100vh',
+    // minHeight: '100vh',
+    maxHeight: '1000px',
     textAlign: 'center',
     width: '100%',
     margin: 'auto',
     display: 'block',
-    padding: '1em',
+    // padding: '1em',
   },
   topBar: {
     padding: '1em',
@@ -20,8 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   container: {
     marginTop: '2em',
-    flexGrow: 1,
-    padding: '0 0.8em',
+    padding: '0 1em',
   },
   textfield: {
     backgroundColor: '#FFFFFF',
@@ -46,7 +46,30 @@ const useStyles = makeStyles(theme => ({
   },
   mapContainer: {
     height: mapHeight,
+    paddingLeft: '0.5em',
+  },
+  list: {
+    width: '100%',
+    height: '550px',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+    padding: '0.25em',
+  },
+  leftContainer: {
+    paddingRight: '0.5em'
+  },
+  icon: {
+    marginLeft: '5px',
+    width: '15px',
+    height: '15px'
+  },
+  paginationBtn: {
+    textAlign: 'center',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer'
   }
-}));
+});
 
 export { useStyles };

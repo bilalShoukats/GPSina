@@ -4,248 +4,296 @@
  * This is the first thing users see of our App, at the '/' route
  */
 
-import React, { useEffect, memo, useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Helmet } from 'react-helmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSortUp, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faSortUp, faCog, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Button, Grid, Input, List, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 
-import { useInjectReducer } from 'utils/injectReducer';
-import { useInjectSaga } from 'utils/injectSaga';
-import {
-  makeSelectRepos,
-  makeSelectLoading,
-  makeSelectError,
-} from 'containers/App/selectors';
-import { Button, Grid, Input, Paper, Typography } from '@material-ui/core';
 import messages from './messages';
-import { loadRepos } from '../App/actions';
-import { changeUsername } from './actions';
-import { makeSelectUsername } from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import { useStyles } from './styles.js';
 import Img from '../../components/Img';
 import SCREENS from '../../constants/screen';
-
-import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import Map from '../../components/Map';
 import DeviceList from '../../components/DeviceList';
 import CustomModal from '../../components/CustomModal';
-import { LATITUDE, LONGITUDE } from '../../constants/maps';
+import { deviceList } from '../../constants/dummy';
+import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
+import { SuperHOC } from '../../HOC';
+import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
+import SortUpIcon from '../../../assets/images/icons/sortUp.png';
+import SortDownIcon from '../../../assets/images/icons/sortDown.png';
 
-const key = 'home';
+class HomePage extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isModalShown: false,
+      coordinate: {
+        lat: LATITUDE,
+        lng: LONGITUDE,
+      },
+      sortBy: 'vehicleNo', // vehicleNo, trackerNo, status
+      sortAsc: false, // true: ascending/ON, false: descending/OFF
+    }
+  }
 
-export function HomePage({ loading, ...props }) {
-  useInjectReducer({ key, reducer });
-  useInjectSaga({ key, saga });
+  // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
+  handleApiLoaded = (map, google) => {
+    console.log('map', map);
+    console.log('google', google);
 
-  const [isMarkerShown, setIsMarkerShown] = useState(true);
-  const [isModalShown, setIsModalShown] = useState(false);
-  const [coordinate, setIs] = useState({ lat: LATITUDE, lng: LONGITUDE });
+  }
 
-  const classes = useStyles(props);
-  const history = useHistory();
+  handleOpenModal = () => {
+    this.setState({
+      isModalShown: true,
+    })
+  }
 
-  const goToSettingsScreen = () => {
-    history.push(SCREENS.SETTINGS);
-  };
+  handleCloseModal = () => {
+    this.setState({
+      isModalShown: false,
+    })
+  }
 
-  const handleMarkerClick = () => {
-    setIsMarkerShown(!isMarkerShown);
-    // console.log('isMarkerShown', isMarkerShown);
-  };
+  goToSettingScreen = () => {
+    this.props.history.push(SCREENS.SETTINGS)
+  }
 
-  const handleOpenModal = () => {
-    setIsModalShown(true);
-  };
+  handleVehicleNoSorting = () => {
+    this.setState({
+      sortBy: 'vehicleNo',
+      sortAsc: !this.state.sortAsc
+    });
+  }
 
-  const handleCloseModal = () => {
-    setIsModalShown(false);
-  };
+  handleTrackerNoSorting = () => {
+    this.setState({
+      sortBy: 'trackerNo',
+      sortAsc: !this.state.sortAsc
+    });
+  }
 
-  useEffect(() => {
-    
-  }, []);
+  handleStatusSorting = () => {
+    this.setState({
+      sortBy: 'status',
+      sortAsc: !this.state.sortAsc
+    });
+  }
 
-  return (
-    <div>
-      <Helmet className={classes.root}>
-        <title>Home</title>
-      </Helmet>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-        className={classes.topBar}
-      >
-        <Grid item onClick={goToSettingsScreen} className={classes.settingsBtn}>
-          <FontAwesomeIcon icon={faCog} size="2x" />
-        </Grid>
-        <Img
-          src={GPSinaLogoGrey}
-          alt="GPSina Grey Logo"
-          className={classes.logo}
-        />
-        <div />
-      </Grid>
+  render() {
+    const { isModalShown, coordinate, sortBy, sortAsc } = this.state;
+    const { classes } = this.props;
+    const mapOptions = {
+      panControl: true,
+      // mapTypeControl: false,
+      // fullscreenControl: false,
+      // streetViewControl: false,
+      scrollwheel: true,
+      mapTypeId: 'roadmap'
+    };
 
-      <CustomModal
-        open={isModalShown}
-        handleClose={handleCloseModal}
-        title="expired"
-        deviceName="3353 - M3"
-        type="simple"
+    const sortUp= (
+      <Img
+        src={SortUpIcon}
+        alt="sort up icon"
+        className={classes.icon}
       />
+    );
 
-      <div className={classes.container}>
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <Grid container spacing={2} justify="space-between" direction="row">
-              <Grid item xs={9}>
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
-                    <Typography variant="body1" color="initial">
-                      <FormattedMessage {...messages.vehicleNo} />
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Input
-                      className={classes.textfield}
-                      // defaultValue={"email"}
-                      // placeholder="Enter Vehicle No"
-                      disableUnderline
-                    />
-                  </Grid>
-                </Grid>
+    const sortDown = (
+      <Img
+        src={SortDownIcon}
+        alt="sort down icon"
+        className={classes.icon}
+      />
+    );
 
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
-                    <Typography variant="body1" color="initial">
-                      <FormattedMessage {...messages.trackerNo} />
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Input
-                      className={classes.textfield}
-                      // defaultValue={"email"}
-                      // placeholder="Enter Tracker No"
-                      disableUnderline
-                    />
-                  </Grid>
-                </Grid>
+    return (
+      <div>
+        <Helmet>
+          <title>{this.props.intl.formatMessage({...messages.home})}</title>
+        </Helmet>
 
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
-                    <Typography variant="body1" color="initial">
-                      <FormattedMessage {...messages.search} />
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Input
-                      className={classes.textfield}
-                      // defaultValue={"email"}
-                      // placeholder="Enter Search Key"
-                      disableUnderline
-                    />
-                  </Grid>
-                </Grid>
+        <div>
+          <Grid
+            container
+            style={{ width: width, height: height }}
+          >
+            <CustomModal
+              open={isModalShown}
+              handleClose={this.handleCloseModal}
+              title="expired"
+              deviceName="3353 - M3"
+              type="simple"
+            />
+
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+              className={classes.topBar}
+            >
+              <Grid item onClick={this.goToSettingScreen} className={classes.settingsBtn}>
+                <FontAwesomeIcon icon={faCog} size="2x" />
               </Grid>
-              <Grid item xs={3}>
-                <Button className={classes.btn} variant="contained">
-                  <FormattedMessage {...messages.addDevice} />
-                </Button>
-              </Grid>
+              <Img
+                src={GPSinaLogoGrey}
+                alt="GPSina Grey Logo"
+                className={classes.logo}
+              />
+              <div />
             </Grid>
 
-            <div className={classes.paginationContainer}>
-              <Grid
-                container
-                spacing={1}
-                justify="space-around"
-                direction="row"
-                alignItems="center"
-              >
-                <Grid item>
-                  <Typography
-                    variant="body1"
-                    style={{ color: 'grey', fontSize: '14px' }}
-                  >
-                    <FormattedMessage {...messages.vehicleNo} />
-                    <FontAwesomeIcon
-                      icon={faSortUp}
-                      style={{ marginLeft: '0.25em' }}
-                      size="lg"
-                    />
-                  </Typography>
+            <Grid container className={classes.container}>
+              <Grid item xs={4} className={classes.leftContainer}>
+                <Grid container spacing={2} justify="space-between" direction="row">
+                  <Grid item xs={9}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={3}>
+                        <Typography variant="body1" color="initial">
+                          <FormattedMessage {...messages.vehicleNo} />
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Input
+                          className={classes.textfield}
+                          // defaultValue={"email"}
+                          // placeholder="Enter Vehicle No"
+                          disableUnderline
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={3}>
+                        <Typography variant="body1" color="initial">
+                          <FormattedMessage {...messages.trackerNo} />
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Input
+                          className={classes.textfield}
+                          // defaultValue={"email"}
+                          // placeholder="Enter Tracker No"
+                          disableUnderline
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={3}>
+                        <Typography variant="body1" color="initial">
+                          <FormattedMessage {...messages.search} />
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Input
+                          className={classes.textfield}
+                          // defaultValue={"email"}
+                          // placeholder="Enter Search Key"
+                          disableUnderline
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button className={classes.btn} variant="contained">
+                      <FormattedMessage {...messages.addDevice} />
+                    </Button>
+                  </Grid>
                 </Grid>
 
-                <Typography
-                  variant="body1"
-                  style={{ color: 'grey', fontSize: '14px' }}
-                >
-                  <FormattedMessage {...messages.trackerNo} />
-                </Typography>
+                <Grid container direction="column">
+                  <Grid
+                    item
+                    className={classes.paginationContainer}
+                  >
+                    <Grid container direction="row" justify="center" alignItems="center">
+                      <Grid item xs className={classes.paginationBtn} onClick={this.handleVehicleNoSorting}>
+                        <Typography
+                          variant="body1"
+                          style={{ color: 'grey', fontSize: '14px' }}
+                        >
+                          <FormattedMessage {...messages.vehicleNo} />
+                        </Typography>
+                        { sortBy === 'vehicleNo' ?
+                          sortAsc ? sortUp : sortDown
+                          : <div />
+                        }
+                      </Grid>
 
-                <Typography
-                  variant="body1"
-                  style={{ color: 'grey', fontSize: '14px' }}
-                >
-                  <FormattedMessage {...messages.status} />
-                </Typography>
+                      <Grid item xs className={classes.paginationBtn} onClick={this.handleTrackerNoSorting}>
+                        <Typography
+                          variant="body1"
+                          style={{ color: 'grey', fontSize: '14px' }}
+                        >
+                          <FormattedMessage {...messages.trackerNo} />
+                        </Typography>
+                        { sortBy === 'trackerNo' ?
+                          sortAsc ? sortUp : sortDown
+                          : <div />
+                        }
+                        </Grid>
+
+                      <Grid item xs className={classes.paginationBtn} onClick={this.handleStatusSorting}>
+                        <Typography
+                          variant="body1"
+                          style={{ color: 'grey', fontSize: '14px' }}
+                        >
+                          <FormattedMessage {...messages.status} />
+                        </Typography>
+                        { sortBy === 'status' ?
+                          sortAsc ? sortUp : sortDown
+                          : <div />
+                        }
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid
+                    item
+                    className={classes.list}
+                  >
+                    { deviceList.map((device) => (
+                          <DeviceList onOpenModal={this.handleOpenModal} />
+                      ))
+                    }
+                  </Grid>
+                </Grid>
               </Grid>
-            </div>
-
-            <DeviceList onOpenModal={handleOpenModal} />
-            <DeviceList onOpenModal={handleOpenModal} />
-            <DeviceList onOpenModal={handleOpenModal} />
-            <DeviceList onOpenModal={handleOpenModal} />
-            <DeviceList onOpenModal={handleOpenModal} />
-            <DeviceList onOpenModal={handleOpenModal} />
+              <Grid item xs={8} className={classes.mapContainer}>
+                <Map
+                  center={coordinate}
+                />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={8} className={classes.mapContainer}>
-            <Map
-              isMarkerShown={isMarkerShown}
-              onMarkerClick={handleMarkerClick}
-              center={coordinate}
-            />
-          </Grid>
-        </Grid>
+        </div>
       </div>
-    </div>
-  );
+    )
+  }
 }
 
 HomePage.propTypes = {
-  loading: PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = createStructuredSelector({
-  loading: makeSelectLoading(),
-});
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeUsername: evt => dispatch(changeUsername(evt.target.value)),
-    onSubmitForm: evt => {
-      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-      dispatch(loadRepos());
-    },
+    dispatch
   };
 }
 
 const withConnect = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 );
 
-export default compose(
-  withConnect,
-  memo,
-)(HomePage);
+export default SuperHOC((withConnect)(injectIntl(withStyles(useStyles)(HomePage))));

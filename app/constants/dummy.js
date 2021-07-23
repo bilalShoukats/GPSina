@@ -234,20 +234,23 @@ const alerts = [
 
 const deviceList = [
     { 
+        id: 1,
         name: "3353-M6", 
         deviceId: "075034713353", 
         startDate: "2020.07.18", 
         endDate: "2021.07.17", 
         isExpired: false 
     },
-    { 
+    {
+        id: 2,
         name: "VAN 3967 ( Sample )", 
         deviceId: "075034712553", 
         startDate: "2020.07.18", 
         endDate: "2021.07.17", 
         isExpired: true 
     },
-    { 
+    {
+        id: 3,
         name: "WRV 9087", 
         deviceId: "0750358513353", 
         startDate: "2021.05.18", 
@@ -255,6 +258,7 @@ const deviceList = [
         isExpired: false 
     },
     { 
+        id: 4,
         name: "G3 OPTIMUS-M7", 
         deviceId: "0750323452553", 
         startDate: "2021.05.18", 
