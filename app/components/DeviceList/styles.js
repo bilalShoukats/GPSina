@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   container: {
     padding: '0.25em 0em',
+    width: '100%'
   },
   btn: {
     color: '#28ACEA',

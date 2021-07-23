@@ -27,6 +27,7 @@ import { SuperHOC } from '../../HOC';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import SortUpIcon from '../../../assets/images/icons/sortUp.png';
 import SortDownIcon from '../../../assets/images/icons/sortDown.png';
+import APIURLS from '../../ApiManager/apiUrl';
 
 class HomePage extends Component {
   constructor(props){
@@ -37,9 +38,30 @@ class HomePage extends Component {
         lat: LATITUDE,
         lng: LONGITUDE,
       },
+      deviceList: deviceList,
       sortBy: 'vehicleNo', // vehicleNo, trackerNo, status
       sortAsc: false, // true: ascending/ON, false: descending/OFF
+      page: 1,
+      totalPage: 1,
     }
+  }
+
+  componentDidMount = () => {
+    console.log('ComponentDidMount - Home');
+    this.getDevices();
+  }
+
+  getDevices = async () => {
+    this.props.apiManager.callApi(APIURLS.getAllDevices, 'GET', null, res => {
+      console.log(res);
+      if(res.code == '1019'){
+        this.setState({
+          deviceList: res.response,
+          page: res.currentPage,
+          totalPage: res.totalPages,
+        })
+      }
+    });
   }
 
   // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
@@ -87,7 +109,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isModalShown, coordinate, sortBy, sortAsc } = this.state;
+    const { isModalShown, coordinate, sortBy, sortAsc,deviceList } = this.state;
     const { classes } = this.props;
     const mapOptions = {
       panControl: true,
@@ -262,7 +284,12 @@ class HomePage extends Component {
                     className={classes.list}
                   >
                     { deviceList.map((device) => (
-                          <DeviceList onOpenModal={this.handleOpenModal} />
+                          <DeviceList 
+                            onOpenModal={this.handleOpenModal}
+                            date={device.CreatedAt}
+                            modelNumber={device.deviceID}
+                            deviceName={device.registrationNo}
+                          />
                       ))
                     }
                   </Grid>

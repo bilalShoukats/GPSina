@@ -21,6 +21,7 @@ import locateIcon from '../../../assets/images/icons/locate.png';
 import historyIcon from '../../../assets/images/icons/history.png';
 import plusIcon from '../../../assets/images/icons/plus.png';
 import SCREENS from '../../constants/screen';
+import moment from 'moment';
 
 const propTypes = {
   accOn: PropTypes.bool,
@@ -87,7 +88,7 @@ const DeviceList = ({ ...props }) => {
               {props.modelNumber}
             </Typography>
             <Typography variant="body2" className={classes.mutedText}>
-              27 May 2021
+              {moment.unix(props.date).format('D MMM YYYY')}
             </Typography>
           </Grid>
           <Grid item>
