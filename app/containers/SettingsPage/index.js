@@ -3,19 +3,19 @@
  * SettingsPage
  *
  */
-
-import React, { useEffect, useState } from 'react';
+ import {v1} from "uuid";
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { Button, Grid, Input, Typography } from '@material-ui/core';
+import { Button, Grid, Input, Typography, Hidden } from '@material-ui/core';
 import makeSelectSettingsPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -29,19 +29,58 @@ import SCREENS from '../../constants/screen';
 import { Manager } from '../../StorageManager/Storage';
 import { SuperHOC } from '../../HOC';
 import APIURLS from '../../ApiManager/apiUrl';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
+import { CustomInput } from "reactstrap";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { Container } from "reactstrap";
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { withStyles } from '@material-ui/core/styles';
+import {uploadFile} from 'react-s3';
+import s3Credentials from "../../constants/aws";
+import CustomModal from '../../components/CustomModal';
+import {Dots} from "react-activity";
 
+let cropper = null;
 export function SettingsPage(props) {
+  const fileInput = useRef();
   useInjectReducer({ key: 'settingsPage', reducer });
   useInjectSaga({ key: 'settingsPage', saga });
 
   const classes = useStyles(props);
   const history = useHistory();
-
-  const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
+  const [image, setImage] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [userName, setUserName] = useState();
   const [mobileNo, setMobileNo] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [oldPassword, setOldPassword] = useState();
   const [newPassword, setNewPassword] = useState();
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalRight, setModalRight] = useState(false);
+  const [isModalShown, setIsModalShown] = useState(false);
+  const [modalDescription, setModalDescription] = useState('');
+  const styles = (theme) => ({
+    root: {
+      margin: 0,
+      padding: theme.spacing(2),
+    },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
+  });
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -59,7 +98,7 @@ export function SettingsPage(props) {
       case 'mobileNo':
         setMobileNo(value);
         break;
-      
+
       case 'oldPassword':
         setOldPassword(value);
         break;
@@ -90,22 +129,136 @@ export function SettingsPage(props) {
   };
 
   useEffect(() => {
-    console.log('useEffect Settings');
     Manager.getItemCallback('user', true, (res) => {
-      console.log(res);
-      setUserName(res.userName);
+      setUserName(res.firstName +' '+res.lastName);
       setEmail(res.email);
       setMobileNo(res.phone);
+      setAvatar(res.avatar);
     })
   }, []);
 
+  const openLightBox = () => {
+    setIsOpen(true);
+  }
+
+  const openFileDialog = () => {
+    fileInput.current.click();
+  }
+
+  const toggleRight = () => {
+    setModalRight(!modalRight)
+  };
+
+  const onChange = (e) => {
+    e.preventDefault();
+    if ( e.target.files.length > 0) {
+      setModalRight(!modalRight);
+    let files;
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files;
+    } else if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
+    e.target.value = null;
+    }
+  };
+
+  const getCropData = (callBack) => {
+    if (typeof cropper !== "undefined") {
+      urlToFile(cropper.getCroppedCanvas().toDataURL(), `${v1()}.png`, 'image/png')
+        .then(function (file) {
+          callBack(file);
+        });
+    }
+  };
+
+  function urlToFile(url, filename, mimeType) {
+    return (fetch(url).then(function (res) {
+      return res.arrayBuffer();
+    }).then(function (buf) {
+      return new File([buf], filename, { type: mimeType });
+    })
+    );
+  }
+
+  const updateProfile = async (file) => {
+    setUpdating(true);
+    s3Credentials['dirName'] = 'profile';
+    uploadFile(file, s3Credentials).then(data => {
+      console.log('s3 response: ', data.location);
+        if (data.result.status === 204) {
+          props.apiManager.callApi(APIURLS.updateAvatar, 'POST', {avatar: data.location}, (res) => {
+            setModalRight(false);
+            setImage("");
+            setUpdating(false);
+            if(res.code === 1014){
+              Manager.getItem('user').then(user => {
+                user =  JSON.parse(user);
+                user.avatar = data.location;
+                setAvatar(data.location);
+                Manager.setItem('user', user);
+                setModalTitle(props.intl.formatMessage({ ...messages.updateAvatar }));
+                setModalDescription(props.intl.formatMessage({ ...messages.updateAvatarSuccess }));
+                handleOpenModal();
+              });
+            } else {
+                setModalTitle(props.intl.formatMessage({ ...messages.updateAvatar }));
+                setModalDescription(props.intl.formatMessage({ id: `app.containers.SettingsPage.${res.code}`, defaultMessage: `${res.id}` }))
+                handleOpenModal();
+            }
+          })
+        }
+    }).catch(err => {
+      setUpdating(false);
+      setModalTitle(props.intl.formatMessage({ ...messages.updateAvatar }));
+      setModalDescription(props.intl.formatMessage({ id: `app.containers.SettingsPage.${err.type}`, defaultMessage: `${err.messages}` }))
+      handleOpenModal();
+    })
+}
+
+const handleOpenModal = () => {
+  setIsModalShown(true);
+};
+
+const handleCloseModal = () => {
+  setIsModalShown(false);
+  // if(props.intl.formatMessage({ ...messages.registerSuccessful })){
+  //   window.location.reload();
+  // }
+};
+
+  const DialogTitle = withStyles(styles)((props) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography variant="h6">{children}</Typography>
+        {onClose ? (
+          <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  });
+
+  const DialogActions = withStyles((theme) => ({
+    root: {
+      margin: 0,
+      padding: theme.spacing(1),
+    },
+  }))(MuiDialogActions);
+
   return (
-    <div>
+    <Container fluid={true}>
       <Helmet>
         <title>Profile</title>
       </Helmet>
       <Header title={<FormattedMessage {...messages.settings} />} />
-
       <div>
         <Grid
           item
@@ -116,13 +269,26 @@ export function SettingsPage(props) {
           <Grid
             container
             justify="center"
-            alignItems="center"
+            alignItems="flex-end"
             className={classes.avatar}
           >
-            <UserAvatar alt="Profile Avatar" src={defaultProfileImage} />
+            <UserAvatar alt="Profile Avatar" src={avatar ? avatar : defaultProfileImage} onClick={openLightBox} />
+            <FontAwesomeIcon icon={faCamera} size="1x" onClick={openFileDialog} style={{ bottom: 1 }} style={{ cursor: 'pointer' }} />
           </Grid>
 
           <div className={classes.container}>
+            {isOpen && (
+              <Lightbox
+                mainSrc={avatar ? avatar : defaultProfileImage}
+                nextSrc={undefined}
+                prevSrc={undefined}
+                onCloseRequest={() => setIsOpen(false)}
+                onMovePrevRequest={() => {
+                }}
+                onMoveNextRequest={() => {
+                }}
+              />
+            )}
             <Grid item>
               <Typography variant="body2" className={classes.label}>
                 <FormattedMessage {...messages.username} />
@@ -256,8 +422,62 @@ export function SettingsPage(props) {
             v: 0.7.8
           </Typography>
         </Grid>
+        <div style={{display: 'none'}}>
+        <CustomInput
+          innerRef={fileInput}
+          type="file"
+          id="exampleCustomFileBrowser4"
+          name="customFile"
+          className="d-none"
+          onChange={(e) => onChange(e)}
+        />
+        </div>
+        <Dialog
+          open={modalRight}
+          onClose={toggleRight}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <div>
+            <DialogTitle id="customized-dialog-title" onClose={toggleRight}>
+              Crop Image
+        </DialogTitle>
+            {image && (
+              <Cropper
+                style={{ height: 400, width: "100%" }}
+                zoomTo={.5}
+                initialAspectRatio={4 / 4}
+                preview=".img-preview"
+                src={image}
+                viewMode={1}
+                guides={true}
+                minCropBoxHeight={10}
+                minCropBoxWidth={10}
+                background={false}
+                responsive={true}
+                autoCropArea={1}
+                checkOrientation={false}
+                onInitialized={async (instance) => {
+                  cropper = await instance
+                }}
+              />
+            )}
+          </div>
+          <DialogActions>
+            <Button autoFocus color="primary" onClick={() => getCropData(updateProfile)} color="primary">
+              { updating ? <Dots color={'#fff'}/> : 'Save changes' }
+          </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-    </div>
+      <CustomModal
+          open={isModalShown}
+          handleClose={handleCloseModal}
+          type="simple"
+          title={modalTitle}
+          description={modalDescription}
+        />
+    </Container>
   );
 }
 
@@ -280,4 +500,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC(compose(withConnect)(SettingsPage));
+export default SuperHOC(compose(withConnect)(injectIntl(SettingsPage)));

@@ -70,6 +70,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: '1em',
     color: '#28ACEA',
   },
+  dispalyNone: {
+    dispaly: 'none'
+  }
 }));
 
 export { useStyles };

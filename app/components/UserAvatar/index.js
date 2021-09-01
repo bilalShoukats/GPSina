@@ -6,10 +6,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar } from '@material-ui/core';
-// import styled from 'styled-components';
-import SCREENS from '../../constants/screen';
 import { useStyles } from './styles.js';
+import { Avatar } from '@material-ui/core';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 
 const propTypes = {
@@ -26,8 +24,9 @@ const defaultProps = {
 
 const UserAvatar = ({ ...props }) => {
   const classes = useStyles(props);
-
-  return <Avatar className={classes.avatar} alt={props.alt} src={props.src} />;
+  return (
+      <Avatar className={classes.avatar} alt={props.alt} src={props.src} onClick={props.onClick}/>
+  );
 };
 
 UserAvatar.propTypes = propTypes;
