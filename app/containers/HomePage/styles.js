@@ -1,6 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const mapHeight = (window.innerHeight - 95) * 0.9 + 'px';
+const width = Math.max(window.innerWidth/4, 350) + 'px';
+console.log(width);
 
 const useStyles = theme => ({
   root: {
@@ -69,6 +71,34 @@ const useStyles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer'
+  },
+  drawer: {
+    width: width,
+    heigth: '100%',
+    padding: '1em 0.25em'
+  },
+  drawerItemContainer: {
+    padding: '0.1em 1em',
+  },
+  textTitleStyle: {
+    color: '#000000',
+    textTransform: 'uppercase'
+  },
+  divider: {
+    backgroundColor: '#000000',
+    margin: '0.5em 0'
+  },
+  dividerTitle: {
+    backgroundColor: '#000000',
+    marginTop: '1em',
+    marginBottom: '0.5em'
+  },
+  avatar: {
+    marginTop: '1em',
+    marginBottom: '1em',
+  },
+  listItemContainer: {
+    margin: '0.5em 0',
   }
 });
 
