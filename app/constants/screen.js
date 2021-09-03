@@ -15,6 +15,9 @@ const SCREENS = {
   REFUNDDELIVERY: '/refund-delivery',
   EXPIREDDEVICES: '/expired-devices',
   SELECTDATE: '/select-date',
+  GENSET: '/genset',
+  ADDGENSET: '/add-genset',
+  GENSETDETAIL: '/genset-detail',
 };
 
 export default SCREENS;

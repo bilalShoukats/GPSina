@@ -17,4 +17,8 @@ export default defineMessages({
     id: `${scope}.clear`,
     defaultMessage: 'clear',
   },
+  save: {
+    id: `${scope}.save`,
+    defaultMessage: 'Save',
+  },
 });

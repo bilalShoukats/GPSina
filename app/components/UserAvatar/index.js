@@ -16,6 +16,7 @@ const propTypes = {
   src: PropTypes.string,
   alt: PropTypes.string,
   variant: PropTypes.string, // 'circle|circular|rounded|square'
+  style: PropTypes.object,
 };
 
 const defaultProps = {
@@ -27,7 +28,7 @@ const defaultProps = {
 const UserAvatar = ({ ...props }) => {
   const classes = useStyles(props);
 
-  return <Avatar className={classes.avatar} alt={props.alt} src={props.src} />;
+  return <Avatar className={classes.avatar} alt={props.alt} src={props.src} variant={props.variant} style={props.style} />;
 };
 
 UserAvatar.propTypes = propTypes;

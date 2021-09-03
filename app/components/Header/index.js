@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faChevronLeft, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faChevronLeft, faPencilAlt, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Button, Grid, Typography } from '@material-ui/core';
 // import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -19,15 +19,23 @@ import { useStyles } from './styles.js';
 const propTypes = {
   title: PropTypes.string,
   showClearBtn: PropTypes.bool,
+  showAddGenset: PropTypes.bool,
   showFenceBtn: PropTypes.bool,
   showHistoryBtn: PropTypes.bool,
+  onEditGenset: PropTypes.func,
+  onPressAddGenset: PropTypes.func,
+  isEditMode: PropTypes.bool,
 };
 
 const defaultProps = {
   title: '',
   showClearBtn: false,
+  showAddGenset: false,
   showFenceBtn: false,
   showHistoryBtn: false,
+  onEditGenset: () => console.log('onEditGenset'),
+  onPressAddGenset: () => console.log('onPressAddGenset'),
+  isEditMode: false,
 };
 
 const Header = ({ ...props }) => {
@@ -91,7 +99,7 @@ const Header = ({ ...props }) => {
               </Button>
             </div>
         ) : props.showHistoryBtn ? (
-          <Button className={classes.btnFenceStyle} size="small" onClick={goToSelectDateScreen}>
+          <Button className={classes.btnFenceStyle} size="small">
             <Typography className={classes.btnTextStyle}>
               <FontAwesomeIcon
                   icon={faCalendar}
@@ -100,6 +108,31 @@ const Header = ({ ...props }) => {
                   size="lg"
                 />
             </Typography>
+          </Button>
+        ) : props.showAddGenset ? (
+          <Button className={classes.btnFenceCircleStyle} size="small" onClick={() => props.onPressAddGenset()}>
+            <FontAwesomeIcon
+              icon={faPlus}
+              color="#FFFFFF"
+              // style={{ marginRight: '5px' }}
+              size="lg"
+            />
+          </Button>
+        ) : props.showEditGenset ? (
+          <Button className={classes.btnFenceStyle} size="small" onClick={() => props.onEditGenset()}>
+            { !props.isEditMode ? (
+                <FontAwesomeIcon
+                  icon={faPencilAlt}
+                  color="#FFFFFF"
+                  // style={{ marginRight: '5px' }}
+                  size="lg"
+                />
+              ) : (
+                <Typography className={classes.btnTextStyle}>
+                  <FormattedMessage {...messages.save} />
+                </Typography>
+              )
+            }
           </Button>
         ) : (
           <div className={classes.emptyBtnStyle} />

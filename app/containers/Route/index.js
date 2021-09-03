@@ -20,6 +20,9 @@ import ResetPasswordPage from '../ResetPasswordPage/Loadable';
 import NotFoundPage from '../NotFoundPage/Loadable';
 import HomePage from '../HomePage/Loadable';
 import AlertPage from '../AlertPage/Loadable';
+import GensetPage from '../GensetPage/Loadable';
+import AddGensetPage from '../AddGensetPage/Loadable';
+import GensetDetailPage from '../GensetDetailPage/Loadable';
 import SettingsPage from '../SettingsPage/Loadable';
 import ContactUsPage from '../ContactUsPage/Loadable';
 import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
@@ -43,6 +46,9 @@ export function Route() {
         {/* Private Route, restricted screen that required token to access */}
         <PrivateRoute exact path="/" component={HomePage} />
         <PrivateRoute exact path={SCREENS.ALERT} component={AlertPage}/>
+        <PrivateRoute exact path={SCREENS.GENSET} component={GensetPage}/>
+        <PrivateRoute exact path={SCREENS.ADDGENSET} component={AddGensetPage}/>
+        <PrivateRoute exact path={SCREENS.GENSETDETAIL} component={GensetDetailPage}/>
         <PrivateRoute exact path={SCREENS.SETTINGS} component={SettingsPage} />
         <PrivateRoute exact path={SCREENS.CONTACTUS} component={ContactUsPage} />
         <PrivateRoute exact path={SCREENS.REFUNDDELIVERY} component={RefundDeliveryPage} />

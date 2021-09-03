@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
   btnTextStyle: {
     textTransform: 'capitalize',
+    color: '#FFFFFF'
   },
   emptyBtnStyle: {
     width: '5em',

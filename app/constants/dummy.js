@@ -312,9 +312,46 @@ const fenceList = [
     },
 ];
 
+const gensetList = [
+    {
+        id: 1,
+        regNo: '1234567890',
+        name: 'Dummy Vehicle 1',
+        make: 'Perodua',
+        model: 'Myvi',
+        year: "2020",
+        color: 'purple',
+        fuelTankCapacity: '80',
+        type: 'private'
+    },
+    {
+        id: 2,
+        regNo: '2468013579',
+        name: 'Dummy Vehicle 2',
+        make: 'Toyota',
+        model: 'Yaris',
+        year: "2020",
+        color: 'purple',
+        fuelTankCapacity: '100',
+        type: 'commercial'
+    },
+    {
+        id: 3,
+        regNo: '3691215182',
+        name: 'Dummy Vehicle 3',
+        make: 'Honda',
+        model: 'Vios',
+        year: "2020",
+        color: 'purple',
+        fuelTankCapacity: '90',
+        type: 'private'
+    },
+]
+
 export {
     markers,
     alerts,
     deviceList,
     fenceList,
+    gensetList,
 };
