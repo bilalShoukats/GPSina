@@ -3,16 +3,29 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    margin: 'auto',
-    maxWidth: '500px',
-    marginTop: '1em',
-    padding: '0 1em',
+    padding: '1.5em 6em',
   },
   container: {
-    marginTop: '1em',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    margin: '0.5em 0',
+  }, 
+  title: {
+    fontWeight: 'bold',
+    textTransform: 'capitalize',
+    marginBottom: '0.25em',
+    marginTop: '0.5em',
   },
+  description: {
+    margin: '0.25em 0',
+  },
+  bulletPoint: {
+    margin: '0.5em 0.25em',
+  },
+  bulletPointDesc: {
+    margin: '0.25em 1.5em',
+  },
+  link: {
+    color: '#28ACEA'
+  }
 }));
 
 export { useStyles };
