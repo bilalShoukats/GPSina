@@ -10,8 +10,8 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSortUp, faCog, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Button, Grid, Input, List, Typography } from '@material-ui/core';
+import { faSortUp, faCog, faPowerOff, faBars, faHome, faFileAlt, faSearchLocation, faUsers, faCarAlt, faCogs, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { Button, Divider, Drawer, Grid, Input, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
 import messages from './messages';
@@ -28,6 +28,9 @@ import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import SortUpIcon from '../../../assets/images/icons/sortUp.png';
 import SortDownIcon from '../../../assets/images/icons/sortDown.png';
 import APIURLS from '../../ApiManager/apiUrl';
+import UserAvatar from '../../components/UserAvatar';
+import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
+
 
 class HomePage extends Component {
   constructor(props){
@@ -43,6 +46,7 @@ class HomePage extends Component {
       sortAsc: false, // true: ascending/ON, false: descending/OFF
       page: 1,
       totalPage: 1,
+      isSidebarShown: false,
     }
   }
 
@@ -83,8 +87,18 @@ class HomePage extends Component {
     })
   }
 
+  handleSidebarToggle = () => {
+    this.setState({
+      isSidebarShown: !this.state.isSidebarShown,
+    })
+  }
+
   goToSettingScreen = () => {
     this.props.history.push(SCREENS.SETTINGS)
+  }
+
+  goToGensetScreen = () => {
+    this.props.history.push(SCREENS.GENSET)
   }
 
   handleVehicleNoSorting = () => {
@@ -143,6 +157,89 @@ class HomePage extends Component {
         </Helmet>
 
         <div>
+          <Drawer
+            className={classes.drawer}
+            variant="temporary"
+            anchor="left"
+            open={this.state.isSidebarShown}
+            onClose={this.handleSidebarToggle}
+          >
+            <div 
+                className={classes.drawer}
+                onClick={this.toggleDrawer}
+            >
+              <Grid
+                container
+                justify="center"
+                alignItems="center"
+                className={classes.avatar}
+              >
+                <UserAvatar alt="Profile Avatar" src={defaultProfileImage} />
+              </Grid>
+              <Typography variant="h6" className={classes.textTitleStyle} align="center">
+                <FormattedMessage {...messages.genset} />
+              </Typography>
+              <div style={{ marginTop: '1em'}}>
+                <List>
+                  <ListItem button key="home" onClick={() => console.log('home')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faHome} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                  </ListItem>
+
+                  <ListItem button key="dashboard" onClick={() => console.log('dashboard')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faChartBar} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" />
+                  </ListItem>
+
+                  <ListItem button key="settings" onClick={this.goToSettingScreen} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faCogs} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Settings" />
+                  </ListItem>
+
+                  <ListItem button key="genset" onClick={this.goToGensetScreen} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faCarAlt} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Genset" />
+                  </ListItem>
+
+                  <ListItem button key="customer" onClick={() => console.log('customer')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faUsers} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Customer" />
+                  </ListItem>
+
+                  <ListItem button key="pointOfInterest" onClick={() => console.log('pointOfInterest')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faSearchLocation} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Point Of Interest" />
+                  </ListItem>
+
+                  <ListItem button key="tnc" onClick={() => console.log('tnc')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faFileAlt} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Terms and Conditions" />
+                  </ListItem>
+
+                  <ListItem button key="logout" onClick={() => console.log('logout')} className={classes.listItemContainer}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={faPowerOff} size="lg" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </ListItem>
+                </List>
+              </div>
+            </div>
+          </Drawer>
           <Grid
             container
             style={{ width: width, height: height }}
@@ -162,15 +259,17 @@ class HomePage extends Component {
               alignItems="center"
               className={classes.topBar}
             >
-              <Grid item onClick={this.goToSettingScreen} className={classes.settingsBtn}>
-                <FontAwesomeIcon icon={faCog} size="2x" />
+              <Grid item onClick={this.handleSidebarToggle} className={classes.settingsBtn}>
+                <FontAwesomeIcon icon={faBars} size="2x" />
               </Grid>
               <Img
                 src={GPSinaLogoGrey}
                 alt="GPSina Grey Logo"
                 className={classes.logo}
               />
-              <div />
+              <Grid item onClick={this.goToSettingScreen} className={classes.settingsBtn}>
+                <FontAwesomeIcon icon={faCog} size="2x" />
+              </Grid>
             </Grid>
 
             <Grid container className={classes.container}>

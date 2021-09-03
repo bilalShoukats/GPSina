@@ -32,4 +32,8 @@ export default defineMessages({
     id: `${scope}.tryme.home`,
     defaultMessage: 'Home',
   },
+  genset: {
+    id: `${scope}.tryme.genset`,
+    defaultMessage: 'Genset',
+  },
 });
