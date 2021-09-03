@@ -13,14 +13,14 @@ describe('<Toggle />', () => {
         id: 'boilerplate.containers.LocaleToggle.en',
         defaultMessage: defaultEnMessage,
       },
-      de: {
+      id: {
         id: 'boilerplate.containers.LocaleToggle.en',
         defaultMessage: defaultDeMessage,
       },
     });
     const { container } = render(
       <IntlProvider locale="en">
-        <Toggle values={['en', 'de']} messages={messages} />
+        <Toggle values={['en', 'id']} messages={messages} />
       </IntlProvider>,
     );
     expect(container.firstChild).toMatchSnapshot();

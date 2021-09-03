@@ -23,10 +23,10 @@ describe('<ToggleOption />', () => {
 
   it('should display `value`(two letter language code) when `message` is absent', () => {
     const { queryByText } = render(
-      <IntlProvider locale="de">
-        <ToggleOption value="de" />
+      <IntlProvider locale="id">
+        <ToggleOption value="id" />
       </IntlProvider>,
     );
-    expect(queryByText('de')).toBeDefined();
+    expect(queryByText('id')).toBeDefined();
   });
 });

@@ -13,10 +13,10 @@ describe('languageProviderReducer', () => {
     expect(
       languageProviderReducer(undefined, {
         type: CHANGE_LOCALE,
-        locale: 'de',
+        locale: 'id',
       }),
     ).toEqual({
-      locale: 'de',
+      locale: 'id',
     });
   });
 });

@@ -9,13 +9,16 @@
  */
 const addLocaleData = require('react-intl').addLocaleData; //eslint-disable-line
 const enLocaleData = require('react-intl/locale-data/en');
-const deLocaleData = require('react-intl/locale-data/de');
+const idLocaleData = require('react-intl/locale-data/id');
+const bmLocaleData = require('react-intl/locale-data/bm');
 
 const enTranslationMessages = require('./translations/en.json');
-const deTranslationMessages = require('./translations/de.json');
+const idTranslationMessages = require('./translations/id.json');
+const bmTranslationMessages = require('./translations/bm.json');
 
 addLocaleData(enLocaleData);
-addLocaleData(deLocaleData);
+addLocaleData(idLocaleData);
+addLocaleData(bmLocaleData);
 
 function setCookie(cname, cvalue) {
   if (typeof window === 'undefined') {
@@ -46,16 +49,19 @@ function getCookie(cname) {
 
 let cookie = getCookie('ammei_lang');
 if (!cookie) {
-  cookie = 'en';
-  setCookie('ammei_lang', 'en');
+  cookie = 'id';
+  setCookie('ammei_lang', 'id');
 }
 
-const DEFAULT_LOCALE = cookie;
+console.log('cookie', cookie);
+
+const DEFAULT_LOCALE = 'id';
 
 // prettier-ignore
 const appLocales = [
   'en',
-  'de',
+  'id',
+  'bm',
 ];
 
 const formatTranslationMessages = (locale, messages) => {
@@ -75,7 +81,8 @@ const formatTranslationMessages = (locale, messages) => {
 
 const translationMessages = {
   en: formatTranslationMessages('en', enTranslationMessages),
-  de: formatTranslationMessages('de', deTranslationMessages),
+  id: formatTranslationMessages('id', idTranslationMessages),
+  bm: formatTranslationMessages('bm', bmTranslationMessages),
 };
 
 exports.appLocales = appLocales;
