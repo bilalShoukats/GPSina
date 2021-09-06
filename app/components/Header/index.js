@@ -47,7 +47,7 @@ const Header = ({ ...props }) => {
   };
 
   const goToSelectDateScreen = () => {
-    history.push(SCREENS.SELECTDATE);
+    history.replace(SCREENS.SELECTDATE);
   }
 
   return (
@@ -99,7 +99,7 @@ const Header = ({ ...props }) => {
               </Button>
             </div>
         ) : props.showHistoryBtn ? (
-          <Button className={classes.btnFenceStyle} size="small">
+          <Button className={classes.btnFenceStyle} size="small" onClick={() => goToSelectDateScreen()}>
             <Typography className={classes.btnTextStyle}>
               <FontAwesomeIcon
                   icon={faCalendar}

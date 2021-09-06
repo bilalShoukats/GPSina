@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import Geocode from "react-geocode";
-import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
 import { Button, CircularProgress, Divider, Drawer, Grid, Input, Switch, Typography } from '@material-ui/core';
 import { useStyles } from './styles.js';
@@ -476,4 +475,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC((withConnect)(injectIntl(withStyles(useStyles)(FencePage))));
+export default (withConnect)(injectIntl(withStyles(useStyles)(FencePage)));

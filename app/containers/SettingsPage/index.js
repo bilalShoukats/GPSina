@@ -11,7 +11,6 @@ import messages from './messages';
 import PropTypes from 'prop-types';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { SuperHOC } from '../../HOC';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Dots } from 'react-activity';

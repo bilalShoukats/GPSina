@@ -12,7 +12,6 @@
  import { withStyles } from '@material-ui/styles';
 import { Grid, Typography } from '@material-ui/core';
 
-import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
 import messages from './messages';
@@ -97,4 +96,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC((withConnect)(injectIntl(withStyles(useStyles)(SelectDatePage))));
+export default (withConnect)(injectIntl(withStyles(useStyles)(SelectDatePage)));

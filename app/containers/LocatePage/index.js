@@ -14,7 +14,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedoAlt, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import { Button, Grid, Typography } from '@material-ui/core';
 
-import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
 import Img from '../../components/Img';
 import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
@@ -213,4 +212,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC((withConnect)(injectIntl(withStyles(useStyles)(LocatePage))));
+export default (withConnect)(injectIntl(withStyles(useStyles)(LocatePage)));

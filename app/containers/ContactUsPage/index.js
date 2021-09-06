@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
-import { SuperHOC } from '../../HOC';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
 
@@ -160,4 +159,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default SuperHOC(compose(withConnect)(injectIntl(ContactUsPage)));
+export default compose(withConnect)(injectIntl(ContactUsPage));
