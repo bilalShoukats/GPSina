@@ -57,4 +57,12 @@ export default defineMessages({
     id: `${scope}.logOut`,
     defaultMessage: 'Log out',
   },
+  updateAvatar: {
+    id: `${scope}.updateAvatar`,
+    defaultMessage: 'Updated Profile',
+  },
+  updateAvatarSuccess: {
+    id: `${scope}.updateAvatarSuccess`,
+    defaultMessage: 'Updated Profile Successfully',
+  }
 });
