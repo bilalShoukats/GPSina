@@ -49,13 +49,13 @@ function getCookie(cname) {
 
 let cookie = getCookie('ammei_lang');
 if (!cookie) {
-  cookie = 'id';
-  setCookie('ammei_lang', 'id');
+  cookie = 'en';
+  setCookie('ammei_lang', 'en');
 }
 
 console.log('cookie', cookie);
 
-const DEFAULT_LOCALE = 'id';
+const DEFAULT_LOCALE = 'en';
 
 // prettier-ignore
 const appLocales = [
