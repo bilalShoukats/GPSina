@@ -426,6 +426,21 @@ const poiList = [
     },
 ]
 
+const areaList = [
+    {
+        id: 1,
+        name: 'zone 1',
+    },
+    {
+        id: 2,
+        name: 'zone 2',
+    },
+    {
+        id: 3,
+        name: 'zone 3',
+    },
+]
+
 export {
     markers,
     alerts,
@@ -433,5 +448,6 @@ export {
     fenceList,
     gensetList,
     driverList,
-    poiList
+    poiList,
+    areaList,
 };

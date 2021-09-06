@@ -21,4 +21,8 @@ export default defineMessages({
     id: `${scope}.save`,
     defaultMessage: 'Save',
   },
+  zone: {
+    id: `${scope}.zone`,
+    defaultMessage: 'Zone',
+  },
 });

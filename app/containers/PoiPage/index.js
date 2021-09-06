@@ -36,8 +36,14 @@ export function PoiPage(props) {
     props.history.push(SCREENS.POIDETAIL, { poi: poi })
   }
 
-  const handleAddZone = () => {
-    props.history.push(SCREENS.ADDZONE);
+  const handleZone = () => {
+    console.log('handleAddZone');
+    props.history.push(SCREENS.ZONE);
+  }
+
+  const handleAddPoi = () => {
+    console.log('handleAddPoi');
+    props.history.push(SCREENS.ADDPOI);
   }
 
   const handleIcon = (icon) => {
@@ -72,8 +78,9 @@ export function PoiPage(props) {
       </Helmet>
       <Header 
         title={<FormattedMessage {...messages.poi} />} 
-        showAddBtn
-        onPressAdd={handleAddZone}
+        showAddPoiBtn
+        onPressAddPoi={handleAddPoi}
+        onPressZone={handleZone}
       />
 
       <Grid 
@@ -86,7 +93,7 @@ export function PoiPage(props) {
               direction="row"
               alignItems="center"
               className={classes.container}
-              onClick={() => goToDriverDetailScreen(driver)}
+              onClick={() => goToPOIDetailScreen(poi)}
             >
               <Grid item xs={2} md={1} className={classes.avatar}>
                 <Grid 
