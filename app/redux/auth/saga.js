@@ -30,6 +30,7 @@ function* loginToServer({ payload }) {
                     'user',
                     JSON.stringify(userResponse.data.response),
                 );
+                console.log('usre saga: ', userResponse.data.response);
                 yield put(
                     loginUserSuccess(
                         response.data.response.hash,
@@ -70,6 +71,7 @@ export function* watchLogoutUser() {
 function* logout({ payload }) {
     Manager.removeItem('user');
     Manager.removeItem('token');
+    payload.history.push('/login');
 }
 
 export default function* rootSaga() {
