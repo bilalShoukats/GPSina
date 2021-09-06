@@ -39,6 +39,7 @@ export function ZonePage(props) {
 
   const handleAddZone = () => {
     console.log('handleAddZone');
+    props.history.push(SCREENS.ADDZONE);
   }
 
   return (
