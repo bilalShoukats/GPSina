@@ -384,6 +384,48 @@ const driverList = [
     },
 ]
 
+const poiList = [
+    {
+        id: 1,
+        name: 'testing POI 1',
+        type: 'private',
+        zone: 1,
+        address: 'A-22-35, Bangunan Scott Garden, Jln Klang Lama, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: 'red',
+        markerShop: 5,
+    },
+    {
+        id: 2,
+        name: 'testing POI 2',
+        type: 'business',
+        zone: 2,
+        address: 'K2-G4-13, IOI City Mall, Jln Sepang Utama, 53100 Sepang, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: 'blue',
+        markerShop: 2,
+        company_name: 'Axure Innovations',
+        company_id: 'A2134-T0-POI',
+        contact_person: 'Mr Edward',
+        phone_num: '019-244 6543',
+        mobile_num: '017-777 6543',
+        email: 'info@axure-i.com',
+    },
+    {
+        id: 3,
+        name: 'testing POI 3',
+        type: 'private',
+        zone: 1,
+        address: 'A-22-35, Bangunan Permata Perdana, Jln Klang Baru, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: 'yellow',
+        markerShop: 0,
+    },
+]
+
 export {
     markers,
     alerts,
@@ -391,4 +433,5 @@ export {
     fenceList,
     gensetList,
     driverList,
+    poiList
 };

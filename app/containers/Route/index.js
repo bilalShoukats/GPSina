@@ -15,6 +15,7 @@ import GensetDetailPage from '../GensetDetailPage/Loadable';
 import DriverPage from '../DriverPage/Loadable';
 import AddDriverPage from '../AddDriverPage/Loadable';
 import DriverDetailPage from '../DriverDetailPage/Loadable';
+import POIPage from '../POIPage/Loadable';
 import FencePage from '../FencePage/Loadable';
 import LoginPage from '../LoginPage/Loadable';
 import LocatePage from '../LocatePage/Loadable';
@@ -156,6 +157,12 @@ export function Route(props) {
                     exact 
                     path={SCREENS.DRIVERDETAIL} 
                     component={DriverDetailPage}
+                    isAuthenticated={props.isAuthenticated}
+                />
+                <PrivateRoute
+                    exact 
+                    path={SCREENS.POI} 
+                    component={POIPage}
                     isAuthenticated={props.isAuthenticated}
                 />
 

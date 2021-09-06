@@ -20,7 +20,7 @@ import saga from './saga';
 import messages from './messages';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
-import { driverList, gensetList } from '../../constants/dummy';
+import { driverList } from '../../constants/dummy';
 import { Badge, Grid, Typography } from '@material-ui/core';
 import UserAvatar from '../../components/UserAvatar';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';

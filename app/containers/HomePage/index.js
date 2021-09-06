@@ -91,6 +91,10 @@ class HomePage extends Component {
         this.props.history.push(SCREENS.DRIVER)
     }
 
+    goToPOIScreen = () => {
+        this.props.history.push(SCREENS.POI);
+    }
+
     handleOpenModal = () => {
         this.setState({
             isModalShown: true,
@@ -226,7 +230,7 @@ class HomePage extends Component {
                                 <ListItemText primary="Driver" />
                             </ListItem>
 
-                            <ListItem button key="pointOfInterest" onClick={() => console.log('pointOfInterest')} className={classes.listItemContainer}>
+                            <ListItem button key="pointOfInterest" onClick={this.goToPOIScreen} className={classes.listItemContainer}>
                                 <ListItemIcon>
                                 <FontAwesomeIcon icon={faSearchLocation} size="lg" />
                                 </ListItemIcon>
