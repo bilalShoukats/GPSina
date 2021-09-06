@@ -426,7 +426,7 @@ const poiList = [
     },
 ]
 
-const areaList = [
+const zoneList = [
     {
         id: 1,
         name: 'zone 1',
@@ -449,5 +449,5 @@ export {
     gensetList,
     driverList,
     poiList,
-    areaList,
+    zoneList,
 };

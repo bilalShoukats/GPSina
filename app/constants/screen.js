@@ -22,6 +22,7 @@ const SCREENS = {
   ADDDRIVER: '/add-driver',
   DRIVERDETAIL: '/driver-detail',
   POI: '/poi',
+  ZONE: '/zone',
 };
 
 export default SCREENS;
