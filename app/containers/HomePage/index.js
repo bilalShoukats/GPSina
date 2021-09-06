@@ -262,6 +262,14 @@ class HomePage extends Component {
                             alignItems="center"
                             className={classes.topBar}
                         >
+                            <Grid item onClick={this.handleSidebarToggle} className={classes.settingsBtn}>
+                                <FontAwesomeIcon icon={faBars} size="2x" />
+                            </Grid>
+                            <Img
+                                src={GPSinaLogoGrey}
+                                alt="GPSina Grey Logo"
+                                className={classes.logo}
+                            />
                             <Grid
                                 item
                                 onClick={this.goToSettingScreen}
@@ -269,12 +277,6 @@ class HomePage extends Component {
                             >
                                 <FontAwesomeIcon icon={faCog} size="2x" />
                             </Grid>
-                            <Img
-                                src={GPSinaLogoGrey}
-                                alt="GPSina Grey Logo"
-                                className={classes.logo}
-                            />
-                            <div />
                         </Grid>
 
                         <Grid container className={classes.container}>
