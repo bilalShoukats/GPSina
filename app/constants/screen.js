@@ -18,6 +18,9 @@ const SCREENS = {
   GENSET: '/genset',
   ADDGENSET: '/add-genset',
   GENSETDETAIL: '/genset-detail',
+  DRIVER: '/driver',
+  ADDDRIVER: '/add-driver',
+  DRIVERDETAIL: '/driver-detail',
 };
 
 export default SCREENS;

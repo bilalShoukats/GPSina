@@ -160,8 +160,8 @@ export function GensetDetailPage(props) {
       </Helmet>
       <Header 
         title={<FormattedMessage {...messages.gensetInfo} />} 
-        showEditGenset
-        onEditGenset={handleEditMode}
+        showEditBtn
+        onEdit={handleEditMode}
         isEditMode={isEditMode}
       />
 

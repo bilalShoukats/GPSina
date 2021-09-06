@@ -1,6 +1,6 @@
 /**
  *
- * GensetPage
+ * DriverPage
  *
  */
 
@@ -14,58 +14,57 @@ import { Helmet } from 'react-helmet';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectGensetPage from './selectors';
+import makeSelectDriverPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
-import { gensetList } from '../../constants/dummy';
-import { Grid, Typography } from '@material-ui/core';
+import { driverList, gensetList } from '../../constants/dummy';
+import { Badge, Grid, Typography } from '@material-ui/core';
 import UserAvatar from '../../components/UserAvatar';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import SCREENS from '../../constants/screen';
+import moment from 'moment';
 
-
-export function GensetPage(props) {
-  useInjectReducer({ key: 'gensetPage', reducer });
-  useInjectSaga({ key: 'gensetPage', saga });
+export function DriverPage(props) {
+  useInjectReducer({ key: 'driverPage', reducer });
+  useInjectSaga({ key: 'driverPage', saga });
 
   const classes = useStyles(props);
 
-  const goToGensetDetailScreen = (genset) => {
-    props.history.push(SCREENS.GENSETDETAIL, { genset: genset })
+  const goToDriverDetailScreen = (driver) => {
+    props.history.push(SCREENS.DRIVERDETAIL, { driver: driver })
   }
 
-  const handleAddGenset = () => {
-    props.history.push(SCREENS.ADDGENSET);
+  const handleAddDriver = () => {
+    props.history.push(SCREENS.ADDDRIVER);
   }
 
   return (
     <div>
       <Helmet>
-        <title>{props.intl.formatMessage({...messages.genset})}</title>
+        <title>{props.intl.formatMessage({...messages.driver})}</title>
       </Helmet>
       <Header 
-        title={<FormattedMessage {...messages.genset} />} 
-        showAddBtn 
-        onPressAdd={handleAddGenset}
+        title={<FormattedMessage {...messages.driver} />} 
+        showAddBtn
+        onPressAdd={handleAddDriver}
       />
-      
+
       <Grid 
         container
         className={classes.main}
       >
-        { gensetList.map((genset) => (
-            console.log(genset),
+        { driverList.map(driver => (
             <Grid 
               container
               direction="row"
               alignItems="center"
               className={classes.container}
-              onClick={() => goToGensetDetailScreen(genset)}
+              onClick={() => goToDriverDetailScreen(driver)}
             >
               <Grid item xs={2} md={1} className={classes.avatar}>
                 <Grid 
@@ -74,7 +73,9 @@ export function GensetPage(props) {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <UserAvatar alt="Profile Avatar" src={defaultProfileImage} style={{ border: `4px solid #${(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')}` }} />
+                  <Badge color="secondary" overlap="circle" badgeContent="" anchorOrigin={{ vertical: 'bottom', horizontal: "right" }} >
+                    <UserAvatar alt="Driver Avatar" src={defaultProfileImage} />
+                  </Badge>
                 </Grid>
               </Grid>
               <Grid
@@ -97,12 +98,17 @@ export function GensetPage(props) {
                     >
                       <Grid item>
                         <Typography variant="h6">
-                          {genset.regNo}
+                          {driver.name}
                         </Typography>
                       </Grid>
                       <Grid item>
                         <Typography variant="body1">
-                          {genset.name}
+                          { props.intl.formatMessage({...messages.driverId}) + " #" + driver.idNum}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1">
+                          { props.intl.formatMessage({...messages.expiredOn}) + moment(driver.expiryDate).format('DD MMM YYYY')}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -120,12 +126,12 @@ export function GensetPage(props) {
   );
 }
 
-GensetPage.propTypes = {
+DriverPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  gensetPage: makeSelectGensetPage(),
+  driverPage: makeSelectDriverPage(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -139,4 +145,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(injectIntl(GensetPage));
+export default compose(withConnect)(injectIntl(DriverPage));

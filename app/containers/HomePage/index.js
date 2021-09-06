@@ -87,6 +87,10 @@ class HomePage extends Component {
         this.props.history.push(SCREENS.GENSET)
     }
 
+    goToDriverScreen = () => {
+        this.props.history.push(SCREENS.DRIVER)
+    }
+
     handleOpenModal = () => {
         this.setState({
             isModalShown: true,
@@ -215,11 +219,11 @@ class HomePage extends Component {
                                 <ListItemText primary="Genset" />
                             </ListItem>
 
-                            <ListItem button key="customer" onClick={() => console.log('customer')} className={classes.listItemContainer}>
+                            <ListItem button key="driver" onClick={this.goToDriverScreen} className={classes.listItemContainer}>
                                 <ListItemIcon>
                                 <FontAwesomeIcon icon={faUsers} size="lg" />
                                 </ListItemIcon>
-                                <ListItemText primary="Customer" />
+                                <ListItemText primary="Driver" />
                             </ListItem>
 
                             <ListItem button key="pointOfInterest" onClick={() => console.log('pointOfInterest')} className={classes.listItemContainer}>

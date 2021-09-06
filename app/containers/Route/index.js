@@ -12,6 +12,9 @@ import AlertPage from '../AlertPage/Loadable';
 import GensetPage from '../GensetPage/Loadable';
 import AddGensetPage from '../AddGensetPage/Loadable';
 import GensetDetailPage from '../GensetDetailPage/Loadable';
+import DriverPage from '../DriverPage/Loadable';
+import AddDriverPage from '../AddDriverPage/Loadable';
+import DriverDetailPage from '../DriverDetailPage/Loadable';
 import FencePage from '../FencePage/Loadable';
 import LoginPage from '../LoginPage/Loadable';
 import LocatePage from '../LocatePage/Loadable';
@@ -135,6 +138,24 @@ export function Route(props) {
                     exact 
                     path={SCREENS.GENSETDETAIL} 
                     component={GensetDetailPage}
+                    isAuthenticated={props.isAuthenticated}
+                />
+                <PrivateRoute
+                    exact 
+                    path={SCREENS.DRIVER} 
+                    component={DriverPage}
+                    isAuthenticated={props.isAuthenticated}
+                />
+                <PrivateRoute 
+                    exact
+                    path={SCREENS.ADDDRIVER} 
+                    component={AddDriverPage}
+                    isAuthenticated={props.isAuthenticated}
+                />
+                <PrivateRoute 
+                    exact 
+                    path={SCREENS.DRIVERDETAIL} 
+                    component={DriverDetailPage}
                     isAuthenticated={props.isAuthenticated}
                 />
 

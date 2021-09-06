@@ -19,22 +19,24 @@ import { useStyles } from './styles.js';
 const propTypes = {
   title: PropTypes.string,
   showClearBtn: PropTypes.bool,
-  showAddGenset: PropTypes.bool,
+  showAddBtn: PropTypes.bool,
   showFenceBtn: PropTypes.bool,
   showHistoryBtn: PropTypes.bool,
-  onEditGenset: PropTypes.func,
-  onPressAddGenset: PropTypes.func,
+  showEditBtn: PropTypes.bool,
+  onEdit: PropTypes.func,
+  onPressAdd: PropTypes.func,
   isEditMode: PropTypes.bool,
 };
 
 const defaultProps = {
   title: '',
   showClearBtn: false,
-  showAddGenset: false,
+  showAddBtn: false,
   showFenceBtn: false,
   showHistoryBtn: false,
-  onEditGenset: () => console.log('onEditGenset'),
-  onPressAddGenset: () => console.log('onPressAddGenset'),
+  showEditBtn: false,
+  onEdit: () => console.log('onEdit'),
+  onPressAdd: () => console.log('onPressAdd'),
   isEditMode: false,
 };
 
@@ -109,8 +111,8 @@ const Header = ({ ...props }) => {
                 />
             </Typography>
           </Button>
-        ) : props.showAddGenset ? (
-          <Button className={classes.btnFenceCircleStyle} size="small" onClick={() => props.onPressAddGenset()}>
+        ) : props.showAddBtn ? (
+          <Button className={classes.btnFenceCircleStyle} size="small" onClick={() => props.onPressAdd()}>
             <FontAwesomeIcon
               icon={faPlus}
               color="#FFFFFF"
@@ -118,8 +120,8 @@ const Header = ({ ...props }) => {
               size="lg"
             />
           </Button>
-        ) : props.showEditGenset ? (
-          <Button className={classes.btnFenceStyle} size="small" onClick={() => props.onEditGenset()}>
+        ) : props.showEditBtn ? (
+          <Button className={classes.btnFenceStyle} size="small" onClick={() => props.onEdit()}>
             { !props.isEditMode ? (
                 <FontAwesomeIcon
                   icon={faPencilAlt}

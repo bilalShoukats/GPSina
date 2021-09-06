@@ -111,7 +111,7 @@ export function AddGensetPage(props) {
                 <FormattedMessage {...messages.submit} />
               </Typography>
             </Button>
-        </Grid>
+          </Grid>
         </Grid>
       </div>
     </div>

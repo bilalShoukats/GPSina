@@ -348,10 +348,47 @@ const gensetList = [
     },
 ]
 
+const driverList = [
+    {
+        id: 1,
+        username: 'Driver A',
+        password: '@zure123',
+        name: 'Azure Testing',
+        idNum: '0424',
+        dob: '23/08/1998',
+        licenseType: 'B2',
+        licenseNum: 'AI89706E',
+        expiryDate: '08/23/2022'
+    },
+    {
+        id: 2,
+        username: 'Driver B',
+        password: '@zure123!@#$',
+        name: 'Azure Testing 2.0',
+        idNum: '0425',
+        dob: '13/12/1992',
+        licenseType: 'D, B2',
+        licenseNum: 'AI00706E',
+        expiryDate: '12/13/2021'
+    },
+    {
+        id: 1,
+        username: 'Driver C',
+        password: '@zure12345',
+        name: 'Azure Testing 3.0',
+        idNum: '0426',
+        dob: '01/01/1990',
+        licenseType: 'B',
+        licenseNum: 'AI89111O',
+        expiryDate: '01/01/2022'
+    },
+]
+
 export {
     markers,
     alerts,
     deviceList,
     fenceList,
     gensetList,
+    driverList,
 };
