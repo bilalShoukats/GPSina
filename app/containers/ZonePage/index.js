@@ -34,7 +34,7 @@ export function ZonePage(props) {
 
   const goToAreaDetailScreen = (area) => {
     console.log('goToAreaDetailScreen');
-    props.history.push(SCREENS.AREADETAIL, { area: area })
+    props.history.push(SCREENS.ZONEDETAIL, { area: area })
   }
 
   const handleAddZone = () => {

@@ -24,6 +24,7 @@ const SCREENS = {
   POI: '/poi',
   ZONE: '/zone',
   ADDZONE: '/add-zone',
+  ZONEDETAIL: '/zone-detail',
 };
 
 export default SCREENS;

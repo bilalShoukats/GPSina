@@ -17,6 +17,7 @@ import AddDriverPage from '../AddDriverPage/Loadable';
 import DriverDetailPage from '../DriverDetailPage/Loadable';
 import POIPage from '../POIPage/Loadable';
 import ZonePage from '../ZonePage/Loadable';
+import ZoneDetailPage from '../ZoneDetailPage/Loadable';
 import AddZonePage from '../AddZonePage/Loadable';
 import FencePage from '../FencePage/Loadable';
 import LoginPage from '../LoginPage/Loadable';
@@ -177,6 +178,12 @@ export function Route(props) {
                     exact 
                     path={SCREENS.ADDZONE} 
                     component={AddZonePage}
+                    isAuthenticated={props.isAuthenticated}
+                />
+                <PrivateRoute
+                    exact 
+                    path={SCREENS.ZONEDETAIL} 
+                    component={ZoneDetailPage}
                     isAuthenticated={props.isAuthenticated}
                 />
 
