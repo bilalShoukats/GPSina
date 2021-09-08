@@ -393,8 +393,8 @@ const poiList = [
         address: 'A-22-35, Bangunan Scott Garden, Jln Klang Lama, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
         latitude: 3.1279423,
         longitude: 101.6304614,
-        color: 'red',
-        markerShop: 5,
+        color: '#FF0000',
+        markerShop: "5",
     },
     {
         id: 2,
@@ -404,8 +404,8 @@ const poiList = [
         address: 'K2-G4-13, IOI City Mall, Jln Sepang Utama, 53100 Sepang, Selangor Darul Ehsan, Malaysia',
         latitude: 3.1279423,
         longitude: 101.6304614,
-        color: 'blue',
-        markerShop: 2,
+        color: '#0000FF',
+        markerShop: "2",
         company_name: 'Axure Innovations',
         company_id: 'A2134-T0-POI',
         contact_person: 'Mr Edward',
@@ -421,8 +421,8 @@ const poiList = [
         address: 'A-22-35, Bangunan Permata Perdana, Jln Klang Baru, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
         latitude: 3.1279423,
         longitude: 101.6304614,
-        color: 'yellow',
-        markerShop: 0,
+        color: '#FFFF00',
+        markerShop: "1",
     },
 ]
 

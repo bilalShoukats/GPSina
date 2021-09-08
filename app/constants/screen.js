@@ -23,6 +23,7 @@ const SCREENS = {
   DRIVERDETAIL: '/driver-detail',
   POI: '/poi',
   ADDPOI: '/add-poi',
+  POIDETAIL: '/poi-detail',
   ZONE: '/zone',
   ADDZONE: '/add-zone',
   ZONEDETAIL: '/zone-detail',
