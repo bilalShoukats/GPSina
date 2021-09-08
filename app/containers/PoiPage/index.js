@@ -48,22 +48,22 @@ export function PoiPage(props) {
 
   const handleIcon = (icon) => {
     switch(icon){
-      case 1 :
+      case "1" :
         return faBuilding
 
-      case 2:
+      case "2":
         return faIndustry
 
-      case 3:
+      case "3":
         return faFlag;
 
-      case 4:
+      case "4":
         return faHome;
 
-      case 5:
+      case "5":
         return faMapMarkerAlt
 
-      case 6: 
+      case "6": 
         return faStreetView
 
       default:

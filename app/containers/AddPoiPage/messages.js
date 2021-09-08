@@ -61,6 +61,54 @@ export default defineMessages({
     id: `${scope}.markerShop`,
     defaultMessage: 'Marker Shop',
   },
+  companyName: {
+    id: `${scope}.companyName`,
+    defaultMessage: 'Company Name',
+  },
+  enterCompanyName: {
+    id: `${scope}.enterCompanyName`,
+    defaultMessage: 'Enter Company Name',
+  },
+  companyId: {
+    id: `${scope}.companyId`,
+    defaultMessage: 'Company ID',
+  },
+  enterCompanyId: {
+    id: `${scope}.enterCompanyId`,
+    defaultMessage: 'Enter Company ID',
+  },
+  contactPerson: {
+    id: `${scope}.contactPerson`,
+    defaultMessage: 'Contact Person',
+  },
+  enterContactPerson: {
+    id: `${scope}.enterContactPerson`,
+    defaultMessage: 'Enter Contact Person',
+  },
+  phoneNum: {
+    id: `${scope}.phoneNum`,
+    defaultMessage: 'Phone No',
+  },
+  enterPhoneNum: {
+    id: `${scope}.enterPhoneNum`,
+    defaultMessage: 'Enter Phone No',
+  },
+  mobileNum: {
+    id: `${scope}.mobileNum`,
+    defaultMessage: 'Mobile No',
+  },
+  enterMobileNum: {
+    id: `${scope}.enterMobileNum`,
+    defaultMessage: 'Enter Mobile No',
+  },
+  email: {
+    id: `${scope}.email`,
+    defaultMessage: 'Email',
+  },
+  enterEmail: {
+    id: `${scope}.enterEmail`,
+    defaultMessage: 'Enter Email',
+  },
   save:{
     id: `${scope}.save`,
     defaultMessage: 'Save',

@@ -34,7 +34,13 @@ export function AddPoiPage(props) {
   const [longitude, setLongitude] = useState("");
   const [address, setAddress] = useState("");
   const [zone, setZone] = useState("");
-  const [color, setColor] = useState("0");
+  const [color, setColor] = useState("#0F0F0F");
+  const [companyName, setCompanyName] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [mobileNum, setMobileNum] = useState("");
+  const [email, setEmail] = useState("");
   const [markerShop, setMarkerShop] = useState("1");
   const [type, setType] = useState("private");
 
@@ -142,6 +148,94 @@ export function AddPoiPage(props) {
               />
             </Grid>
 
+            { type === "business" &&
+              <>
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.companyName} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={companyName}
+                    name="companyName"
+                    placeholder={props.intl.formatMessage({...messages.enterCompanyName})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.companyId} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={companyId}
+                    name="companyId"
+                    placeholder={props.intl.formatMessage({...messages.enterCompanyId})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.contactPerson} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={contactPerson}
+                    name="contactPerson"
+                    placeholder={props.intl.formatMessage({...messages.enterContactPerson})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.phoneNum} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={phoneNum}
+                    name="phoneNum"
+                    placeholder={props.intl.formatMessage({...messages.enterPhoneNum})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.mobileNum} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={mobileNum}
+                    name="mobileNum"
+                    placeholder={props.intl.formatMessage({...messages.enterMobileNum})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+
+                <Grid item>
+                  <Typography variant="body1" className={classes.label}>
+                    <FormattedMessage {...messages.email} />
+                  </Typography>
+                  <Input
+                    className={classes.textInput}
+                    value={email}
+                    name="email"
+                    placeholder={props.intl.formatMessage({...messages.enterEmail})}
+                    onChange={handleChange}
+                    disableUnderline
+                  />
+                </Grid>
+              </>
+            }
+
             <Grid item>
               <Typography variant="body1" className={classes.label}>
                 <FormattedMessage {...messages.latitude} />
@@ -215,9 +309,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "0"}
+                      checked={color === "#0F0F0F"}
                       onChange={handleColorChange}
-                      value="0"
+                      value="#0F0F0F"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0F0F0F' }} />
                   </Grid>
@@ -228,9 +322,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "1"}
+                      checked={color === "'#0000FF"}
                       onChange={handleColorChange}
-                      value="1"
+                      value="'#0000FF"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0000FF' }} />
                   </Grid>
@@ -241,9 +335,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "2"}
+                      checked={color === "#00FF00"}
                       onChange={handleColorChange}
-                      value="2"
+                      value="#00FF00"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#00FF00' }} />
                   </Grid>
@@ -255,9 +349,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "3"}
+                      checked={color === "#FF0000"}
                       onChange={handleColorChange}
-                      value="3"
+                      value="#FF0000"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FF0000' }} />
                   </Grid>
@@ -268,9 +362,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "4"}
+                      checked={color === "#FFFF00"}
                       onChange={handleColorChange}
-                      value="4"
+                      value="#FFFF00"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFFF00' }} />
                   </Grid>
@@ -281,9 +375,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "5"}
+                      checked={color === "#FFC0CB"}
                       onChange={handleColorChange}
-                      value="5"
+                      value="#FFC0CB"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFC0CB' }} />
                   </Grid>
@@ -295,9 +389,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "6"}
+                      checked={color === "#800080"}
                       onChange={handleColorChange}
-                      value="6"
+                      value="#800080"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#800080' }} />
                   </Grid>
@@ -308,9 +402,9 @@ export function AddPoiPage(props) {
                     alignItems="center"
                   >
                     <Radio
-                      checked={color === "7"}
+                      checked={color === "#FFA500"}
                       onChange={handleColorChange}
-                      value="7"
+                      value="#FFA500"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFA500' }} />
                   </Grid>
