@@ -14,7 +14,12 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import { useStyles } from './styles.js';
 import Img from '../Img';
-
+import {
+    SwipeableList,
+    SwipeableListItem,
+} from '@sandstreamdev/react-swipeable-list';
+import Delete from '@material-ui/icons/Delete';
+import '@sandstreamdev/react-swipeable-list/dist/styles.css';
 import fenceIcon from '../../../assets/images/icons/fence.png';
 import alertIcon from '../../../assets/images/icons/alert.png';
 import locateIcon from '../../../assets/images/icons/locate.png';
@@ -24,172 +29,232 @@ import SCREENS from '../../constants/screen';
 import moment from 'moment';
 
 const propTypes = {
-  accOn: PropTypes.bool,
-  deviceName: PropTypes.string,
-  modelNumber: PropTypes.string,
-  date: PropTypes.string,
-  onOpenModal: PropTypes.func.isRequired,
+    accOn: PropTypes.bool,
+    deviceName: PropTypes.string,
+    modelNumber: PropTypes.string,
+    date: PropTypes.string,
+    onOpenModal: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
-  accOn: false,
-  deviceName: 'Sample Device',
-  modelNumber: '456123789',
-  date: '27 May 2021',
+    accOn: false,
+    deviceName: 'Sample Device',
+    modelNumber: '456123789',
+    date: '27 May 2021',
 };
 
 const DeviceList = ({ ...props }) => {
-  const classes = useStyles(props);
-  const history = useHistory();
+    const classes = useStyles(props);
+    const history = useHistory();
 
-  const goToLocateScreen = () => {
-    history.push(SCREENS.LOCATE);
-  };
+    const goToLocateScreen = () => {
+        history.push(SCREENS.LOCATE);
+    };
 
-  const goToHistoryScreen = () => {
-    history.push(SCREENS.HISTORY);
-  };
+    const goToHistoryScreen = () => {
+        history.push(SCREENS.HISTORY);
+    };
 
-  const goToFenceScreen = () => {
-    history.push(SCREENS.FENCE);
-  };
+    const goToFenceScreen = () => {
+        history.push(SCREENS.FENCE);
+    };
 
-  const showMoreModal = () => {
-    props.onOpenModal();
-  };
+    const showMoreModal = () => {
+        props.onOpenModal();
+    };
 
-  const goToAlertScreen = () => {
-    history.push(SCREENS.ALERT);
-  };
+    const goToAlertScreen = () => {
+        history.push(SCREENS.ALERT);
+    };
 
-  const changeAccStatus = () => {
-    //
-  };
+    const changeAccStatus = () => {
+        //
+    };
 
-  return (
-    <div className={classes.container}>
-      <Grid container direction="column">
-        <Grid
-          container
-          spacing={2}
-          justify="space-between"
-          direction="row"
-          alignItems="center"
-        >
-          <Grid item>
-            <Typography variant="body1" color="initial" display="inline">
-              {props.deviceName}
-            </Typography>
-            <Typography
-              variant="body2"
-              className={classes.mutedText}
-              display="inline"
+    return (
+        <SwipeableList threshold={0.25}>
+            <SwipeableListItem
+                swipeLeft={{
+                    content: (
+                        <div
+                            style={{
+                                bottom: -12,
+                                height: '43%',
+                                width: '100%',
+                                color: 'white',
+                                display: 'flex',
+                                padding: '0px 18px',
+                                alignItems: 'center',
+                                position: 'relative',
+                                backgroundColor: 'red',
+                                justifyContent: 'flex-end',
+                            }}
+                        >
+                            Delete Vehicle
+                            <Delete />
+                        </div>
+                    ),
+                    action: () => props.swipeAction(),
+                }}
+                onSwipeProgress={progress =>
+                    console.info(`Swipe progress: ${progress}%`)
+                }
             >
-              {props.modelNumber}
-            </Typography>
-            <Typography variant="body2" className={classes.mutedText}>
-              {moment.unix(props.date).format('D MMM YYYY')}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Button
-              color="default"
-              className={classes.btn}
-              variant="outlined"
-              onClick={changeAccStatus}
-            >
-              {props.accOn ? (
-                <Typography variant="body2">
-                  <FormattedMessage {...messages.accOn} />
-                </Typography>
-              ) : (
-                <Typography variant="body2">
-                  <FormattedMessage {...messages.accOff} />
-                </Typography>
-              )}
-            </Button>
-          </Grid>
-        </Grid>
+                <Grid
+                    container
+                    direction="column"
+                    style={{
+                        backgroundColor: '#000',
+                        //borderBottom: '1px solid #5f5a5a',
+                        padding: 1,
+                    }}
+                >
+                    <Grid
+                        container
+                        spacing={2}
+                        justify="space-between"
+                        direction="row"
+                        alignItems="center"
+                    >
+                        <Grid item>
+                            <Typography
+                                variant="body1"
+                                className={classes.textWhite}
+                                display="inline"
+                            >
+                                {props.deviceName}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                className={classes.mutedText}
+                                display="inline"
+                            >
+                                {props.modelNumber}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                className={classes.mutedText}
+                            >
+                                {moment.unix(props.date).format('D MMM YYYY')}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                color="default"
+                                className={classes.btn}
+                                variant="outlined"
+                                onClick={changeAccStatus}
+                            >
+                                {props.accOn ? (
+                                    <Typography variant="body2">
+                                        <FormattedMessage {...messages.accOn} />
+                                    </Typography>
+                                ) : (
+                                    <Typography variant="body2">
+                                        <FormattedMessage
+                                            {...messages.accOff}
+                                        />
+                                    </Typography>
+                                )}
+                            </Button>
+                        </Grid>
+                    </Grid>
 
-        <div className={classes.btnContainer}>
-          <Grid
-            container
-            spacing={1}
-            justify="space-between"
-            direction="row"
-            alignItems="center"
-          >
-            <Grid
-              onClick={goToLocateScreen}
-              className={classes.btnOutline}
-            >
-              <Img
-                src={locateIcon}
-                alt="Locate Icon"
-                className={classes.logoStyle}
-              />
-              <Typography variant="body2">
-                <FormattedMessage {...messages.locate} />
-              </Typography>
-            </Grid>
-            <Grid
-              onClick={goToFenceScreen}
-              className={classes.btnOutline}
-            >
-              {/* <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" color="#28ACEA" /> */}
-              <Img
-                src={fenceIcon}
-                alt="Fence Icon"
-                className={classes.logoStyle}
-              />
-              <Typography variant="body2">
-                <FormattedMessage {...messages.fence} />
-              </Typography>
-            </Grid>
-            <Grid
-              onClick={goToHistoryScreen}
-              className={classes.btnOutline}
-            >
-              <Img
-                src={historyIcon}
-                alt="History Icon"
-                className={classes.logoStyle}
-              />
-              <Typography variant="body2">
-                <FormattedMessage {...messages.history} />
-              </Typography>
-            </Grid>
-            <Grid
-              onClick={showMoreModal}
-              className={classes.btnOutline}
-            >
-              <Img
-                src={plusIcon}
-                alt="More Icon"
-                className={classes.logoStyle}
-              />
-              <Typography variant="body2">
-                <FormattedMessage {...messages.more} />
-              </Typography>
-            </Grid>
-            <Grid
-              onClick={goToAlertScreen}
-              className={classes.btnOutline}
-            >
-              <Img
-                src={alertIcon}
-                alt="Alert Icon"
-                className={classes.logoStyle}
-              />
-              <Typography variant="body2">
-                <FormattedMessage {...messages.alert} />
-              </Typography>
-            </Grid>
-          </Grid>
-        </div>
-      </Grid>
-    </div>
-  );
+                    <div className={classes.btnContainer}>
+                        <Grid
+                            container
+                            spacing={1}
+                            justify="space-between"
+                            direction="row"
+                            alignItems="center"
+                        >
+                            <Grid
+                                onClick={goToLocateScreen}
+                                className={classes.btnOutline}
+                            >
+                                <Img
+                                    src={locateIcon}
+                                    alt="Locate Icon"
+                                    className={classes.logoStyle}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    className={classes.textWhite}
+                                >
+                                    <FormattedMessage {...messages.locate} />
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                onClick={goToFenceScreen}
+                                className={classes.btnOutline}
+                            >
+                                {/* <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" color="#28ACEA" /> */}
+                                <Img
+                                    src={fenceIcon}
+                                    alt="Fence Icon"
+                                    className={classes.logoStyle}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    className={classes.textWhite}
+                                >
+                                    <FormattedMessage {...messages.fence} />
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                onClick={goToHistoryScreen}
+                                className={classes.btnOutline}
+                            >
+                                <Img
+                                    src={historyIcon}
+                                    alt="History Icon"
+                                    className={classes.logoStyle}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    className={classes.textWhite}
+                                >
+                                    <FormattedMessage {...messages.history} />
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                onClick={showMoreModal}
+                                className={classes.btnOutline}
+                            >
+                                <Img
+                                    src={plusIcon}
+                                    alt="More Icon"
+                                    className={classes.logoStyle}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    className={classes.textWhite}
+                                >
+                                    <FormattedMessage {...messages.more} />
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                onClick={goToAlertScreen}
+                                className={classes.btnOutline}
+                            >
+                                <Img
+                                    src={alertIcon}
+                                    alt="Alert Icon"
+                                    className={classes.logoStyle}
+                                />
+                                <Typography
+                                    variant="body2"
+                                    className={classes.textWhite}
+                                >
+                                    <FormattedMessage {...messages.alert} />
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Grid>
+            </SwipeableListItem>
+        </SwipeableList>
+    );
 };
 
 DeviceList.propTypes = propTypes;

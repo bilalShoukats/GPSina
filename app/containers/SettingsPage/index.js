@@ -11,7 +11,6 @@ import messages from './messages';
 import PropTypes from 'prop-types';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { SuperHOC } from '../../HOC';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Dots } from 'react-activity';
@@ -44,7 +43,7 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Grid, Input, Typography, Hidden } from '@material-ui/core';
+import { Button, Grid, Input, Typography } from '@material-ui/core';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 
 let cropper = null;

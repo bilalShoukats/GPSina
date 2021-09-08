@@ -17,18 +17,15 @@ function App(props) {
 
     React.useEffect(() => {
         if (props.token === null) {
-            Manager.getItem('token')
+            Manager.getItem('token', true)
                 .then(token => {
                     if (token !== null && token !== '') {
-                        Manager.getItem('user')
+                        Manager.getItem('user', true)
                             .then(user => {
                                 if (user !== null && user !== '') {
-                                    api.setToken(JSON.parse(user).email, token);
+                                    api.setToken(user.email, token);
                                     props.dispatch(
-                                        loginUserSuccess(
-                                            token,
-                                            JSON.parse(user),
-                                        ),
+                                        loginUserSuccess(token, user),
                                     );
                                 }
                             })
@@ -40,9 +37,11 @@ function App(props) {
     }, []);
 
     React.useEffect(() => {
-        Manager.getItem('sessionId')
+        Manager.getItem('sessionId', true)
             .then(sessionId => {
                 if (sessionId != null && sessionId != '') {
+                    console.log('sessionId: ', sessionId);
+                    api.setSession(sessionId);
                     props.dispatch(setSession(sessionId));
                 } else {
                     api.send('PUT', '/createSession', { fcmKey: '123' })

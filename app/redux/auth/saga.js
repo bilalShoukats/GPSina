@@ -10,14 +10,11 @@ export function* watchLoginUser() {
 }
 
 function* loginToServer({ payload }) {
+    console.log('login payload: ', payload);
     const { body, history } = payload;
     try {
         const response = yield call(asyncLogin, body);
         if (response.data.code === 2003) {
-            api.setToken(
-                response.data.response.email,
-                response.data.response.hash,
-            );
             Manager.setItem('token', response.data.response.hash);
             yield call(
                 setAuthorization,
@@ -26,11 +23,7 @@ function* loginToServer({ payload }) {
             );
             const userResponse = yield call(getUser);
             if (userResponse.data.code === 1012) {
-                Manager.setItem(
-                    'user',
-                    JSON.stringify(userResponse.data.response),
-                );
-                console.log('usre saga: ', userResponse.data.response);
+                Manager.setItem('user', userResponse.data.response);
                 yield put(
                     loginUserSuccess(
                         response.data.response.hash,

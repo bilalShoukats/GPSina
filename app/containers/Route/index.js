@@ -126,7 +126,6 @@ export function Route(props) {
 
 const mapStateToProps = state => {
     const { auth } = state;
-    console.log('LoginAuth: ', auth);
     return { isAuthenticated: auth.token && auth.user ? true : false };
 };
 function mapDispatchToProps(dispatch) {
