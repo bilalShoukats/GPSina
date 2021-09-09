@@ -1,3 +1,4 @@
+// auth
 export const SET_USER = 'SET_USER';
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
@@ -14,3 +15,7 @@ export const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
 export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
+
+// theme
+export const DARK_THEME = "DARK_THEME";
+export const LIGHT_THEME = "LIGHT_THEME";
