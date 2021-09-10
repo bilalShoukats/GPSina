@@ -4,7 +4,7 @@ import {
 } from '../actions';
 
 const INIT_STATE = {
-    darkMode: true,
+    darkMode: false,
 };
 
 export default (state = INIT_STATE, action) => {

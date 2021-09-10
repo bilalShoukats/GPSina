@@ -4,10 +4,24 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import { GET_ALL_DRIVER, GET_ALL_DRIVER_ERROR, GET_ALL_DRIVER_SUCCESS } from './constants';
 
-export function defaultAction() {
+export function getAllDriver() {
   return {
-    type: DEFAULT_ACTION,
+    type: GET_ALL_DRIVER,
+  };
+}
+
+export function getAllDriverLoaded(driver) {
+  return {
+    type: GET_ALL_DRIVER_SUCCESS,
+    driver,
+  };
+}
+
+export function getAllDriverError(error) {
+  return {
+    type: GET_ALL_DRIVER_ERROR,
+    error,
   };
 }

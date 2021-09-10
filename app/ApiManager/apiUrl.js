@@ -5,7 +5,8 @@ const APIURLS = {
   register: 'register',
   getAllGeoFence: 'getAllGeoFence',
   getAllDevices: 'getAllDevices',
-  updateAvatar: 'updateAvatar'
+  updateAvatar: 'updateAvatar',
+  getAlldrivers: '/getAlldrivers',
 };
 
 export default APIURLS;

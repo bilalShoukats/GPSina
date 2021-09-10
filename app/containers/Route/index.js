@@ -214,7 +214,7 @@ export function Route(props) {
 
 const mapStateToProps = state => {
     const { auth, theme } = state;
-    console.log('theme', theme);
+    // console.log('theme', theme);
     // console.log('LoginAuth: ', auth);
     return { isAuthenticated: auth.token && auth.user ? true : false, theme };
 };

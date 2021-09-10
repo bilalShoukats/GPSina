@@ -39,9 +39,9 @@ const darkTheme = createTheme({
             contrastText: '#FFFFFF',
         },
         secondary: {
-            main: deepOrange[500],
-            light: deepOrange[200],
-            dark: deepOrange[700],
+            main: green['A700'],
+            light: green[200],
+            dark: green[700],
             contrastText: '#FFFFFF',
         },
         info: {
@@ -70,6 +70,11 @@ const darkTheme = createTheme({
         },
         action: {
             disabled: grey[400]
+        },
+        text: {
+            primary: '#FFFFFF',
+            secondary: 'rgba(255, 255, 255, 0.7)',
+            disabled: 'rgba(255, 255, 255, 0.5)',
         }
     },
 });
@@ -85,9 +90,9 @@ const lightTheme = createTheme({
             contrastText: '#FFFFFF',
         },
         secondary: {
-            main: deepOrange[500],
-            light: deepOrange[200],
-            dark: deepOrange[700],
+            main: green['A700'],
+            light: green[200],
+            dark: green[700],
             contrastText: '#FFFFFF',
         },
         info: {
@@ -116,6 +121,11 @@ const lightTheme = createTheme({
         },
         action: {
             disabled: grey[400]
+        },
+        text: {
+            // primary: '#FFFFFF',
+            // secondary: 'rgba(255, 255, 255, 0.7)',
+            disabled: 'rgba(255, 255, 255, 0.5)',
         }
     },
 });

@@ -1,3 +1,4 @@
+import { grey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 const width = Math.min((((window.innerWidth/12) * 8) * 0.5), 350);
 
@@ -24,12 +25,11 @@ const useStyles = makeStyles(theme => ({
   textInput: {
     width: '100%',
     backgroundColor: 'transparent',
-    color: '#ABABAB',
-    borderBottom: '3px solid #ABABAB',
+    color: grey[500],
+    borderBottom: '3px solid ' + grey[500],
     marginTop: '0.5em',
     marginBottom: '1em',
     padding: '0.2em 0.5em',
-    fontSize: '14px',
     borderRadius: '0px'
   },
   title: {
@@ -43,15 +43,10 @@ const useStyles = makeStyles(theme => ({
   btnBlue: {
     margin: '0.8em auto',
     width: width + 'px',
-    backgroundColor: '#ABABAB',
-    color: '#FFFFFF',
     textTransform: 'capitalize',
     borderRadius: '20px',
     fontWeight: '400',
     padding: '0.5em 0',
-    '&:hover': {
-      backgroundColor: "#ABABAB",
-    }
   },
 }));
 

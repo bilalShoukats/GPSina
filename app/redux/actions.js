@@ -19,3 +19,8 @@ export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
 // theme
 export const DARK_THEME = "DARK_THEME";
 export const LIGHT_THEME = "LIGHT_THEME";
+
+// driver
+export const GET_ALL_DRIVER = 'GET_ALL_DRIVER';
+export const GET_ALL_DRIVER_ERROR = 'GET_ALL_DRIVER_ERROR';
+export const GET_ALL_DRIVER_SUCCESS = 'GET_ALL_DRIVER_SUCCESS';

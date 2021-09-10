@@ -17,21 +17,21 @@ export default defineMessages({
     id: `${scope}.driverInformation`,
     defaultMessage: 'Driver Information',
   },
-  username: {
-    id: `${scope}.username`,
-    defaultMessage: 'Username',
+  driverEmail: {
+    id: `${scope}.driverEmail`,
+    defaultMessage: 'Email',
   },
-  enterUsername: {
-    id: `${scope}.enterUsername`,
-    defaultMessage: 'Enter Username',
+  enterDriverEmail: {
+    id: `${scope}.enterDriverEmail`,
+    defaultMessage: 'Enter Driver Email',
   },
-  password: {
-    id: `${scope}.password`,
-    defaultMessage: 'Password',
+  ownerEmail: {
+    id: `${scope}.ownerEmail`,
+    defaultMessage: 'Owner Email',
   },
-  enterPassword: {
-    id: `${scope}.enterPassword`,
-    defaultMessage: 'Enter Password',
+  enterOwnerEmail: {
+    id: `${scope}.enterOwnerEmail`,
+    defaultMessage: 'Enter Owner Email',
   },
   name: {
     id: `${scope}.name`,
@@ -57,25 +57,25 @@ export default defineMessages({
     id: `${scope}.enterPhoneNum`,
     defaultMessage: 'Enter Phone Number',
   },
-  dob: {
-    id: `${scope}.dob`,
-    defaultMessage: 'Date Of Birth',
+  age: {
+    id: `${scope}.age`,
+    defaultMessage: 'Age',
   },
-  enterDob: {
-    id: `${scope}.enterDob`,
-    defaultMessage: 'Enter Date Of Birth',
+  enterAge: {
+    id: `${scope}.enterAge`,
+    defaultMessage: 'Enter Age',
   },
   licenseInformation: {
     id: `${scope}.licenseInformation`,
     defaultMessage: 'License Information',
   },
-  licenseType: {
-    id: `${scope}.licenseType`,
-    defaultMessage: 'License Type',
+  gender: {
+    id: `${scope}.gender`,
+    defaultMessage: 'Gender',
   },
-  enterLicenseType: {
-    id: `${scope}.enterLicenseType`,
-    defaultMessage: 'Enter License Type',
+  enterGender: {
+    id: `${scope}.enterGender`,
+    defaultMessage: 'Enter Gender',
   },
   licenseNum: {
     id: `${scope}.licenseNum`,

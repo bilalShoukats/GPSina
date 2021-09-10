@@ -1,3 +1,4 @@
+import { grey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -8,7 +9,7 @@ const useStyles = makeStyles(theme => ({
     padding: '0.5em 1em',
     margin: '0.5em 0',
     borderRadius: '10px',
-    backgroundColor: 'grey',
+    backgroundColor: grey[500],
     opacity: 0.8,
   },
   content: {
@@ -19,15 +20,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  dotIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    zIndex: 99,
-    backgroundColor: 'lightgreen',
-    width: '10px',
-    height: '10px'
-  }
 }));
 
 export { useStyles };

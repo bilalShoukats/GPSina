@@ -33,13 +33,13 @@ export function DriverDetailPage(props) {
 
   const classes = useStyles(props);
   const [isEditMode, setisEditmode] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [ownerEmail, setOwnerEmail] = useState("");
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [idNum, setIdNum] = useState("");
-  const [dob, setDob] = useState("");
-  const [licenseType, setLicenseType] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [licenseNum, setLicenseNum] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
 
@@ -56,12 +56,12 @@ export function DriverDetailPage(props) {
     const { name, value } = e.target;
 
     switch(name){
-      case 'username':
-        setUsername(value);
+      case 'email':
+        setEmail(value);
         break;
 
-      case 'password':
-        setPassword(value);
+      case 'ownerEmail':
+        setOwnerEmail(value);
         break;
 
       case 'name':
@@ -76,12 +76,12 @@ export function DriverDetailPage(props) {
         setIdNum(value);
         break;
 
-      case 'dob':
-        setDob(value);
+      case 'age':
+        setAge(value);
         break;
 
-      case 'licenseType':
-        setLicenseType(value);
+      case 'gender':
+        setGender(value);
         break;
 
       case 'licenseNum':
@@ -94,18 +94,23 @@ export function DriverDetailPage(props) {
     }
   }
 
+  const handleGender = (gender) => {
+    return gender === 1 ? 'Male' : 'Female';
+  }
+
   useEffect(() => {
     console.log(props.location.state);
     if(props.location.state.driver){
       const driver = props.location.state.driver;
-      setDob(driver.dob);
-      setExpiryDate(driver.expiryDate);
-      setIdNum(driver.idNum);
-      setLicenseNum(driver.licenseNum);
-      setLicenseType(driver.licenseType);
-      setName(driver.name);
-      setPassword(driver.password);
-      setUsername(driver.username);
+      setAge(driver.driverAge);
+      setExpiryDate(driver.licenceExpiry);
+      setIdNum(driver.driverID);
+      setLicenseNum(driver.licenceNumber);
+      setGender(handleGender(driver.gender));
+      setName(driver.driverName);
+      setOwnerEmail(driver.driverOwner);
+      setEmail(driver.driverEmail);
+      setPhoneNum(driver.driverPhone);
     } else {
       props.history.goBack()
     }
@@ -146,15 +151,15 @@ export function DriverDetailPage(props) {
 
             <Grid item>
               <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.username} />
+                <FormattedMessage {...messages.driverEmail} />
               </Typography>
               <Input
                 className={classes.textInput}
-                value={username}
-                name="username"
+                value={email}
+                name="email"
                 style={!isEditMode ? { color: '#ABABAB' } : {}}
                 disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterUsername})}
+                placeholder={props.intl.formatMessage({...messages.enterDriverEmail})}
                 onChange={handleChange}
                 disableUnderline
               />
@@ -162,16 +167,16 @@ export function DriverDetailPage(props) {
 
             <Grid item>
               <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.password} />
+                <FormattedMessage {...messages.ownerEmail} />
               </Typography>
               <Input
                 className={classes.textInput}
-                value={password}
-                name="password"
-                type="password"
+                value={ownerEmail}
+                name="ownerEmail"
+                type="ownerEmail"
                 style={!isEditMode ? { color: '#ABABAB' } : {}}
                 disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterPassword})}
+                placeholder={props.intl.formatMessage({...messages.enterOwnerEmail})}
                 onChange={handleChange}
                 disableUnderline
               />
@@ -227,15 +232,31 @@ export function DriverDetailPage(props) {
 
             <Grid item>
               <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.dob} />
+                <FormattedMessage {...messages.age} />
               </Typography>
               <Input
                 className={classes.textInput}
-                value={dob}
-                name="dob"
+                value={age}
+                name="age"
                 style={!isEditMode ? { color: '#ABABAB' } : {}}
                 disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterDob})}
+                placeholder={props.intl.formatMessage({...messages.enterAge})}
+                onChange={handleChange}
+                disableUnderline
+              />
+            </Grid>
+
+            <Grid item>
+              <Typography variant="body1" className={classes.label}>
+                <FormattedMessage {...messages.gender} />
+              </Typography>
+              <Input
+                className={classes.textInput}
+                value={gender}
+                name="gender"
+                style={!isEditMode ? { color: '#ABABAB' } : {}}
+                disabled={!isEditMode}
+                placeholder={props.intl.formatMessage({...messages.enterGender})}
                 onChange={handleChange}
                 disableUnderline
               />
@@ -244,22 +265,6 @@ export function DriverDetailPage(props) {
             <Typography variant="h5" className={classes.title}>
               <FormattedMessage {...messages.licenseInformation} />
             </Typography>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.licenseType} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={licenseType}
-                name="licenseType"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterLicenseType})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
 
             <Grid item>
               <Typography variant="body1" className={classes.label}>

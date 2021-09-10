@@ -5,7 +5,7 @@ import { initialState } from './reducer';
  * Direct selector to the driverPage state domain
  */
 
-const selectDriverPageDomain = state => state.driverPage || initialState;
+const selectDriver = state => state.driver || initialState;
 
 /**
  * Other specific selectors
@@ -15,11 +15,11 @@ const selectDriverPageDomain = state => state.driverPage || initialState;
  * Default selector used by DriverPage
  */
 
-const makeSelectDriverPage = () =>
+const makeSelectDriver = () =>
   createSelector(
-    selectDriverPageDomain,
-    substate => substate,
+    selectDriver,
+    driver => driver.driver,
   );
 
-export default makeSelectDriverPage;
-export { selectDriverPageDomain };
+export default makeSelectDriver;
+export { selectDriver };
