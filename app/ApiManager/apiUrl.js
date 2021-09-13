@@ -7,6 +7,7 @@ const APIURLS = {
   getAllDevices: 'getAllDevices',
   updateAvatar: 'updateAvatar',
   getAlldrivers: '/getAlldrivers',
+  addDriver: '/addDriver',
 };
 
 export default APIURLS;

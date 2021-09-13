@@ -2,13 +2,17 @@
 import ApiManager from '../../ApiManager/ApiManager';
 import { getAllDriverError, getAllDriverSuccess } from './actions';
 import { call, all, fork, takeEvery, put } from 'redux-saga/effects';
-import { GET_ALL_DRIVER } from '../actions';
+import { ADD_DRIVER, GET_ALL_DRIVER } from '../actions';
 import APIURLS from '../../ApiManager/apiUrl';
 
 const api = ApiManager.getInstance();
 
-export function* watchGetAlDriver() {
+export function* watchGetAllDriver() {
     yield takeEvery(GET_ALL_DRIVER, callGetAllDriver);
+}
+
+export function* watchAddDriver() {
+    yield takeEvery(ADD_DRIVER, callAddDriver);
 }
 
 function* callGetAllDriver({ payload }) {
@@ -31,12 +35,37 @@ function* callGetAllDriver({ payload }) {
     }
 }
 
+function* callAddDriver({ payload }) {
+    const { body, history } = payload;
+    try {
+        const addDriverResponse = yield call(addDriver, body);
+        console.log('addDriverResponse', addDriverResponse);
+        if (addDriverResponse.data.code === 1008) {
+            console.log('addDriver saga: ', addDriverResponse.data.response);
+            yield put(getAllDriverSuccess(addDriverResponse.data.id));
+            history.goBack();
+        } else {
+            console.log('err', err);
+            yield put(getAllDriverError(addDriverResponse.data.code));
+        }
+
+    } catch(err){
+        yield put(getAllDriverError(err));
+    }
+}
+
 const getAllDriver = async () =>
     await api
         .send('GET', APIURLS.getAlldrivers , {})
         .then(response => response)
         .catch(error => error);
 
+const addDriver = async (body) =>
+    await api
+        .send('POST', APIURLS.getAlldrivers , body)
+        .then(response => response)
+        .catch(error => error);
+
 export default function* rootSaga() {
-    yield all([fork(watchGetAlDriver)]);
+    yield all([fork(watchGetAllDriver), fork(watchAddDriver)]);
 }
