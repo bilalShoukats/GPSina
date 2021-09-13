@@ -106,7 +106,7 @@ export function AddGensetPage(props) {
             alignItems="center"
             className={classes.btnContainer}
           >
-            <Button size="medium" className={classes.btnBlue} onClick={handleSubmit}>
+            <Button color="primary" variant="contained" size="medium" className={classes.btnBlue} onClick={handleSubmit}>
               <Typography variant="body1">
                 <FormattedMessage {...messages.submit} />
               </Typography>

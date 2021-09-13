@@ -122,7 +122,7 @@ export function SettingsPage(props) {
     useEffect(() => {
         setEmail(props.auth.user.email);
         setMobileNo(props.auth.user.phone);
-        setUserName(props.auth.user.firstName + ' ' + props.auth.user.lastName);
+        setUserName(props.auth.user.userName);
     }, []);
 
     const openLightBox = () => {

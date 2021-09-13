@@ -177,19 +177,20 @@ export function PoiDetailPage(props) {
               <FormControlLabel
                 value="private"
                 checked={type === "private" ? true : false}
-                control={<Radio color="secondary" />}
+                control={<Radio color="primary" />}
                 label="Private"
                 onChange={handleTypeChange}
                 className={classes.radioGroup}
-                // disabled={!isEditMode}
+                disabled={!isEditMode}
               />
               <FormControlLabel
                 value="business"
                 checked={type === "business" ? true : false}
-                control={<Radio color="secondary" />}
+                control={<Radio color="primary" />}
                 label="Business"
                 onChange={handleTypeChange}
                 className={classes.radioGroup}
+                disabled={!isEditMode}
               />
             </RadioGroup>
 
@@ -391,7 +392,10 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#0F0F0F"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
+                      color="primary"
                       value="#0F0F0F"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0F0F0F' }} />
@@ -404,7 +408,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#0000FF"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#0000FF"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0000FF' }} />
@@ -417,7 +423,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#00FF00"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#00FF00"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#00FF00' }} />
@@ -431,7 +439,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#FF0000"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#FF0000"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FF0000' }} />
@@ -444,7 +454,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#FFFF00"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#FFFF00"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFFF00' }} />
@@ -457,7 +469,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#FFC0CB"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#FFC0CB"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFC0CB' }} />
@@ -471,7 +485,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#800080"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#800080"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#800080' }} />
@@ -484,7 +500,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={color === "#FFA500"}
+                      disabled={!isEditMode}
                       onChange={handleColorChange}
+                      color="primary"
                       value="#FFA500"
                     />
                     <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFA500' }} />
@@ -511,7 +529,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "1"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="1"
                     />
                     <FontAwesomeIcon
@@ -528,7 +548,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "2"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="2"
                     />
                     <FontAwesomeIcon
@@ -545,7 +567,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "3"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="3"
                     />
                     <FontAwesomeIcon
@@ -563,7 +587,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "4"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="4"
                     />
                     <FontAwesomeIcon
@@ -580,7 +606,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "5"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="5"
                     />
                     <FontAwesomeIcon
@@ -597,7 +625,9 @@ export function PoiDetailPage(props) {
                   >
                     <Radio
                       checked={markerShop === "6"}
+                      disabled={!isEditMode}
                       onChange={handleMarkerChange}
+                      color="primary"
                       value="6"
                     />
                     <FontAwesomeIcon

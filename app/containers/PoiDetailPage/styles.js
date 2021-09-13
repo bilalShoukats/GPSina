@@ -1,6 +1,7 @@
+import { grey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ( console.log(theme), {
   root: {
     flexGrow: 1,
     margin: 'auto',
@@ -23,8 +24,8 @@ const useStyles = makeStyles(theme => ({
   textInput: {
     width: '100%',
     backgroundColor: 'transparent',
-    color: '#ABABAB',
-    borderBottom: '3px solid #ABABAB',
+    color: grey[500],
+    borderBottom: '3px solid' + grey[500],
     marginTop: '0.5em',
     marginBottom: '1em',
     padding: '0.2em 0.5em',
@@ -37,36 +38,6 @@ const useStyles = makeStyles(theme => ({
   },
   bottomContainer: {
     margin: '2em 0',
-  },
-  btnBlue: {
-    margin: '0.8em 0',
-    width: '80%',
-    backgroundColor: 'transparent',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    border: '2px solid #28ACEA',
-    fontWeight: '400',
-    padding: '0.5em 0',
-  },
-  btnYellow: {
-    margin: '0.8em 0',
-    width: '80%',
-    backgroundColor: 'transparent',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    border: '2px solid #FEE128',
-    fontWeight: '400',
-    padding: '0.5em 0',
-  },
-  btnRed: {
-    margin: '0.8em 0',
-    width: '80%',
-    backgroundColor: 'transparent',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    border: '2px solid #FF0000',
-    fontWeight: '400',
-    padding: '0.5em 0',
   },
   radioContainer: {
     width: 'auto',

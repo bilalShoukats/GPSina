@@ -87,6 +87,30 @@ export function AddPoiPage(props) {
       case 'zone':
         setZone(value);
         break;
+
+      case 'companyName':
+        setCompanyName(value);
+        break;
+
+      case 'companyId':
+        setCompanyId(value);
+        break;
+
+      case 'contactPerson':
+        setContactPerson(value);
+        break;
+
+      case 'phoneNum':
+        setPhoneNum(value);
+        break;
+
+      case 'mobileNum':
+        setMobileNum(value);
+        break;
+
+      case 'email':
+        setEmail(value);
+        break;
     }
   }
 

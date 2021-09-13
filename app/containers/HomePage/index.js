@@ -237,12 +237,12 @@ class HomePage extends Component {
                                 <ListItemText primary="Point Of Interest" />
                             </ListItem>
 
-                            <ListItem button key="tnc" onClick={() => console.log('tnc')} className={classes.listItemContainer}>
+                            {/* <ListItem button key="tnc" onClick={() => console.log('tnc')} className={classes.listItemContainer}>
                                 <ListItemIcon>
                                 <FontAwesomeIcon icon={faFileAlt} size="lg" />
                                 </ListItemIcon>
                                 <ListItemText primary="Terms and Conditions" />
-                            </ListItem>
+                            </ListItem> */}
 
                             <ListItem button key="logout" onClick={() => console.log('logout')} className={classes.listItemContainer}>
                                 <ListItemIcon>
