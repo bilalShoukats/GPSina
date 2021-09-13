@@ -307,13 +307,6 @@ export function LoginPage(props) {
         history.push(SCREENS.FORGOTPASSWORD);
     };
 
-    useEffect(() => {
-        //props.dispatch(changeEmail('hello'));
-        //props.dispatch(loginUser('token', {}));
-    }, []);
-
-    console.log('check', props);
-
     return (
         <div className={classes.root}>
             <Helmet>

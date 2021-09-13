@@ -3,7 +3,6 @@
  *
  * This is the first thing users see of our App, at the '/' route
  */
-
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -11,7 +10,7 @@ import { Helmet } from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortUp, faCog, faPowerOff, faBars, faHome, faFileAlt, faSearchLocation, faUsers, faCarAlt, faCogs, faChartBar } from '@fortawesome/free-solid-svg-icons';
-import { Button, Divider, Drawer, Grid, Input, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { Button, Divider, Drawer, Grid, Input, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
@@ -29,11 +28,14 @@ import SortUpIcon from '../../../assets/images/icons/sortUp.png';
 import SortDownIcon from '../../../assets/images/icons/sortDown.png';
 import UserAvatar from '../../components/UserAvatar';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
+import ApiManager from '../../ApiManager/ApiManager';
+import ConfirmDialog from '../confirmAlert';
 
 class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            open: false,
             isModalShown: false,
             coordinate: {
                 lat: LATITUDE,
@@ -46,29 +48,40 @@ class HomePage extends Component {
             totalPage: 1,
             isSidebarShown: false,
         };
+        this.api = ApiManager.getInstance();
     }
 
     componentDidMount = () => {
-        console.log('ComponentDidMount - Home');
-        //this.getDevices();
+        this.getDevices();
+    };
+
+    confirmOpen = () => {
+        this.setState({ open: true });
+    };
+
+    ConfirmDialogClose = () => {
+        this.setState({ open: false });
+    };
+
+    confirmAgree = () => {
+        console.log('you agreee the dialog');
     };
 
     getDevices = async () => {
-        this.props.apiManager.callApi(
-            APIURLS.getAllDevices,
-            'GET',
-            null,
-            res => {
-                console.log(res);
-                if (res.code == '1019') {
+        this.api
+            .send('GET', APIURLS.getVehicle, {})
+            .then(response => {
+                console.log('devices: ', response.data);
+                if (response.data.code === 1019) {
                     this.setState({
-                        deviceList: res.response,
-                        page: res.currentPage,
-                        totalPage: res.totalPages,
+                        deviceList: response.data.response,
+                        page: response.data.currentPage,
+                        totalPage: response.data.totalPages,
                     });
+                } else {
                 }
-            },
-        );
+            })
+            .catch(error => console.log('error: ', error));
     };
 
     // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
@@ -161,7 +174,7 @@ class HomePage extends Component {
                 className={classes.icon}
             />
         );
-
+        console.log('classes: ', classes.black);
         return (
             <div>
                 <Helmet>
@@ -254,7 +267,7 @@ class HomePage extends Component {
                         </div>
                         </div>
                     </Drawer>
-                    <Grid container style={{ width: width, height: height }}>
+                    <Grid container>
                         <CustomModal
                             open={isModalShown}
                             handleClose={this.handleCloseModal}
@@ -289,7 +302,7 @@ class HomePage extends Component {
 
                         <Grid container className={classes.container}>
                             <Grid item xs={4} className={classes.leftContainer}>
-                                <Grid
+                                {/* <Grid
                                     container
                                     spacing={2}
                                     justify="space-between"
@@ -375,7 +388,7 @@ class HomePage extends Component {
                                             />
                                         </Button>
                                     </Grid>
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid container direction="column">
                                     <Grid
@@ -486,20 +499,34 @@ class HomePage extends Component {
                                         </Grid>
                                     </Grid>
 
-                                    <Grid item className={classes.list}>
-                                        {deviceList.map(device => (
-                                            <DeviceList
-                                                onOpenModal={
-                                                    this.handleOpenModal
-                                                }
-                                                date={device.CreatedAt}
-                                                modelNumber={device.deviceID}
-                                                deviceName={
-                                                    device.registrationNo
-                                                }
-                                            />
-                                        ))}
-                                    </Grid>
+                                    <Paper
+                                        elevation={3}
+                                        variant="outlined"
+                                        // style={{
+                                        //     background: '#000',
+                                        // }}
+                                        className={classes.black}
+                                    >
+                                        <Grid item className={classes.list}>
+                                            {deviceList.map(device => (
+                                                <DeviceList
+                                                    swipeAction={
+                                                        this.confirmOpen
+                                                    }
+                                                    onOpenModal={
+                                                        this.handleOpenModal
+                                                    }
+                                                    date={device.CreatedAt}
+                                                    modelNumber={
+                                                        device.deviceID
+                                                    }
+                                                    deviceName={
+                                                        device.registrationNo
+                                                    }
+                                                />
+                                            ))}
+                                        </Grid>
+                                    </Paper>
                                 </Grid>
                             </Grid>
                             <Grid item xs={8} className={classes.mapContainer}>
@@ -508,6 +535,14 @@ class HomePage extends Component {
                         </Grid>
                     </Grid>
                 </div>
+                <ConfirmDialog
+                    title={'Alert'}
+                    message={'Are you sure to delete this vehicle'}
+                    open={this.state.open}
+                    agree={this.confirmAgree}
+                    disagree={this.ConfirmDialogClose}
+                    handleClose={this.ConfirmDialogClose}
+                />
             </div>
         );
     }
@@ -515,6 +550,10 @@ class HomePage extends Component {
 
 HomePage.propTypes = {
     dispatch: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => {
+    const { auth } = state;
+    return auth;
 };
 
 export function mapDispatchToProps(dispatch) {
@@ -524,7 +563,7 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const withConnect = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
 );
 
