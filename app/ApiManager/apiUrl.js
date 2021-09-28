@@ -3,6 +3,8 @@ const APIURLS = {
     createSession: 'createSession',
     getUser: 'getUser',
     register: 'register',
+    resendOtp: 'resendOtp',
+    validateOtp: 'validateOtp',
     getAllGeoFence: 'getAllGeoFence',
     getAllDevices: '/getAllDevices',
     updateAvatar: 'updateAvatar',

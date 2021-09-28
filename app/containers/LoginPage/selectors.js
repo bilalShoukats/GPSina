@@ -38,8 +38,14 @@ const makeSelectAutoLogin = createSelector(
     loginState => loginState.autoLogin,
 );
 
+const makeSelectError = createSelector(
+    selectLogin,
+    loginState => loginState.error,
+);
+
 export {
     selectLogin,
+    makeSelectError,
     makeSelectEmail,
     makeSelectPassword,
     makeSelectNewEmail,

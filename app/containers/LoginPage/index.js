@@ -22,23 +22,26 @@ import { connect } from 'react-redux';
 import Img from '../../components/Img';
 import { changeEmail } from './actions';
 import { useStyles } from './styles.js';
+import { Digital } from 'react-activity';
+import 'react-activity/dist/Digital.css';
 import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
 import { useHistory } from 'react-router-dom';
 import CheckBox from '../../components/CheckBox';
 import React, { useEffect, useState } from 'react';
+import ApiManager from '../../ApiManager/ApiManager';
 import { loginUser } from '../../redux/auth/actions';
 import CustomModal from '../../components/CustomModal';
 import UKFlag from '../../../assets/images/flags/uk.png';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { useInjectReducer } from '../../utils/injectReducer';
 import { Button, Input, Typography, Grid } from '@material-ui/core';
+import { OtpDialogeBox } from '../../components/OtpDialougeBox';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 
 export function LoginPage(props) {
     useInjectReducer({ key: 'login', reducer });
 
-    const [loading, setLoading] = useState('');
     const [errors, setErrors] = useState({
         newEmail: '',
         newPassword: '',
@@ -48,9 +51,16 @@ export function LoginPage(props) {
         newLastname: '',
         newMobileNo: '',
     });
+    const [otpBody, setOtpBody] = useState({
+        email: '',
+        expireAt: 0,
+        hash: '',
+    });
     const [email, setEmail] = useState('');
-    const [newEmail, setNewEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [timeStamp, setTimeStamp] = useState(0);
     const [modalTitle, setModalTitle] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
     const [newPassword, setNewPassword] = useState('');
@@ -61,8 +71,9 @@ export function LoginPage(props) {
     const [newFirstname, setNewFirstname] = useState('');
     const [isModalShown, setIsModalShown] = useState(false);
     const [modalDescription, setModalDescription] = useState('');
+    const [isOtpModalShown, setIsOtpModalShown] = useState(false);
+    const [registerLoading, setRegisterLoading] = useState(false);
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
-
     const classes = useStyles(props);
     const history = useHistory();
 
@@ -170,6 +181,71 @@ export function LoginPage(props) {
         setAutoLogin(event.target.checked);
     };
 
+    useEffect(() => {
+        if (loading) {
+            setLoading(!props.error);
+            setModalTitle(
+                props.intl.formatMessage({
+                    ...messages.validationError,
+                }),
+            );
+            setModalDescription(
+                props.intl.formatMessage({
+                    ...messages.loginFailed,
+                }),
+            );
+            handleOpenModal();
+        }
+    }, [props.error]);
+
+    const registerUser = async body => {
+        const api = ApiManager.getInstance();
+
+        api.send('POST', APIURLS.register, body)
+            .then(res => {
+                console.log('Response Object : ', res);
+                if (res) setRegisterLoading(false);
+                if (res.data.code === 6011) {
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.verifyOtp,
+                        }),
+                    );
+                    setOtpBody({
+                        email: res.data.response.email,
+                        expireAt: res.data.response.expireAt,
+                        hash: res.data.response.hash,
+                    });
+                    handleOtpOpenModal();
+                } else {
+                    setRegisterLoading(false);
+                    console.log('Errors : ', error);
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.registerFailed,
+                        }),
+                    );
+                    setModalDescription(props.intl.formatMessage({}));
+                    handleOpenModal();
+                }
+            })
+            .catch(error => {
+                setRegisterLoading(false);
+                console.log('Errors : ', error);
+                setModalTitle(
+                    props.intl.formatMessage({
+                        ...messages.registerFailed,
+                    }),
+                );
+                setModalDescription(
+                    props.intl.formatMessage({
+                        ...messages.registerFailed,
+                    }),
+                );
+                handleOpenModal();
+            });
+    };
+
     const handleSubmit = event => {
         event.preventDefault();
         const { id } = event.target;
@@ -195,6 +271,7 @@ export function LoginPage(props) {
                         appVersion: '1.0.0.1',
                         //appVersion: props.apiManager.appVersion,
                     };
+                    setLoading(true);
                     props.dispatch(loginUser(body, history));
                     // props.apiManager.callApi(
                     //     APIURLS.login,
@@ -246,28 +323,18 @@ export function LoginPage(props) {
                         email: newEmail,
                         phone: newMobileNo,
                         role: 0,
+                        clientID: 'gfas67zjh9q',
+                        ipAddress: '192.168.11.3',
                     };
-                    props.apiManager.callApi(
-                        APIURLS.register,
-                        'POST',
-                        body,
-                        res => {
-                            console.log(res);
-                            if (res.code === 1006) {
-                                setModalTitle(
-                                    props.intl.formatMessage({
-                                        ...messages.registerSuccessful,
-                                    }),
-                                );
-                                setModalDescription(
-                                    props.intl.formatMessage({
-                                        ...messages.pleaseLoginUsingThisCredential,
-                                    }),
-                                );
-                                handleOpenModal();
-                            }
-                        },
-                    );
+                    setRegisterLoading(true);
+
+                    registerUser(body);
+                    // props.apiManager.callApi(
+                    //     APIURLS.register,
+                    //     'POST',
+                    //     body,
+
+                    // );
                 } else {
                     console.log(errors);
                     setModalTitle(
@@ -296,10 +363,16 @@ export function LoginPage(props) {
         setIsModalShown(true);
     };
 
+    const handleOtpOpenModal = () => {
+        setIsOtpModalShown(true);
+    };
+
     const handleCloseModal = () => {
         setIsModalShown(false);
         if (props.intl.formatMessage({ ...messages.registerSuccessful })) {
             window.location.reload();
+        } else {
+            console.log('Eoooreroeow');
         }
     };
 
@@ -324,6 +397,12 @@ export function LoginPage(props) {
                     type="simple"
                     title={modalTitle}
                     description={modalDescription}
+                />
+                <OtpDialogeBox
+                    open={isOtpModalShown}
+                    title={modalTitle}
+                    otpResponse={otpBody}
+                    handleClose={handleCloseModal}
                 />
                 <div className={classes.rightContainer}>
                     <FormattedMessage {...messages.language} />
@@ -424,14 +503,23 @@ export function LoginPage(props) {
                             </Typography>
                         </Grid>
                     </div>
-
-                    <Button
-                        type="submit"
-                        className={classes.btn}
-                        variant="contained"
-                    >
-                        <FormattedMessage {...messages.login} />
-                    </Button>
+                    {!loading && (
+                        <Button
+                            type="submit"
+                            className={classes.btn}
+                            variant="contained"
+                        >
+                            <FormattedMessage {...messages.login} />
+                        </Button>
+                    )}
+                    {loading && (
+                        <Digital
+                            color="#ffa500"
+                            size={32}
+                            speed={1}
+                            animating={loading}
+                        />
+                    )}
                 </form>
 
                 <Typography
@@ -614,13 +702,23 @@ export function LoginPage(props) {
                         )}
                     </div>
 
-                    <Button
-                        type="submit"
-                        className={classes.btn}
-                        variant="contained"
-                    >
-                        <FormattedMessage {...messages.signUp} />
-                    </Button>
+                    {!registerLoading && (
+                        <Button
+                            type="submit"
+                            className={classes.btn}
+                            variant="contained"
+                        >
+                            <FormattedMessage {...messages.signUp} />
+                        </Button>
+                    )}
+                    {registerLoading && (
+                        <Digital
+                            color="#ffa500"
+                            size={32}
+                            speed={1}
+                            animating={registerLoading}
+                        />
+                    )}
                 </form>
             </div>
         </div>
@@ -633,6 +731,7 @@ LoginPage.propTypes = {
 
 const mapStateToProps = state => {
     return {
+        error: state.auth.error,
         login: selectLogin(state),
         email: makeSelectEmail(state),
         password: makeSelectPassword(state),

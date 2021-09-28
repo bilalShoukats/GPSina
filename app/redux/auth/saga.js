@@ -32,13 +32,13 @@ function* loginToServer({ payload }) {
                 );
                 history.push('/');
             } else {
-                yield put(loginUserError(userResponse.data.code));
+                yield put(loginUserError(userResponse.data.id));
             }
         } else {
-            yield put(loginUserError(response.data.code));
+            yield put(loginUserError(response.data.id));
         }
     } catch (error) {
-        yield put(loginUserError(error));
+        yield put(loginUserError(error.message));
     }
 }
 
