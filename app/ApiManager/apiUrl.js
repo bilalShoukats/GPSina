@@ -1,12 +1,15 @@
 const APIURLS = {
     login: 'login',
-    createSession: 'createSession',
     getUser: 'getUser',
     register: 'register',
-    getAllGeoFence: 'getAllGeoFence',
-    getAllDevices: '/getAllDevices',
-    updateAvatar: 'updateAvatar',
+    addFence: '/addGeoFence',
     getVehicle: '/getVehicles',
+    updateAvatar: 'updateAvatar',
+    deleteFence: '/deleteGeoFence',
+    createSession: 'createSession',
+    getAllDevices: '/getAllDevices',
+    getAllGeoFence: '/getAllGeoFence',
+    updateGeoFence: '/updateGeoFence',
 };
 
 export default APIURLS;

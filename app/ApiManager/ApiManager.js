@@ -41,12 +41,14 @@ export default class ApiManager {
         header['Access-Control-Allow-Origin'] = '*';
         if (method !== 'GET') {
             header['data'] = payload;
+        } else {
+            header['params'] = payload;
         }
         return header;
     };
 
     setSession = sessionId => {
-        this.sessionId = sessionId;
+        this.sessionId = sessionId.toString();
     };
 
     setToken = (email, token) => {
