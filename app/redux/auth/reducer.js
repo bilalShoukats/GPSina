@@ -28,13 +28,13 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state,
                 error: '',
-                loading: true,
+                //loading: true,
             };
         case LOGIN_USER_SUCCESS:
             return {
                 ...state,
                 error: '',
-                loading: false,
+                //loading: false,
                 user: action.payload.user,
                 token: action.payload.token,
             };

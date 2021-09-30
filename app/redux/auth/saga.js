@@ -10,7 +10,6 @@ export function* watchLoginUser() {
 }
 
 function* loginToServer({ payload }) {
-    console.log('login payload: ', payload);
     const { body, history } = payload;
     try {
         const response = yield call(asyncLogin, body);
