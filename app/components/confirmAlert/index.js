@@ -24,13 +24,14 @@ export default function ConfirmDialog(props) {
                     <DialogContentText id="alert-dialog-description">
                         {props.message}
                     </DialogContentText>
+                    {props.children}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={props.disagree} color="primary">
-                        Cancel
+                        {props.disagreeText}
                     </Button>
                     <Button onClick={props.agree} color="primary" autoFocus>
-                        Ok
+                        {props.agreeText}
                     </Button>
                 </DialogActions>
             </Dialog>

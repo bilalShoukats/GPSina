@@ -4,7 +4,7 @@
  *
  */
 
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, Avatar } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -135,17 +135,31 @@ const DeviceList = ({ ...props }) => {
                                 variant="body2"
                                 className={classes.mutedText}
                             >
-                                {moment.unix(props.date).format('D MMM YYYY')}
+                                {moment
+                                    .unix(props.date)
+                                    .add(1, 'y')
+                                    .format('D MMM YYYY')}
                             </Typography>
                         </Grid>
                         <Grid item>
+                            {props.lastVehicleInformation.Battery < 50 ? (
+                                <Img
+                                    width={'20%'}
+                                    alt="low battery"
+                                    style={{
+                                        transform: 'rotate(180deg)',
+                                        marginRight: '5px',
+                                    }}
+                                    src={require('../../../assets/images/icons/low_battery.png')}
+                                />
+                            ) : null}
                             <Button
                                 color="default"
                                 className={classes.btn}
                                 variant="outlined"
                                 onClick={changeAccStatus}
                             >
-                                {props.accOn ? (
+                                {props.lastVehicleInformation.EngineStatus ? (
                                     <Typography variant="body2">
                                         <FormattedMessage {...messages.accOn} />
                                     </Typography>
