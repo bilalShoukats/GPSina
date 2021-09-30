@@ -1,17 +1,17 @@
+import { compose } from 'redux';
 import messages from './messages';
+import { connect } from 'react-redux';
 import OtpInput from 'react-otp-input';
 import { useStyles } from './styles.js';
 import { Sentry } from 'react-activity';
 import 'react-activity/dist/Sentry.css';
+import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
-import { FormattedMessage, injectIntl } from 'react-intl';
 import React, { useState, useEffect } from 'react';
 import ApiManager from '../../ApiManager/ApiManager';
 import CustomModal from '../../components/CustomModal';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Grid, Modal, Typography, Box } from '@material-ui/core';
-import SCREENS from '../../constants/screen';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 
 export function OtpDialogeBox(props) {
     const classes = useStyles(props);
@@ -253,7 +253,9 @@ export function OtpDialogeBox(props) {
                                     disabled={otp.length < 6 || verifyLoading}
                                 >
                                     <Typography variant="body1" align="center">
-                                        {description}
+                                        <FormattedMessage
+                                            {...messages.verifyOtp}
+                                        />
                                     </Typography>
                                 </Button>
                             </Grid>

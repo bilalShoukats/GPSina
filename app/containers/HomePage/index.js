@@ -5,11 +5,29 @@
  */
 import messages from './messages';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import Img from '../../components/Img';
+import Map from '../../components/Map';
+import { useStyles } from './styles.js';
+import SCREENS from '../../constants/screen';
+import APIURLS from '../../ApiManager/apiUrl';
+import { withStyles } from '@material-ui/styles';
+import React, { Component, createRef } from 'react';
+import UserAvatar from '../../components/UserAvatar';
+import DeviceList from '../../components/DeviceList';
+import ApiManager from '../../ApiManager/ApiManager';
+import CustomModal from '../../components/CustomModal';
+import FormControl from '@material-ui/core/FormControl';
+import { DummydeviceList } from '../../constants/dummy';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import ConfirmDialog from '../../components/confirmAlert';
+import SortUpIcon from '../../../assets/images/icons/sortUp.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SortDownIcon from '../../../assets/images/icons/sortDown.png';
+import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
+import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
+import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 import {
     faSortUp,
     faCog,
@@ -22,6 +40,7 @@ import {
     faCarAlt,
     faCogs,
     faChartBar,
+    faFilter,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -35,46 +54,12 @@ import {
     ListItemText,
     Paper,
     Typography,
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
-
-import messages from './messages';
-import Img from '../../components/Img';
-import Map from '../../components/Map';
-import { useStyles } from './styles.js';
-import Paper from '@material-ui/core/Paper';
-import SCREENS from '../../constants/screen';
-import APIURLS from '../../ApiManager/apiUrl';
-import { withStyles } from '@material-ui/styles';
-import React, { Component, createRef } from 'react';
-import DeviceList from '../../components/DeviceList';
-import ApiManager from '../../ApiManager/ApiManager';
-import CustomModal from '../../components/CustomModal';
-import FormControl from '@material-ui/core/FormControl';
-import { DummydeviceList } from '../../constants/dummy';
-import ConfirmDialog from '../../components/confirmAlert';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SortUpIcon from '../../../assets/images/icons/sortUp.png';
-import SortDownIcon from '../../../assets/images/icons/sortDown.png';
-import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
-import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
-import {
-    Button,
-    Select,
-    MenuItem,
-    Grid,
-    Input,
-    List,
-    Typography,
     TextField,
+    MenuItem,
     Box,
+    Select,
 } from '@material-ui/core';
 const textField = createRef();
-import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
-import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
-import { faSortUp, faCog, faFilter } from '@fortawesome/free-solid-svg-icons';
-
 class HomePage extends Component {
     constructor(props) {
         super(props);

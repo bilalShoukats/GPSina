@@ -71,7 +71,7 @@ export function LoginPage(props) {
     const [newFirstname, setNewFirstname] = useState('');
     const [isModalShown, setIsModalShown] = useState(false);
     const [modalDescription, setModalDescription] = useState('');
-    const [isOtpModalShown, setIsOtpModalShown] = useState(true);
+    const [isOtpModalShown, setIsOtpModalShown] = useState(false);
     const [registerLoading, setRegisterLoading] = useState(false);
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
     const classes = useStyles(props);

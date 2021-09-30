@@ -233,7 +233,7 @@ const alerts = [
     ],
 ];
 
-const DummydeviceList = [
+const deviceList = [
     {
         id: 1,
         name: '3353-M6',
@@ -313,4 +313,141 @@ const fenceList = [
     },
 ];
 
-export { markers, alerts, DummydeviceList, fenceList };
+const gensetList = [
+    {
+        id: 1,
+        regNo: '1234567890',
+        name: 'Dummy Vehicle 1',
+        make: 'Perodua',
+        model: 'Myvi',
+        year: '2020',
+        color: 'purple',
+        fuelTankCapacity: '80',
+        type: 'private',
+    },
+    {
+        id: 2,
+        regNo: '2468013579',
+        name: 'Dummy Vehicle 2',
+        make: 'Toyota',
+        model: 'Yaris',
+        year: '2020',
+        color: 'purple',
+        fuelTankCapacity: '100',
+        type: 'commercial',
+    },
+    {
+        id: 3,
+        regNo: '3691215182',
+        name: 'Dummy Vehicle 3',
+        make: 'Honda',
+        model: 'Vios',
+        year: '2020',
+        color: 'purple',
+        fuelTankCapacity: '90',
+        type: 'private',
+    },
+];
+const driverList = [
+    {
+        id: 1,
+        username: 'Driver A',
+        password: '@zure123',
+        name: 'Azure Testing',
+        idNum: '0424',
+        dob: '23/08/1998',
+        licenseType: 'B2',
+        licenseNum: 'AI89706E',
+        expiryDate: '08/23/2022',
+    },
+    {
+        id: 2,
+        username: 'Driver B',
+        password: '@zure123!@#$',
+        name: 'Azure Testing 2.0',
+        idNum: '0425',
+        dob: '13/12/1992',
+        licenseType: 'D, B2',
+        licenseNum: 'AI00706E',
+        expiryDate: '12/13/2021',
+    },
+    {
+        id: 1,
+        username: 'Driver C',
+        password: '@zure12345',
+        name: 'Azure Testing 3.0',
+        idNum: '0426',
+        dob: '01/01/1990',
+        licenseType: 'B',
+        licenseNum: 'AI89111O',
+        expiryDate: '01/01/2022',
+    },
+];
+const poiList = [
+    {
+        id: 1,
+        name: 'testing POI 1',
+        type: 'private',
+        zone: 1,
+        address:
+            'A-22-35, Bangunan Scott Garden, Jln Klang Lama, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: '#FF0000',
+        markerShop: '5',
+    },
+    {
+        id: 2,
+        name: 'testing POI 2',
+        type: 'business',
+        zone: 2,
+        address:
+            'K2-G4-13, IOI City Mall, Jln Sepang Utama, 53100 Sepang, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: '#0000FF',
+        markerShop: '2',
+        company_name: 'Axure Innovations',
+        company_id: 'A2134-T0-POI',
+        contact_person: 'Mr Edward',
+        phone_num: '019-244 6543',
+        mobile_num: '017-777 6543',
+        email: 'info@axure-i.com',
+    },
+    {
+        id: 3,
+        name: 'testing POI 3',
+        type: 'private',
+        zone: 1,
+        address:
+            'A-22-35, Bangunan Permata Perdana, Jln Klang Baru, 50100 Kuala Lumpur, Selangor Darul Ehsan, Malaysia',
+        latitude: 3.1279423,
+        longitude: 101.6304614,
+        color: '#FFFF00',
+        markerShop: '1',
+    },
+];
+const zoneList = [
+    {
+        id: 1,
+        name: 'zone 1',
+    },
+    {
+        id: 2,
+        name: 'zone 2',
+    },
+    {
+        id: 3,
+        name: 'zone 3',
+    },
+];
+export {
+    markers,
+    alerts,
+    deviceList,
+    fenceList,
+    gensetList,
+    driverList,
+    poiList,
+    zoneList,
+};
