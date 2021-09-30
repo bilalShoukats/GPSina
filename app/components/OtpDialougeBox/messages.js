@@ -17,4 +17,32 @@ export default defineMessages({
         id: `${scope}.resendOtp`,
         defaultMessage: 'Resend OTP',
     },
+    pleaseLoginUsingThisCredential: {
+        id: `${scope}.pleaseLoginUsingThisCredential`,
+        defaultMessage: 'Please login using this credentials',
+    },
+    registerSuccessful: {
+        id: `${scope}.registerSuccessful`,
+        defaultMessage: 'Registration Successful',
+    },
+    networkError: {
+        id: `${scope}.networkError`,
+        defaultMessage: 'Network Error',
+    },
+    resendFailed: {
+        id: `${scope}.resendfailed`,
+        defaultMessage: 'Resend Failed',
+    },
+    badBodyRequest: {
+        id: `${scope}.badBodyRequest`,
+        defaultMessage: 'Invalid OTP',
+    },
+    verificationFailed: {
+        id: `${scope}.verificationFailed`,
+        defaultMessage: 'Verification Failed',
+    },
+    verificationSuccess: {
+        id: `${scope}.verificationSuccess`,
+        defaultMessage: 'OTP Verified',
+    },
 });

@@ -4,11 +4,14 @@ import { useStyles } from './styles.js';
 import { Sentry } from 'react-activity';
 import 'react-activity/dist/Sentry.css';
 import APIURLS from '../../ApiManager/apiUrl';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import React, { useState, useEffect } from 'react';
 import ApiManager from '../../ApiManager/ApiManager';
 import CustomModal from '../../components/CustomModal';
 import { Button, Grid, Modal, Typography, Box } from '@material-ui/core';
+import SCREENS from '../../constants/screen';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 export function OtpDialogeBox(props) {
     const classes = useStyles(props);
@@ -16,7 +19,10 @@ export function OtpDialogeBox(props) {
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
     const [timer, setTimer] = useState(false);
-    const [successMsg, setSuccessMsg] = useState(false);
+    const [titleMsg, setTitleMsg] = useState('');
+    const [description, setDescription] = useState('');
+    const [verificationFlag, setVerificationFlag] = useState(false);
+    const [modalFlag, setModalFlag] = useState(false);
     const [verifyLoading, setVerifyLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
     const [otpBody, setOtpBody] = useState({
@@ -48,11 +54,23 @@ export function OtpDialogeBox(props) {
 
     const handleChange = otp => {
         setOtp(otp);
-        console.log(typeof otp);
+        console.log('Typed Otp : ', otp);
+    };
+
+    const handleCloseModal = message => {
+        setModalFlag(false);
+        console.log('Descrpition : ', messages);
+
+        if (
+            message === messages.pleaseLoginUsingThisCredential.defaultMessage
+        ) {
+            history.push(SCREENS.LOGIN);
+        }
     };
 
     const handleVerify = async () => {
         setVerifyLoading(true);
+        console.log('OTP to be verified : ', parseInt(otp));
         const body = {
             email: otpBody.email,
             code: parseInt(otp),
@@ -64,13 +82,38 @@ export function OtpDialogeBox(props) {
                 setVerifyLoading(false);
                 console.log('Validate Otp Response Object : ', res);
                 if (res.data.code === 6019) {
-                    setSuccessMsg(true);
-                    console.log('Verified');
+                    setVerificationFlag(true);
+                    // setTitleMsg(
+                    //     props.intl.formatMessage({
+                    //         ...messages.verificationSuccess,
+                    //     }),
+                    // );
+                    // setDescription(
+                    //     props.intl.formatMessage({
+                    //         ...messages.pleaseLoginUsingThisCredential,
+                    //     }),
+                    // );
+                    setTitleMsg(messages.verificationSuccess.defaultMessage);
+                    setDescription(
+                        messages.pleaseLoginUsingThisCredential.defaultMessage,
+                    );
                 }
             })
             .catch(error => {
                 setVerifyLoading(false);
-                console.log('Errors in validate Otp: ', error);
+                setModalFlag(true);
+                // setTitleMsg(
+                //     props.intl.formatMessage({
+                //         ...messages.verificationFailed,
+                //     }),
+                // );
+                // setDescription(
+                //     props.intl.formatMessage({
+                //         ...messages.networkError,
+                //     }),
+                // );
+                setTitleMsg(messages.verificationFailed.defaultMessage);
+                setDescription(messages.networkError.defaultMessage);
             });
     };
 
@@ -90,12 +133,38 @@ export function OtpDialogeBox(props) {
                         expireAt: res.data.response.expireAt,
                         hash: res.data.response.hash,
                     });
+                } else {
+                    setModalFlag(true);
+                    // setTitleMsg(
+                    //     props.intl.formatMessage({
+                    //         ...messages.resendFailed,
+                    //     }),
+                    // );
+                    // setDescription(
+                    //     props.intl.formatMessage({
+                    //         ...messages.badBodyRequest,
+                    //     }),
+                    // );
+                    setTitleMsg(messages.resendFailed.defaultMessage);
+                    setDescription(messages.badBodyRequest.defaultMessage);
                 }
                 console.log('Resend OTP Response Object : ', res);
             })
             .catch(error => {
                 setResendLoading(false);
-                console.log('Errors in handle resend: ', error);
+                setModalFlag(true);
+                // setTitleMsg(
+                //     props.intl.formatMessage({
+                //         ...messages.resendFailed,
+                //     }),
+                // );
+                // setDescription(
+                //     props.intl.formatMessage({
+                //         ...messages.networkError,
+                //     }),
+                // );
+                setTitleMsg(messages.resendFailed.defaultMessage);
+                setDescription(messages.networkError.defaultMessage);
             });
     };
 
@@ -138,7 +207,7 @@ export function OtpDialogeBox(props) {
 
     return (
         <div>
-            {!successMsg && (
+            {!verificationFlag && (
                 <Modal
                     className={classes.modal}
                     open={props.open}
@@ -166,6 +235,11 @@ export function OtpDialogeBox(props) {
                                     separator={<span>-</span>}
                                     isDisabled={!timer}
                                 />
+                                {/* <Typography variant="body1" align="center">
+                                    <FormattedMessage
+                                        {...messages.verificationFailed}
+                                    />
+                                </Typography> */}
                             </div>
                             <Grid
                                 container
@@ -179,9 +253,7 @@ export function OtpDialogeBox(props) {
                                     disabled={otp.length < 6 || verifyLoading}
                                 >
                                     <Typography variant="body1" align="center">
-                                        <FormattedMessage
-                                            {...messages.verifyOtp}
-                                        />
+                                        {description}
                                     </Typography>
                                 </Button>
                             </Grid>
@@ -246,15 +318,31 @@ export function OtpDialogeBox(props) {
                     </div>
                 </Modal>
             )}
-            {successMsg && (
+            {verificationFlag && (
                 <CustomModal
-                    open={successMsg}
-                    handleClose={props.handleClose}
+                    open={verificationFlag}
+                    close={() =>
+                        handleClose(
+                            messages.pleaseLoginUsingThisCredential
+                                .defaultMessage,
+                        )
+                    }
                     type="simple"
-                    title={'OTP Verified Successfully'}
-                    description={'Please Login to use these Credentials'}
+                    title={titleMsg}
+                    description={description}
                 />
             )}
+            {/* <CustomModal
+                open={modalFlag}
+                close={() => handleCloseModal(description)}
+                type="simple"
+                title={titleMsg}
+                description={description}
+            /> */}
         </div>
     );
 }
+
+const withConnect = connect();
+
+export default compose(withConnect)(injectIntl(OtpDialogeBox));

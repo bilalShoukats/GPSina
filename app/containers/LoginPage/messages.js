@@ -57,9 +57,13 @@ export default defineMessages({
         id: `${scope}.notValidEmail`,
         defaultMessage: 'Email is not valid!',
     },
-    atLeast8Character: {
-        id: `${scope}.atLeast8Character`,
-        defaultMessage: 'Password must be at least 8 characters long!',
+    inValidUserNameLength: {
+        id: `${scope}.inValidUserNameLength`,
+        defaultMessage: 'Username must be 8-20 charactres Long',
+    },
+    inValidPasswordLength: {
+        id: `${scope}.inValidPasswordLength`,
+        defaultMessage: 'Password must be 8-20 charactres Long',
     },
     mismatchPassword: {
         id: `${scope}.mismatchPassword`,
@@ -93,9 +97,9 @@ export default defineMessages({
         id: `${scope}.username`,
         defaultMessage: 'username',
     },
-    atLeast5Character: {
-        id: `${scope}.atLeast5Character`,
-        defaultMessage: 'must at least 5 characters',
+    inValidName: {
+        id: `${scope}.inValidName`,
+        defaultMessage: 'Name must be 3-30 charactres Long',
     },
     invalidMobileNo: {
         id: `${scope}.invalidMobileNo`,
@@ -120,5 +124,25 @@ export default defineMessages({
     verifyOtp: {
         id: `${scope}.verifyOtp`,
         defaultMessage: 'Check your email to verify this OTP',
+    },
+    badBodyRequest: {
+        id: `${scope}.badBodyRequest`,
+        defaultMessage: 'Invalid Inputs',
+    },
+    networkError: {
+        id: `${scope}.networkError`,
+        defaultMessage: 'Network Error',
+    },
+    fillAllInputs: {
+        id: `${scope}.fillAllInputs`,
+        defaultMessage: 'All Inputs Required',
+    },
+    dbError: {
+        id: `${scope}.dbError`,
+        defaultMessage: 'Undefined Database Error',
+    },
+    dupliacteError: {
+        id: `${scope}.dupliacteError`,
+        defaultMessage: 'Duplicate Username, Email or Password',
     },
 });
