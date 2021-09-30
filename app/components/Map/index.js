@@ -46,7 +46,7 @@ const Map = ({ children, ...props }) => (
         <GoogleMapReact
             bootstrapURLKeys={{
                 key: GoogleMapsAPI,
-                libraries: ['drawing', 'places'].join(','),
+                libraries: ['drawing', 'places', 'geometry'].join(','),
             }}
             center={props.center}
             zoom={props.zoom}

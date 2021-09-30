@@ -233,7 +233,7 @@ const alerts = [
     ],
 ];
 
-const deviceList = [
+const DummydeviceList = [
     {
         id: 1,
         name: '3353-M6',
@@ -442,12 +442,12 @@ const zoneList = [
     },
 ];
 export {
-    markers,
     alerts,
-    deviceList,
+    markers,
+    poiList,
+    zoneList,
     fenceList,
     gensetList,
     driverList,
-    poiList,
-    zoneList,
+    DummydeviceList,
 };
