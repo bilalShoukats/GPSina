@@ -6,85 +6,58 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    simpleModal: {
-        backgroundColor: 'grey',
-        border: '1px solid #000000',
+    otpModal: {
+        backgroundColor: '#272727',
         borderRadius: '5px',
-        width: '250px',
-        // boxShadow: theme.shadows[5],
+        width: '400px',
         color: '#FFFFFF',
     },
     textContainer: {
         padding: '1em 1em',
     },
+    errorContainer: {
+        color: 'red',
+    },
     btnContainer: {
-        width: '250px',
+        width: '400px',
+        alignItems: 'center',
+        color: '#28ACEA',
+        padding: '0.5em 0',
+        textDecoration: 'underline',
+    },
+    titleContainer: {
+        width: '400px',
+        alignItems: 'center',
+        color: '#28ACEA',
+        padding: '0.5em 0',
+    },
+    btnContainerDisabled: {
+        width: '400px',
+    },
+    verifybtnContainer: {
+        width: '360px',
         height: '40px',
-        borderTop: '1px solid #000000',
-        color: '#FFFFFF',
-        padding: '1.5em 0',
+        margin: '20px',
+        backgroundColor: '#28ACEA',
+    },
+    verifybtnContainerDisabled: {
+        width: '360px',
+        height: '40px',
+        margin: '20px',
+        backgroundColor: 'gray',
     },
     center: {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    textStyles: {
-        textTransform: 'capitalize',
-    },
-    moreModal: {
-        color: '#FFFFFF',
-        width: '300px',
-        backgroundColor: '#000000',
-    },
-    moreModalTitle: {
-        backgroundColor: '#28ACEA',
-        width: '300px',
-        padding: '0.5em 0.5em',
-        borderBottom: '1px solid #FFFFFF',
-    },
-    moreModalContent: {
-        backgroundColor: '#000000',
-        padding: '0.5em 0.5em',
-    },
-    moreModalIndividualContent: {
-        padding: '0.25em 1em',
-        borderBottom: '1px solid #28ACEA',
-    },
-    moreModalIndividualContentWithBtn: {
-        padding: '0.8em 1em',
-        borderBottom: '1px solid #28ACEA',
-    },
-    moreModalIndividualContentPushNoti: {
-        padding: '0.8em 1em',
-    },
-    switch: {
-        color: '#FFF128',
-    },
-    greenBtn: {
-        width: '45px',
-        height: '35px',
-        padding: '0',
-        backgroundColor: 'green',
-    },
-    textInput: {
-        backgroundColor: 'transparent',
-        border: '2px solid #28ACEA',
-        width: '100px',
-        marginLeft: '0.5em',
-        borderRadius: '5px',
-        color: '#FFFFFF',
-        textTransform: 'uppercase',
-        fontSize: '14px',
-        padding: '0.25em 0.4em',
-    },
     otpBoxStyle: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 15,
+        padding: 15,
     },
     otpInputStyle: {
-        margin: '5px',
+        margin: '10px',
         height: '35px',
         width: '65px',
         borderRadius: '5px',

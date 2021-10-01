@@ -3,28 +3,30 @@ import messages from './messages';
 import { connect } from 'react-redux';
 import OtpInput from 'react-otp-input';
 import { useStyles } from './styles.js';
-import { Sentry } from 'react-activity';
 import 'react-activity/dist/Sentry.css';
 import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
+import { useHistory } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import ApiManager from '../../ApiManager/ApiManager';
 import CustomModal from '../../components/CustomModal';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Grid, Modal, Typography, Box } from '@material-ui/core';
+import defaultProfileImage from '../../../assets/images/icons/otp.svg';
+import { Button, Grid, Modal, Typography, Avatar } from '@material-ui/core';
 
 export function OtpDialogeBox(props) {
+    const history = useHistory();
     const classes = useStyles(props);
     const [otp, setOtp] = useState('');
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
     const [timer, setTimer] = useState(false);
     const [titleMsg, setTitleMsg] = useState('');
-    const [description, setDescription] = useState('');
-    const [verificationFlag, setVerificationFlag] = useState(false);
     const [modalFlag, setModalFlag] = useState(false);
+    const [description, setDescription] = useState('');
     const [verifyLoading, setVerifyLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
+    const [verificationFlag, setVerificationFlag] = useState(false);
     const [otpBody, setOtpBody] = useState({
         email: '',
         hash: '',
@@ -54,23 +56,15 @@ export function OtpDialogeBox(props) {
 
     const handleChange = otp => {
         setOtp(otp);
-        console.log('Typed Otp : ', otp);
     };
 
-    const handleCloseModal = message => {
+    const handleCloseModal = () => {
         setModalFlag(false);
-        console.log('Descrpition : ', messages);
-
-        if (
-            message === messages.pleaseLoginUsingThisCredential.defaultMessage
-        ) {
-            history.push(SCREENS.LOGIN);
-        }
+        history.push(SCREENS.LOGIN);
     };
 
     const handleVerify = async () => {
         setVerifyLoading(true);
-        console.log('OTP to be verified : ', parseInt(otp));
         const body = {
             email: otpBody.email,
             code: parseInt(otp),
@@ -80,19 +74,8 @@ export function OtpDialogeBox(props) {
         api.send('POST', APIURLS.validateOtp, body)
             .then(res => {
                 setVerifyLoading(false);
-                console.log('Validate Otp Response Object : ', res);
                 if (res.data.code === 6019) {
                     setVerificationFlag(true);
-                    // setTitleMsg(
-                    //     props.intl.formatMessage({
-                    //         ...messages.verificationSuccess,
-                    //     }),
-                    // );
-                    // setDescription(
-                    //     props.intl.formatMessage({
-                    //         ...messages.pleaseLoginUsingThisCredential,
-                    //     }),
-                    // );
                     setTitleMsg(messages.verificationSuccess.defaultMessage);
                     setDescription(
                         messages.pleaseLoginUsingThisCredential.defaultMessage,
@@ -102,16 +85,6 @@ export function OtpDialogeBox(props) {
             .catch(error => {
                 setVerifyLoading(false);
                 setModalFlag(true);
-                // setTitleMsg(
-                //     props.intl.formatMessage({
-                //         ...messages.verificationFailed,
-                //     }),
-                // );
-                // setDescription(
-                //     props.intl.formatMessage({
-                //         ...messages.networkError,
-                //     }),
-                // );
                 setTitleMsg(messages.verificationFailed.defaultMessage);
                 setDescription(messages.networkError.defaultMessage);
             });
@@ -126,43 +99,20 @@ export function OtpDialogeBox(props) {
         const api = ApiManager.getInstance();
         api.send('POST', APIURLS.resendOtp, body)
             .then(res => {
+                setOtp('');
                 setResendLoading(false);
                 if (res.data.code === 6014) {
-                    setOtpBody({
-                        email: res.data.response.email,
-                        expireAt: res.data.response.expireAt,
-                        hash: res.data.response.hash,
-                    });
+                    clearInterval(timerId);
+                    setTimer(false);
                 } else {
                     setModalFlag(true);
-                    // setTitleMsg(
-                    //     props.intl.formatMessage({
-                    //         ...messages.resendFailed,
-                    //     }),
-                    // );
-                    // setDescription(
-                    //     props.intl.formatMessage({
-                    //         ...messages.badBodyRequest,
-                    //     }),
-                    // );
                     setTitleMsg(messages.resendFailed.defaultMessage);
                     setDescription(messages.badBodyRequest.defaultMessage);
                 }
-                console.log('Resend OTP Response Object : ', res);
             })
             .catch(error => {
                 setResendLoading(false);
                 setModalFlag(true);
-                // setTitleMsg(
-                //     props.intl.formatMessage({
-                //         ...messages.resendFailed,
-                //     }),
-                // );
-                // setDescription(
-                //     props.intl.formatMessage({
-                //         ...messages.networkError,
-                //     }),
-                // );
                 setTitleMsg(messages.resendFailed.defaultMessage);
                 setDescription(messages.networkError.defaultMessage);
             });
@@ -213,7 +163,7 @@ export function OtpDialogeBox(props) {
                     open={props.open}
                     aria-labelledby={props.title}
                 >
-                    <div className={classes.simpleModal}>
+                    <div className={classes.otpModal}>
                         <Grid
                             container
                             spacing={1}
@@ -221,10 +171,32 @@ export function OtpDialogeBox(props) {
                             direction="column"
                             alignItems="center"
                         >
-                            <div className={classes.textContainer}>
-                                <Typography variant="body1" align="center">
-                                    {props.title}
+                            <Avatar
+                                alt="OTP Verification Logo"
+                                src={defaultProfileImage}
+                                varient="square"
+                                style={{
+                                    width: 140,
+                                    height: 140,
+                                    margin: '10px',
+                                }}
+                            />
+                            <div className={classes.titleContainer}>
+                                <Typography variant="h4" align="center">
+                                    <FormattedMessage {...messages.title} />
                                 </Typography>
+                            </div>
+                            <div className={classes.center}>
+                                <Typography
+                                    variantMapping="string"
+                                    align="center"
+                                >
+                                    <FormattedMessage
+                                        {...messages.otpTitleContex}
+                                    />
+                                </Typography>
+                            </div>
+                            <div className={classes.otpBoxStyle}>
                                 <OtpInput
                                     value={otp}
                                     onChange={handleChange}
@@ -232,90 +204,72 @@ export function OtpDialogeBox(props) {
                                     isInputNum={true}
                                     containerStyle={classes.otpBoxStyle}
                                     inputStyle={classes.otpInputStyle}
-                                    separator={<span>-</span>}
+                                    separator={<span>- </span>}
                                     isDisabled={!timer}
                                 />
-                                {/* <Typography variant="body1" align="center">
-                                    <FormattedMessage
-                                        {...messages.verificationFailed}
-                                    />
-                                </Typography> */}
                             </div>
-                            <Grid
-                                container
-                                direction="row"
-                                justify="center"
-                                alignItems="center"
-                            >
-                                <Button
-                                    onClick={handleVerify}
-                                    className={classes.btnContainer}
-                                    disabled={otp.length < 6 || verifyLoading}
+
+                            <div className={classes.center}>
+                                <Typography
+                                    variantMapping="subtitle2"
+                                    align="center"
                                 >
-                                    <Typography variant="body1" align="center">
-                                        <FormattedMessage
-                                            {...messages.verifyOtp}
-                                        />
-                                    </Typography>
-                                </Button>
-                            </Grid>
-                            <Grid
-                                container
-                                justifyContent="center"
-                                direction="column"
-                                alignItems="center"
-                            >
+                                    <FormattedMessage
+                                        {...messages.resendMessage}
+                                    />
+                                </Typography>
+
                                 <Button
                                     onClick={handleResend}
-                                    className={classes.btnContainer}
-                                    disabled={timer || resendLoading}
+                                    className={
+                                        resendLoading
+                                            ? classes.btnContainerDisabled
+                                            : classes.btnContainer
+                                    }
+                                    disabled={resendLoading}
                                 >
-                                    <Typography variant="body1" align="center">
+                                    <Typography
+                                        variant="body2"
+                                        align="center"
+                                        gutterBottom={true}
+                                    >
                                         <FormattedMessage
                                             {...messages.resendOtp}
                                         />
                                     </Typography>
                                 </Button>
-                                <Box>
-                                    {!verifyLoading && !resendLoading && (
-                                        <Typography
-                                            align="center"
-                                            style={{
-                                                fontWeight: 'bold',
-                                                paddingBottom: '10px',
-                                            }}
-                                        >
-                                            {!timer ? (
-                                                <h3>{`OTP Expired`}</h3>
-                                            ) : (
-                                                <h3>
-                                                    {`OTP expire after 
-                                            ${minutes} minutes and ${seconds} seconds`}
-                                                </h3>
-                                            )}
-                                        </Typography>
-                                    )}
-                                    {(verifyLoading || resendLoading) && (
-                                        <Typography
-                                            align="center"
-                                            style={{
-                                                fontWeight: 'bold',
-                                                paddingBottom: '10px',
-                                            }}
-                                        >
-                                            <Sentry
-                                                color="#ffa500"
-                                                size={32}
-                                                speed={1}
-                                                animating={
-                                                    verifyLoading ||
-                                                    resendLoading
-                                                }
-                                            />
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </Grid>
+
+                                {!verifyLoading && !resendLoading && !timer && (
+                                    <Typography align="center" variant="body1">
+                                        <FormattedMessage
+                                            {...messages.otpExpired}
+                                        />
+                                    </Typography>
+                                )}
+                                {!verifyLoading && !resendLoading && timer && (
+                                    <Typography align="center" variant="body1">
+                                        {`OTP expire after ${minutes} minutes and ${seconds} seconds`}
+                                    </Typography>
+                                )}
+                                <Typography
+                                    variant="body2"
+                                    align="center"
+                                    className={classes.errorContainer}
+                                >
+                                    {description}
+                                </Typography>
+                                <Button
+                                    onClick={handleVerify}
+                                    className={classes.verifybtnContainer}
+                                    disabled={otp.length < 6 || verifyLoading}
+                                >
+                                    <Typography variant="h6" align="center">
+                                        <FormattedMessage
+                                            {...messages.verifyOtp}
+                                        />
+                                    </Typography>
+                                </Button>
+                            </div>
                         </Grid>
                     </div>
                 </Modal>
@@ -323,24 +277,12 @@ export function OtpDialogeBox(props) {
             {verificationFlag && (
                 <CustomModal
                     open={verificationFlag}
-                    close={() =>
-                        handleClose(
-                            messages.pleaseLoginUsingThisCredential
-                                .defaultMessage,
-                        )
-                    }
+                    handleClose={handleCloseModal}
                     type="simple"
                     title={titleMsg}
                     description={description}
                 />
             )}
-            {/* <CustomModal
-                open={modalFlag}
-                close={() => handleCloseModal(description)}
-                type="simple"
-                title={titleMsg}
-                description={description}
-            /> */}
         </div>
     );
 }
