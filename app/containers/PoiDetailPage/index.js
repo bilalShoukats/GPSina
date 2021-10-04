@@ -38,6 +38,8 @@ import {
     faMapMarkerAlt,
     faStreetView,
 } from '@fortawesome/free-solid-svg-icons';
+import ApiManager from '../../ApiManager/ApiManager';
+import APIURLS from '../../ApiManager/apiUrl';
 
 export function PoiDetailPage(props) {
     useInjectReducer({ key: 'poiDetailPage', reducer });
@@ -201,6 +203,31 @@ export function PoiDetailPage(props) {
         setErrors(error);
     };
 
+    const getIcon = icon => {
+        switch (icon) {
+            case 1:
+                return '1';
+
+            case 2:
+                return '2';
+
+            case 3:
+                return '3';
+
+            case 4:
+                return '4';
+
+            case 5:
+                return '5';
+
+            case 6:
+                return '6';
+
+            default:
+                return '1';
+        }
+    };
+
     const handleSubmit = e => {
         e.preventDefault();
         console.log('handleSubmitAddPoi');
@@ -212,12 +239,12 @@ export function PoiDetailPage(props) {
         if (props.location.state.poi) {
             const poi = props.location.state.poi;
             setAddress(poi.address);
-            setColor(poi.color);
-            setLatitude(poi.latitude);
-            setLongitude(poi.longitude);
-            setMarkerShop(poi.markerShop);
+            setColor(POICOLORS[poi.color]);
+            setLatitude(poi.geoLocation.coordinates[0]);
+            setLongitude(poi.geoLocation.coordinates[1]);
+            setMarkerShop(getIcon(poi.markerShop));
             setPoiName(poi.name);
-            setType(poi.type);
+            setType(poi.type === 1 ? 'private' : 'business');
             setZone(poi.zone);
             if (poi.type === 'business') {
                 setCompanyName(poi.company_name);
