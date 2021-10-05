@@ -22,20 +22,14 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useStyles } from './styles.js';
 import { Grid, Typography } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faBuilding,
-    faChevronRight,
-    faFlag,
-    faHome,
-    faIndustry,
-    faMapMarkerAlt,
-    faStreetView,
-} from '@fortawesome/free-solid-svg-icons';
+
 import SCREENS from '../../constants/screen';
 import ApiManager from '../../ApiManager/ApiManager';
 import APIURLS from '../../ApiManager/apiUrl';
 import POICOLORS from '../PoiDetailPage/poiColors';
 import { Pages } from '@material-ui/icons';
+import PoiList from '../../components/PoiList';
+import ConfirmDialog from '../../components/confirmAlert';
 
 export function PoiPage(props) {
     useInjectReducer({ key: 'poiPage', reducer });
@@ -45,11 +39,40 @@ export function PoiPage(props) {
     const [poiList, setPoiList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+    const [openAssign, setOpenAssign] = useState(false);
+    const [isAssignModalShown, setIsAssignModalShown] = useState(false);
 
-    const goToPOIDetailScreen = poi => {
-        props.history.push(SCREENS.POIDETAIL, { poi: poi });
+    const confirmAssignOpen = () => {
+        setOpenAssign(true);
     };
 
+    const handleOpenAssignModal = () => {
+        setIsAssignModalShown(true);
+    };
+    const confirmAssignDialogClose = () => {
+        setOpenAssign(false);
+    };
+
+    const confirmAssignAgree = id => {
+        console.log('Call the Assign api for this id : ', id);
+    };
+
+    const confirmDeleteOpen = () => {
+        setOpenDelete(true);
+    };
+
+    const handleOpenDeleteModal = () => {
+        setIsDeleteModalShown(true);
+    };
+    const confirmDeleteDialogClose = () => {
+        setOpenDelete(false);
+    };
+
+    const confirmDeleteAgree = id => {
+        console.log('Call the delete api for this id : ', id);
+    };
     const handleZone = () => {
         console.log('handleAddZone');
         props.history.push(SCREENS.ZONE);
@@ -81,30 +104,6 @@ export function PoiPage(props) {
                 console.log('Get all Poi Errors : ', error);
             });
     };
-    const handleIcon = icon => {
-        switch (icon) {
-            case 1:
-                return faBuilding;
-
-            case 2:
-                return faHome;
-
-            case 3:
-                return faMapMarkerAlt;
-
-            case 4:
-                return faIndustry;
-
-            case 5:
-                return faFlag;
-
-            case 6:
-                return faStreetView;
-
-            default:
-                return faBuilding;
-        }
-    };
 
     return (
         <div>
@@ -118,152 +117,48 @@ export function PoiPage(props) {
                 onPressZone={handleZone}
             />
 
-            <Grid container className={classes.main}>
-                {poiList.map(poi => (
-                    <Grid
-                        container
-                        direction="row"
-                        alignItems="center"
-                        className={classes.container}
-                        onClick={() => goToPOIDetailScreen(poi)}
-                    >
-                        <Grid item xs={2} md={1} className={classes.avatar}>
-                            <Grid
-                                container
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center"
-                            >
-                                <FontAwesomeIcon
-                                    icon={handleIcon(poi.markerShop)}
-                                    color={POICOLORS[poi.color]}
-                                    // style={{ }}
-                                    size="3x"
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={10}
-                            md={11}
-                            alignItems="center"
-                            className={classes.content}
-                        >
-                            <Grid
-                                container
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                            >
-                                <Grid item>
-                                    <Grid container direction="column">
-                                        <Grid item>
-                                            <Typography
-                                                variant="body1"
-                                                className={classes.title}
-                                            >
-                                                {props.intl.formatMessage({
-                                                    ...messages.name,
-                                                }) + ': '}
-                                                <Typography
-                                                    variant="body1"
-                                                    className={
-                                                        classes.description
-                                                    }
-                                                >
-                                                    {poi.name}
-                                                </Typography>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography
-                                                variant="body1"
-                                                className={classes.title}
-                                            >
-                                                {props.intl.formatMessage({
-                                                    ...messages.type,
-                                                }) + ': '}
-                                                <Typography
-                                                    variant="body1"
-                                                    className={
-                                                        classes.description
-                                                    }
-                                                >
-                                                    {poi.type}
-                                                </Typography>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography
-                                                variant="body1"
-                                                className={classes.title}
-                                            >
-                                                {props.intl.formatMessage({
-                                                    ...messages.zone,
-                                                }) + ': '}
-                                                <Typography
-                                                    variant="body1"
-                                                    className={
-                                                        classes.description
-                                                    }
-                                                >
-                                                    {poi.zone}
-                                                </Typography>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography
-                                                variant="body1"
-                                                className={classes.title}
-                                            >
-                                                {props.intl.formatMessage({
-                                                    ...messages.address,
-                                                }) + ': '}
-                                                <Typography
-                                                    variant="body1"
-                                                    className={
-                                                        classes.description
-                                                    }
-                                                >
-                                                    {poi.address}
-                                                </Typography>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                                <Grid item>
-                                    <FontAwesomeIcon
-                                        icon={faChevronRight}
-                                        size="1x"
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                ))}
-                {totalPage > 0 && (
-                    <Grid className={classes.container}>
-                        {/* <ReactPaginate
-                            previousLabel={'← Previous'}
-                            nextLabel={'Next →'}
-                            pageCount={totalPage}
-                            onPageChange={handlePageClick}
-                            pageRangeDisplayed={10}
-                            containerClassName={'pagination'}
-                            previousLinkClassName={'pagination__link'}
-                            nextLinkClassName={'pagination__link'}
-                            disabledClassName={'pagination__link--disabled'}
-                            activeClassName={'pagination__link--active'}
-                        /> */}
+            {poiList.map(poi => (
+                <PoiList
+                    poi={poi}
+                    key={poi.id}
+                    swipeLeftAction={confirmDeleteOpen}
+                    onOpenDeleteModal={handleOpenDeleteModal}
+                    swipeRightAction={confirmAssignOpen}
+                    onOpenAssignModal={handleOpenAssignModal}
+                />
+            ))}
+            <ConfirmDialog
+                title={'Alert'}
+                agreeText={'Ok'}
+                open={openDelete}
+                disagreeText={'Cancel'}
+                agree={() => confirmDeleteAgree()}
+                disagree={confirmDeleteDialogClose}
+                handleClose={confirmDeleteDialogClose}
+                message={'Are you sure to delete this POI'}
+            />
+            <ConfirmDialog
+                title={'Alert'}
+                agreeText={'Ok'}
+                open={openAssign}
+                disagreeText={'Cancel'}
+                agree={() => confirmAssignAgree()}
+                disagree={confirmAssignDialogClose}
+                handleClose={confirmAssignDialogClose}
+                message={'Are you sure to Assign  Zone this POI'}
+            />
+            {totalPage > 1 && (
+                <Grid container className={classes.main}>
+                    <div className={classes.paginate}>
                         <Pagination
                             count={totalPage}
                             color="primary"
                             page={currentPage}
                             onChange={handlePageClick}
                         />
-                    </Grid>
-                )}
-            </Grid>
+                    </div>
+                </Grid>
+            )}
         </div>
     );
 }

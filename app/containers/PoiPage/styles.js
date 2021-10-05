@@ -2,13 +2,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     main: {
-        padding: '1.5em 2em'
+        padding: '1.5em 2em',
     },
     container: {
         padding: '0.5em 1em',
         margin: '0.5em 0',
         borderRadius: '10px',
-        backgroundColor: 'grey',
+        backgroundColor: 'red',
         opacity: 0.8,
     },
     content: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     avatar: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     dotIndicator: {
         position: 'absolute',
@@ -26,17 +26,30 @@ const useStyles = makeStyles(theme => ({
         zIndex: 99,
         backgroundColor: 'lightgreen',
         width: '10px',
-        height: '10px'
+        height: '10px',
     },
     title: {
         textTransform: 'capitalize',
         // color: theme.status.danger,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     description: {
         textTransform: 'capitalize',
-        display: 'inline'
-    }
+        display: 'inline',
+    },
+    paginate: {
+        //display: 'flex',
+        marginLeft: 'auto',
+        backgroundColor: 'gray',
+        color: 'primary',
+        textTransform: 'capitalize',
+        borderRadius: '10px',
+        fontWeight: '400',
+        padding: '0.5em 0',
+        '&:hover': {
+            backgroundColor: '#ABABAB',
+        },
+    },
 }));
 
 export { useStyles };
