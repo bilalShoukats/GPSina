@@ -1,5 +1,5 @@
 import { Button, Grid, Typography, Avatar } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -12,7 +12,8 @@ import {
 } from '@sandstreamdev/react-swipeable-list';
 import POICOLORS from '../../containers/PoiDetailPage/poiColors';
 import Delete from '@material-ui/icons/Delete';
-import Assignment from '@material-ui/icons/Assignment';
+import Public from '@material-ui/icons/Public';
+import VpnLock from '@material-ui/icons/VpnLock';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
 import {
     faBuilding,
@@ -31,7 +32,6 @@ const PoiList = ({ ...props }) => {
         console.log('Poi for details : ', poi);
         history.push(SCREENS.POIDETAIL, { poi: poi });
     };
-    const [poId, setPoId] = useState('');
 
     const handleIcon = icon => {
         switch (icon) {
@@ -57,10 +57,7 @@ const PoiList = ({ ...props }) => {
                 return faBuilding;
         }
     };
-    const handlePoId = poi => {
-        console.log('poi', poi);
-        setPoId(poi.poId);
-    };
+
     const { poi } = props;
     return (
         <Grid className={classes.main}>
@@ -68,20 +65,8 @@ const PoiList = ({ ...props }) => {
                 <SwipeableListItem
                     swipeLeft={{
                         content: (
-                            <div
-                                style={{
-                                    // bottom: -15,
-                                    height: '100%',
-                                    width: '100%',
-                                    display: 'flex',
-                                    padding: '0px 18px',
-                                    alignItems: 'center',
-                                    position: 'relative',
-                                    backgroundColor: 'red',
-                                    justifyContent: 'flex-end',
-                                }}
-                            >
-                                Delete POI
+                            <div className={classes.delete}>
+                                {`Delete POI`}
                                 <Delete />
                             </div>
                         ),
@@ -90,37 +75,29 @@ const PoiList = ({ ...props }) => {
                     }}
                     swipeRight={{
                         content: (
-                            <div
-                                style={{
-                                    // bottom: -15,
-                                    height: '100%',
-                                    width: '100%',
-                                    display: 'flex',
-                                    padding: '0px 18px',
-                                    alignItems: 'center',
-                                    position: 'relative',
-                                    backgroundColor: 'blue',
-                                    // justifyContent: 'flex-end',
-                                }}
-                            >
-                                Assign Zone
-                                <Delete />
+                            <div className={classes.assign}>
+                                {!poi.zoneId && (
+                                    <div>
+                                        {`Assign Zone`}
+                                        <Public />
+                                    </div>
+                                )}
+                                {poi.zoneId && (
+                                    <div>
+                                        {`Un-assign Zone`}
+                                        <VpnLock />
+                                    </div>
+                                )}
                             </div>
                         ),
-
                         action: () => props.swipeRightAction(poi),
                     }}
-                    // onSwipeProgress={progress => {
-                    //     if (progress > 30)
-                    //         console.info(`Swipe progress: ${progress}%`);
-                    // }}
                 >
                     <Grid
                         container
                         direction="row"
                         alignItems="center"
                         className={classes.container}
-                        onClick={() => handlePoId(poi)}
                     >
                         <Grid item xs={2} md={1} className={classes.avatar}>
                             <Grid
@@ -132,7 +109,6 @@ const PoiList = ({ ...props }) => {
                                 <FontAwesomeIcon
                                     icon={handleIcon(poi.markerShop)}
                                     color={POICOLORS[poi.color]}
-                                    // style={{ }}
                                     size="3x"
                                     onClick={goToPOIDetailScreen}
                                 />
@@ -197,7 +173,7 @@ const PoiList = ({ ...props }) => {
                                                         classes.description
                                                     }
                                                 >
-                                                    {poi.zone}
+                                                    {poi.zoneId}
                                                 </Typography>
                                             </Typography>
                                         </Grid>

@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     main: {
-        padding: '0.5em 2em',
+        padding: '1.0em 5em',
         backgroundColor: 'transparent',
     },
     container: {
@@ -27,6 +27,25 @@ const useStyles = makeStyles(theme => ({
         display: 'inline',
         padding: '0.5em 1em',
         margin: '0.5em 0',
+    },
+    assign: {
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        padding: '0px 18px',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: 'blue',
+    },
+    delete: {
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        padding: '0px 18px',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: 'red',
+        justifyContent: 'flex-end',
     },
 }));
 

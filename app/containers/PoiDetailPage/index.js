@@ -47,6 +47,7 @@ export function PoiDetailPage(props) {
 
     const classes = useStyles(props);
     const [zone, setZone] = useState('');
+    const [poId, setPoId] = useState('');
     const [email, setEmail] = useState('');
     const [poiName, setPoiName] = useState('');
     const [address, setAddress] = useState('');
@@ -89,9 +90,57 @@ export function PoiDetailPage(props) {
 
     const handleEditMode = () => {
         if (isEditMode) {
-            console.log('save poi info');
+            if (isEditMode) {
+                if (validateForm(errors)) {
+                    const body = {
+                        type: 2,
+                        name: poiName,
+                        poId: poId,
+                        geoLocation: {
+                            type: 'Point',
+                            coordinates: [latitude, longitude],
+                        },
+                        address: address,
+                        color: getColorIndex(color),
+                        markerShop: parseInt(markerShop),
+                        contactPersion: contactPerson,
+                        mobileNo: mobileNum,
+                        phoneNO: phoneNum,
+                    };
+
+                    if (type === 'private') {
+                        body.type = 1;
+                        if (
+                            poiName == '' ||
+                            latitude === '' ||
+                            longitude === '' ||
+                            address == ''
+                        ) {
+                            console.log('Required all Feilds 1');
+                        } else {
+                            updatePoi(body);
+                        }
+                    } else {
+                        if (
+                            poiName == '' ||
+                            latitude == '' ||
+                            longitude == '' ||
+                            address == '' ||
+                            contactPerson == '' ||
+                            mobileNum == '' ||
+                            phoneNum == ''
+                        ) {
+                            console.log('Required all Feilds 2');
+                        } else {
+                            updatePoi(body);
+                        }
+                    }
+                } else {
+                    console.log('You have errors');
+                }
+            }
         }
-        setisEditmode(!isEditMode);
+        handleSubmit();
     };
 
     const handleMarkerChange = e => {
@@ -144,9 +193,6 @@ export function PoiDetailPage(props) {
                         : '';
                 setAddress(value);
                 break;
-            // case 'zone':
-            //     setZone(value);
-            //     break;
             case 'companyName':
                 error.companyName =
                     value.length < 5
@@ -228,16 +274,49 @@ export function PoiDetailPage(props) {
         }
     };
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        console.log('handleSubmitAddPoi');
-        props.history.goBack();
+    const updatePoi = body => {
+        console.log('Body for update poi : ', body);
+        const api = ApiManager.getInstance();
+        api.send('POST', APIURLS.updatePoi, body)
+            .then(res => {
+                console.log('Update poi response : ', res);
+                if (res.data.code === 1014) {
+                    props.history.goBack();
+                    console.log('Updated Succesfully...');
+                } else {
+                    console.log('Bad body request for update zone');
+                }
+            })
+            .catch(error => {
+                console.log('Error poi : ', error);
+            });
+    };
+
+    const handleSubmit = () => {
+        setisEditmode(!isEditMode);
+    };
+    const validateForm = errors => {
+        let valid = true;
+        Object.values(errors).forEach(val => val.length > 0 && (valid = false));
+        return valid;
+    };
+
+    const getColorIndex = color => {
+        if (color === POICOLORS['1']) return 1;
+        else if (color === POICOLORS['2']) return 2;
+        else if (color === POICOLORS['3']) return 3;
+        else if (color === POICOLORS['4']) return 4;
+        else if (color === POICOLORS['5']) return 5;
+        else if (color === POICOLORS['6']) return 6;
+        else if (color === POICOLORS['7']) return 7;
+        return 8;
     };
 
     useEffect(() => {
-        console.log(props.location.state);
+        console.log('Detail useEffect POI : ', props.location.state);
         if (props.location.state.poi) {
             const poi = props.location.state.poi;
+            setPoId(poi.poId);
             setAddress(poi.address);
             setColor(POICOLORS[poi.color]);
             setLatitude(poi.geoLocation.coordinates[0]);
