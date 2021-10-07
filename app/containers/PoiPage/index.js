@@ -30,6 +30,8 @@ import POICOLORS from '../PoiDetailPage/poiColors';
 import { Pages } from '@material-ui/icons';
 import PoiList from '../../components/PoiList';
 import ConfirmDialog from '../../components/confirmAlert';
+import { Sentry } from 'react-activity';
+import 'react-activity/dist/Sentry.css';
 
 export function PoiPage(props) {
     useInjectReducer({ key: 'poiPage', reducer });
@@ -45,6 +47,7 @@ export function PoiPage(props) {
     const [openAssign, setOpenAssign] = useState(false);
     const [isAssignModalShown, setIsAssignModalShown] = useState(false);
     const [poi, setPoi] = useState({});
+    const [loadPoi, setLoadPoi] = useState(true);
 
     const confirmAssignOpen = poi => {
         setPoi(poi);
@@ -132,76 +135,104 @@ export function PoiPage(props) {
     }, [currentPage]);
 
     const allPoi = () => {
+        poiList.length = 0;
+        setLoadPoi(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllPois, { page: currentPage })
             .then(res => {
-                console.log('Get all Poi response : ', res);
                 if (res.data.code === 1019) {
                     setPoiList(res.data.response);
                     setTotalPage(res.data.totalPages);
+                } else {
+                    setLoadPoi(false);
                 }
             })
             .catch(error => {
-                console.log('Get all Poi Errors : ', error);
+                setLoadPoi(false);
             });
     };
 
     return (
         <div>
-            <Helmet>
-                <title>{props.intl.formatMessage({ ...messages.poi })}</title>
-            </Helmet>
-            <Header
-                title={<FormattedMessage {...messages.poi} />}
-                showAddPoiBtn
-                onPressAddPoi={handleAddPoi}
-                onPressZone={handleZone}
-            />
+            {poiList.length > 0 && (
+                <div>
+                    <Helmet>
+                        <title>
+                            {props.intl.formatMessage({ ...messages.poi })}
+                        </title>
+                    </Helmet>
+                    <Header
+                        title={<FormattedMessage {...messages.poi} />}
+                        showAddPoiBtn
+                        onPressAddPoi={handleAddPoi}
+                        onPressZone={handleZone}
+                    />
 
-            {poiList.map(poi => (
-                <PoiList
-                    poi={poi}
-                    key={poi.id}
-                    swipeLeftAction={confirmDeleteOpen}
-                    onOpenDeleteModal={handleOpenDeleteModal}
-                    swipeRightAction={confirmAssignOpen}
-                    onOpenAssignModal={handleOpenAssignModal}
-                />
-            ))}
-            <ConfirmDialog
-                title={'Alert'}
-                agreeText={'Ok'}
-                open={openDelete}
-                disagreeText={'Cancel'}
-                agree={confirmDeleteAgree}
-                disagree={confirmDeleteDialogClose}
-                handleClose={confirmDeleteDialogClose}
-                message={'Are you sure to delete this POI'}
-            />
-            <ConfirmDialog
-                title={'Alert'}
-                agreeText={'Ok'}
-                open={openAssign}
-                disagreeText={'Cancel'}
-                agree={confirmAssignAgree}
-                disagree={confirmAssignDialogClose}
-                handleClose={confirmAssignDialogClose}
-                message={
-                    poi.zoneId
-                        ? 'Un-assign zone for this POI?'
-                        : 'Assign zone for this POI?'
-                }
-            />
-            {totalPage > 1 && (
-                <Grid container className={classes.main}>
-                    <div className={classes.paginate}>
-                        <Pagination
-                            count={totalPage}
-                            color="primary"
-                            page={currentPage}
-                            onChange={handlePageClick}
+                    {poiList.map(poi => (
+                        <PoiList
+                            poi={poi}
+                            key={poi.id}
+                            swipeLeftAction={confirmDeleteOpen}
+                            onOpenDeleteModal={handleOpenDeleteModal}
+                            swipeRightAction={confirmAssignOpen}
+                            onOpenAssignModal={handleOpenAssignModal}
                         />
-                    </div>
+                    ))}
+                    <ConfirmDialog
+                        title={'Alert'}
+                        agreeText={'Ok'}
+                        open={openDelete}
+                        disagreeText={'Cancel'}
+                        agree={confirmDeleteAgree}
+                        disagree={confirmDeleteDialogClose}
+                        handleClose={confirmDeleteDialogClose}
+                        message={'Are you sure to delete this POI'}
+                    />
+                    <ConfirmDialog
+                        title={'Alert'}
+                        agreeText={'Ok'}
+                        open={openAssign}
+                        disagreeText={'Cancel'}
+                        agree={confirmAssignAgree}
+                        disagree={confirmAssignDialogClose}
+                        handleClose={confirmAssignDialogClose}
+                        message={
+                            poi.zoneId
+                                ? 'Un-assign zone for this POI?'
+                                : 'Assign zone for this POI?'
+                        }
+                    />
+                    {totalPage > 1 && (
+                        <Grid container className={classes.main}>
+                            <div className={classes.paginate}>
+                                <Pagination
+                                    count={totalPage}
+                                    color="primary"
+                                    page={currentPage}
+                                    onChange={handlePageClick}
+                                />
+                            </div>
+                        </Grid>
+                    )}
+                </div>
+            )}
+            {poiList < 1 && (
+                <Grid
+                    container
+                    justifyContent="center"
+                    className={classes.loading}
+                >
+                    <Grid item xs={3}>
+                        <h1>{loadPoi ? 'Loading Poi' : 'Network Error'}</h1>
+                        <Grid className={classes.activity}>
+                            <Sentry
+                                color="#28ACEA"
+                                size={32}
+                                speed={1}
+                                animating={loadPoi}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
             )}
         </div>

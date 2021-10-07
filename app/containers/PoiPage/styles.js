@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     main: {
-        padding: '1.5em 2em',
+        padding: '1.5em 5em',
     },
     container: {
         padding: '0.5em 1em',
@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
     content: {
         padding: '0 1.5em',
     },
+
     avatar: {
         flex: 1,
         justifyContent: 'center',
@@ -49,6 +50,22 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: '#ABABAB',
         },
+    },
+    loading: {
+        // margin: 'auto auto',
+        // padding: '5em 5em',
+        // position: 'absolute',
+        // direction: 'row',
+        textTransform: 'capitalize',
+        alignItems: 'center',
+        justify: 'center',
+        minHeight: '100vh',
+        // minWidth: '100vh',
+    },
+    activity: {
+        padding: '0em 4.5em',
+        alignItems: 'center',
+        justify: 'center',
     },
 }));
 

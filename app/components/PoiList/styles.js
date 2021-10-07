@@ -7,7 +7,9 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         backgroundColor: 'gray',
-        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: '#ABABAB',
+        },
     },
     content: {
         padding: '0 1.5em',
@@ -16,7 +18,11 @@ const useStyles = makeStyles(theme => ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        opacity: 0.8,
+        cursor: 'pointer',
+        '&:hover': {
+            // backgroundColor: '#272727',
+            opacity: 5.0,
+        },
     },
     title: {
         textTransform: 'capitalize',
