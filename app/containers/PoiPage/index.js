@@ -39,15 +39,15 @@ export function PoiPage(props) {
 
     const classes = useStyles(props);
     const history = useHistory();
-    const [poiList, setPoiList] = useState([]);
+    const [list, setList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [pageLoad, setPageLoad] = useState(true);
     const [openDelete, setOpenDelete] = useState(false);
     const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
     const [openAssign, setOpenAssign] = useState(false);
     const [isAssignModalShown, setIsAssignModalShown] = useState(false);
     const [poi, setPoi] = useState({});
-    const [loadPoi, setLoadPoi] = useState(true);
 
     const confirmAssignOpen = poi => {
         setPoi(poi);
@@ -135,26 +135,27 @@ export function PoiPage(props) {
     }, [currentPage]);
 
     const allPoi = () => {
-        poiList.length = 0;
-        setLoadPoi(true);
+        list.length = 0;
+        setPageLoad(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllPois, { page: currentPage })
             .then(res => {
                 if (res.data.code === 1019) {
-                    setPoiList(res.data.response);
+                    console.log(res);
+                    setList(res.data.response);
                     setTotalPage(res.data.totalPages);
                 } else {
-                    setLoadPoi(false);
+                    setPageLoad(false);
                 }
             })
             .catch(error => {
-                setLoadPoi(false);
+                setPageLoad(false);
             });
     };
 
     return (
         <div>
-            {poiList.length > 0 && (
+            {list.length > 0 && (
                 <div>
                     <Helmet>
                         <title>
@@ -168,7 +169,7 @@ export function PoiPage(props) {
                         onPressZone={handleZone}
                     />
 
-                    {poiList.map(poi => (
+                    {list.map(poi => (
                         <PoiList
                             poi={poi}
                             key={poi.id}
@@ -216,20 +217,20 @@ export function PoiPage(props) {
                     )}
                 </div>
             )}
-            {poiList < 1 && (
+            {list < 1 && (
                 <Grid
                     container
                     justifyContent="center"
                     className={classes.loading}
                 >
                     <Grid item xs={3}>
-                        <h1>{loadPoi ? 'Loading Poi' : 'Network Error'}</h1>
+                        <h1>{pageLoad ? '' : 'Network Error'}</h1>
                         <Grid className={classes.activity}>
                             <Sentry
                                 color="#28ACEA"
-                                size={32}
+                                size={200}
                                 speed={1}
-                                animating={loadPoi}
+                                animating={pageLoad}
                             />
                         </Grid>
                     </Grid>

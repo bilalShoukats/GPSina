@@ -10,10 +10,13 @@ import HomePage from '../HomePage/Loadable';
 import SCREENS from '../../constants/screen';
 import AlertPage from '../AlertPage/Loadable';
 import GensetPage from '../GensetPage/Loadable';
+import DevicePage from '../DevicePage/Loadable';
+import AddDevicePage from '../AddDevicePage/Loadable';
+import DeviceDetailPage from '../DeviceDetailPage/Loadable';
+import AddDriverPage from '../AddDriverPage/Loadable';
 import AddGensetPage from '../AddGensetPage/Loadable';
 import GensetDetailPage from '../GensetDetailPage/Loadable';
 import DriverPage from '../DriverPage/Loadable';
-import AddDriverPage from '../AddDriverPage/Loadable';
 import DriverDetailPage from '../DriverDetailPage/Loadable';
 import POIPage from '../POIPage/Loadable';
 import AddPoiPage from '../AddPoiPage/Loadable';
@@ -132,75 +135,93 @@ export function Route(props) {
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.GENSET} 
+                        exact
+                        path={SCREENS.GENSET}
                         component={GensetPage}
                         isAuthenticated={props.isAuthenticated}
                     />
-                    <PrivateRoute 
+                    <PrivateRoute
                         exact
-                        path={SCREENS.ADDGENSET} 
+                        path={SCREENS.ADDGENSET}
                         component={AddGensetPage}
                         isAuthenticated={props.isAuthenticated}
                     />
-                    <PrivateRoute 
-                        exact 
-                        path={SCREENS.GENSETDETAIL} 
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.GENSETDETAIL}
                         component={GensetDetailPage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.DRIVER} 
+                        exact
+                        path={SCREENS.DRIVER}
                         component={DriverPage}
                         isAuthenticated={props.isAuthenticated}
                     />
-                    <PrivateRoute 
+                    <PrivateRoute
                         exact
-                        path={SCREENS.ADDDRIVER} 
+                        path={SCREENS.ADDDRIVER}
                         component={AddDriverPage}
                         isAuthenticated={props.isAuthenticated}
                     />
-                    <PrivateRoute 
-                        exact 
-                        path={SCREENS.DRIVERDETAIL} 
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.DRIVERDETAIL}
                         component={DriverDetailPage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.POI} 
+                        exact
+                        path={SCREENS.POI}
                         component={POIPage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.ADDPOI} 
+                        exact
+                        path={SCREENS.ADDPOI}
                         component={AddPoiPage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.POIDETAIL} 
+                        exact
+                        path={SCREENS.POIDETAIL}
                         component={PoiDetailPage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.ZONE} 
+                        exact
+                        path={SCREENS.ZONE}
                         component={ZonePage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.ADDZONE} 
+                        exact
+                        path={SCREENS.ADDZONE}
                         component={AddZonePage}
                         isAuthenticated={props.isAuthenticated}
                     />
                     <PrivateRoute
-                        exact 
-                        path={SCREENS.ZONEDETAIL} 
+                        exact
+                        path={SCREENS.ZONEDETAIL}
                         component={ZoneDetailPage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.DEVICE}
+                        component={DevicePage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.ADDDEVICE}
+                        component={AddDevicePage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.DEVICEDETAIL}
+                        component={DeviceDetailPage}
                         isAuthenticated={props.isAuthenticated}
                     />
 

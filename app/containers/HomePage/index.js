@@ -41,6 +41,7 @@ import {
     faCogs,
     faChartBar,
     faFilter,
+    faSatelliteDish,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -135,6 +136,10 @@ class HomePage extends Component {
 
     goToGensetScreen = () => {
         this.props.history.push(SCREENS.GENSET);
+    };
+
+    goToDeviceScreen = () => {
+        this.props.history.push(SCREENS.DEVICE);
     };
 
     goToDriverScreen = () => {
@@ -334,6 +339,21 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Settings" />
+                                    </ListItem>
+
+                                    <ListItem
+                                        button
+                                        key="device"
+                                        onClick={this.goToDeviceScreen}
+                                        className={classes.listItemContainer}
+                                    >
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon
+                                                icon={faSatelliteDish}
+                                                size="lg"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Device" />
                                     </ListItem>
 
                                     <ListItem

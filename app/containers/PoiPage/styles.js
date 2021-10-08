@@ -14,30 +14,6 @@ const useStyles = makeStyles(theme => ({
     content: {
         padding: '0 1.5em',
     },
-
-    avatar: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    dotIndicator: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        zIndex: 99,
-        backgroundColor: 'lightgreen',
-        width: '10px',
-        height: '10px',
-    },
-    title: {
-        textTransform: 'capitalize',
-        // color: theme.status.danger,
-        fontWeight: 'bold',
-    },
-    description: {
-        textTransform: 'capitalize',
-        display: 'inline',
-    },
     paginate: {
         //display: 'flex',
         marginLeft: 'auto',
@@ -52,20 +28,25 @@ const useStyles = makeStyles(theme => ({
         },
     },
     loading: {
-        // margin: 'auto auto',
-        // padding: '5em 5em',
-        // position: 'absolute',
-        // direction: 'row',
-        textTransform: 'capitalize',
+        // margin: '0',
+        position: 'absolute',
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
+        //   -ms-transform: "translate(-50%, -50%)",
         alignItems: 'center',
         justify: 'center',
-        minHeight: '100vh',
-        // minWidth: '100vh',
+        // minHeight: '100vh',
     },
     activity: {
-        padding: '0em 4.5em',
-        alignItems: 'center',
-        justify: 'center',
+        // margin: '0',
+        position: 'absolute',
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
+        // minHeight: '100vh',
+        // alignItems: 'center',
+        // justify: 'center',
     },
 }));
 
