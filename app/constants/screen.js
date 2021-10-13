@@ -4,6 +4,7 @@ const SCREENS = {
     ADDDRIVER: '/add-driver',
     ADDGENSET: '/add-genset',
     ADDPOI: '/add-poi',
+    ADDVEHICLE: '/add-vehicle',
     ADDZONE: '/add-zone',
     CONTACTUS: '/contact-us',
     DASHBOARD: '/dashboard',
@@ -27,6 +28,8 @@ const SCREENS = {
     SETTINGS: '/settings',
     POI: '/poi',
     POIDETAIL: '/poi-detail',
+    VEHICLE: '/vehicle',
+    VEHICLEDETAIL: '/vehicle-detail',
     ZONE: '/zone',
     ZONEDETAIL: '/zone-detail',
 };

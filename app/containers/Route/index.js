@@ -24,6 +24,9 @@ import PoiDetailPage from '../PoiDetailPage/Loadable';
 import ZonePage from '../ZonePage/Loadable';
 import ZoneDetailPage from '../ZoneDetailPage/Loadable';
 import AddZonePage from '../AddZonePage/Loadable';
+import VehiclePage from '../VehiclePage/Loadable';
+import AddVehiclePage from '../AddVehiclePage/Loadable';
+import VehicleDetailPage from '../VehicleDetailPage/Loadable';
 import FencePage from '../FencePage/Loadable';
 import LoginPage from '../LoginPage/Loadable';
 import LocatePage from '../LocatePage/Loadable';
@@ -222,6 +225,24 @@ export function Route(props) {
                         exact
                         path={SCREENS.DEVICEDETAIL}
                         component={DeviceDetailPage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.VEHICLE}
+                        component={VehiclePage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.ADDVEHICLE}
+                        component={AddVehiclePage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.VEHICLEDETAIL}
+                        component={VehicleDetailPage}
                         isAuthenticated={props.isAuthenticated}
                     />
 

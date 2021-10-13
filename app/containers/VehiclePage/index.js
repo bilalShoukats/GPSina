@@ -17,14 +17,14 @@ import Pagination from '@material-ui/lab/Pagination';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import ConfirmDialog from '../../components/confirmAlert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import satellite from '../../../assets/images/icons/satellite.svg';
+import vehicleIcon from '../../../assets/images/icons/vehicle.svg';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import {
     SwipeableList,
     SwipeableListItem,
 } from '@sandstreamdev/react-swipeable-list';
 
-export function DevicePage(props) {
+export function VehiclePage(props) {
     const [list, setList] = useState([]);
     const [resMsg, setResMsg] = useState('');
     const [totalPage, setTotalPage] = useState(1);
@@ -38,13 +38,15 @@ export function DevicePage(props) {
     const confirmDeleteAgree = () => {
         const api = ApiManager.getInstance();
         setOpenDelete(false);
-        api.send('POST', APIURLS.deleteDevice, {
-            deviceID: selectedItem.deviceID,
-        })
+        const body = {
+            registrationNo: selectedItem.registrationNo,
+        };
+        api.send('POST', APIURLS.deleteVehicles, body)
             .then(res => {
-                if (res.data.code === 1016) {
-                    getAllItems();
-                }
+                console.log('Body : ', body, 'Response Delete Vehicle :', res);
+                // if (res.data.code === 1016) {
+                //     getAllItems();
+                // }
             })
             .catch(error => {});
     };
@@ -54,8 +56,9 @@ export function DevicePage(props) {
     const getAllItems = () => {
         setPageLoad(true);
         const api = ApiManager.getInstance();
-        api.send('GET', APIURLS.getAllDevices, { page: currentPage })
+        api.send('GET', APIURLS.getAllVehicle, { page: currentPage })
             .then(res => {
+                console.log('Vehcicle Response : ', res);
                 if (res.data.code === 1019) {
                     setPageLoad(false);
                     setList(res.data.response);
@@ -64,7 +67,7 @@ export function DevicePage(props) {
                         if (currentPage > 1) {
                             setCurrentPage(currentPage - 1);
                         } else {
-                            setResMsg('NO DEVICES');
+                            setResMsg('NO VEHICLE');
                         }
                     }
                 } else {
@@ -76,45 +79,43 @@ export function DevicePage(props) {
                 setPageLoad(false);
             });
     };
-    const goToDeviceDetailScreen = device => {
-        props.history.push(SCREENS.DEVICEDETAIL, { device: device });
+    const goToVehicleDetailScreen = vehicle => {
+        props.history.push(SCREENS.VEHICLEDETAIL, { vehicle: vehicle });
     };
-    const handleAddDevice = () => {
-        props.history.push(SCREENS.ADDDEVICE);
+    const handleAddVehicle = () => {
+        props.history.push(SCREENS.ADDVEHICLE);
     };
     const handlePageClick = (event, value) => {
         setCurrentPage(value);
     };
-    const swipeLeftAction = device => {
-        setSelectedItem(device);
+    const swipeLeftAction = vehicle => {
+        setSelectedItem(vehicle);
         setOpenDelete(true);
     };
-    const swipeRightAction = device => {
-        setSelectedItem(device);
+    const swipeRightAction = vehicle => {
+        setSelectedItem(vehicle);
     };
 
     useEffect(() => {
         getAllItems();
     }, [currentPage]);
-
     return (
         <div>
             <div>
                 <Helmet>
                     <title>
-                        {props.intl.formatMessage({ ...messages.device })}
+                        {props.intl.formatMessage({ ...messages.vehicle })}
                     </title>
                 </Helmet>
                 <Header
-                    title={<FormattedMessage {...messages.device} />}
+                    title={<FormattedMessage {...messages.vehicle} />}
                     showAddBtn
-                    onPressAdd={handleAddDevice}
+                    onPressAdd={handleAddVehicle}
                 />
             </div>
-
             {list && !pageLoad && (
                 <div>
-                    {list.map(device => (
+                    {list.map(vehicle => (
                         <Grid className={classes.main}>
                             <SwipeableList threshold={0.25}>
                                 <SwipeableListItem
@@ -129,43 +130,43 @@ export function DevicePage(props) {
                                                 <Delete />
                                             </Grid>
                                         ),
-                                        action: () => swipeLeftAction(device),
+                                        action: () => swipeLeftAction(vehicle),
                                     }}
                                     swipeRight={{
-                                        content: (
-                                            <Grid
-                                                className={
-                                                    device.deviceAttachStatus ===
-                                                    2
-                                                        ? classes.assign
-                                                        : classes.attach
-                                                }
-                                            >
-                                                {device.deviceAttachStatus ===
-                                                    2 && (
-                                                    <Typography>
-                                                        {device.registrationNo ? (
-                                                            <FormattedMessage
-                                                                {...messages.unassignVehicle}
-                                                            />
-                                                        ) : (
-                                                            <FormattedMessage
-                                                                {...messages.assignVehicle}
-                                                            />
-                                                        )}
-                                                    </Typography>
-                                                )}
-                                                {device.deviceAttachStatus !==
-                                                    2 && (
-                                                    <Typography>
-                                                        <FormattedMessage
-                                                            {...messages.unavailableVehicle}
-                                                        />
-                                                    </Typography>
-                                                )}
-                                            </Grid>
-                                        ),
-                                        action: () => swipeRightAction(device),
+                                        // content: (
+                                        //     <Grid
+                                        //         className={
+                                        //             vehicle.deviceAttachStatus ===
+                                        //             2
+                                        //                 ? classes.assign
+                                        //                 : classes.attach
+                                        //         }
+                                        //     >
+                                        //         {vehicle.deviceAttachStatus ===
+                                        //             2 && (
+                                        //             <Typography>
+                                        //                 {vehicle.registrationNo ? (
+                                        //                     <FormattedMessage
+                                        //                         {...messages.unassignVehicle}
+                                        //                     />
+                                        //                 ) : (
+                                        //                     <FormattedMessage
+                                        //                         {...messages.assignVehicle}
+                                        //                     />
+                                        //                 )}
+                                        //             </Typography>
+                                        //         )}
+                                        //         {vehicle.deviceAttachStatus !==
+                                        //             2 && (
+                                        //             <Typography>
+                                        //                 <FormattedMessage
+                                        //                     {...messages.unavailableVehicle}
+                                        //                 />
+                                        //             </Typography>
+                                        //         )}
+                                        //     </Grid>
+                                        // ),
+                                        action: () => swipeRightAction(vehicle),
                                     }}
                                 >
                                     <Grid
@@ -187,11 +188,11 @@ export function DevicePage(props) {
                                                 alignItems="center"
                                             >
                                                 <UserAvatar
-                                                    alt="Device Avatar"
-                                                    src={satellite}
+                                                    alt="Vehicle Avatar"
+                                                    src={vehicleIcon}
                                                     onClick={() =>
-                                                        goToDeviceDetailScreen(
-                                                            device,
+                                                        goToVehicleDetailScreen(
+                                                            vehicle,
                                                         )
                                                     }
                                                 />
@@ -223,7 +224,7 @@ export function DevicePage(props) {
                                                                 }
                                                             >
                                                                 {
-                                                                    device.deviceID
+                                                                    vehicle.vehicleID
                                                                 }
                                                             </Typography>
                                                         </Grid>
@@ -235,7 +236,7 @@ export function DevicePage(props) {
                                                                 }
                                                             >
                                                                 {
-                                                                    device.registrationNo
+                                                                    vehicle.registrationNo
                                                                 }
                                                             </Typography>
                                                         </Grid>
@@ -260,7 +261,7 @@ export function DevicePage(props) {
                                 agree={confirmDeleteAgree}
                                 disagree={confirmDeleteDialogClose}
                                 handleClose={confirmDeleteDialogClose}
-                                message={'Are you sure to delete this Device'}
+                                message={'Are you sure to delete this Vehicle'}
                             />
                         </Grid>
                     ))}
@@ -314,7 +315,8 @@ export function DevicePage(props) {
         </div>
     );
 }
-DevicePage.propTypes = {};
+
+VehiclePage.propTypes = {};
 const withConnect = connect();
 
-export default compose(withConnect)(injectIntl(DevicePage));
+export default compose(withConnect)(injectIntl(VehiclePage));

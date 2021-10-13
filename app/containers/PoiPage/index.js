@@ -40,6 +40,7 @@ export function PoiPage(props) {
     const classes = useStyles(props);
     const history = useHistory();
     const [list, setList] = useState([]);
+    const [resMsg, setResMsg] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
@@ -135,40 +136,51 @@ export function PoiPage(props) {
     }, [currentPage]);
 
     const allPoi = () => {
-        list.length = 0;
         setPageLoad(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllPois, { page: currentPage })
             .then(res => {
                 if (res.data.code === 1019) {
-                    console.log(res);
+                    setPageLoad(false);
                     setList(res.data.response);
                     setTotalPage(res.data.totalPages);
+                    if (!res.data.response) {
+                        if (currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                        } else {
+                            setResMsg('NO POI');
+                        }
+                    }
+                    // console.log(res);
+                    // setList(res.data.response);
+                    // setTotalPage(res.data.totalPages);
                 } else {
                     setPageLoad(false);
                 }
             })
             .catch(error => {
+                setResMsg('NETWORK ERROR');
                 setPageLoad(false);
             });
     };
 
     return (
         <div>
-            {list.length > 0 && (
+            <div>
+                <Helmet>
+                    <title>
+                        {props.intl.formatMessage({ ...messages.poi })}
+                    </title>
+                </Helmet>
+                <Header
+                    title={<FormattedMessage {...messages.poi} />}
+                    showAddPoiBtn
+                    onPressAddPoi={handleAddPoi}
+                    onPressZone={handleZone}
+                />
+            </div>
+            {list && !pageLoad && (
                 <div>
-                    <Helmet>
-                        <title>
-                            {props.intl.formatMessage({ ...messages.poi })}
-                        </title>
-                    </Helmet>
-                    <Header
-                        title={<FormattedMessage {...messages.poi} />}
-                        showAddPoiBtn
-                        onPressAddPoi={handleAddPoi}
-                        onPressZone={handleZone}
-                    />
-
                     {list.map(poi => (
                         <PoiList
                             poi={poi}
@@ -217,14 +229,13 @@ export function PoiPage(props) {
                     )}
                 </div>
             )}
-            {list < 1 && (
+            {pageLoad && (
                 <Grid
                     container
                     justifyContent="center"
                     className={classes.loading}
                 >
                     <Grid item xs={3}>
-                        <h1>{pageLoad ? '' : 'Network Error'}</h1>
                         <Grid className={classes.activity}>
                             <Sentry
                                 color="#28ACEA"
@@ -232,6 +243,20 @@ export function PoiPage(props) {
                                 speed={1}
                                 animating={pageLoad}
                             />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            )}
+
+            {!list && (
+                <Grid
+                    container
+                    justifyContent="center"
+                    className={classes.loading}
+                >
+                    <Grid item xs={3}>
+                        <Grid className={classes.activity}>
+                            <h1>{resMsg}</h1>
                         </Grid>
                     </Grid>
                 </Grid>

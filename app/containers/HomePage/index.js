@@ -42,6 +42,7 @@ import {
     faChartBar,
     faFilter,
     faSatelliteDish,
+    faCar,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -164,6 +165,10 @@ class HomePage extends Component {
 
     goToSettingScreen = () => {
         this.props.history.push(SCREENS.SETTINGS);
+    };
+
+    goToVehicleScreen = () => {
+        this.props.history.push(SCREENS.VEHICLE);
     };
 
     handleVehicleNoSorting = () => {
@@ -384,6 +389,21 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Driver" />
+                                    </ListItem>
+
+                                    <ListItem
+                                        button
+                                        key="vehicle"
+                                        onClick={this.goToVehicleScreen}
+                                        className={classes.listItemContainer}
+                                    >
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon
+                                                icon={faCar}
+                                                size="lg"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Vehicle" />
                                     </ListItem>
 
                                     <ListItem
