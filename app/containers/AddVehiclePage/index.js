@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-    DatePicker,
-} from '@material-ui/pickers';
-
-import PropTypes, { number } from 'prop-types';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import messages from './messages';
@@ -20,19 +12,16 @@ import ApiManager from '../../ApiManager/ApiManager';
 import APIURLS from '../../ApiManager/apiUrl';
 import { PRIVATE, FUEL, COMMERCIAL } from '../../constants/vehicle';
 import { useStyles } from './styles.js';
-
+import moment from 'moment';
 import {
     Button,
     Grid,
     Input,
     Typography,
     Radio,
-    FormControlLabel,
     RadioGroup,
-    TextField,
-    Select,
-    InputLabel,
     FormControl,
+    Select,
     MenuItem,
 } from '@material-ui/core';
 
@@ -88,6 +77,11 @@ export function AddVehiclePage(props) {
         heightFt: '',
         lengthFt: '',
     });
+    const convertIntoUnix = date => {
+        var unixTimestamp = moment(date, 'MM/DD/YYYY').unix();
+        return unixTimestamp;
+        // console.log('Date: ', date, 'Unix: ', unixTimestamp);
+    };
 
     const addVehicle = body => {
         console.log('Body for addVehicle: ', body);
@@ -109,30 +103,6 @@ export function AddVehiclePage(props) {
 
     const handleSubmit = e => {
         e.preventDefault();
-        // const body = {
-        //     type: type, //int-set
-        //     registrationNo: registraionNumber,
-        //     make: make,
-        //     vehicleModel: model,
-        //     engineNo: engineNo,
-        //     chassis: chassis,
-        //     mileage: mileage,
-        //     color: color,
-        //     vehicleType: vehicleType, //int-set
-        //     fuelType: fuelType, //int-set
-        //     fuelTank: parseInt(fuelTankCapacity), //int
-        //     loadingCapacity: parseFloat(loadingWeight), //float
-        //     width: parseFloat(widthtFt), //float
-        //     height: parseFloat(heightFt), //float
-        //     length: parseFloat(lengthFt), //float
-        //     company: company,
-        //     number: insuranceNumber,
-        //     insuranceType: insuranceType, //int
-        //     insuranceExpiry: expiryDate,
-        //     reading: parseFloat(reading), //float
-        //     interval: parseFloat(interval), //float
-        //     next: parseInt(next), //int
-        // };
 
         const body = {
             vehicleModel: model,
@@ -151,7 +121,7 @@ export function AddVehiclePage(props) {
             insurance: {
                 companyName: company,
                 type: insuranceType,
-                expiredAt: parseInt(expiryDate.replaceAll('/', '')),
+                expiredAt: convertIntoUnix(expiryDate),
                 number: insuranceNumber,
             },
             loadingWeightCapacity: parseFloat(loadingWeight),
@@ -175,8 +145,8 @@ export function AddVehiclePage(props) {
                 chassis == '' ||
                 mileage == '' ||
                 color == '' ||
-                vehicleType == '' ||
-                fuelType == '' ||
+                vehicleType === '' ||
+                fuelType === '' ||
                 fuelTankCapacity == '' ||
                 company == '' ||
                 insuranceNumber == '' ||
@@ -192,8 +162,9 @@ export function AddVehiclePage(props) {
                 else if (chassis == '') console.log('Required chassis');
                 else if (mileage == '') console.log('Required mileage');
                 else if (color == '') console.log('Required color');
-                else if (vehicleType == '') console.log('Required vehicleType');
-                else if (fuelType == '') console.log('Required fuelType');
+                else if (vehicleType === '')
+                    console.log('Required vehicleType');
+                else if (fuelType === '') console.log('Required fuelType');
                 else if (fuelTankCapacity == '')
                     console.log('Required fuelTankCapacity');
                 else if (company == '') console.log('Required company');
@@ -237,12 +208,7 @@ export function AddVehiclePage(props) {
         );
     };
     const handleExpiryDateChange = date => {
-        setExpiryDate(
-            formatter
-                .format(date)
-                .replaceAll('. ', '/')
-                .replace('.', ''),
-        );
+        setExpiryDate(date);
     };
 
     const handleChange = e => {
@@ -522,6 +488,8 @@ export function AddVehiclePage(props) {
                         </Typography>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
+                                autoOk
+                                variant="inline"
                                 value={make}
                                 onChange={handleMakeDateChange}
                                 className={classes.textInput}
@@ -919,6 +887,8 @@ export function AddVehiclePage(props) {
                         </Typography>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
+                                autoOk
+                                variant="inline"
                                 value={expiryDate}
                                 onChange={handleExpiryDateChange}
                                 className={classes.textInput}

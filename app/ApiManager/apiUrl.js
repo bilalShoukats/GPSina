@@ -26,6 +26,7 @@ const APIURLS = {
     resendOtp: 'resendOtp',
     unAssignZoneToPoid: '/unAssignZoneToPoid',
     updateAvatar: 'updateAvatar',
+    updateDriver: '/updateDriver',
     updateGeoFence: '/updateGeoFence',
     updatePoi: '/updatePoi',
     updateVehicle: '/updateVehicle',

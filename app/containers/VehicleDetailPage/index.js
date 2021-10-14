@@ -42,7 +42,7 @@ export function VehicleDetailPage(props) {
     const classes = useStyles(props);
     const [type, setType] = useState(0);
     const [registraionNumber, setRegistraionNumber] = useState('');
-    const [make, setMake] = useState(new Date());
+    const [make, setMake] = useState();
     const [model, setModel] = useState('');
     const [engineNo, setEngineNo] = useState('');
     const [chassis, setChassis] = useState('');
@@ -55,7 +55,7 @@ export function VehicleDetailPage(props) {
     const [company, setCompany] = useState('');
     const [insuranceNumber, setInsuranceNumber] = useState('');
     const [insuranceType, setInsuranceType] = useState('');
-    const [expiryDate, setExpiryDate] = useState(new Date());
+    const [expiryDate, setExpiryDate] = useState();
     const [reading, setReading] = useState('');
     const [interval, setInterval] = useState('');
     const [next, setNext] = useState('');
@@ -87,6 +87,11 @@ export function VehicleDetailPage(props) {
         heightFt: '',
         lengthFt: '',
     });
+    const convertIntoUnix = date => {
+        var unixTimestamp = moment(date, 'MM/DD/YYYY').unix();
+        return unixTimestamp;
+        // console.log('Date: ', date, 'Unix: ', unixTimestamp);
+    };
 
     const addVehicle = body => {
         console.log('Body for Vehicle Update: ', body);
@@ -126,7 +131,7 @@ export function VehicleDetailPage(props) {
             company: company,
             number: insuranceNumber,
             insuranceType: insuranceType, //int
-            insuranceExpiry: parseInt(expiryDate), //int
+            insuranceExpiry: convertIntoUnix(expiryDate), //int
             reading: parseFloat(reading), //float
             interval: parseFloat(interval), //float
             next: parseInt(next), //int
@@ -139,8 +144,8 @@ export function VehicleDetailPage(props) {
                 chassis == '' ||
                 mileage == '' ||
                 color == '' ||
-                vehicleType == '' ||
-                fuelType == '' ||
+                vehicleType === '' ||
+                fuelType === '' ||
                 fuelTankCapacity == '' ||
                 company == '' ||
                 insuranceNumber == '' ||
@@ -156,8 +161,9 @@ export function VehicleDetailPage(props) {
                 else if (chassis == '') console.log('Required chassis');
                 else if (mileage == '') console.log('Required mileage');
                 else if (color == '') console.log('Required color');
-                else if (vehicleType == '') console.log('Required vehicleType');
-                else if (fuelType == '') console.log('Required fuelType');
+                else if (vehicleType === '')
+                    console.log('Required vehicleType');
+                else if (fuelType === '') console.log('Required fuelType');
                 else if (fuelTankCapacity == '')
                     console.log('Required fuelTankCapacity');
                 else if (company == '') console.log('Required company');
@@ -201,13 +207,7 @@ export function VehicleDetailPage(props) {
         );
     };
     const handleExpiryDateChange = date => {
-        console.log(date);
-        setExpiryDate(
-            formatter
-                .format(date)
-                .replaceAll('. ', '/')
-                .replace('.', ''),
-        );
+        setExpiryDate(date);
     };
 
     const handleChange = e => {
@@ -406,12 +406,11 @@ export function VehicleDetailPage(props) {
             setCompany(vehicle.insurance.companyName);
             setInsuranceNumber(vehicle.insurance.number);
             setInsuranceType(vehicle.insurance.type);
-            setExpiryDate(vehicle.insurance.expiredAt);
-            // let e = vehicle.insurance.expiredAt.toString();
-            // let y = e.substring(0, 4);
-            // let m = e.substring(3, 5);
-            // let d = e.substring(4, 6);
-            // handleExpiryDateChange(y + '/' + m + '/' + d);
+            setExpiryDate(
+                new Date(vehicle.insurance.expiredAt * 1000).toLocaleDateString(
+                    'en-US',
+                ),
+            );
             setReading(vehicle.maintainanceInfo.reading.toFixed(2));
             setInterval(vehicle.maintainanceInfo.interval.toFixed(2));
             setNext(vehicle.maintainanceInfo.next);
@@ -425,6 +424,10 @@ export function VehicleDetailPage(props) {
             props.history.goBack();
         }
     }, []);
+
+    useEffect(() => {
+        console.log('Expiry date: ', expiryDate);
+    }, [expiryDate]);
 
     return (
         <Grid>
@@ -531,6 +534,8 @@ export function VehicleDetailPage(props) {
                         </Typography>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
+                                autoOk
+                                variant="inline"
                                 value={make}
                                 disabled={!isEditMode}
                                 disabled={!isEditMode}
@@ -955,6 +960,8 @@ export function VehicleDetailPage(props) {
                         </Typography>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <DatePicker
+                                autoOk
+                                variant="inline"
                                 value={expiryDate}
                                 disabled={!isEditMode}
                                 onChange={handleExpiryDateChange}
