@@ -9,20 +9,24 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.AddZonePage';
 
 export default defineMessages({
-  addZone: {
-    id: `${scope}.addZone`,
-    defaultMessage: 'Add Delivery Area',
-  },
-  deliveryArea: {
-    id: `${scope}.deliveryArea`,
-    defaultMessage: 'Delivery Area',
-  },
-  enterDeliveryArea: {
-    id: `${scope}.enterDeliveryArea`,
-    defaultMessage: 'Enter Delivery Area',
-  },
-  submit: {
-    id: `${scope}.submit`,
-    defaultMessage: 'Submit',
-  },
+    addZone: {
+        id: `${scope}.addZone`,
+        defaultMessage: 'Add Delivery Area',
+    },
+    deliveryArea: {
+        id: `${scope}.deliveryArea`,
+        defaultMessage: 'Delivery Area',
+    },
+    enterDeliveryArea: {
+        id: `${scope}.enterDeliveryArea`,
+        defaultMessage: 'Enter Delivery Area',
+    },
+    submit: {
+        id: `${scope}.submit`,
+        defaultMessage: 'Submit',
+    },
+    atLeast5Character: {
+        id: `${scope}.atLeast5Character`,
+        defaultMessage: 'must at least 5 characters',
+    },
 });

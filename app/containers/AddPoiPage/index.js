@@ -35,30 +35,30 @@ import {
     faFlag,
     faHome,
     faIndustry,
-    faMapMarkedAlt,
     faMapMarkerAlt,
     faStreetView,
 } from '@fortawesome/free-solid-svg-icons';
+import ApiManager from '../../ApiManager/ApiManager';
+import APIURLS from '../../ApiManager/apiUrl';
 
 export function AddPoiPage(props) {
     useInjectReducer({ key: 'addPoiPage', reducer });
     useInjectSaga({ key: 'addPoiPage', saga });
 
     const classes = useStyles(props);
-    const [poiName, setPoiName] = useState('');
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
+    const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
-    const [zone, setZone] = useState('');
+    const [poiName, setPoiName] = useState('');
+    const [type, setType] = useState('private');
+    const [latitude, setLatitude] = useState('');
+    const [phoneNum, setPhoneNum] = useState('');
+    const [companyId, setCompanyId] = useState('');
+    const [longitude, setLongitude] = useState('');
+    const [mobileNum, setMobileNum] = useState('');
+    const [markerShop, setMarkerShop] = useState('1');
     const [color, setColor] = useState(POICOLORS['1']);
     const [companyName, setCompanyName] = useState('');
-    const [companyId, setCompanyId] = useState('');
     const [contactPerson, setContactPerson] = useState('');
-    const [phoneNum, setPhoneNum] = useState('');
-    const [mobileNum, setMobileNum] = useState('');
-    const [email, setEmail] = useState('');
-    const [markerShop, setMarkerShop] = useState('1');
-    const [type, setType] = useState('private');
     const [errors, setErrors] = useState({
         poiName: '',
         latitude: '',
@@ -196,24 +196,86 @@ export function AddPoiPage(props) {
         setErrors(error);
     };
 
+    const validateForm = errors => {
+        let valid = true;
+        Object.values(errors).forEach(val => val.length > 0 && (valid = false));
+        return valid;
+    };
+
+    const addPoi = body => {
+        console.log('Payload for Submitted : ', body);
+        const api = ApiManager.getInstance();
+        api.send('POST', APIURLS.addPoi, body)
+            .then(res => {
+                if (res.data.code === 1008) {
+                    console.log('Success addPOI : ', res);
+                    props.history.goBack();
+                } else {
+                    console.log('Bad request addPOI: ', res);
+                }
+            })
+            .catch(error => {
+                console.log('Error add poi : ', error);
+            });
+    };
+    const getColorIndex = color => {
+        if (color === POICOLORS['1']) return 1;
+        else if (color === POICOLORS['2']) return 2;
+        else if (color === POICOLORS['3']) return 3;
+        else if (color === POICOLORS['4']) return 4;
+        else if (color === POICOLORS['5']) return 5;
+        else if (color === POICOLORS['6']) return 6;
+        else if (color === POICOLORS['7']) return 7;
+        return 8;
+    };
     const handleSubmit = e => {
         e.preventDefault();
-        const body = {
-            type: 1,
-            name: poiName,
-            geoLocation: {
-                type: 'Point',
-                coordinates: [latitude, longitude],
-            },
-            address: address,
-            color: color,
-            markerShop: markerShop,
-            // contactPersion: contactPerson,
-            // mobileNo: mobileNum,
-            // phoneNO: phoneNum,
-        };
-        console.log('Payload for Submitted : ', body);
-        //props.history.goBack();
+        if (validateForm(errors)) {
+            const body = {
+                type: 2,
+                name: poiName,
+                geoLocation: {
+                    type: 'Point',
+                    coordinates: [latitude, longitude],
+                },
+                address: address,
+                color: getColorIndex(color),
+                markerShop: parseInt(markerShop),
+                contactPersion: contactPerson,
+                mobileNo: mobileNum,
+                phoneNO: phoneNum,
+            };
+
+            if (type === 'private') {
+                body.type = 1;
+                if (
+                    poiName == '' ||
+                    latitude == '' ||
+                    longitude == '' ||
+                    address == ''
+                ) {
+                    console.log('Required all Feilds');
+                } else {
+                    addPoi(body);
+                }
+            } else {
+                if (
+                    poiName == '' ||
+                    latitude == '' ||
+                    longitude == '' ||
+                    address == '' ||
+                    contactPerson == '' ||
+                    mobileNum == '' ||
+                    phoneNum == ''
+                ) {
+                    console.log('Required all Feilds');
+                } else {
+                    addPoi(body);
+                }
+            }
+        } else {
+            console.log('You have errors');
+        }
     };
 
     useEffect(() => {}, []);

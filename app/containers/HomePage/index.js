@@ -14,6 +14,7 @@ import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
 import { withStyles } from '@material-ui/styles';
 import React, { Component, createRef } from 'react';
+import { logoutUser } from '../../redux/auth/actions';
 import UserAvatar from '../../components/UserAvatar';
 import DeviceList from '../../components/DeviceList';
 import ApiManager from '../../ApiManager/ApiManager';
@@ -41,6 +42,8 @@ import {
     faCogs,
     faChartBar,
     faFilter,
+    faSatelliteDish,
+    faCar,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -137,6 +140,10 @@ class HomePage extends Component {
         this.props.history.push(SCREENS.GENSET);
     };
 
+    goToDeviceScreen = () => {
+        this.props.history.push(SCREENS.DEVICE);
+    };
+
     goToDriverScreen = () => {
         this.props.history.push(SCREENS.DRIVER);
     };
@@ -159,6 +166,13 @@ class HomePage extends Component {
 
     goToSettingScreen = () => {
         this.props.history.push(SCREENS.SETTINGS);
+    };
+
+    goToVehicleScreen = () => {
+        this.props.history.push(SCREENS.VEHICLE);
+    };
+    goToHomeScreen = () => {
+        this.props.history.push(SCREENS.HOME);
     };
 
     handleVehicleNoSorting = () => {
@@ -291,7 +305,7 @@ class HomePage extends Component {
                             </Typography>
                             <div style={{ marginTop: '1em' }}>
                                 <List>
-                                    <ListItem
+                                    {/* <ListItem
                                         button
                                         key="home"
                                         onClick={() => console.log('home')}
@@ -304,12 +318,12 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Home" />
-                                    </ListItem>
+                                    </ListItem> */}
 
                                     <ListItem
                                         button
                                         key="dashboard"
-                                        onClick={() => console.log('dashboard')}
+                                        onClick={this.goToHomeScreen}
                                         className={classes.listItemContainer}
                                     >
                                         <ListItemIcon>
@@ -338,6 +352,21 @@ class HomePage extends Component {
 
                                     <ListItem
                                         button
+                                        key="device"
+                                        onClick={this.goToDeviceScreen}
+                                        className={classes.listItemContainer}
+                                    >
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon
+                                                icon={faSatelliteDish}
+                                                size="lg"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Device" />
+                                    </ListItem>
+
+                                    {/* <ListItem
+                                        button
                                         key="genset"
                                         onClick={this.goToGensetScreen}
                                         className={classes.listItemContainer}
@@ -349,7 +378,7 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Genset" />
-                                    </ListItem>
+                                    </ListItem> */}
 
                                     <ListItem
                                         button
@@ -364,6 +393,21 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Driver" />
+                                    </ListItem>
+
+                                    <ListItem
+                                        button
+                                        key="vehicle"
+                                        onClick={this.goToVehicleScreen}
+                                        className={classes.listItemContainer}
+                                    >
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon
+                                                icon={faCar}
+                                                size="lg"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Vehicle" />
                                     </ListItem>
 
                                     <ListItem
@@ -391,7 +435,11 @@ class HomePage extends Component {
                                     <ListItem
                                         button
                                         key="logout"
-                                        onClick={() => console.log('logout')}
+                                        onClick={() =>
+                                            this.props.dispatch(
+                                                logoutUser(history),
+                                            )
+                                        }
                                         className={classes.listItemContainer}
                                     >
                                         <ListItemIcon>

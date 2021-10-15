@@ -2,41 +2,52 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     main: {
-        padding: '1.5em 2em'
+        padding: '1.5em 5em',
     },
     container: {
         padding: '0.5em 1em',
         margin: '0.5em 0',
         borderRadius: '10px',
-        backgroundColor: 'grey',
+        backgroundColor: 'red',
         opacity: 0.8,
     },
     content: {
         padding: '0 1.5em',
     },
-    avatar: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+    paginate: {
+        //display: 'flex',
+        marginLeft: 'auto',
+        backgroundColor: 'gray',
+        color: 'primary',
+        textTransform: 'capitalize',
+        borderRadius: '10px',
+        fontWeight: '400',
+        padding: '0.5em 0',
+        '&:hover': {
+            backgroundColor: '#ABABAB',
+        },
     },
-    dotIndicator: {
+    loading: {
+        // margin: '0',
         position: 'absolute',
-        bottom: 0,
-        right: 0,
-        zIndex: 99,
-        backgroundColor: 'lightgreen',
-        width: '10px',
-        height: '10px'
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
+        //   -ms-transform: "translate(-50%, -50%)",
+        alignItems: 'center',
+        justify: 'center',
+        // minHeight: '100vh',
     },
-    title: {
-        textTransform: 'capitalize',
-        // color: theme.status.danger,
-        fontWeight: 'bold'
+    activity: {
+        // margin: '0',
+        position: 'absolute',
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
+        // minHeight: '100vh',
+        // alignItems: 'center',
+        // justify: 'center',
     },
-    description: {
-        textTransform: 'capitalize',
-        display: 'inline'
-    }
 }));
 
 export { useStyles };

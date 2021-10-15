@@ -98,12 +98,6 @@ export function LoginPage(props) {
                 error.newEmail = validEmailRegex.test(value)
                     ? ''
                     : props.intl.formatMessage({ ...messages.notValidEmail });
-                // error.newEmail =
-                //     value.length < 8 || value.length > 50
-                //         ? props.intl.formatMessage({
-                //               ...messages.notValidEmail,
-                //           })
-                //         : '';
 
                 setNewEmail(value);
                 break;
@@ -209,7 +203,6 @@ export function LoginPage(props) {
 
         api.send('POST', APIURLS.register, body)
             .then(res => {
-                console.log('Register Response : ', res);
                 if (res) setRegisterLoading(false);
                 if (res.data.code === 6011) {
                     setModalTitle(
@@ -297,25 +290,9 @@ export function LoginPage(props) {
                         email: email,
                         password: password,
                         appVersion: '1.0.0.1',
-                        //appVersion: props.apiManager.appVersion,
                     };
                     setLoading(true);
                     props.dispatch(loginUser(body, history));
-                    // props.apiManager.callApi(
-                    //     APIURLS.login,
-                    //     'POST',
-                    //     body,
-                    //     res => {
-                    //         console.log(res);
-                    //         if (res.code === 2003) {
-                    //             props.apiManager.saveToken(
-                    //                 res.response.email,
-                    //                 res.response.hash,
-                    //             );
-                    //             history.push(SCREENS.HOME);
-                    //         }
-                    //     },
-                    // );
                 }
 
                 break;
@@ -357,10 +334,6 @@ export function LoginPage(props) {
                         setRegisterLoading(true);
                         registerUser(body);
                     }
-
-                    // setModalTitle(props.intl.formatMessage({ ...messages.loginFailed }));
-                    // setModalDescription(props.intl.formatMessage({ ...messages.invalidEmailPassword }))
-                    // handleOpenModal();
                 } else {
                     setModalTitle(
                         props.intl.formatMessage({
