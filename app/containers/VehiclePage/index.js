@@ -30,28 +30,52 @@ export function VehiclePage(props) {
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [openDelete, setOpenDelete] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+    const [message, setMessage] = useState('');
+    const [deleteItem, setDeleteItem] = useState(false);
+    const [assign, setAssign] = useState(false);
+    const [unAssign, setUnAssign] = useState(false);
 
     const classes = useStyles(props);
 
-    const confirmDeleteAgree = () => {
+    const confirmAgree = () => {
         const api = ApiManager.getInstance();
-        setOpenDelete(false);
-        const body = {
-            registrationNo: selectedItem.registrationNo,
-        };
-        api.send('POST', APIURLS.deleteVehicles, body)
-            .then(res => {
-                console.log('Body : ', body, 'Response Delete Vehicle :', res);
-                // if (res.data.code === 1016) {
-                //     getAllItems();
-                // }
-            })
-            .catch(error => {});
+        setOpenDialog(false);
+        if (deleteItem) {
+            setDeleteItem(false);
+            const body = {
+                registrationNo: selectedItem.registrationNo,
+            };
+            console.log('Delete Called');
+            // api.send('POST', APIURLS.deleteVehicles, body)
+            //     .then(res => {
+            //         console.log(
+            //             'Body : ',
+            //             body,
+            //             'Response Delete Vehicle :',
+            //             res,
+            //         );
+            //         // if (res.data.code === 1016) {
+            //         //     getAllItems();
+            //         // }
+            //     })
+            //     .catch(error => {});
+        } else if (assign) {
+            setAssign(false);
+            const body = {};
+            console.log('Assigned Called');
+            //Call Assign Api
+            props.history.push(SCREENS.DRIVER, { vehicle: selectedItem });
+        } else if (unAssign) {
+            setUnAssign(false);
+            const body = {};
+            console.log('UnAssigned Called');
+            //Call UnAssign Api
+        }
     };
-    const confirmDeleteDialogClose = () => {
-        setOpenDelete(false);
+    const confirmClose = () => {
+        setOpenDialog(false);
     };
     const getAllItems = () => {
         setPageLoad(true);
@@ -89,11 +113,21 @@ export function VehiclePage(props) {
         setCurrentPage(value);
     };
     const swipeLeftAction = vehicle => {
+        setOpenDialog(true);
         setSelectedItem(vehicle);
-        setOpenDelete(true);
+        setMessage('Do you want to delete this vehicle');
+        setDeleteItem(true);
     };
     const swipeRightAction = vehicle => {
         setSelectedItem(vehicle);
+        setOpenDialog(true);
+        if (vehicle.driverID) {
+            setMessage('Do you want to unAssigned the driver');
+            setUnAssign(true);
+        } else {
+            setMessage('Do you want to Assigned the driver');
+            setAssign(true);
+        }
     };
 
     useEffect(() => {
@@ -133,39 +167,21 @@ export function VehiclePage(props) {
                                         action: () => swipeLeftAction(vehicle),
                                     }}
                                     swipeRight={{
-                                        // content: (
-                                        //     <Grid
-                                        //         className={
-                                        //             vehicle.deviceAttachStatus ===
-                                        //             2
-                                        //                 ? classes.assign
-                                        //                 : classes.attach
-                                        //         }
-                                        //     >
-                                        //         {vehicle.deviceAttachStatus ===
-                                        //             2 && (
-                                        //             <Typography>
-                                        //                 {vehicle.registrationNo ? (
-                                        //                     <FormattedMessage
-                                        //                         {...messages.unassignVehicle}
-                                        //                     />
-                                        //                 ) : (
-                                        //                     <FormattedMessage
-                                        //                         {...messages.assignVehicle}
-                                        //                     />
-                                        //                 )}
-                                        //             </Typography>
-                                        //         )}
-                                        //         {vehicle.deviceAttachStatus !==
-                                        //             2 && (
-                                        //             <Typography>
-                                        //                 <FormattedMessage
-                                        //                     {...messages.unavailableVehicle}
-                                        //                 />
-                                        //             </Typography>
-                                        //         )}
-                                        //     </Grid>
-                                        // ),
+                                        content: (
+                                            <Grid className={classes.assign}>
+                                                <Typography>
+                                                    {vehicle.driverID ? (
+                                                        <FormattedMessage
+                                                            {...messages.unassignVehicle}
+                                                        />
+                                                    ) : (
+                                                        <FormattedMessage
+                                                            {...messages.assignVehicle}
+                                                        />
+                                                    )}
+                                                </Typography>
+                                            </Grid>
+                                        ),
                                         action: () => swipeRightAction(vehicle),
                                     }}
                                 >
@@ -256,12 +272,12 @@ export function VehiclePage(props) {
                             <ConfirmDialog
                                 title={'Alert'}
                                 agreeText={'Ok'}
-                                open={openDelete}
+                                open={openDialog}
                                 disagreeText={'Cancel'}
-                                agree={confirmDeleteAgree}
-                                disagree={confirmDeleteDialogClose}
-                                handleClose={confirmDeleteDialogClose}
-                                message={'Are you sure to delete this Vehicle'}
+                                agree={confirmAgree}
+                                disagree={confirmClose}
+                                handleClose={confirmClose}
+                                message={message}
                             />
                         </Grid>
                     ))}

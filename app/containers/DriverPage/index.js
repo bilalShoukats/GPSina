@@ -36,9 +36,9 @@ export function DriverPage(props) {
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+    const [vehicle, setVehicle] = useState({});
 
     const classes = useStyles(props);
 
@@ -48,9 +48,14 @@ export function DriverPage(props) {
         const body = {
             registrationNo: selectedItem.registrationNo,
         };
-        api.send('POST', APIURLS.deleteVehicles, body)
+        api.send('POST', APIURLS.deleteDriver, body)
             .then(res => {
-                console.log('Body : ', body, 'Response Delete Vehicle :', res);
+                console.log(
+                    'Body Delete Driver : ',
+                    body,
+                    'Response Delete Driver :',
+                    res,
+                );
                 // if (res.data.code === 1016) {
                 //     getAllItems();
                 // }
@@ -71,7 +76,26 @@ export function DriverPage(props) {
         setSelectedItem(vehicle);
         setOpenDelete(true);
     };
-
+    const selectDriverForVehicle = driver => {
+        console.log('Vehicle From Prop : ', vehicle);
+        const body = {
+            registrationNo: vehicle.registrationNo,
+            driverID: driver.driverID,
+        };
+        const api = ApiManager.getInstance();
+        api.send('POST', APIURLS.assignVehicle, body)
+            .then(res => {
+                console.log(
+                    'Submitted body for assign : ',
+                    body,
+                    'Response: ',
+                    res,
+                );
+            })
+            .catch(error => {
+                console.log('Error', error);
+            });
+    };
     const getAllItems = () => {
         setPageLoad(true);
         const api = ApiManager.getInstance();
@@ -103,6 +127,14 @@ export function DriverPage(props) {
         getAllItems();
     }, [currentPage]);
 
+    useEffect(() => {
+        console.log('Detail useEffect Vehicle : ', props.location.state);
+        if (props.location.state) {
+            setVehicle(props.location.state.vehicle);
+        }
+        console.log('prop Vehicle : ', vehicle);
+    }, []);
+
     return (
         <div>
             <Helmet>
@@ -122,6 +154,7 @@ export function DriverPage(props) {
                         <Grid className={classes.main}>
                             <SwipeableList threshold={0.25}>
                                 <SwipeableListItem
+                                    blockSwipe={vehicle.registrationNo}
                                     swipeLeft={{
                                         content: (
                                             <Grid className={classes.delete}>
@@ -177,6 +210,9 @@ export function DriverPage(props) {
                                         direction="row"
                                         alignItems="center"
                                         className={classes.container}
+                                        onClick={() =>
+                                            selectDriverForVehicle(driver)
+                                        }
                                     >
                                         <Grid
                                             item
@@ -193,11 +229,15 @@ export function DriverPage(props) {
                                                 <UserAvatar
                                                     alt="driver Avatar"
                                                     src={driverIcon}
-                                                    onClick={() =>
-                                                        goToDriverDetailScreen(
-                                                            driver,
-                                                        )
-                                                    }
+                                                    onClick={() => {
+                                                        if (
+                                                            !vehicle.registrationNo
+                                                        ) {
+                                                            goToDriverDetailScreen(
+                                                                driver,
+                                                            );
+                                                        }
+                                                    }}
                                                 />
                                             </Grid>
                                         </Grid>
