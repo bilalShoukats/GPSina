@@ -30,14 +30,15 @@ export function DevicePage(props) {
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [openDelete, setOpenDelete] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+    const [message, setMessage] = useState('');
 
     const classes = useStyles(props);
 
-    const confirmDeleteAgree = () => {
+    const confirmAgree = () => {
         const api = ApiManager.getInstance();
-        setOpenDelete(false);
+        setOpenDialog(false);
         api.send('POST', APIURLS.deleteDevice, {
             deviceID: selectedItem.deviceID,
         })
@@ -48,14 +49,15 @@ export function DevicePage(props) {
             })
             .catch(error => {});
     };
-    const confirmDeleteDialogClose = () => {
-        setOpenDelete(false);
+    const confirmDisagree = () => {
+        setOpenDialog(false);
     };
     const getAllItems = () => {
         setPageLoad(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllDevices, { page: currentPage })
             .then(res => {
+                console.log('ALL DEVICES', res);
                 if (res.data.code === 1019) {
                     setPageLoad(false);
                     setList(res.data.response);
@@ -87,10 +89,18 @@ export function DevicePage(props) {
     };
     const swipeLeftAction = device => {
         setSelectedItem(device);
-        setOpenDelete(true);
+        setOpenDialog(true);
+        setMessage('Are you sure to delete this Device');
     };
     const swipeRightAction = device => {
         setSelectedItem(device);
+        if (device.registrationNo && device.deviceAttachStatus === 2) {
+            setOpenDialog(true);
+            setMessage('Are you sure to un-assign vehicle');
+        } else if (device.registrationNo && device.deviceAttachStatus !== 2) {
+            setOpenDialog(true);
+            setMessage('Are you sure to un-assign vehicle');
+        }
     };
 
     useEffect(() => {
@@ -255,12 +265,12 @@ export function DevicePage(props) {
                             <ConfirmDialog
                                 title={'Alert'}
                                 agreeText={'Ok'}
-                                open={openDelete}
+                                open={openDialog}
                                 disagreeText={'Cancel'}
-                                agree={confirmDeleteAgree}
-                                disagree={confirmDeleteDialogClose}
-                                handleClose={confirmDeleteDialogClose}
-                                message={'Are you sure to delete this Device'}
+                                agree={confirmAgree}
+                                disagree={confirmDisagree}
+                                handleClose={confirmDisagree}
+                                message={message}
                             />
                         </Grid>
                     ))}

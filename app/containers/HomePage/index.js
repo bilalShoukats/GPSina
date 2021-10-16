@@ -305,21 +305,6 @@ class HomePage extends Component {
                             </Typography>
                             <div style={{ marginTop: '1em' }}>
                                 <List>
-                                    {/* <ListItem
-                                        button
-                                        key="home"
-                                        onClick={() => console.log('home')}
-                                        className={classes.listItemContainer}
-                                    >
-                                        <ListItemIcon>
-                                            <FontAwesomeIcon
-                                                icon={faHome}
-                                                size="lg"
-                                            />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Home" />
-                                    </ListItem> */}
-
                                     <ListItem
                                         button
                                         key="dashboard"
