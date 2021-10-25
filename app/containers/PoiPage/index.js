@@ -26,7 +26,7 @@ import { useHistory } from 'react-router-dom';
 import SCREENS from '../../constants/screen';
 import ApiManager from '../../ApiManager/ApiManager';
 import APIURLS from '../../ApiManager/apiUrl';
-import POICOLORS from '../PoiDetailPage/poiColors';
+import { POICOLORS } from '../../constants/poi';
 import { Pages } from '@material-ui/icons';
 import PoiList from '../../components/PoiList';
 import ConfirmDialog from '../../components/confirmAlert';
@@ -140,6 +140,7 @@ export function PoiPage(props) {
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllPois, { page: currentPage })
             .then(res => {
+                console.log('All poi Res: ', res);
                 if (res.data.code === 1019) {
                     setPageLoad(false);
                     setList(res.data.response);

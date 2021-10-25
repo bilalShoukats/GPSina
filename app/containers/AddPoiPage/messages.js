@@ -129,4 +129,8 @@ export default defineMessages({
         id: `${scope}.valueRequired`,
         defaultMessage: 'Value Required',
     },
+    submit: {
+        id: `${scope}.submit`,
+        defaultMessage: 'Submit',
+    },
 });

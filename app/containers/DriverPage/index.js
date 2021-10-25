@@ -78,23 +78,25 @@ export function DriverPage(props) {
     };
     const selectDriverForVehicle = driver => {
         console.log('Vehicle From Prop : ', vehicle);
-        const body = {
-            registrationNo: vehicle.registrationNo,
-            driverID: driver.driverID,
-        };
-        const api = ApiManager.getInstance();
-        api.send('POST', APIURLS.assignVehicle, body)
-            .then(res => {
-                console.log(
-                    'Submitted body for assign : ',
-                    body,
-                    'Response: ',
-                    res,
-                );
-            })
-            .catch(error => {
-                console.log('Error', error);
-            });
+        if (vehicle.registrationNo) {
+            const body = {
+                registrationNo: vehicle.registrationNo,
+                driverID: driver.driverID,
+            };
+            const api = ApiManager.getInstance();
+            api.send('POST', APIURLS.assignVehicle, body)
+                .then(res => {
+                    console.log(
+                        'Submitted body for assign : ',
+                        body,
+                        'Response: ',
+                        res,
+                    );
+                })
+                .catch(error => {
+                    console.log('Error', error);
+                });
+        }
     };
     const getAllItems = () => {
         setPageLoad(true);

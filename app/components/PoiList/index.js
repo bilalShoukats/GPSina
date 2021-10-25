@@ -10,7 +10,7 @@ import {
     SwipeableList,
     SwipeableListItem,
 } from '@sandstreamdev/react-swipeable-list';
-import POICOLORS from '../../containers/PoiDetailPage/poiColors';
+import { POICOLORS } from '../../constants/poi';
 import Delete from '@material-ui/icons/Delete';
 import Public from '@material-ui/icons/Public';
 import VpnLock from '@material-ui/icons/VpnLock';

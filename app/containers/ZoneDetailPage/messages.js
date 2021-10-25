@@ -25,8 +25,8 @@ export default defineMessages({
         id: `${scope}.enterDeliveryArea`,
         defaultMessage: 'Enter Delivery Area',
     },
-    atLeast5Character: {
-        id: `${scope}.atLeast5Character`,
-        defaultMessage: 'must at least 5 characters',
+    submit: {
+        id: `${scope}.submit`,
+        defaultMessage: 'Submit',
     },
 });

@@ -7,6 +7,7 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         backgroundColor: 'gray',
+        marginBottom: '10px',
         '&:hover': {
             backgroundColor: '#ABABAB',
         },
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
         margin: '0.5em 0',
     },
     assign: {
-        borderRadius: '10px',
+        // borderRadius: '10px',
         height: '100%',
         width: '100%',
         display: 'flex',
@@ -45,15 +46,16 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: 'blue',
     },
     delete: {
-        borderRadius: '10px',
+        // borderRadius: '10px',
         height: '100%',
         width: '100%',
         display: 'flex',
-        padding: '0px 18px',
+        padding: '10px 18px',
         alignItems: 'center',
         position: 'relative',
         backgroundColor: 'red',
         justifyContent: 'flex-end',
+        marginBottom: '10px',
     },
     attach: {
         borderRadius: '10px',
