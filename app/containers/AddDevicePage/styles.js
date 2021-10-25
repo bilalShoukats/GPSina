@@ -1,4 +1,4 @@
-import { grey } from '@material-ui/core/colors';
+import { grey, white } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 const width = Math.min((window.innerWidth / 12) * 8 * 0.5, 350);
 
@@ -25,12 +25,14 @@ const useStyles = makeStyles(theme => ({
     textInput: {
         width: '100%',
         backgroundColor: 'transparent',
-        color: grey[500],
-        borderBottom: '3px solid ' + grey[500],
+        //borderBottom: '3px solid ' + grey[500],
         marginTop: '0.5em',
         marginBottom: '1em',
         padding: '0.2em 0.5em',
         borderRadius: '0px',
+    },
+    textColor: {
+        color: '#fff',
     },
     title: {
         fontWeight: '500',
