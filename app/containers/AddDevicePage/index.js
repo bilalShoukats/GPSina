@@ -50,11 +50,18 @@ export function AddDevicePage(props) {
         },
         validationSchema: validationSchema,
         onSubmit: values => {
-            api.send('POST', APIURLS.addDevice, {
+            const body = {
                 softwareVersion: values.softwareVersion,
                 trakerNumber: values.trakerNumber,
-            })
+                isDumy: true,
+            };
+            api.send('POST', APIURLS.addDevice, body)
                 .then(res => {
+                    console.log(
+                        'Body for add device',
+                        body,
+                        'Response add device',
+                    );
                     if (res.data.code === 1008) {
                         props.history.goBack();
                     } else {

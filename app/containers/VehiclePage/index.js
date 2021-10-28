@@ -1,3 +1,4 @@
+import './styles.css';
 import { compose } from 'redux';
 import messages from './messages';
 import { connect } from 'react-redux';
@@ -8,7 +9,7 @@ import { Sentry } from 'react-activity';
 import SCREENS from '../../constants/screen';
 import Header from '../../components/Header';
 import APIURLS from '../../ApiManager/apiUrl';
-import Delete from '@material-ui/icons/Delete';
+import 'react-swipeable-list/dist/styles.css';
 import React, { useEffect, useState } from 'react';
 import UserAvatar from '../../components/UserAvatar';
 import ApiManager from '../../ApiManager/ApiManager';
@@ -16,26 +17,37 @@ import { Grid, Typography } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import ConfirmDialog from '../../components/confirmAlert';
+import ConfirmMessage from '../../components/ConfirmDialouge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import vehicleIcon from '../../../assets/images/icons/vehicle.svg';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faChevronRight,
+    faEdit,
+    faTrashAlt,
+    faUserSlash,
+    faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import {
     SwipeableList,
     SwipeableListItem,
-} from '@sandstreamdev/react-swipeable-list';
+    SwipeAction,
+    TrailingActions,
+    Type,
+} from 'react-swipeable-list';
 
 export function VehiclePage(props) {
     const [list, setList] = useState([]);
     const [resMsg, setResMsg] = useState('');
+    const [message, setMessage] = useState('');
+    const [assign, setAssign] = useState(false);
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
+    const [unAssign, setUnAssign] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
-    const [message, setMessage] = useState('');
     const [deleteItem, setDeleteItem] = useState(false);
-    const [assign, setAssign] = useState(false);
-    const [unAssign, setUnAssign] = useState(false);
+    const [openResponse, setOpenResponse] = useState(false);
 
     const classes = useStyles(props);
 
@@ -48,19 +60,26 @@ export function VehiclePage(props) {
                 registrationNo: selectedItem.registrationNo,
             };
             console.log('Delete Called');
-            // api.send('POST', APIURLS.deleteVehicles, body)
-            //     .then(res => {
-            //         console.log(
-            //             'Body : ',
-            //             body,
-            //             'Response Delete Vehicle :',
-            //             res,
-            //         );
-            //         // if (res.data.code === 1016) {
-            //         //     getAllItems();
-            //         // }
-            //     })
-            //     .catch(error => {});
+            api.send('POST', APIURLS.deleteVehicles, body)
+                .then(res => {
+                    setOpenResponse(true);
+                    console.log(
+                        'Body : ',
+                        body,
+                        'Response Delete Vehicle :',
+                        res,
+                    );
+                    if (res.data.code === 1016) {
+                        getAllItems();
+                        setResMsg('Vehicle Deleted Successfully');
+                    } else {
+                        setResMsg(res.data.id);
+                    }
+                })
+                .catch(error => {
+                    setOpenResponse(true);
+                    setResMsg(error.message);
+                });
         } else if (assign) {
             setAssign(false);
             const body = {};
@@ -76,6 +95,7 @@ export function VehiclePage(props) {
     };
     const confirmClose = () => {
         setOpenDialog(false);
+        setOpenResponse(false);
     };
     const getAllItems = () => {
         setPageLoad(true);
@@ -96,11 +116,15 @@ export function VehiclePage(props) {
                     }
                 } else {
                     setPageLoad(false);
+                    setResMsg(res.data.id);
+                    setOpenResponse(true);
                 }
             })
             .catch(error => {
-                setResMsg('NETWORK ERROR');
                 setPageLoad(false);
+                setResMsg(error.message);
+                console.log(error.message);
+                setOpenResponse(true);
             });
     };
     const goToVehicleDetailScreen = vehicle => {
@@ -112,13 +136,17 @@ export function VehiclePage(props) {
     const handlePageClick = (event, value) => {
         setCurrentPage(value);
     };
-    const swipeLeftAction = vehicle => {
+
+    const handleDelete = vehicle => () => {
+        console.log('[Handle DELETE]', vehicle);
         setOpenDialog(true);
         setSelectedItem(vehicle);
         setMessage('Do you want to delete this vehicle');
         setDeleteItem(true);
     };
-    const swipeRightAction = vehicle => {
+
+    const handleAssign = vehicle => () => {
+        console.log('[Handle ASSIGN]', vehicle);
         setSelectedItem(vehicle);
         setOpenDialog(true);
         if (vehicle.driverID) {
@@ -130,12 +158,67 @@ export function VehiclePage(props) {
         }
     };
 
+    const trailingActions = vehicle => (
+        <TrailingActions>
+            <SwipeAction
+                onClick={handleAssign(vehicle)}
+                className={classes.available}
+            >
+                {vehicle.driverID ? (
+                    <Grid className={classes.centered}>
+                        <FontAwesomeIcon
+                            className={classes.icon}
+                            icon={faUserSlash}
+                            size="1x"
+                            title="Remove Driver"
+                        />
+                    </Grid>
+                ) : (
+                    <Grid className={classes.centered}>
+                        <FontAwesomeIcon
+                            className={classes.icon}
+                            icon={faUser}
+                            size="1x"
+                            title="Assign Driver"
+                        />
+                    </Grid>
+                )}
+            </SwipeAction>
+            <SwipeAction
+                onClick={() => goToVehicleDetailScreen(vehicle)}
+                className={classes.assign}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faEdit}
+                        size="1x"
+                        title="EDIT"
+                    />
+                </Grid>
+            </SwipeAction>
+            <SwipeAction
+                onClick={handleDelete(vehicle)}
+                className={classes.delete}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faTrashAlt}
+                        size="1x"
+                        title="DELETE"
+                    />
+                </Grid>
+            </SwipeAction>
+        </TrailingActions>
+    );
+
     useEffect(() => {
         getAllItems();
     }, [currentPage]);
     return (
-        <div>
-            <div>
+        <Grid>
+            <Grid>
                 <Helmet>
                     <title>
                         {props.intl.formatMessage({ ...messages.vehicle })}
@@ -146,44 +229,15 @@ export function VehiclePage(props) {
                     showAddBtn
                     onPressAdd={handleAddVehicle}
                 />
-            </div>
+            </Grid>
             {list && !pageLoad && (
-                <div>
-                    {list.map(vehicle => (
-                        <Grid className={classes.main}>
-                            <SwipeableList threshold={0.25}>
+                <Grid>
+                    {
+                        <SwipeableList className={classes.main} type={Type.IOS}>
+                            {list.map(vehicle => (
                                 <SwipeableListItem
-                                    swipeLeft={{
-                                        content: (
-                                            <Grid className={classes.delete}>
-                                                <Typography>
-                                                    <FormattedMessage
-                                                        {...messages.deleteVehicle}
-                                                    />
-                                                </Typography>
-                                                <Delete />
-                                            </Grid>
-                                        ),
-                                        action: () => swipeLeftAction(vehicle),
-                                    }}
-                                    swipeRight={{
-                                        content: (
-                                            <Grid className={classes.assign}>
-                                                <Typography>
-                                                    {vehicle.driverID ? (
-                                                        <FormattedMessage
-                                                            {...messages.unassignVehicle}
-                                                        />
-                                                    ) : (
-                                                        <FormattedMessage
-                                                            {...messages.assignVehicle}
-                                                        />
-                                                    )}
-                                                </Typography>
-                                            </Grid>
-                                        ),
-                                        action: () => swipeRightAction(vehicle),
-                                    }}
+                                    key={vehicle.vehicleID}
+                                    trailingActions={trailingActions(vehicle)}
                                 >
                                     <Grid
                                         container
@@ -206,11 +260,6 @@ export function VehiclePage(props) {
                                                 <UserAvatar
                                                     alt="Vehicle Avatar"
                                                     src={vehicleIcon}
-                                                    onClick={() =>
-                                                        goToVehicleDetailScreen(
-                                                            vehicle,
-                                                        )
-                                                    }
                                                 />
                                             </Grid>
                                         </Grid>
@@ -267,20 +316,21 @@ export function VehiclePage(props) {
                                             </Grid>
                                         </Grid>
                                     </Grid>
+                                    <ConfirmDialog
+                                        title={'Alert'}
+                                        agreeText={'Ok'}
+                                        open={openDialog}
+                                        disagreeText={'Cancel'}
+                                        agree={confirmAgree}
+                                        disagree={confirmClose}
+                                        handleClose={confirmClose}
+                                        message={message}
+                                    />
                                 </SwipeableListItem>
-                            </SwipeableList>
-                            <ConfirmDialog
-                                title={'Alert'}
-                                agreeText={'Ok'}
-                                open={openDialog}
-                                disagreeText={'Cancel'}
-                                agree={confirmAgree}
-                                disagree={confirmClose}
-                                handleClose={confirmClose}
-                                message={message}
-                            />
-                        </Grid>
-                    ))}
+                            ))}
+                        </SwipeableList>
+                    }
+
                     {totalPage > 1 && (
                         <Grid container className={classes.main}>
                             <div className={classes.paginate}>
@@ -293,8 +343,14 @@ export function VehiclePage(props) {
                             </div>
                         </Grid>
                     )}
-                </div>
+                </Grid>
             )}
+            <ConfirmMessage
+                open={openResponse}
+                title={'Response Message'}
+                msg={resMsg}
+                handleClose={confirmClose}
+            />
 
             {pageLoad && (
                 <Grid
@@ -328,7 +384,7 @@ export function VehiclePage(props) {
                     </Grid>
                 </Grid>
             )}
-        </div>
+        </Grid>
     );
 }
 

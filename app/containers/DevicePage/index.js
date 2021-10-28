@@ -1,3 +1,10 @@
+/**
+ *
+ * DevicePage
+ *
+ */
+
+import './styles.css';
 import { compose } from 'redux';
 import messages from './messages';
 import { connect } from 'react-redux';
@@ -7,8 +14,8 @@ import { useStyles } from './styles.js';
 import { Sentry } from 'react-activity';
 import SCREENS from '../../constants/screen';
 import Header from '../../components/Header';
+import 'react-swipeable-list/dist/styles.css';
 import APIURLS from '../../ApiManager/apiUrl';
-import Delete from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
 import UserAvatar from '../../components/UserAvatar';
 import ApiManager from '../../ApiManager/ApiManager';
@@ -17,12 +24,21 @@ import Pagination from '@material-ui/lab/Pagination';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import ConfirmDialog from '../../components/confirmAlert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import satellite from '../../../assets/images/icons/satellite.svg';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import deviceIcon from '../../../assets/images/icons/satellite.svg';
+import {
+    faEdit,
+    faTrashAlt,
+    faChevronRight,
+    faLink,
+    faUnlink,
+} from '@fortawesome/free-solid-svg-icons';
 import {
     SwipeableList,
     SwipeableListItem,
-} from '@sandstreamdev/react-swipeable-list';
+    SwipeAction,
+    TrailingActions,
+    Type,
+} from 'react-swipeable-list';
 
 export function DevicePage(props) {
     const [list, setList] = useState([]);
@@ -33,23 +49,30 @@ export function DevicePage(props) {
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const [message, setMessage] = useState('');
+    const [deleteItem, setDeleteItem] = useState(false);
 
     const classes = useStyles(props);
 
     const confirmAgree = () => {
         const api = ApiManager.getInstance();
         setOpenDialog(false);
-        api.send('POST', APIURLS.deleteDevice, {
-            deviceID: selectedItem.deviceID,
-        })
-            .then(res => {
-                if (res.data.code === 1016) {
-                    getAllItems();
-                }
-            })
-            .catch(error => {});
+        if (deleteItem) {
+            setDeleteItem(false);
+            const body = {
+                deviceID: selectedItem.deviceID,
+            };
+            console.log('Delete Called');
+            api.send('POST', APIURLS.deleteDevice, body)
+                .then(res => {
+                    console.log('Body : ', body, 'Response Delete Zone :', res);
+                    if (res.data.code === 1016) {
+                        getAllItems();
+                    }
+                })
+                .catch(error => {});
+        }
     };
-    const confirmDisagree = () => {
+    const confirmClose = () => {
         setOpenDialog(false);
     };
     const getAllItems = () => {
@@ -87,29 +110,75 @@ export function DevicePage(props) {
     const handlePageClick = (event, value) => {
         setCurrentPage(value);
     };
-    const swipeLeftAction = device => {
-        setSelectedItem(device);
+
+    const handleDelete = zone => () => {
         setOpenDialog(true);
-        setMessage('Are you sure to delete this Device');
+        setSelectedItem(zone);
+        setMessage('Do you want to delete this Device?');
+        setDeleteItem(true);
     };
-    const swipeRightAction = device => {
-        setSelectedItem(device);
-        if (device.registrationNo && device.deviceAttachStatus === 2) {
-            setOpenDialog(true);
-            setMessage('Are you sure to un-assign vehicle');
-        } else if (device.registrationNo && device.deviceAttachStatus !== 2) {
-            setOpenDialog(true);
-            setMessage('Are you sure to un-assign vehicle');
-        }
-    };
+
+    const trailingActions = device => (
+        <TrailingActions>
+            <SwipeAction
+                className={classes.delete}
+                onClick={handleDelete(device)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faTrashAlt}
+                        size="1x"
+                        title="DELETE"
+                    />
+                </Grid>
+            </SwipeAction>
+            <SwipeAction
+                className={classes.assign}
+                onClick={() => goToDeviceDetailScreen(device)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faEdit}
+                        size="1x"
+                        title="EDIT"
+                    />
+                </Grid>
+            </SwipeAction>
+            <SwipeAction
+                className={
+                    device.deviceAttachStatus === 2
+                        ? classes.available
+                        : classes.notAvailable
+                }
+                // onClick={() => goToDeviceDetailScreen(device)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={device.registrationNo ? faUnlink : faLink}
+                        size="1x"
+                        title={
+                            device.deviceAttachStatus !== 2
+                                ? 'Not Available'
+                                : device.registrationNo
+                                ? 'Remove Device'
+                                : 'Attach Device'
+                        }
+                    />
+                </Grid>
+            </SwipeAction>
+        </TrailingActions>
+    );
 
     useEffect(() => {
         getAllItems();
     }, [currentPage]);
 
     return (
-        <div>
-            <div>
+        <Grid>
+            <Grid>
                 <Helmet>
                     <title>
                         {props.intl.formatMessage({ ...messages.device })}
@@ -120,63 +189,16 @@ export function DevicePage(props) {
                     showAddBtn
                     onPressAdd={handleAddDevice}
                 />
-            </div>
+            </Grid>
 
             {list && !pageLoad && (
-                <div>
-                    {list.map(device => (
-                        <Grid className={classes.main}>
-                            <SwipeableList threshold={0.25}>
+                <Grid>
+                    {
+                        <SwipeableList className={classes.main} type={Type.IOS}>
+                            {list.map(device => (
                                 <SwipeableListItem
-                                    swipeLeft={{
-                                        content: (
-                                            <Grid className={classes.delete}>
-                                                <Typography>
-                                                    <FormattedMessage
-                                                        {...messages.deleteVehicle}
-                                                    />
-                                                </Typography>
-                                                <Delete />
-                                            </Grid>
-                                        ),
-                                        action: () => swipeLeftAction(device),
-                                    }}
-                                    swipeRight={{
-                                        content: (
-                                            <Grid
-                                                className={
-                                                    device.deviceAttachStatus ===
-                                                    2
-                                                        ? classes.assign
-                                                        : classes.attach
-                                                }
-                                            >
-                                                {device.deviceAttachStatus ===
-                                                    2 && (
-                                                    <Typography>
-                                                        {device.registrationNo ? (
-                                                            <FormattedMessage
-                                                                {...messages.unassignVehicle}
-                                                            />
-                                                        ) : (
-                                                            <FormattedMessage
-                                                                {...messages.assignVehicle}
-                                                            />
-                                                        )}
-                                                    </Typography>
-                                                )}
-                                                {device.deviceAttachStatus !==
-                                                    2 && (
-                                                    <Typography>
-                                                        <FormattedMessage
-                                                            {...messages.unavailableVehicle}
-                                                        />
-                                                    </Typography>
-                                                )}
-                                            </Grid>
-                                        ),
-                                        action: () => swipeRightAction(device),
-                                    }}
+                                    key={device.deviceID}
+                                    trailingActions={trailingActions(device)}
                                 >
                                     <Grid
                                         container
@@ -198,12 +220,7 @@ export function DevicePage(props) {
                                             >
                                                 <UserAvatar
                                                     alt="Device Avatar"
-                                                    src={satellite}
-                                                    onClick={() =>
-                                                        goToDeviceDetailScreen(
-                                                            device,
-                                                        )
-                                                    }
+                                                    src={deviceIcon}
                                                 />
                                             </Grid>
                                         </Grid>
@@ -238,11 +255,12 @@ export function DevicePage(props) {
                                                                 }
                                                             </Typography>
                                                         </Grid>
+
                                                         <Grid item>
                                                             <Typography
                                                                 variant="body1"
                                                                 className={
-                                                                    classes.description
+                                                                    classes.content
                                                                 }
                                                             >
                                                                 {
@@ -252,6 +270,7 @@ export function DevicePage(props) {
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
+
                                                 <Grid item>
                                                     <FontAwesomeIcon
                                                         icon={faChevronRight}
@@ -261,20 +280,21 @@ export function DevicePage(props) {
                                             </Grid>
                                         </Grid>
                                     </Grid>
+                                    <ConfirmDialog
+                                        title={'Alert'}
+                                        agreeText={'Ok'}
+                                        open={openDialog}
+                                        disagreeText={'Cancel'}
+                                        agree={confirmAgree}
+                                        disagree={confirmClose}
+                                        handleClose={confirmClose}
+                                        message={message}
+                                    />
                                 </SwipeableListItem>
-                            </SwipeableList>
-                            <ConfirmDialog
-                                title={'Alert'}
-                                agreeText={'Ok'}
-                                open={openDialog}
-                                disagreeText={'Cancel'}
-                                agree={confirmAgree}
-                                disagree={confirmDisagree}
-                                handleClose={confirmDisagree}
-                                message={message}
-                            />
-                        </Grid>
-                    ))}
+                            ))}
+                        </SwipeableList>
+                    }
+
                     {totalPage > 1 && (
                         <Grid container className={classes.main}>
                             <div className={classes.paginate}>
@@ -287,7 +307,7 @@ export function DevicePage(props) {
                             </div>
                         </Grid>
                     )}
-                </div>
+                </Grid>
             )}
 
             {pageLoad && (
@@ -322,7 +342,7 @@ export function DevicePage(props) {
                     </Grid>
                 </Grid>
             )}
-        </div>
+        </Grid>
     );
 }
 DevicePage.propTypes = {};

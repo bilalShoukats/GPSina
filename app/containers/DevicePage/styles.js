@@ -7,6 +7,7 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         backgroundColor: 'gray',
+        marginBottom: '10px',
         '&:hover': {
             backgroundColor: '#ABABAB',
         },
@@ -35,35 +36,36 @@ const useStyles = makeStyles(theme => ({
         margin: '0.5em 0',
     },
     assign: {
-        borderRadius: '10px',
-        height: '100%',
-        width: '100%',
+        height: '90%',
         display: 'flex',
-        padding: '0px 18px',
         alignItems: 'center',
         position: 'relative',
         backgroundColor: 'blue',
+        padding: '0 1.5em',
     },
     delete: {
-        borderRadius: '10px',
-        height: '100%',
-        width: '100%',
+        height: '90%',
         display: 'flex',
-        padding: '0px 18px',
         alignItems: 'center',
         position: 'relative',
         backgroundColor: 'red',
-        justifyContent: 'flex-end',
+        padding: '0 1.5em',
     },
-    attach: {
-        borderRadius: '10px',
-        height: '100%',
-        width: '100%',
+    available: {
+        height: '90%',
         display: 'flex',
-        padding: '0px 18px',
         alignItems: 'center',
         position: 'relative',
-        backgroundColor: '#272727',
+        backgroundColor: 'green',
+        padding: '0 1.5em',
+    },
+    notAvailable: {
+        height: '90%',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: '#404040',
+        padding: '0 1.5em',
     },
     activity: {
         position: 'absolute',
@@ -82,6 +84,17 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: '#ABABAB',
         },
+    },
+    centered: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+    },
+    icon: {
+        fill: 'white',
+        width: '32px',
+        height: '32px',
+        alignSelf: 'center',
     },
 }));
 

@@ -9,9 +9,9 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.VehicleDetailPage';
 
 export default defineMessages({
-    infoVehicle: {
-        id: `${scope}.infoVehicle`,
-        defaultMessage: 'Vehicle Information',
+    addVehicle: {
+        id: `${scope}.addVehicle`,
+        defaultMessage: 'Vehicle Info',
     },
     vehicleInformation: {
         id: `${scope}.vehicleInformation`,
@@ -33,12 +33,12 @@ export default defineMessages({
         id: `${scope}.business`,
         defaultMessage: 'Business',
     },
-    registraionNumber: {
-        id: `${scope}.registraionNumber`,
+    registrationNo: {
+        id: `${scope}.registrationNo`,
         defaultMessage: 'Registraion Number',
     },
-    enterRegistraionNumber: {
-        id: `${scope}.enterRegistraionNumber`,
+    enterRegistrationNo: {
+        id: `${scope}.enterRegistrationNo`,
         defaultMessage: 'Enter Registraion Number',
     },
     make: {
@@ -50,12 +50,12 @@ export default defineMessages({
         defaultMessage: 'Enter Make',
     },
 
-    model: {
-        id: `${scope}.model`,
+    vehicleModel: {
+        id: `${scope}.vehicleModel`,
         defaultMessage: 'Model',
     },
-    enterModel: {
-        id: `${scope}.enterModel`,
+    enterVehicleModel: {
+        id: `${scope}.enterVehicleModel`,
         defaultMessage: 'Enter Model',
     },
     engineNo: {
@@ -112,12 +112,12 @@ export default defineMessages({
         defaultMessage: 'Select Fuel Type',
     },
 
-    fuelTankCapacity: {
-        id: `${scope}.fuelTankCapacity`,
+    fuelTankCapacityInLiters: {
+        id: `${scope}.fuelTankCapacityInLiters`,
         defaultMessage: 'Fuel Tank Capacity (Liters)',
     },
-    enterFuelCapacity: {
-        id: `${scope}.enterFuelCapacity`,
+    enterFuelTankCapacityInLiters: {
+        id: `${scope}.enterFuelTankCapacityInLiters`,
         defaultMessage: 'Enter Fuel Capacity',
     },
     company: {
@@ -144,12 +144,12 @@ export default defineMessages({
         id: `${scope}.enterType`,
         defaultMessage: 'Enter Type',
     },
-    expiryDate: {
-        id: `${scope}.expiryDate`,
+    expiredAt: {
+        id: `${scope}.expiredAt`,
         defaultMessage: 'Expiry Date',
     },
-    enterExpiryDate: {
-        id: `${scope}.enterExpiryDate`,
+    enterExpiredAt: {
+        id: `${scope}.enterExpiredAt`,
         defaultMessage: 'Enter Expiry Date',
     },
 
@@ -178,12 +178,12 @@ export default defineMessages({
         defaultMessage: 'Enter Next',
     },
 
-    loadingWeight: {
-        id: `${scope}.loadingWeight`,
+    loadingWeightCapacity: {
+        id: `${scope}.loadingWeightCapacity`,
         defaultMessage: 'Loading Weight Capacity (kg)',
     },
-    enterLoadingWeight: {
-        id: `${scope}.enterLoadingWeight`,
+    enterLoadingWeightCapacity: {
+        id: `${scope}.enterLoadingWeightCapacity`,
         defaultMessage: 'Enter Loading Weight',
     },
     loadingAreaInformation: {
@@ -191,38 +191,29 @@ export default defineMessages({
         defaultMessage: 'Loading Area Dimension (ft)',
     },
 
-    widthtFt: {
-        id: `${scope}.widthtFt`,
+    width: {
+        id: `${scope}.width`,
         defaultMessage: 'Width: (ft)',
     },
     enterWidth: {
         id: `${scope}.enterWidth`,
         defaultMessage: 'Enter Width',
     },
-    heightFt: {
-        id: `${scope}.heightFt`,
+    height: {
+        id: `${scope}.height`,
         defaultMessage: 'Height: (ft)',
     },
     enterHeight: {
         id: `${scope}.enterHeight`,
         defaultMessage: 'Enter Height',
     },
-    lengthFt: {
-        id: `${scope}.lengthFt`,
+    length: {
+        id: `${scope}.length`,
         defaultMessage: 'Length: (ft)',
     },
     enterLength: {
         id: `${scope}.enterLength`,
         defaultMessage: 'Enter Length',
-    },
-
-    invalidRange: {
-        id: `${scope}.invalidRange`,
-        defaultMessage: 'Invalid Range',
-    },
-    validRegEx: {
-        id: `${scope}.validRegEx`,
-        defaultMessage: 'Pattern not matches (0.0.0)',
     },
     submit: {
         id: `${scope}.submit`,

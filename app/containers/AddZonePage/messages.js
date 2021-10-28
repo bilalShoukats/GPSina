@@ -25,8 +25,4 @@ export default defineMessages({
         id: `${scope}.submit`,
         defaultMessage: 'Submit',
     },
-    atLeast5Character: {
-        id: `${scope}.atLeast5Character`,
-        defaultMessage: 'must at least 5 characters',
-    },
 });

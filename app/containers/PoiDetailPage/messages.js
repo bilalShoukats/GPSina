@@ -3,19 +3,14 @@
  *
  * This contains all the text for the PoiDetailPage container.
  */
-
 import { defineMessages } from 'react-intl';
 
 export const scope = 'app.containers.PoiDetailPage';
 
 export default defineMessages({
-    poiDetail: {
-        id: `${scope}.poiDetail`,
-        defaultMessage: 'Point of Interest Detail',
-    },
-    poiName: {
-        id: `${scope}.poiName`,
-        defaultMessage: 'POI Name',
+    newPoi: {
+        id: `${scope}.newPoi`,
+        defaultMessage: 'Point of Interest Info',
     },
     poiName: {
         id: `${scope}.poiName`,
@@ -113,6 +108,10 @@ export default defineMessages({
         id: `${scope}.enterEmail`,
         defaultMessage: 'Enter Email',
     },
+    save: {
+        id: `${scope}.save`,
+        defaultMessage: 'Save',
+    },
     atLeast5Character: {
         id: `${scope}.atLeast5Character`,
         defaultMessage: 'must at least 5 characters',
@@ -128,5 +127,9 @@ export default defineMessages({
     valueRequired: {
         id: `${scope}.valueRequired`,
         defaultMessage: 'Value Required',
+    },
+    submit: {
+        id: `${scope}.submit`,
+        defaultMessage: 'Submit',
     },
 });

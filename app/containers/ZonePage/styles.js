@@ -2,31 +2,28 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
     main: {
-        padding: '2.0em 3em',
+        padding: '1.0em 4em',
+        backgroundColor: 'transparent',
     },
     container: {
-        padding: '0.5em 1.5em',
-        margin: '0.5em 3.0em',
-        borderRadius: '10px',
-        backgroundColor: 'grey',
-        opacity: 0.8,
+        backgroundColor: 'gray',
+        marginBottom: '10px',
+        '&:hover': {
+            backgroundColor: '#ABABAB',
+        },
     },
     content: {
         padding: '0 1.5em',
     },
     avatar: {
+        padding: '0.5em 1.5em',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    dotIndicator: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        zIndex: 99,
-        backgroundColor: 'lightgreen',
-        width: '10px',
-        height: '10px',
+        cursor: 'pointer',
+        '&:hover': {
+            opacity: 5.0,
+        },
     },
     title: {
         textTransform: 'capitalize',
@@ -35,9 +32,42 @@ const useStyles = makeStyles(theme => ({
     description: {
         textTransform: 'capitalize',
         display: 'inline',
+        padding: '0.5em 1em',
+        margin: '0.5em 0',
+    },
+    assign: {
+        height: '90%',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: 'blue',
+        padding: '0 1.5em',
+    },
+    delete: {
+        height: '90%',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: 'red',
+        padding: '0 1.5em',
+    },
+    attach: {
+        borderRadius: '10px',
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        padding: '0px 18px',
+        alignItems: 'center',
+        position: 'relative',
+        backgroundColor: '#272727',
+    },
+    activity: {
+        position: 'absolute',
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
     },
     paginate: {
-        //display: 'flex',
         marginLeft: 'auto',
         backgroundColor: 'gray',
         color: 'primary',
@@ -49,18 +79,16 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: '#ABABAB',
         },
     },
-    detailIcon: {
-        //backgroundColor: '#28ACEA',
-        marginLeft: '1.0em',
-        cursor: 'pointer',
-        color: '#28ACEA',
-        // borderRadius: '10px',
+    centered: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
     },
-    deleteIcon: {
-        //backgroundColor: 'red',
-        marginLeft: '1.0em',
-        cursor: 'pointer',
-        color: '#ff4d4d',
+    icon: {
+        fill: 'white',
+        width: '32px',
+        height: '32px',
+        alignSelf: 'center',
     },
 }));
 

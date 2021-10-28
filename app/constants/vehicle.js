@@ -8,3 +8,7 @@ export const FUEL = [
     { label: 'Diesel', value: 1 },
     { label: 'Cng', value: 2 },
 ];
+export const TYPE = [
+    { label: 'Private', value: 0 },
+    { label: 'Business', value: 1 },
+];

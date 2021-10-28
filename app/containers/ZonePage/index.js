@@ -4,80 +4,124 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
+import './styles.css';
 import { compose } from 'redux';
-import { Helmet } from 'react-helmet';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectZonePage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
-import Header from '../../components/Header';
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import { useStyles } from './styles.js';
-// import { zoneList } from '../../constants/dummy';
+import { Sentry } from 'react-activity';
+import 'react-activity/dist/Sentry.css';
+import Header from '../../components/Header';
+import SCREENS from '../../constants/screen';
+import 'react-swipeable-list/dist/styles.css';
+import APIURLS from '../../ApiManager/apiUrl';
+import React, { useEffect, useState } from 'react';
+import UserAvatar from '../../components/UserAvatar';
 import { Grid, Typography } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ConfirmDialog from '../../components/confirmAlert';
-import {
-    faBuilding,
-    faChevronRight,
-    faEdit,
-    faFlag,
-    faHome,
-    faIndustry,
-    faInfo,
-    faInfoCircle,
-    faMapMarkerAlt,
-    faStreetView,
-    faTrashAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import SCREENS from '../../constants/screen';
 import ApiManager from '../../ApiManager/ApiManager';
-import APIURLS from '../../ApiManager/apiUrl';
+import ConfirmDialog from '../../components/confirmAlert';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import zoneIcon from '../../../assets/images/icons/zone.svg';
+import ConfirmMessage from '../../components/ConfirmDialouge';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faEdit,
+    faTrashAlt,
+    faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+    SwipeableList,
+    SwipeableListItem,
+    SwipeAction,
+    TrailingActions,
+    Type,
+} from 'react-swipeable-list';
 
 export function ZonePage(props) {
-    useInjectReducer({ key: 'zonePage', reducer });
-    useInjectSaga({ key: 'zonePage', saga });
-
     const classes = useStyles(props);
-    const [poi, setPoi] = useState({});
-    const [zone, setZone] = useState();
-    const [zoneList, setZoneList] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [poi, setPoi] = useState('');
+    const [list, setList] = useState([]);
+    const [resMsg, setResMsg] = useState('');
+    const [message, setMessage] = useState('');
     const [totalPage, setTotalPage] = useState(1);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+    const [pageLoad, setPageLoad] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [deleteItem, setDeleteItem] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
+    const [openResponse, setOpenResponse] = useState(false);
+
+    const handleDelete = zone => () => {
+        setOpenDialog(true);
+        setSelectedItem(zone);
+        setMessage('Do you want to delete this zone');
+        setDeleteItem(true);
+    };
+
+    const trailingActions = zone => (
+        <TrailingActions>
+            <SwipeAction
+                className={classes.delete}
+                onClick={handleDelete(zone)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faTrashAlt}
+                        size="1x"
+                    />
+                </Grid>
+            </SwipeAction>
+            <SwipeAction
+                className={classes.assign}
+                onClick={() => goToAreaDetailScreen(zone)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faEdit}
+                        size="1x"
+                    />
+                </Grid>
+            </SwipeAction>
+        </TrailingActions>
+    );
 
     const handlePageClick = (event, value) => {
         console.log(value);
         setCurrentPage(value);
     };
 
-    const confirmDeleteDialogClose = () => {
-        setOpenDelete(false);
+    const confirmAgree = () => {
+        const api = ApiManager.getInstance();
+        setOpenDialog(false);
+        if (deleteItem) {
+            setDeleteItem(false);
+            const body = {
+                zoneId: selectedItem.zoneId,
+            };
+            console.log('Delete Called');
+            api.send('POST', APIURLS.deleteZone, body)
+                .then(res => {
+                    console.log('Body : ', body, 'Response Delete Zone :', res);
+                    setOpenResponse(true);
+                    if (res.data.code === 1016) {
+                        setResMsg('Delete Zone Successfully');
+                        allZone();
+                    }
+                })
+                .catch(error => {
+                    setOpenResponse(true);
+                    setResMsg(error.message);
+                });
+        }
     };
 
-    const confirmDeleteAgree = () => {
-        const api = ApiManager.getInstance();
-        api.send('POST', APIURLS.deleteZone, { zoneId: zone.zoneId })
-            .then(res => {
-                console.log('Delete Zone Resonse : ', res);
-                if (res.data.code === 1016) {
-                    setOpenDelete(false);
-                    console.log('Successfully Deleted...');
-                    allZone();
-                }
-            })
-            .catch(error => {
-                console.log('Delete Zone Errors : ', error);
-            });
+    const confirmClose = () => {
+        setOpenDialog(false);
+        setOpenResponse(false);
     };
 
     const goToAreaDetailScreen = area => {
@@ -91,29 +135,38 @@ export function ZonePage(props) {
     };
 
     const allZone = () => {
+        setPageLoad(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllZones, { page: currentPage })
             .then(res => {
                 console.log('Get all Zone : ', res);
                 if (res.data.code === 1019) {
-                    setZoneList(res.data.response);
+                    setPageLoad(false);
+                    setList(res.data.response);
                     setTotalPage(res.data.totalPages);
+                    if (!res.data.response) {
+                        if (currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                        } else {
+                            setResMsg('NO ZONE');
+                        }
+                    }
+                } else {
+                    setPageLoad(false);
+                    setResMsg(res.data.id);
+                    setOpenResponse(true);
                 }
             })
             .catch(error => {
-                console.log('Get all zone Errors : ', error);
+                setPageLoad(false);
+                setResMsg(error.message);
+                setOpenResponse(true);
             });
     };
 
-    const deleteZone = zone => {
-        setZone(zone);
-        setOpenDelete(true);
-        console.log('zone : ', zone);
-    };
-
     const selectZoneforPOI = zone => {
-        console.log('Poi zone: ', poi);
         if (poi.poId) {
+            console.log('Poi zone: ', poi);
             const body = {
                 poId: poi.poId,
                 zoneId: zone.zoneId,
@@ -124,17 +177,18 @@ export function ZonePage(props) {
                 .then(res => {
                     console.log('response for assign poi : ', res);
                     if (res.data.code === 6047) {
+                        setResMsg('Zone Assigned');
+                        setOpenResponse(true);
                         props.history.goBack();
-                        console.log('Successfully assign zone to poi');
                     } else {
-                        console.log('Bad Body for assign zone');
+                        setResMsg(res.data.id);
+                        setOpenResponse(true);
                     }
                 })
                 .catch(error => {
-                    console.log('Error for assign poi: ', error);
+                    setResMsg(res.data.id);
+                    setOpenResponse(true);
                 });
-        } else {
-            console.log('Nothing');
         }
     };
 
@@ -151,111 +205,172 @@ export function ZonePage(props) {
     }, [currentPage]);
 
     return (
-        <div>
-            <Helmet>
-                <title>{props.intl.formatMessage({ ...messages.zone })}</title>
-            </Helmet>
-            <Header
-                title={<FormattedMessage {...messages.zone} />}
-                showAddBtn
-                onPressAdd={handleAddZone}
-            />
-
-            <Grid container className={classes.main}>
-                {zoneList.map(zone => (
-                    <Grid
-                        container
-                        direction="row"
-                        alignItems="center"
-                        className={classes.container}
-                    >
-                        <Grid
-                            item
-                            xs={12}
-                            alignItems="center"
-                            className={classes.content}
-                            onClick={() => selectZoneforPOI(zone)}
-                        >
-                            <Grid
-                                container
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                            >
-                                <Grid item>
-                                    <Typography
-                                        variant="body1"
-                                        className={classes.title}
-                                    >
-                                        {zone.name}
-                                    </Typography>
-                                </Grid>
-                                {!poi.poId && (
-                                    <Grid item>
-                                        <FontAwesomeIcon
-                                            icon={faEdit}
-                                            className={classes.detailIcon}
-                                            onClick={() =>
-                                                goToAreaDetailScreen(zone)
-                                            }
-                                            size="1x"
-                                        />
-                                        <FontAwesomeIcon
-                                            icon={faTrashAlt}
-                                            className={classes.deleteIcon}
-                                            onClick={() => deleteZone(zone)}
-                                            size="1x"
-                                        />
-                                    </Grid>
-                                )}
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                ))}
+        <Grid>
+            <Grid>
+                <Helmet>
+                    <title>
+                        {props.intl.formatMessage({ ...messages.zone })}
+                    </title>
+                </Helmet>
+                <Header
+                    title={<FormattedMessage {...messages.zone} />}
+                    showAddBtn
+                    onPressAdd={handleAddZone}
+                />
             </Grid>
-            {totalPage > 1 && (
-                <Grid container className={classes.main}>
-                    <div className={classes.paginate}>
-                        <Pagination
-                            count={totalPage}
-                            color="primary"
-                            page={currentPage}
-                            onChange={handlePageClick}
-                        />
-                    </div>
+            {list && !pageLoad && (
+                <Grid>
+                    {
+                        <SwipeableList className={classes.main} type={Type.IOS}>
+                            {list.map(zone => (
+                                <SwipeableListItem
+                                    key={zone.zoneId}
+                                    trailingActions={trailingActions(zone)}
+                                    blockSwipe={poi}
+                                >
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        alignItems="center"
+                                        className={classes.container}
+                                        onClick={() => {
+                                            selectZoneforPOI(zone);
+                                        }}
+                                    >
+                                        <Grid
+                                            item
+                                            xs={2}
+                                            md={1}
+                                            className={classes.avatar}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                            >
+                                                <UserAvatar
+                                                    alt="Zone Avatar"
+                                                    src={zoneIcon}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={10}
+                                            md={11}
+                                            alignItems="center"
+                                            className={classes.content}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
+                                                <Grid item>
+                                                    <Grid
+                                                        container
+                                                        direction="column"
+                                                    >
+                                                        <Grid item>
+                                                            <Typography
+                                                                variant="body1"
+                                                                className={
+                                                                    classes.title
+                                                                }
+                                                            >
+                                                                {zone.name}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                {!poi.poId && (
+                                                    <Grid item>
+                                                        <FontAwesomeIcon
+                                                            icon={
+                                                                faChevronRight
+                                                            }
+                                                            size="1x"
+                                                        />
+                                                    </Grid>
+                                                )}
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <ConfirmDialog
+                                        title={'Alert'}
+                                        agreeText={'Ok'}
+                                        open={openDialog}
+                                        disagreeText={'Cancel'}
+                                        agree={confirmAgree}
+                                        disagree={confirmClose}
+                                        handleClose={confirmClose}
+                                        message={message}
+                                    />
+                                </SwipeableListItem>
+                            ))}
+                        </SwipeableList>
+                    }
+
+                    {totalPage > 1 && (
+                        <Grid container className={classes.main}>
+                            <div className={classes.paginate}>
+                                <Pagination
+                                    count={totalPage}
+                                    color="primary"
+                                    page={currentPage}
+                                    onChange={handlePageClick}
+                                />
+                            </div>
+                        </Grid>
+                    )}
                 </Grid>
             )}
-            <ConfirmDialog
-                title={'Alert'}
-                agreeText={'Ok'}
-                open={openDelete}
-                disagreeText={'Cancel'}
-                agree={confirmDeleteAgree}
-                disagree={confirmDeleteDialogClose}
-                handleClose={confirmDeleteDialogClose}
-                message={'Are you sure to delete this Zone'}
+            <ConfirmMessage
+                open={openResponse}
+                title={'Response Message'}
+                msg={resMsg}
+                handleClose={confirmClose}
             />
-        </div>
+            {pageLoad && (
+                <Grid
+                    container
+                    justifyContent="center"
+                    className={classes.loading}
+                >
+                    <Grid item xs={3}>
+                        <Grid className={classes.activity}>
+                            <Sentry
+                                color="#28ACEA"
+                                size={200}
+                                speed={1}
+                                animating={pageLoad}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            )}
+
+            {!list && (
+                <Grid
+                    container
+                    justifyContent="center"
+                    className={classes.loading}
+                >
+                    <Grid item xs={3}>
+                        <Grid className={classes.activity}>
+                            <h1>{resMsg}</h1>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            )}
+        </Grid>
     );
 }
 
-ZonePage.propTypes = {
-    dispatch: PropTypes.func.isRequired,
-};
+ZonePage.propTypes = {};
 
-const mapStateToProps = createStructuredSelector({
-    zonePage: makeSelectZonePage(),
-});
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch,
-    };
-}
-
-const withConnect = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-);
+const withConnect = connect();
 
 export default compose(withConnect)(injectIntl(ZonePage));
