@@ -211,6 +211,7 @@ export function DevicePage(props) {
                                             item
                                             xs={10}
                                             md={11}
+                                            container
                                             alignItems="center"
                                             className={classes.content}
                                         >

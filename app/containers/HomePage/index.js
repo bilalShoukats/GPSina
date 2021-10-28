@@ -10,6 +10,8 @@ import { Helmet } from 'react-helmet';
 import Img from '../../components/Img';
 import Map from '../../components/Map';
 import { useStyles } from './styles.js';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import InfiniteList from '../../components/List';
 import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
 import { withStyles } from '@material-ui/styles';
@@ -62,12 +64,18 @@ import {
     Box,
     Select,
 } from '@material-ui/core';
+import {
+    SwipeableList,
+    SwipeableListItem,
+} from '@sandstreamdev/react-swipeable-list';
 const textField = createRef();
 class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            hasNextPage: false,
+            isNextPageLoading: false,
             isModalShown: false,
             filter: '',
             coordinate: {
@@ -102,21 +110,29 @@ class HomePage extends Component {
     };
 
     getDevices = async () => {
+        this.setState({
+            isNextPageLoading: true,
+        });
         this.api
-            .send('GET', APIURLS.getVehicle, {})
+            .send('GET', APIURLS.getVehicle, { page: this.state.page })
             .then(response => {
                 if (response.data.code === 1019) {
                     this.setState({
-                        deviceList: response.data.response
-                            ? response.data.response
-                            : DummydeviceList,
-
-                        tempDeviceList: response.data.response
-                            ? response.data.response
-                            : DummydeviceList,
-
-                        page: response.data.currentPage,
+                        deviceList: [
+                            ...this.state.deviceList,
+                            ...response.data.response,
+                        ],
+                        tempDeviceList: [
+                            ...this.state.tempDeviceList,
+                            ...response.data.response,
+                        ],
+                        page: response.data.currentPage + 1,
                         totalPage: response.data.totalPages,
+                        hasNextPage:
+                            response.data.currentPage < response.data.totalPages
+                                ? true
+                                : false,
+                        isNextPageLoading: false,
                     });
                 } else {
                 }
@@ -477,7 +493,12 @@ class HomePage extends Component {
                         </Grid>
 
                         <Grid container className={classes.container}>
-                            <Grid item xs={4} className={classes.leftContainer}>
+                            <Grid
+                                item
+                                xs={4}
+                                id="item-container"
+                                className={classes.leftContainer}
+                            >
                                 {/* <Grid
                                     container
                                     spacing={2}
@@ -566,12 +587,12 @@ class HomePage extends Component {
                                     </Grid>
                                 </Grid> */}
 
-                                <Grid container direction="column">
-                                    <Grid
+                                {/* <Grid container direction="column"> */}
+                                {/* <Grid
                                         item
                                         className={classes.paginationContainer}
-                                    >
-                                        <Box xs={12}>
+                                    > */}
+                                {/* <Box xs={12}>
                                             <Select
                                                 style={{
                                                     minWidth: '75%',
@@ -607,8 +628,8 @@ class HomePage extends Component {
                                                     size="sm"
                                                 />
                                             </Button>
-                                        </Box>
-                                        {/* <Box flexGrow={1}>
+                                        </Box> */}
+                                {/* <Box flexGrow={1}>
                                             <TextField
                                                 size="small"
                                                 label="Search"
@@ -631,7 +652,7 @@ class HomePage extends Component {
                                                 Search
                                             </Button>
                                         </Box> */}
-                                        {/* <Grid
+                                {/* <Grid
                                             container
                                             direction="row"
                                             justify="center"
@@ -733,18 +754,39 @@ class HomePage extends Component {
                                                 )}
                                             </Grid>
                                         </Grid> */}
-                                    </Grid>
+                                {/* </Grid> */}
 
-                                    <Paper
-                                        elevation={3}
-                                        variant="outlined"
-                                        // style={{
-                                        //     background: '#fff',
-                                        // }}
-                                        className={classes.black}
-                                    >
-                                        <Grid item className={classes.list}>
-                                            {this.state.deviceList.map(
+                                {/* <Paper
+                                    elevation={3}
+                                    variant="outlined"
+                                    className={classes.black}
+                                >
+                                    <Grid item className={classes.list}> */}
+                                <AutoSizer>
+                                    {({ height, width }) => (
+                                        <InfiniteList
+                                            index={0}
+                                            height={height}
+                                            width={width}
+                                            //text={' List'}
+                                            classes={classes}
+                                            List={'VehicleList'}
+                                            itemData={this.state.deviceList}
+                                            itemCount={
+                                                this.state.deviceList.length
+                                            }
+                                            hasNextPage={this.state.hasNextPage}
+                                            isNextPageLoading={
+                                                this.state.isNextPageLoading
+                                            }
+                                            loadNextPage={() => {
+                                                console.log('loadNextPage');
+                                                this.getDevices();
+                                            }}
+                                        />
+                                    )}
+                                </AutoSizer>
+                                {/* {this.state.deviceList.map(
                                                 device => (
                                                     <DeviceList
                                                         swipeAction={
@@ -765,13 +807,13 @@ class HomePage extends Component {
                                                         }
                                                     />
                                                 ),
-                                            )}
-                                        </Grid>
-                                    </Paper>
-                                </Grid>
+                                            )} */}
+                                {/* </Grid>
+                                </Paper> */}
+                                {/* </Grid> */}
                             </Grid>
                             <Grid item xs={8} className={classes.mapContainer}>
-                                <Map center={coordinate} />
+                                {/* <Map center={coordinate} /> */}
                             </Grid>
                         </Grid>
                     </Grid>
