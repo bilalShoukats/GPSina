@@ -45,10 +45,11 @@ const defaultProps = {
 
 const DeviceList = ({ ...props }) => {
     const classes = useStyles(props);
+    console.log('props Data : ', props);
     const history = useHistory();
 
-    const goToLocateScreen = () => {
-        history.push(SCREENS.LOCATE);
+    const goToLocateScreen = vehicle => {
+        history.push(SCREENS.LOCATE, { vehicle: vehicle });
     };
 
     const goToHistoryScreen = () => {

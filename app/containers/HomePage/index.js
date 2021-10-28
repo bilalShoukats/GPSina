@@ -106,6 +106,7 @@ class HomePage extends Component {
             .send('GET', APIURLS.getVehicle, {})
             .then(response => {
                 if (response.data.code === 1019) {
+                    console.log('Home Device List : ', response.data.response);
                     this.setState({
                         deviceList: response.data.response
                             ? response.data.response
@@ -763,6 +764,7 @@ class HomePage extends Component {
                                                         lastVehicleInformation={
                                                             device.lastVehicleInformation
                                                         }
+                                                        device={device}
                                                     />
                                                 ),
                                             )}
