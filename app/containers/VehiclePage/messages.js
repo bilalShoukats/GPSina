@@ -17,13 +17,13 @@ export default defineMessages({
         id: `${scope}.vehicleId`,
         defaultMessage: 'vehicle ID',
     },
-    assignVehicle: {
-        id: `${scope}.assignVehicle`,
-        defaultMessage: 'Assign Vehicle',
+    assignDriver: {
+        id: `${scope}.assignDriver`,
+        defaultMessage: 'Assign Driver',
     },
-    unassignVehicle: {
-        id: `${scope}.unassignVehicle`,
-        defaultMessage: 'Un-assign Vehicle',
+    unassignDriver: {
+        id: `${scope}.unassignDriver`,
+        defaultMessage: 'Un-assign Driver',
     },
     unavailableVehicle: {
         id: `${scope}.unavailableVehicle`,

@@ -4,6 +4,7 @@
  *
  */
 
+import './styles.css';
 import { compose } from 'redux';
 import messages from './messages';
 import { connect } from 'react-redux';
@@ -13,8 +14,8 @@ import { useStyles } from './styles.js';
 import { Sentry } from 'react-activity';
 import SCREENS from '../../constants/screen';
 import Header from '../../components/Header';
+import 'react-swipeable-list/dist/styles.css';
 import APIURLS from '../../ApiManager/apiUrl';
-import Delete from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
 import UserAvatar from '../../components/UserAvatar';
 import ApiManager from '../../ApiManager/ApiManager';
@@ -22,13 +23,21 @@ import { Grid, Typography } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import ConfirmDialog from '../../components/confirmAlert';
+import ConfirmMessage from '../../components/ConfirmDialouge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import driverIcon from '../../../assets/images/icons/driver.svg';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faEdit,
+    faTrashAlt,
+    faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 import {
     SwipeableList,
     SwipeableListItem,
-} from '@sandstreamdev/react-swipeable-list';
+    SwipeAction,
+    TrailingActions,
+    Type,
+} from 'react-swipeable-list';
 
 export function DriverPage(props) {
     const [list, setList] = useState([]);
@@ -36,35 +45,43 @@ export function DriverPage(props) {
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [openDelete, setOpenDelete] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
-    const [vehicle, setVehicle] = useState({});
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openResponse, setOpenResponse] = useState(false);
+    const [message, setMessage] = useState('');
+    const [deleteItem, setDeleteItem] = useState(false);
+    const [vehicle, setVehicle] = useState('');
 
     const classes = useStyles(props);
 
-    const confirmDeleteAgree = () => {
+    const confirmAgree = () => {
         const api = ApiManager.getInstance();
-        setOpenDelete(false);
-        const body = {
-            registrationNo: selectedItem.registrationNo,
-        };
-        api.send('POST', APIURLS.deleteDriver, body)
-            .then(res => {
-                console.log(
-                    'Body Delete Driver : ',
-                    body,
-                    'Response Delete Driver :',
-                    res,
-                );
-                // if (res.data.code === 1016) {
-                //     getAllItems();
-                // }
-            })
-            .catch(error => {});
+        setOpenDialog(false);
+        if (deleteItem) {
+            setDeleteItem(false);
+            const body = {
+                driverEmail: selectedItem.driverEmail,
+            };
+            console.log('Delete Called');
+            api.send('POST', APIURLS.deleteDriver, body)
+                .then(res => {
+                    console.log('Body : ', body, 'Response Delete :', res);
+                    setOpenResponse(true);
+                    if (res.data.code === 1016) {
+                        getAllItems();
+                        setResMsg('Deleted Successfully');
+                    } else {
+                        setResMsg(res.data.id);
+                    }
+                })
+                .catch(error => {});
+        }
     };
-    const confirmDeleteDialogClose = () => {
-        setOpenDelete(false);
+    const confirmClose = () => {
+        setOpenDialog(false);
+        setOpenResponse(false);
     };
+
     const goToDriverDetailScreen = driver => {
         props.history.push(SCREENS.DRIVERDETAIL, { driver: driver });
     };
@@ -72,30 +89,32 @@ export function DriverPage(props) {
     const handleAddDriver = () => {
         props.history.push(SCREENS.ADDDRIVER);
     };
-    const swipeLeftAction = vehicle => {
-        setSelectedItem(vehicle);
-        setOpenDelete(true);
-    };
+
     const selectDriverForVehicle = driver => {
         console.log('Vehicle From Prop : ', vehicle);
-        const body = {
-            registrationNo: vehicle.registrationNo,
-            driverID: driver.driverID,
-        };
-        const api = ApiManager.getInstance();
-        api.send('POST', APIURLS.assignVehicle, body)
-            .then(res => {
-                console.log(
-                    'Submitted body for assign : ',
-                    body,
-                    'Response: ',
-                    res,
-                );
-            })
-            .catch(error => {
-                console.log('Error', error);
-            });
+        if (vehicle.registrationNo) {
+            const body = {
+                registrationNo: vehicle.registrationNo,
+                driverID: driver.driverID,
+            };
+            const api = ApiManager.getInstance();
+            api.send('POST', APIURLS.assignVehicle, body)
+                .then(res => {
+                    setOpenResponse(true);
+                    console.log(
+                        'Submitted body for assign : ',
+                        body,
+                        'Response: ',
+                        res,
+                    );
+                    setResMsg(res.data.id);
+                })
+                .catch(error => {
+                    console.log('Error', error);
+                });
+        }
     };
+
     const getAllItems = () => {
         setPageLoad(true);
         const api = ApiManager.getInstance();
@@ -123,6 +142,44 @@ export function DriverPage(props) {
             });
     };
 
+    const handleDelete = zone => () => {
+        setOpenDialog(true);
+        setSelectedItem(zone);
+        setMessage('Do you want to delete this Driver?');
+        setDeleteItem(true);
+    };
+
+    const trailingActions = driver => (
+        <TrailingActions>
+            <SwipeAction
+                className={classes.delete}
+                onClick={handleDelete(driver)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faTrashAlt}
+                        size="1x"
+                        title="DELETE"
+                    />
+                </Grid>
+            </SwipeAction>
+            <SwipeAction
+                className={classes.assign}
+                onClick={() => goToDriverDetailScreen(driver)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faEdit}
+                        size="1x"
+                        title="EDIT"
+                    />
+                </Grid>
+            </SwipeAction>
+        </TrailingActions>
+    );
+
     useEffect(() => {
         getAllItems();
     }, [currentPage]);
@@ -136,7 +193,7 @@ export function DriverPage(props) {
     }, []);
 
     return (
-        <div>
+        <Grid>
             <Helmet>
                 <title>
                     {props.intl.formatMessage({ ...messages.driver })}
@@ -149,70 +206,23 @@ export function DriverPage(props) {
             />
 
             {list && !pageLoad && (
-                <div>
-                    {list.map(driver => (
-                        <Grid className={classes.main}>
-                            <SwipeableList threshold={0.25}>
+                <Grid>
+                    {
+                        <SwipeableList className={classes.main} type={Type.IOS}>
+                            {list.map(driver => (
                                 <SwipeableListItem
-                                    blockSwipe={vehicle.registrationNo}
-                                    swipeLeft={{
-                                        content: (
-                                            <Grid className={classes.delete}>
-                                                <Typography>
-                                                    <FormattedMessage
-                                                        {...messages.deleteDriver}
-                                                    />
-                                                </Typography>
-                                                <Delete />
-                                            </Grid>
-                                        ),
-                                        action: () => swipeLeftAction(driver),
-                                    }}
-                                    // swipeRight={{
-                                    //     // content: (
-                                    //     //     <Grid
-                                    //     //         className={
-                                    //     //             driver.deviceAttachStatus ===
-                                    //     //             2
-                                    //     //                 ? classes.assign
-                                    //     //                 : classes.attach
-                                    //     //         }
-                                    //     //     >
-                                    //     //         {driver.deviceAttachStatus ===
-                                    //     //             2 && (
-                                    //     //             <Typography>
-                                    //     //                 {driver.registrationNo ? (
-                                    //     //                     <FormattedMessage
-                                    //     //                         {...messages.unassigndriver}
-                                    //     //                     />
-                                    //     //                 ) : (
-                                    //     //                     <FormattedMessage
-                                    //     //                         {...messages.assigndriver}
-                                    //     //                     />
-                                    //     //                 )}
-                                    //     //             </Typography>
-                                    //     //         )}
-                                    //     //         {driver.deviceAttachStatus !==
-                                    //     //             2 && (
-                                    //     //             <Typography>
-                                    //     //                 <FormattedMessage
-                                    //     //                     {...messages.unavailabledriver}
-                                    //     //                 />
-                                    //     //             </Typography>
-                                    //     //         )}
-                                    //     //     </Grid>
-                                    //     // ),
-                                    //     action: () => swipeRightAction(driver),
-                                    // }}
+                                    key={driver.driverID}
+                                    trailingActions={trailingActions(driver)}
+                                    blockSwipe={vehicle}
                                 >
                                     <Grid
                                         container
                                         direction="row"
                                         alignItems="center"
                                         className={classes.container}
-                                        onClick={() =>
-                                            selectDriverForVehicle(driver)
-                                        }
+                                        onClick={() => {
+                                            selectDriverForVehicle(driver);
+                                        }}
                                     >
                                         <Grid
                                             item
@@ -229,15 +239,6 @@ export function DriverPage(props) {
                                                 <UserAvatar
                                                     alt="driver Avatar"
                                                     src={driverIcon}
-                                                    onClick={() => {
-                                                        if (
-                                                            !vehicle.registrationNo
-                                                        ) {
-                                                            goToDriverDetailScreen(
-                                                                driver,
-                                                            );
-                                                        }
-                                                    }}
                                                 />
                                             </Grid>
                                         </Grid>
@@ -271,11 +272,12 @@ export function DriverPage(props) {
                                                                 }
                                                             </Typography>
                                                         </Grid>
+
                                                         <Grid item>
                                                             <Typography
                                                                 variant="body1"
                                                                 className={
-                                                                    classes.description
+                                                                    classes.content
                                                                 }
                                                             >
                                                                 {
@@ -285,29 +287,41 @@ export function DriverPage(props) {
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
-                                                <Grid item>
-                                                    <FontAwesomeIcon
-                                                        icon={faChevronRight}
-                                                        size="1x"
-                                                    />
-                                                </Grid>
+
+                                                {!vehicle.registrationNo && (
+                                                    <Grid item>
+                                                        <FontAwesomeIcon
+                                                            icon={
+                                                                faChevronRight
+                                                            }
+                                                            size="1x"
+                                                        />
+                                                    </Grid>
+                                                )}
                                             </Grid>
                                         </Grid>
                                     </Grid>
+                                    <ConfirmDialog
+                                        title={'Alert'}
+                                        agreeText={'Ok'}
+                                        open={openDialog}
+                                        disagreeText={'Cancel'}
+                                        agree={confirmAgree}
+                                        disagree={confirmClose}
+                                        handleClose={confirmClose}
+                                        message={message}
+                                    />
+                                    <ConfirmMessage
+                                        open={openResponse}
+                                        title={'Response Message'}
+                                        msg={resMsg}
+                                        handleClose={confirmClose}
+                                    />
                                 </SwipeableListItem>
-                            </SwipeableList>
-                            <ConfirmDialog
-                                title={'Alert'}
-                                agreeText={'Ok'}
-                                open={openDelete}
-                                disagreeText={'Cancel'}
-                                agree={confirmDeleteAgree}
-                                disagree={confirmDeleteDialogClose}
-                                handleClose={confirmDeleteDialogClose}
-                                message={'Are you sure to delete this driver'}
-                            />
-                        </Grid>
-                    ))}
+                            ))}
+                        </SwipeableList>
+                    }
+
                     {totalPage > 1 && (
                         <Grid container className={classes.main}>
                             <div className={classes.paginate}>
@@ -320,7 +334,7 @@ export function DriverPage(props) {
                             </div>
                         </Grid>
                     )}
-                </div>
+                </Grid>
             )}
 
             {pageLoad && (
@@ -355,7 +369,7 @@ export function DriverPage(props) {
                     </Grid>
                 </Grid>
             )}
-        </div>
+        </Grid>
     );
 }
 

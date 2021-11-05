@@ -9,12 +9,20 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.ZonePage';
 
 export default defineMessages({
-  zone: {
-    id: `${scope}.zone`,
-    defaultMessage: 'Zone',
-  },
-  name: {
-    id: `${scope}.name`,
-    defaultMessage: 'name',
-  },
+    zone: {
+        id: `${scope}.zone`,
+        defaultMessage: 'Zone',
+    },
+    name: {
+        id: `${scope}.name`,
+        defaultMessage: 'name',
+    },
+    delete: {
+        id: `${scope}.delete`,
+        defaultMessage: 'DELETE',
+    },
+    edit: {
+        id: `${scope}.edit`,
+        defaultMessage: 'EDIT',
+    },
 });

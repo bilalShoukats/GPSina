@@ -4,77 +4,86 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
+import './styles.css';
 import { compose } from 'redux';
-import { Helmet } from 'react-helmet';
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectPoiPage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
-import Header from '../../components/Header';
-import Pagination from '@material-ui/lab/Pagination';
-import { useStyles } from './styles.js';
-import { Grid, Typography } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useHistory } from 'react-router-dom';
-import SCREENS from '../../constants/screen';
-import ApiManager from '../../ApiManager/ApiManager';
-import APIURLS from '../../ApiManager/apiUrl';
-import POICOLORS from '../PoiDetailPage/poiColors';
-import { Pages } from '@material-ui/icons';
-import PoiList from '../../components/PoiList';
-import ConfirmDialog from '../../components/confirmAlert';
-import { Sentry } from 'react-activity';
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import 'react-activity/dist/Sentry.css';
+import { useStyles } from './styles.js';
+import { Sentry } from 'react-activity';
+import SCREENS from '../../constants/screen';
+import Header from '../../components/Header';
+import 'react-swipeable-list/dist/styles.css';
+import APIURLS from '../../ApiManager/apiUrl';
+import React, { useEffect, useState } from 'react';
+import UserAvatar from '../../components/UserAvatar';
+import ApiManager from '../../ApiManager/ApiManager';
+import { Grid, Typography } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import ConfirmDialog from '../../components/confirmAlert';
+import { POICOLORS, MARKER, TYPE } from '../../constants/poi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faEdit,
+    faTrashAlt,
+    faChevronRight,
+    faBan,
+    faGlobeAmericas,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+    SwipeableList,
+    SwipeableListItem,
+    SwipeAction,
+    TrailingActions,
+    Type,
+} from 'react-swipeable-list';
 
 export function PoiPage(props) {
-    useInjectReducer({ key: 'poiPage', reducer });
-    useInjectSaga({ key: 'poiPage', saga });
-
     const classes = useStyles(props);
-    const history = useHistory();
     const [list, setList] = useState([]);
     const [resMsg, setResMsg] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [pageLoad, setPageLoad] = useState(true);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
-    const [openAssign, setOpenAssign] = useState(false);
-    const [isAssignModalShown, setIsAssignModalShown] = useState(false);
-    const [poi, setPoi] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
+    const [message, setMessage] = useState('');
+    const [deleteItem, setDeleteItem] = useState(false);
+    const [assign, setAssign] = useState(false);
+    const [unAssign, setUnAssign] = useState(false);
 
-    const confirmAssignOpen = poi => {
-        setPoi(poi);
-        setOpenAssign(true);
-    };
-    const handleOpenAssignModal = () => {
-        setIsAssignModalShown(true);
-    };
-    const confirmAssignDialogClose = () => {
-        setOpenAssign(false);
-    };
-    const confirmAssignAgree = () => {
-        const body = {
-            poId: poi.poId,
-            zoneId: poi.zoneId,
-        };
-        setOpenAssign(false);
-        if (poi.zoneId) {
-            delete body.zoneId;
-            const api = ApiManager.getInstance();
-            console.log('Body Submitted for un-assign : ', body);
+    const confirmAgree = () => {
+        const api = ApiManager.getInstance();
+        setOpenDialog(false);
+        if (deleteItem) {
+            setDeleteItem(false);
+            const body = {
+                poId: selectedItem.poId,
+            };
+            console.log('Delete Called');
+            api.send('POST', APIURLS.deletePoi, body)
+                .then(res => {
+                    console.log('Body : ', body, 'Response Delete:', res);
+                    if (res.data.code === 1016) {
+                        getAllItems();
+                    }
+                })
+                .catch(error => {});
+        } else if (assign) {
+            setAssign(false);
+            console.log('Assigned Called');
+            props.history.push(SCREENS.ZONE, { poi: selectedItem });
+        } else if (unAssign) {
+            setUnAssign(false);
+            const body = { poId: selectedItem.poId };
+            console.log('UnAssigned Called');
             api.send('POST', APIURLS.unAssignZoneToPoid, body)
                 .then(res => {
                     console.log('Response for un-assign poi : ', res);
                     if (res.data.code === 6048) {
-                        allPoi();
+                        getAllItems();
                     } else {
                         console.log('Bad Body un-assign');
                     }
@@ -82,64 +91,35 @@ export function PoiPage(props) {
                 .catch(error => {
                     console.log('Error for un-assign poi : ', error);
                 });
-            console.log('Call the un-assign api for this poi : ', poi);
-        } else {
-            history.push(SCREENS.ZONE, { poi: poi });
-            console.log('Call the assign api for this poi : ', poi);
+            //Call UnAssign Api
         }
     };
-    const confirmDeleteOpen = poi => {
-        setPoi(poi);
-        setOpenDelete(true);
+
+    const confirmClose = () => {
+        setOpenDialog(false);
     };
-    const handleOpenDeleteModal = () => {
-        setIsDeleteModalShown(true);
-    };
-    const confirmDeleteDialogClose = () => {
-        setOpenDelete(false);
-    };
-    const confirmDeleteAgree = () => {
-        console.log('Call the delete api for this poi : ', poi);
-        const body = {
-            poId: poi.poId,
-        };
-        const api = ApiManager.getInstance();
-        api.send('POST', APIURLS.deletePoi, body)
-            .then(res => {
-                console.log('Delete Poi response : ', res);
-                if (res.data.code === 1016) {
-                    setOpenDelete(false);
-                    allPoi();
-                } else {
-                    console.log('Bad Body');
-                }
-            })
-            .catch(error => {
-                console.log('Delete poi error: ', error);
-            });
-    };
+
     const handleZone = () => {
         console.log('handleAddZone');
         props.history.push(SCREENS.ZONE);
     };
+
     const handlePageClick = (event, value) => {
         console.log(value);
         setCurrentPage(value);
     };
+
     const handleAddPoi = () => {
         console.log('handleAddPoi');
         props.history.push(SCREENS.ADDPOI);
     };
 
-    useEffect(() => {
-        allPoi();
-    }, [currentPage]);
-
-    const allPoi = () => {
+    const getAllItems = () => {
         setPageLoad(true);
         const api = ApiManager.getInstance();
         api.send('GET', APIURLS.getAllPois, { page: currentPage })
             .then(res => {
+                console.log('All poi Res: ', res);
                 if (res.data.code === 1019) {
                     setPageLoad(false);
                     setList(res.data.response);
@@ -164,9 +144,82 @@ export function PoiPage(props) {
             });
     };
 
+    const handleDelete = poi => () => {
+        console.log('[Handle DELETE]', poi);
+        setOpenDialog(true);
+        setSelectedItem(poi);
+        setMessage('Do you want to delete this poi');
+        setDeleteItem(true);
+    };
+
+    const handleAssign = poi => () => {
+        console.log('[Handle ASSIGN]', poi);
+        setSelectedItem(poi);
+        setOpenDialog(true);
+        if (poi.zoneId) {
+            setMessage('Do you want to unAssigned the zone');
+            setUnAssign(true);
+        } else {
+            setMessage('Do you want to Assigned the zone');
+            setAssign(true);
+        }
+    };
+
+    const goToPOIDetailScreen = poi => {
+        console.log('Poi for details : ', poi);
+        props.history.push(SCREENS.POIDETAIL, { poi: poi });
+    };
+
+    const trailingActions = poi => (
+        <TrailingActions>
+            <SwipeAction className={classes.delete} onClick={handleDelete(poi)}>
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faTrashAlt}
+                        size="1x"
+                        title="DELETE"
+                    />
+                </Grid>
+            </SwipeAction>
+
+            <SwipeAction
+                className={classes.assign}
+                onClick={() => goToPOIDetailScreen(poi)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={faEdit}
+                        size="1x"
+                        title="EDIT"
+                    />
+                </Grid>
+            </SwipeAction>
+
+            <SwipeAction
+                className={classes.available}
+                onClick={handleAssign(poi)}
+            >
+                <Grid className={classes.centered}>
+                    <FontAwesomeIcon
+                        className={classes.icon}
+                        icon={poi.zoneId ? faBan : faGlobeAmericas}
+                        size="1x"
+                        title={poi.zoneId ? 'Un-Assign Zone' : 'Assign Zone'}
+                    />
+                </Grid>
+            </SwipeAction>
+        </TrailingActions>
+    );
+
+    useEffect(() => {
+        getAllItems();
+    }, [currentPage]);
+
     return (
-        <div>
-            <div>
+        <Grid>
+            <Grid>
                 <Helmet>
                     <title>
                         {props.intl.formatMessage({ ...messages.poi })}
@@ -178,43 +231,166 @@ export function PoiPage(props) {
                     onPressAddPoi={handleAddPoi}
                     onPressZone={handleZone}
                 />
-            </div>
+            </Grid>
             {list && !pageLoad && (
-                <div>
-                    {list.map(poi => (
-                        <PoiList
-                            poi={poi}
-                            key={poi.id}
-                            swipeLeftAction={confirmDeleteOpen}
-                            onOpenDeleteModal={handleOpenDeleteModal}
-                            swipeRightAction={confirmAssignOpen}
-                            onOpenAssignModal={handleOpenAssignModal}
-                        />
-                    ))}
-                    <ConfirmDialog
-                        title={'Alert'}
-                        agreeText={'Ok'}
-                        open={openDelete}
-                        disagreeText={'Cancel'}
-                        agree={confirmDeleteAgree}
-                        disagree={confirmDeleteDialogClose}
-                        handleClose={confirmDeleteDialogClose}
-                        message={'Are you sure to delete this POI'}
-                    />
-                    <ConfirmDialog
-                        title={'Alert'}
-                        agreeText={'Ok'}
-                        open={openAssign}
-                        disagreeText={'Cancel'}
-                        agree={confirmAssignAgree}
-                        disagree={confirmAssignDialogClose}
-                        handleClose={confirmAssignDialogClose}
-                        message={
-                            poi.zoneId
-                                ? 'Un-assign zone for this POI?'
-                                : 'Assign zone for this POI?'
-                        }
-                    />
+                <Grid>
+                    {
+                        <SwipeableList className={classes.main} type={Type.IOS}>
+                            {list.map(poi => (
+                                <SwipeableListItem
+                                    key={poi.poiID}
+                                    trailingActions={trailingActions(poi)}
+                                >
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        alignItems="center"
+                                        className={classes.container}
+                                    >
+                                        <Grid
+                                            item
+                                            xs={2}
+                                            md={1}
+                                            className={classes.avatar}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={
+                                                        MARKER[
+                                                            poi.markerShop - 1
+                                                        ].icon
+                                                    }
+                                                    color={
+                                                        POICOLORS[poi.color - 1]
+                                                            .color
+                                                    }
+                                                    size="3x"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={10}
+                                            md={11}
+                                            alignItems="center"
+                                            className={classes.content}
+                                        >
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
+                                                <Grid item>
+                                                    <Grid
+                                                        container
+                                                        direction="column"
+                                                    >
+                                                        <Grid item>
+                                                            <Typography
+                                                                variant="body1"
+                                                                className={
+                                                                    classes.title
+                                                                }
+                                                            >
+                                                                {'Name : '}
+                                                                <Typography
+                                                                    variant="body1"
+                                                                    className={
+                                                                        classes.description
+                                                                    }
+                                                                >
+                                                                    {poi.name}
+                                                                </Typography>
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography
+                                                                variant="body1"
+                                                                className={
+                                                                    classes.title
+                                                                }
+                                                            >
+                                                                {'Type : '}
+                                                                <Typography
+                                                                    variant="body1"
+                                                                    className={
+                                                                        classes.description
+                                                                    }
+                                                                >
+                                                                    {poi.type}
+                                                                </Typography>
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography
+                                                                variant="body1"
+                                                                className={
+                                                                    classes.title
+                                                                }
+                                                            >
+                                                                {'Zone : '}
+                                                                <Typography
+                                                                    variant="body1"
+                                                                    className={
+                                                                        classes.description
+                                                                    }
+                                                                >
+                                                                    {poi.zoneId}
+                                                                </Typography>
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography
+                                                                variant="body1"
+                                                                className={
+                                                                    classes.title
+                                                                }
+                                                            >
+                                                                {'Address : '}
+                                                                <Typography
+                                                                    variant="body1"
+                                                                    className={
+                                                                        classes.description
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        poi.address
+                                                                    }
+                                                                </Typography>
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item>
+                                                    <FontAwesomeIcon
+                                                        icon={faChevronRight}
+                                                        size="1x"
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <ConfirmDialog
+                                        title={'Alert'}
+                                        agreeText={'Ok'}
+                                        open={openDialog}
+                                        disagreeText={'Cancel'}
+                                        agree={confirmAgree}
+                                        disagree={confirmClose}
+                                        handleClose={confirmClose}
+                                        message={message}
+                                    />
+                                </SwipeableListItem>
+                            ))}
+                        </SwipeableList>
+                    }
+
                     {totalPage > 1 && (
                         <Grid container className={classes.main}>
                             <div className={classes.paginate}>
@@ -227,8 +403,9 @@ export function PoiPage(props) {
                             </div>
                         </Grid>
                     )}
-                </div>
+                </Grid>
             )}
+
             {pageLoad && (
                 <Grid
                     container
@@ -261,27 +438,12 @@ export function PoiPage(props) {
                     </Grid>
                 </Grid>
             )}
-        </div>
+        </Grid>
     );
 }
 
-PoiPage.propTypes = {
-    dispatch: PropTypes.func.isRequired,
-};
+PoiPage.propTypes = {};
 
-const mapStateToProps = createStructuredSelector({
-    poiPage: makeSelectPoiPage(),
-});
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatch,
-    };
-}
-
-const withConnect = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-);
+const withConnect = connect();
 
 export default compose(withConnect)(injectIntl(PoiPage));
