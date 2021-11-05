@@ -4,118 +4,136 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
+import * as Yup from 'yup';
 import { compose } from 'redux';
-import { Helmet } from 'react-helmet';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectAddZonePage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
-import Header from '../../components/Header';
+import { Helmet } from 'react-helmet';
+import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import { useStyles } from './styles.js';
+import Header from '../../components/Header';
+import APIURLS from '../../ApiManager/apiUrl';
+import { Formik, ErrorMessage } from 'formik';
+import ApiManager from '../../ApiManager/ApiManager';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Grid, Input, Typography } from '@material-ui/core';
 
 export function AddZonePage(props) {
-  useInjectReducer({ key: 'addZonePage', reducer });
-  useInjectSaga({ key: 'addZonePage', saga });
+    const classes = useStyles(props);
+    const [clickBtn, setClickBtn] = useState(false);
 
-  const classes = useStyles(props);
-  const [deliveryArea, setDeliveryArea] = useState("");
+    const initialValues = {
+        deliveryArea: '',
+    };
 
-  const handleChange = (e) => {
-    e.preventDefault();
+    const validationSchema = Yup.object({
+        deliveryArea: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+    });
 
-  const { name, value } = e.target;
+    const addZone = body => {
+        const api = ApiManager.getInstance();
+        setClickBtn(true);
+        api.send('POST', APIURLS.addZone, body)
+            .then(res => {
+                setClickBtn(false);
+                console.log('Add Zone Response : ', res);
+                if (res.data.code === 1008) {
+                    props.history.goBack();
+                } else {
+                    console.log('Add zone Bad Body');
+                }
+            })
+            .catch(error => {
+                setClickBtn(false);
+                console.log('Add zone Errors : ', error);
+            });
+    };
 
-    switch(deliveryArea){
-      case 'deliveryArea':
-        setDeliveryArea(value);
-        break;
-    }
-  }
+    return (
+        <Grid>
+            <Helmet>
+                <title>
+                    {props.intl.formatMessage({ ...messages.addZone })}
+                </title>
+            </Helmet>
+            <Header title={<FormattedMessage {...messages.addZone} />} />
+            <Grid item sm={12} md={8} className={classes.root}>
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={values => {
+                        let body = {
+                            name: values.deliveryArea,
+                        };
+                        console.log('Body : ', body);
+                        addZone(body);
+                    }}
+                >
+                    {formik => (
+                        <form onSubmit={formik.handleSubmit}>
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage
+                                        {...messages.deliveryArea}
+                                    />
+                                </Typography>
+                                <Input
+                                    type="text"
+                                    id="deliveryArea"
+                                    name="deliveryArea"
+                                    className={classes.textInput}
+                                    placeholder={props.intl.formatMessage({
+                                        ...messages.enterDeliveryArea,
+                                    })}
+                                    {...formik.getFieldProps('deliveryArea')}
+                                />
+                                <ErrorMessage
+                                    name="deliveryArea"
+                                    render={msg => (
+                                        <Grid className={classes.error}>
+                                            {msg}
+                                        </Grid>
+                                    )}
+                                />
+                            </Grid>
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('handleSubmitAddZonePage');
-    props.history.goBack();
-  }
-
-  useEffect(() => {
-
-  }, []);
-
-  return (
-    <div>
-      <Helmet>
-        <title>{props.intl.formatMessage({...messages.addZone})}</title>
-      </Helmet>
-      <Header title={<FormattedMessage {...messages.addZone} />} />
-
-      <div>
-        <Grid
-          item
-          sm={12}
-          md={8}
-          className={classes.root}
-        >
-          <div className={classes.container}>
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.deliveryArea} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={deliveryArea}
-                name="deliveryArea"
-                placeholder={props.intl.formatMessage({...messages.enterDeliveryArea})}
-                onChange={handleChange}
-                disableUnderline
-              />
+                            <Grid
+                                container
+                                justify="center"
+                                alignItems="center"
+                                className={classes.btnContainer}
+                            >
+                                <Button
+                                    type="submit"
+                                    color="primary"
+                                    variant="contained"
+                                    size="medium"
+                                    disabled={clickBtn}
+                                    className={classes.btnBlue}
+                                >
+                                    <Typography variant="body1">
+                                        <FormattedMessage
+                                            {...messages.submit}
+                                        />
+                                    </Typography>
+                                </Button>
+                            </Grid>
+                        </form>
+                    )}
+                </Formik>
             </Grid>
-          </div>
-
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            className={classes.btnContainer}
-          >
-            <Button size="medium" className={classes.btnBlue} onClick={handleSubmit}>
-              <Typography variant="body1">
-                <FormattedMessage {...messages.submit} />
-              </Typography>
-            </Button>
-          </Grid>
         </Grid>
-      </div>
-    </div>
-  );
+    );
 }
 
-AddZonePage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
+AddZonePage.propTypes = {};
 
-const mapStateToProps = createStructuredSelector({
-  addZonePage: makeSelectAddZonePage(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect();
 
 export default compose(withConnect)(injectIntl(AddZonePage));

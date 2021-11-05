@@ -4,666 +4,922 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
+import * as Yup from 'yup';
 import { compose } from 'redux';
-import { Helmet } from 'react-helmet';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectPoiDetailPage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
-import Header from '../../components/Header';
+import { Helmet } from 'react-helmet';
+import { connect } from 'react-redux';
 import { useStyles } from './styles.js';
-import { Button, FormControlLabel, Grid, Input, Radio, RadioGroup, Typography } from '@material-ui/core';
+import Header from '../../components/Header';
+import APIURLS from '../../ApiManager/apiUrl';
+import { Formik, ErrorMessage } from 'formik';
+import ApiManager from '../../ApiManager/ApiManager';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { useState, useRef, useEffect } from 'react';
+import { POICOLORS, MARKER, TYPE } from '../../constants/poi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faFlag, faHome, faIndustry, faMapMarkedAlt, faMapMarkerAlt, faStreetView } from '@fortawesome/free-solid-svg-icons';
+import {
+    Button,
+    Grid,
+    Input,
+    Typography,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+} from '@material-ui/core';
 
 export function PoiDetailPage(props) {
-  useInjectReducer({ key: 'poiDetailPage', reducer });
-  useInjectSaga({ key: 'poiDetailPage', saga });
+    const classes = useStyles(props);
 
-  const classes = useStyles(props);
-  const [poiName, setPoiName] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [address, setAddress] = useState("");
-  const [zone, setZone] = useState("");
-  const [color, setColor] = useState("#0F0F0F");
-  const [companyName, setCompanyName] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [contactPerson, setContactPerson] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
-  const [mobileNum, setMobileNum] = useState("");
-  const [email, setEmail] = useState("");
-  const [markerShop, setMarkerShop] = useState("1");
-  const [type, setType] = useState("private");
-  const [isEditMode, setisEditmode] = useState(false);
+    const formikRef = useRef();
 
-  const handleTypeChange = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    setType(value)
-  }
+    const [poiId, setPoiID] = useState('');
+    const [clickBtn, setClickBtn] = useState(false);
+    const [type, setType] = useState(TYPE[0]);
+    const [markerShop, setMarkerShop] = useState(MARKER[0]);
+    const [color, setColor] = useState(POICOLORS[0]);
 
-  const handleColorChange = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    setColor(value);
-  }
+    const initialValues = {
+        poiName: '',
+        latitude: '',
+        longitude: '',
+        address: '',
+        companyName: '',
+        companyId: '',
+        contactPerson: '',
+        phoneNum: '',
+        mobileNum: '',
+        email: '',
+    };
 
-  const handleEditMode = () => {
-    if(isEditMode){
-      console.log('save poi info');
-    }
-    setisEditmode(!isEditMode)
-  }
+    const validationSchema = Yup.object({
+        poiName: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+        latitude: Yup.number()
+            .min(-180, 'Must be -180 or more')
+            .max(180, 'Must be +180 or less')
+            .required('Required'),
+        longitude: Yup.number()
+            .min(-90, 'Must be -90 or more')
+            .max(90, 'Must be +90 or less')
+            .required('Required'),
+        address: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+        companyName: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less'),
+        companyId: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less'),
+        contactPerson: Yup.string()
+            .matches(/^\d+$/, 'The field should have digits only')
+            .min(9, 'Must be 9 characters or more')
+            .max(20, 'Must be 20 characters or less'),
+        phoneNum: Yup.string()
+            .matches(/^\d+$/, 'The field should have digits only')
+            .min(9, 'Must be 9 characters or more')
+            .max(20, 'Must be 20 characters or less'),
+        mobileNum: Yup.string()
+            .matches(/^\d+$/, 'The field should have digits only')
+            .min(9, 'Must be 9 characters or more')
+            .max(20, 'Must be 20 characters or less'),
+        email: Yup.string()
+            .email('Invalid email address')
+            .min(8, 'Must be 8 characters or more')
+            .max(50, 'Must be 50 characters or less'),
+    });
 
-  const handleMarkerChange = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    setMarkerShop(value);
-  }
+    const updatePoi = body => {
+        console.log('Body for update poi : ', body);
+        setClickBtn(true);
+        const api = ApiManager.getInstance();
+        api.send('POST', APIURLS.updatePoi, body)
+            .then(res => {
+                setClickBtn(false);
+                console.log('Update poi response : ', res);
+                if (res.data.code === 1014) {
+                    props.history.goBack();
+                    console.log('Updated Succesfully...');
+                } else {
+                    console.log('Bad body request for update zone');
+                }
+            })
+            .catch(error => {
+                setClickBtn(false);
+                console.log('Error poi : ', error);
+            });
+    };
 
-  const handleChange = (e) => {
-    e.preventDefault();
-
-    const { name, value } = e.target;
-
-    switch(name){
-      case 'poiName':
-        setPoiName(value);
-        break;
-
-      case 'latitude':
-        setLatitude(value);
-        break;
-
-      case 'longitude':
-        setLongitude(value);
-        break;
-
-      case 'address':
-        setAddress(value);
-        break;
-
-      case 'zone':
-        setZone(value);
-        break;
-
-      case 'companyName':
-        setCompanyName(value);
-        break;
-
-      case 'companyId':
-        setCompanyId(value);
-        break;
-
-      case 'contactPerson':
-        setContactPerson(value);
-        break;
-
-      case 'phoneNum':
-        setPhoneNum(value);
-        break;
-
-      case 'mobileNum':
-        setMobileNum(value);
-        break;
-
-      case 'email':
-        setEmail(value);
-        break;
-    }
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('handleSubmitAddPoi');
-    props.history.goBack();
-  }
-
-  useEffect(() => {
-    console.log(props.location.state);
-    if(props.location.state.poi){
-      const poi = props.location.state.poi;
-      setAddress(poi.address);
-      setColor(poi.color);
-      setLatitude(poi.latitude);
-      setLongitude(poi.longitude);
-      setMarkerShop(poi.markerShop);
-      setPoiName(poi.name);
-      setType(poi.type);
-      setZone(poi.zone);
-      if(poi.type === "business"){
-        setCompanyName(poi.company_name);
-        setCompanyId(poi.company_id);
-        setContactPerson(poi.contact_person);
-        setEmail(poi.email);
-        setMobileNum(poi.mobile_num);
-        setPhoneNum(poi.phone_num);
-      }
-    } else {
-      props.history.goBack()
-    }
-  }, []);
-
-  return (
-    <div>
-      <Helmet>
-        <title>{props.intl.formatMessage({...messages.poiDetail})}</title>
-      </Helmet>
-      <Header 
-        title={<FormattedMessage {...messages.poiDetail} />} 
-        showEditBtn
-        onEdit={handleEditMode}
-        isEditMode={isEditMode}
-      />
-
-      <div>
-        <Grid
-          item
-          sm={12}
-          md={8}
-          className={classes.root}
-        >
-          <div className={classes.container}>
-            <RadioGroup className={classes.radioContainer} row aria-label="position" name="position" defaultValue="top">
-              <FormControlLabel
-                value="private"
-                checked={type === "private" ? true : false}
-                control={<Radio color="primary" />}
-                label="Private"
-                onChange={handleTypeChange}
-                className={classes.radioGroup}
-                disabled={!isEditMode}
-              />
-              <FormControlLabel
-                value="business"
-                checked={type === "business" ? true : false}
-                control={<Radio color="primary" />}
-                label="Business"
-                onChange={handleTypeChange}
-                className={classes.radioGroup}
-                disabled={!isEditMode}
-              />
-            </RadioGroup>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.poiName} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={poiName}
-                name="poiName"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterPoiName})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            {type === "business" && 
-              <>
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.companyName} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={companyName}
-                    name="companyName"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterCompanyName})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.companyId} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={companyId}
-                    name="companyId"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterCompanyId})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.contactPerson} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={contactPerson}
-                    name="contactPerson"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterContactPerson})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.phoneNum} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={phoneNum}
-                    name="phoneNum"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterPhoneNum})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.mobileNum} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={mobileNum}
-                    name="mobileNum"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterMobileNum})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Typography variant="body1" className={classes.label}>
-                    <FormattedMessage {...messages.email} />
-                  </Typography>
-                  <Input
-                    className={classes.textInput}
-                    value={email}
-                    name="email"
-                    style={!isEditMode ? { color: '#ABABAB' } : {}}
-                    disabled={!isEditMode}
-                    placeholder={props.intl.formatMessage({...messages.enterEmail})}
-                    onChange={handleChange}
-                    disableUnderline
-                  />
-                </Grid>
-              </>
+    useEffect(() => {
+        console.log('Detail useEffect POI : ', props.location.state);
+        const { poi } = props.location.state;
+        if (poi) {
+            if (formikRef.current) {
+                formikRef.current.setFieldValue('poiName', poi.name);
+                formikRef.current.setFieldValue(
+                    'latitude',
+                    poi.geoLocation.coordinates[0],
+                );
+                formikRef.current.setFieldValue(
+                    'longitude',
+                    poi.geoLocation.coordinates[1],
+                );
+                formikRef.current.setFieldValue('address', poi.driverPhone);
+                formikRef.current.setFieldValue('companyName', poi.driverAge);
+                // formikRef.current.setFieldValue('companyId', poi.gender);
+                formikRef.current.setFieldValue(
+                    'contactPerson',
+                    poi.contactPersion,
+                );
+                formikRef.current.setFieldValue('phoneNum', poi.phoneNo);
+                formikRef.current.setFieldValue('address', poi.address);
+                formikRef.current.setFieldValue('mobileNum', poi.mobileNo);
+                formikRef.current.setFieldValue('email', poi.companyEmail);
+                setType(TYPE[poi.type - 1]);
+                setColor(POICOLORS[poi.color - 1]);
+                setMarkerShop(MARKER[poi.markerShop - 1]);
+                setPoiID(poi.poId);
             }
+        } else {
+            props.history.goBack();
+        }
+    }, []);
 
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.latitude} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={latitude}
-                name="latitude"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterLatitude})}
-                onChange={handleChange}
-                disableUnderline
-              />
+    return (
+        <Grid>
+            <Helmet>
+                <title>
+                    {props.intl.formatMessage({ ...messages.newPoi })}
+                </title>
+            </Helmet>
+            <Header title={<FormattedMessage {...messages.newPoi} />} />
+            <Grid item sm={12} md={8} className={classes.root}>
+                <Formik
+                    innerRef={formikRef}
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={values => {
+                        let body = {
+                            poId: poiId,
+                            type: type.value,
+                            name: values.poiName,
+                            geoLocation: {
+                                type: 'Point',
+                                coordinates: [
+                                    values.latitude,
+                                    values.longitude,
+                                ],
+                            },
+                            address: values.address,
+                            color: color.value,
+                            markerShop: markerShop.value,
+                            contactPersion: values.contactPerson,
+                            mobileNo: values.mobileNum,
+                            phoneNO: values.phoneNum,
+                            companyEmail: values.email,
+                        };
+                        console.log('Body : ', body);
+                        updatePoi(body);
+                    }}
+                >
+                    {formik => (
+                        <form onSubmit={formik.handleSubmit}>
+                            <Grid className={classes.container}>
+                                <RadioGroup
+                                    className={classes.radioContainer}
+                                    row
+                                    aria-label="position"
+                                    name="position"
+                                    defaultValue="top"
+                                >
+                                    <FormControlLabel
+                                        value={TYPE[0].value}
+                                        checked={
+                                            type.value === TYPE[0].value
+                                                ? true
+                                                : false
+                                        }
+                                        control={<Radio color="primary" />}
+                                        label={TYPE[0].label}
+                                        onChange={() => {
+                                            setType(TYPE[0]);
+                                        }}
+                                        className={classes.radioGroup}
+                                    />
+                                    <FormControlLabel
+                                        value={TYPE[1].value}
+                                        checked={
+                                            type.value === TYPE[1].value
+                                                ? true
+                                                : false
+                                        }
+                                        control={<Radio color="primary" />}
+                                        label={TYPE[1].label}
+                                        onChange={() => {
+                                            setType(TYPE[1]);
+                                        }}
+                                        className={classes.radioGroup}
+                                    />
+                                </RadioGroup>
+                            </Grid>
+
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage {...messages.poiName} />
+                                </Typography>
+                                <Input
+                                    type="text"
+                                    id="poiName"
+                                    name="poiName"
+                                    className={classes.textInput}
+                                    placeholder={props.intl.formatMessage({
+                                        ...messages.enterPoiName,
+                                    })}
+                                    {...formik.getFieldProps('poiName')}
+                                />
+                                <ErrorMessage
+                                    name="poiName"
+                                    render={msg => (
+                                        <Grid className={classes.error}>
+                                            {msg}
+                                        </Grid>
+                                    )}
+                                />
+                            </Grid>
+                            {type.value === TYPE[1].value && (
+                                <Grid>
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.companyName}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="companyName"
+                                            name="companyName"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterCompanyName,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'companyName',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="companyName"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.companyId}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="companyId"
+                                            name="companyId"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterCompanyId,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'companyId',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="companyId"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.contactPerson}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="contactPerson"
+                                            name="contactPerson"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterContactPerson,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'contactPerson',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="contactPerson"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.phoneNum}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="phoneNum"
+                                            name="phoneNum"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterPhoneNum,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'phoneNum',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="phoneNum"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.mobileNum}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="mobileNum"
+                                            name="mobileNum"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterMobileNum,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'mobileNum',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="mobileNum"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.email}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterEmail,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps('email')}
+                                        />
+                                        <ErrorMessage
+                                            name="email"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            )}
+
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage {...messages.latitude} />
+                                </Typography>
+                                <Input
+                                    type="number"
+                                    id="latitude"
+                                    name="latitude"
+                                    className={classes.textInput}
+                                    placeholder={props.intl.formatMessage({
+                                        ...messages.enterLatitude,
+                                    })}
+                                    {...formik.getFieldProps('latitude')}
+                                />
+                                <ErrorMessage
+                                    name="latitude"
+                                    render={msg => (
+                                        <Grid className={classes.error}>
+                                            {msg}
+                                        </Grid>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage {...messages.longitude} />
+                                </Typography>
+                                <Input
+                                    type="number"
+                                    id="longitude"
+                                    name="longitude"
+                                    className={classes.textInput}
+                                    placeholder={props.intl.formatMessage({
+                                        ...messages.enterLongitude,
+                                    })}
+                                    {...formik.getFieldProps('longitude')}
+                                />
+                                <ErrorMessage
+                                    name="longitude"
+                                    render={msg => (
+                                        <Grid className={classes.error}>
+                                            {msg}
+                                        </Grid>
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage {...messages.address} />
+                                </Typography>
+                                <Input
+                                    type="text"
+                                    id="address"
+                                    name="address"
+                                    className={classes.textInput}
+                                    placeholder={props.intl.formatMessage({
+                                        ...messages.enterAddress,
+                                    })}
+                                    {...formik.getFieldProps('address')}
+                                />
+                                <ErrorMessage
+                                    name="address"
+                                    render={msg => (
+                                        <Grid className={classes.error}>
+                                            {msg}
+                                        </Grid>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage {...messages.color} />
+                                </Typography>
+
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justifyContent="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[0].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[0]);
+                                                }}
+                                                value={POICOLORS[0].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[0].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[1].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[1]);
+                                                }}
+                                                value={POICOLORS[1].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[1].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[2].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[2]);
+                                                }}
+                                                value={POICOLORS[2].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[2].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[3].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[3]);
+                                                }}
+                                                value={POICOLORS[3].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[3].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[4].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[4]);
+                                                }}
+                                                value={POICOLORS[4].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[4].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[5].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[5]);
+                                                }}
+                                                value={POICOLORS[5].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[5].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[6].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[6]);
+                                                }}
+                                                value={POICOLORS[6].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[6].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    color.color ===
+                                                    POICOLORS[7].color
+                                                }
+                                                onChange={() => {
+                                                    setColor(POICOLORS[7]);
+                                                }}
+                                                value={POICOLORS[7].color}
+                                            />
+                                            <Grid
+                                                style={{
+                                                    display: 'inline',
+                                                    width: '50px',
+                                                    height: '20px',
+                                                    backgroundColor:
+                                                        POICOLORS[7].color,
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item>
+                                <Typography
+                                    variant="body1"
+                                    className={classes.label}
+                                >
+                                    <FormattedMessage
+                                        {...messages.markerShop}
+                                    />
+                                </Typography>
+
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justifyContent="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[0].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[0]);
+                                                }}
+                                                value={MARKER[0].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[0].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[1].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[1]);
+                                                }}
+                                                value={MARKER[1].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[1].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[2].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[2]);
+                                                }}
+                                                value={MARKER[2].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[2].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[3].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[3]);
+                                                }}
+                                                value={MARKER[3].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[3].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[4].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[4]);
+                                                }}
+                                                value={MARKER[4].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[4].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={6} sm={4} md={3}>
+                                        <Grid container alignItems="center">
+                                            <Radio
+                                                color="primary"
+                                                checked={
+                                                    markerShop.value ===
+                                                    MARKER[5].value
+                                                }
+                                                onChange={() => {
+                                                    setMarkerShop(MARKER[5]);
+                                                }}
+                                                value={MARKER[5].value}
+                                            />
+                                            <FontAwesomeIcon
+                                                icon={MARKER[5].icon}
+                                                color="#FFFFFF"
+                                                size="lg"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid
+                                container
+                                justify="center"
+                                alignItems="center"
+                                className={classes.btnContainer}
+                            >
+                                <Button
+                                    type="submit"
+                                    color="primary"
+                                    variant="contained"
+                                    size="medium"
+                                    disabled={clickBtn}
+                                    className={classes.btnBlue}
+                                >
+                                    <Typography variant="body1">
+                                        <FormattedMessage
+                                            {...messages.submit}
+                                        />
+                                    </Typography>
+                                </Button>
+                            </Grid>
+                        </form>
+                    )}
+                </Formik>
             </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.longitude} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={longitude}
-                name="longitude"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterLongitude})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.address} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={address}
-                name="address"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterAddress})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.zone} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={zone}
-                name="zone"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterZone})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item className={classes.radioSelection}>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.color} />
-              </Typography>
-
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
-              >
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#0F0F0F"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      color="primary"
-                      value="#0F0F0F"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0F0F0F' }} />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#0000FF"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#0000FF"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#0000FF' }} />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#00FF00"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#00FF00"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#00FF00' }} />
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#FF0000"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#FF0000"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FF0000' }} />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#FFFF00"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#FFFF00"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFFF00' }} />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#FFC0CB"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#FFC0CB"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFC0CB' }} />
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#800080"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#800080"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#800080' }} />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={color === "#FFA500"}
-                      disabled={!isEditMode}
-                      onChange={handleColorChange}
-                      color="primary"
-                      value="#FFA500"
-                    />
-                    <div style={{ display: 'inline', width: '50px', height: '20px', backgroundColor: '#FFA500' }} />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item className={classes.radioSelection}>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.markerShop} />
-              </Typography>
-              
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
-              >
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "1"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="1"
-                    />
-                    <FontAwesomeIcon
-                      icon={faBuilding}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "2"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="2"
-                    />
-                    <FontAwesomeIcon
-                      icon={faIndustry}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "3"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="3"
-                    />
-                    <FontAwesomeIcon
-                      icon={faFlag}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "4"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="4"
-                    />
-                    <FontAwesomeIcon
-                      icon={faHome}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "5"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="5"
-                    />
-                    <FontAwesomeIcon
-                      icon={faMapMarkerAlt}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={6} sm={4} md={3}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Radio
-                      checked={markerShop === "6"}
-                      disabled={!isEditMode}
-                      onChange={handleMarkerChange}
-                      color="primary"
-                      value="6"
-                    />
-                    <FontAwesomeIcon
-                      icon={faStreetView}
-                      color="#FFFFFF"
-                      size="lg"
-                    />
-                  </Grid>
-                </Grid>
-                  
-              </Grid>
-            </Grid>
-          </div>
         </Grid>
-      </div>
-    </div>
-  );
+    );
 }
 
-PoiDetailPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
+PoiDetailPage.propTypes = {};
 
-const mapStateToProps = createStructuredSelector({
-  poiDetailPage: makeSelectPoiDetailPage(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect();
 
 export default compose(withConnect)(injectIntl(PoiDetailPage));

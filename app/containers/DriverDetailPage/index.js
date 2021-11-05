@@ -4,324 +4,513 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
+import 'date-fns';
+import moment from 'moment';
+import * as Yup from 'yup';
 import { compose } from 'redux';
-
-import { Helmet } from 'react-helmet';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectDriverDetailPage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
-import Header from '../../components/Header';
+import { Helmet } from 'react-helmet';
+import { connect } from 'react-redux';
 import { useStyles } from './styles.js';
-import { Button, Grid,Input, Radio, RadioGroup, Typography } from '@material-ui/core';
+import Header from '../../components/Header';
+import DateFnsUtils from '@date-io/date-fns';
+import APIURLS from '../../ApiManager/apiUrl';
 import UserAvatar from '../../components/UserAvatar';
-import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import ApiManager from '../../ApiManager/ApiManager';
+import { Formik, Field, ErrorMessage } from 'formik';
+import { GENDER, LICENSE } from '../../constants/driver';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { useEffect, useState, useRef } from 'react';
+import driverIcon from '../../../assets/images/icons/driver.svg';
+import { Grid, Input, Typography, Button } from '@material-ui/core';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 
 export function DriverDetailPage(props) {
-  useInjectReducer({ key: 'driverDetailPage', reducer });
-  useInjectSaga({ key: 'driverDetailPage', saga });
+    const formikRef = useRef();
 
-  const classes = useStyles(props);
-  const [isEditMode, setisEditmode] = useState(false);
-  const [email, setEmail] = useState("");
-  const [ownerEmail, setOwnerEmail] = useState("");
-  const [name, setName] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
-  const [idNum, setIdNum] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
-  const [licenseNum, setLicenseNum] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
+    const classes = useStyles(props);
 
-  const handleEditMode = () => {
-    if(isEditMode){
-      console.log('save genset info');
-    }
-    setisEditmode(!isEditMode)
-  }
+    const [clickBtn, setClickBtn] = useState(false);
 
-  const handleChange = (e) => {
-    e.preventDefault();
+    const initialValues = {
+        driverID: '',
+        email: '',
+        name: '',
+        phoneNum: '',
+        age: '',
+        gender: '',
+        licenceType: '',
+        licenseNum: '',
+        expiryDate: null,
+    };
 
-    const { name, value } = e.target;
+    const updateDriver = body => {
+        console.log('Submitted Body: ', body);
+        const api = ApiManager.getInstance();
+        setClickBtn(true);
+        api.send('POST', APIURLS.updateDriver, body)
+            .then(res => {
+                setClickBtn(false);
+                console.log('Response Update', res);
+                if (res.data.code === 1014) {
+                    props.history.goBack();
+                }
+            })
+            .catch(error => {
+                setClickBtn(false);
+                console.log('Error', error);
+            });
+    };
 
-    switch(name){
-      case 'email':
-        setEmail(value);
-        break;
+    useEffect(() => {
+        console.log('Detail useEffect Driver : ', props.location.state);
+        const { driver } = props.location.state;
+        if (driver) {
+            if (formikRef.current) {
+                formikRef.current.setFieldValue('driverID', driver.driverID);
+                formikRef.current.setFieldValue('email', driver.driverEmail);
+                formikRef.current.setFieldValue('name', driver.driverName);
+                formikRef.current.setFieldValue('phoneNum', driver.driverPhone);
+                formikRef.current.setFieldValue('age', driver.driverAge);
+                formikRef.current.setFieldValue('gender', driver.gender);
+                formikRef.current.setFieldValue(
+                    'licenceType',
+                    driver.licenceType,
+                );
+                formikRef.current.setFieldValue(
+                    'licenseNum',
+                    driver.licenceNumber,
+                );
+                formikRef.current.setFieldValue(
+                    'expiryDate',
+                    new Date(driver.licenceExpiry * 1000).toLocaleDateString(
+                        'en-US',
+                    ),
+                );
+            }
+        } else {
+            props.history.goBack();
+        }
+    });
 
-      case 'ownerEmail':
-        setOwnerEmail(value);
-        break;
+    const validationSchema = Yup.object({
+        email: Yup.string()
+            .email('Invalid email address')
+            .min(8, 'Must be 8 characters or more')
+            .max(50, 'Must be 50 characters or less')
+            .required('Required'),
+        name: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+        phoneNum: Yup.string()
+            .matches(/^\d+$/, 'The field should have digits only')
+            .min(9, 'Must be 9 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+        age: Yup.number()
+            .min(18, 'Must be 18 years old or more')
+            .max(80, 'Must be 80 years old or less')
+            .required('Required'),
+        gender: Yup.number()
+            .min(0, 'Please Select the Gender')
+            .required('Required'),
+        licenceType: Yup.number()
+            .min(0, 'Please Select the Gender')
+            .required('Required'),
+        licenseNum: Yup.string()
+            .min(3, 'Must be 3 characters or more')
+            .max(20, 'Must be 20 characters or less')
+            .required('Required'),
+        expiryDate: Yup.date()
+            .nullable('Empty')
+            .required('Required'),
+    });
 
-      case 'name':
-        setName(value);
-        break;
+    return (
+        <Grid>
+            <Helmet>
+                <title>
+                    {props.intl.formatMessage({ ...messages.infoDriver })}
+                </title>
+            </Helmet>
+            <Header title={<FormattedMessage {...messages.infoDriver} />} />
+            <Grid>
+                <Grid item sm={12} md={8} className={classes.root}>
+                    <Formik
+                        innerRef={formikRef}
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={values => {
+                            let body = {
+                                driverID: values.driverID,
+                                driverAge: parseInt(values.age),
+                                driverEmail: values.email,
+                                driverName: values.name,
+                                driverPhone: values.phoneNum.toString(),
+                                gender: parseInt(values.gender),
+                                licenceNumber: values.licenseNum,
+                                licenceExpiry: moment(
+                                    values.expiryDate,
+                                    'MM/DD/YYYY',
+                                ).unix(),
+                                licenceType: parseInt(values.licenceType),
+                            };
+                            updateDriver(body);
+                        }}
+                    >
+                        {formik => (
+                            <form
+                                onSubmit={formik.handleSubmit}
+                                innerRef={formikRef}
+                            >
+                                <Grid
+                                    container
+                                    justify="center"
+                                    alignItems="center"
+                                    className={classes.avatar}
+                                >
+                                    <UserAvatar
+                                        alt="Profile Avatar"
+                                        src={driverIcon}
+                                        style={{
+                                            width: '100px',
+                                            height: '100px',
+                                        }}
+                                    />
+                                </Grid>
 
-      case 'phoneNum':
-        setPhoneNum(value);
-        break;
+                                <Grid className={classes.container}>
+                                    <Typography
+                                        variant="h5"
+                                        className={classes.title}
+                                    >
+                                        <FormattedMessage
+                                            {...messages.driverInformation}
+                                        />
+                                    </Typography>
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.email}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterEmail,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps('email')}
+                                        />
+                                        <ErrorMessage
+                                            name="email"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-      case 'idNum':
-        setIdNum(value);
-        break;
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.username}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterUsername,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps('name')}
+                                        />
+                                        <ErrorMessage
+                                            name="name"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-      case 'age':
-        setAge(value);
-        break;
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.age}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="number"
+                                            id="age"
+                                            name="age"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterAge,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps('age')}
+                                        />
+                                        <ErrorMessage
+                                            name="age"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-      case 'gender':
-        setGender(value);
-        break;
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.phoneNum}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            type="text"
+                                            id="phoneNum"
+                                            name="phoneNum"
+                                            className={classes.textInput}
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterPhoneNum,
+                                                },
+                                            )}
+                                            {...formik.getFieldProps(
+                                                'phoneNum',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="phoneNum"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-      case 'licenseNum':
-        setLicenseNum(value);
-        break;
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.gender}
+                                            />
+                                        </Typography>
+                                        <Field
+                                            name="gender"
+                                            type="number"
+                                            as="select"
+                                            className={classes.dropMenu}
+                                            {...formik.getFieldProps('gender')}
+                                        >
+                                            <option value="" disabled>
+                                                Select Gender
+                                            </option>
+                                            <option value={GENDER[0].value}>
+                                                {GENDER[0].label}
+                                            </option>
+                                            <option value={GENDER[1].value}>
+                                                {GENDER[1].label}
+                                            </option>
+                                        </Field>
+                                        <ErrorMessage
+                                            name="gender"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-      case 'expiryDate':
-        setExpiryDate(value);
-        break;
-    }
-  }
+                                    <Typography
+                                        variant="h5"
+                                        className={classes.title}
+                                    >
+                                        <FormattedMessage
+                                            {...messages.licenseInformation}
+                                        />
+                                    </Typography>
 
-  const handleGender = (gender) => {
-    return gender === 1 ? 'Male' : 'Female';
-  }
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.licenseType}
+                                            />
+                                        </Typography>
+                                        <Field
+                                            name="licenceType"
+                                            as="select"
+                                            type="number"
+                                            className={classes.dropMenu}
+                                            {...formik.getFieldProps(
+                                                'licenceType',
+                                            )}
+                                        >
+                                            <option value="" disabled>
+                                                Select License Type
+                                            </option>
+                                            <option value={LICENSE[0].value}>
+                                                {LICENSE[0].label}
+                                            </option>
+                                            <option value={LICENSE[1].value}>
+                                                {LICENSE[1].label}
+                                            </option>
+                                        </Field>
+                                        <ErrorMessage
+                                            name="licenceType"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-  useEffect(() => {
-    console.log(props.location.state);
-    if(props.location.state.driver){
-      const driver = props.location.state.driver;
-      setAge(driver.driverAge);
-      setExpiryDate(driver.licenceExpiry);
-      setIdNum(driver.driverID);
-      setLicenseNum(driver.licenceNumber);
-      setGender(handleGender(driver.gender));
-      setName(driver.driverName);
-      setOwnerEmail(driver.driverOwner);
-      setEmail(driver.driverEmail);
-      setPhoneNum(driver.driverPhone);
-    } else {
-      props.history.goBack()
-    }
-  }, []);
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.licenseNum}
+                                            />
+                                        </Typography>
+                                        <Input
+                                            id="licenseNum"
+                                            className={classes.textInput}
+                                            name="licenseNum"
+                                            placeholder={props.intl.formatMessage(
+                                                {
+                                                    ...messages.enterLicenseNum,
+                                                },
+                                            )}
+                                            disableUnderline
+                                            {...formik.getFieldProps(
+                                                'licenseNum',
+                                            )}
+                                        />
+                                        <ErrorMessage
+                                            name="licenseNum"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
 
-  return (
-    <div>
-      <Helmet>
-        <title>{props.intl.formatMessage({...messages.driverInfo})}</title>
-      </Helmet>
-      <Header 
-        title={<FormattedMessage {...messages.driverInfo} />} 
-        showEditBtn
-        onEdit={handleEditMode}
-        isEditMode={isEditMode}
-      />
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            className={classes.label}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.expiryDate}
+                                            />
+                                        </Typography>
+                                        <MuiPickersUtilsProvider
+                                            utils={DateFnsUtils}
+                                        >
+                                            <DatePicker
+                                                name="expiryDate"
+                                                autoOk
+                                                variant="inline"
+                                                className={classes.textInput}
+                                                placeholder={props.intl.formatMessage(
+                                                    {
+                                                        ...messages.enterExpiryDate,
+                                                    },
+                                                )}
+                                                inputProps={{
+                                                    style: { color: 'white' },
+                                                }}
+                                                id="expiryDate"
+                                                // inputVariant="outlined"
+                                                format="MM/dd/yyyy"
+                                                value={formik.values.expiryDate}
+                                                onChange={value =>
+                                                    formik.setFieldValue(
+                                                        'expiryDate',
+                                                        value,
+                                                    )
+                                                }
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                        <ErrorMessage
+                                            name="expiryDate"
+                                            render={msg => (
+                                                <Grid className={classes.error}>
+                                                    {msg}
+                                                </Grid>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
 
-      <div> 
-        <Grid
-          item
-          sm={12}
-          md={8}
-          className={classes.root}
-        >
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            className={classes.avatar}
-          >
-            <UserAvatar alt="Profile Avatar" src={defaultProfileImage} style={{ width: '100px', height: '100px' }}/>
-          </Grid>
-
-          <div className={classes.container}>
-          <Typography variant="h5" className={classes.title}>
-              <FormattedMessage {...messages.driverInformation} />
-            </Typography>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.driverEmail} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={email}
-                name="email"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterDriverEmail})}
-                onChange={handleChange}
-                disableUnderline
-              />
+                                <Grid
+                                    container
+                                    justify="center"
+                                    alignItems="center"
+                                    className={classes.btnContainer}
+                                >
+                                    <Button
+                                        type="submit"
+                                        color="primary"
+                                        variant="contained"
+                                        size="medium"
+                                        disabled={clickBtn}
+                                        className={classes.btnBlue}
+                                    >
+                                        <Typography variant="body1">
+                                            <FormattedMessage
+                                                {...messages.submit}
+                                            />
+                                        </Typography>
+                                    </Button>
+                                </Grid>
+                            </form>
+                        )}
+                    </Formik>
+                </Grid>
             </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.ownerEmail} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={ownerEmail}
-                name="ownerEmail"
-                type="ownerEmail"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterOwnerEmail})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.name} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={name}
-                name="name"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterName})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.idNum} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={idNum}
-                name="idNum"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterIdNum})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.phoneNum} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={phoneNum}
-                name="phoneNum"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterPhoneNum})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.age} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={age}
-                name="age"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterAge})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.gender} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={gender}
-                name="gender"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterGender})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Typography variant="h5" className={classes.title}>
-              <FormattedMessage {...messages.licenseInformation} />
-            </Typography>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.licenseNum} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={licenseNum}
-                name="licenseNum"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterLicenseNum})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-
-            <Grid item>
-              <Typography variant="body1" className={classes.label}>
-                <FormattedMessage {...messages.expiryDate} />
-              </Typography>
-              <Input
-                className={classes.textInput}
-                value={expiryDate}
-                name="expiryDate"
-                style={!isEditMode ? { color: '#ABABAB' } : {}}
-                disabled={!isEditMode}
-                placeholder={props.intl.formatMessage({...messages.enterExpiryDate})}
-                onChange={handleChange}
-                disableUnderline
-              />
-            </Grid>
-          </div>
-
         </Grid>
-      </div>
-    </div>
-  );
+    );
 }
 
-DriverDetailPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
+DriverDetailPage.propTypes = {};
 
-const mapStateToProps = createStructuredSelector({
-  driverDetailPage: makeSelectDriverDetailPage(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect();
 
 export default compose(withConnect)(injectIntl(DriverDetailPage));

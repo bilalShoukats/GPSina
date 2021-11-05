@@ -22,23 +22,26 @@ import { connect } from 'react-redux';
 import Img from '../../components/Img';
 import { changeEmail } from './actions';
 import { useStyles } from './styles.js';
+import { Digital } from 'react-activity';
+import 'react-activity/dist/Digital.css';
 import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
 import { useHistory } from 'react-router-dom';
 import CheckBox from '../../components/CheckBox';
 import React, { useEffect, useState } from 'react';
+import ApiManager from '../../ApiManager/ApiManager';
 import { loginUser } from '../../redux/auth/actions';
 import CustomModal from '../../components/CustomModal';
 import UKFlag from '../../../assets/images/flags/uk.png';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { useInjectReducer } from '../../utils/injectReducer';
+import { OtpDialogeBox } from '../../components/OtpDialougeBox';
 import { Button, Input, Typography, Grid } from '@material-ui/core';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 
 export function LoginPage(props) {
     useInjectReducer({ key: 'login', reducer });
 
-    const [loading, setLoading] = useState('');
     const [errors, setErrors] = useState({
         newEmail: '',
         newPassword: '',
@@ -48,9 +51,16 @@ export function LoginPage(props) {
         newLastname: '',
         newMobileNo: '',
     });
+    const [otpBody, setOtpBody] = useState({
+        email: '',
+        expireAt: 0,
+        hash: '',
+    });
     const [email, setEmail] = useState('');
-    const [newEmail, setNewEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [closeMsg, setCloseMsg] = useState('');
+    const [loading, setLoading] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [autoLogin, setAutoLogin] = useState(false);
     const [newPassword, setNewPassword] = useState('');
@@ -61,8 +71,9 @@ export function LoginPage(props) {
     const [newFirstname, setNewFirstname] = useState('');
     const [isModalShown, setIsModalShown] = useState(false);
     const [modalDescription, setModalDescription] = useState('');
+    const [isOtpModalShown, setIsOtpModalShown] = useState(false);
+    const [registerLoading, setRegisterLoading] = useState(false);
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
-
     const classes = useStyles(props);
     const history = useHistory();
 
@@ -93,9 +104,9 @@ export function LoginPage(props) {
 
             case 'newPassword':
                 error.newPassword =
-                    value.length < 8
+                    value.length < 8 || value.length > 20
                         ? props.intl.formatMessage({
-                              ...messages.atLeast8Character,
+                              ...messages.inValidPasswordLength,
                           })
                         : '';
                 error.newConfirmPassword = '';
@@ -116,9 +127,9 @@ export function LoginPage(props) {
 
             case 'newFirstname':
                 error.newFirstname =
-                    value.length < 5
+                    value.length < 3 || value.length > 30
                         ? props.intl.formatMessage({
-                              ...messages.atLeast5Character,
+                              ...messages.inValidName,
                           })
                         : '';
 
@@ -126,21 +137,20 @@ export function LoginPage(props) {
                 break;
 
             case 'newLastname':
-                error.newLastname =
-                    value.length < 5
-                        ? props.intl.formatMessage({
-                              ...messages.atLeast5Character,
-                          })
-                        : '';
+                value.length < 3 || value.length > 30
+                    ? props.intl.formatMessage({
+                          ...messages.inValidName,
+                      })
+                    : '';
 
                 setNewLastname(value);
                 break;
 
             case 'newUsername':
                 error.newUsername =
-                    value.length < 5
+                    value.length < 8 || value.length > 20
                         ? props.intl.formatMessage({
-                              ...messages.atLeast5Character,
+                              ...messages.inValidUserNameLength,
                           })
                         : '';
 
@@ -149,7 +159,7 @@ export function LoginPage(props) {
 
             case 'newMobileNo':
                 error.newMobileNo =
-                    value.length < 9
+                    value.length < 7 || value.length > 15
                         ? props.intl.formatMessage({
                               ...messages.invalidMobileNo,
                           })
@@ -170,6 +180,92 @@ export function LoginPage(props) {
         setAutoLogin(event.target.checked);
     };
 
+    useEffect(() => {
+        if (loading) {
+            setLoading(!props.error);
+            setModalTitle(
+                props.intl.formatMessage({
+                    ...messages.validationError,
+                }),
+            );
+            setModalDescription(
+                props.intl.formatMessage({
+                    ...messages.loginFailed,
+                }),
+            );
+            setCloseMsg(messages.loginFailed.defaultMessage);
+            handleOpenModal();
+        }
+    }, [props.error]);
+
+    const registerUser = async body => {
+        const api = ApiManager.getInstance();
+
+        api.send('POST', APIURLS.register, body)
+            .then(res => {
+                if (res) setRegisterLoading(false);
+                if (res.data.code === 6011) {
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.verifyOtp,
+                        }),
+                    );
+                    setOtpBody({
+                        email: res.data.response.email,
+                        expireAt: res.data.response.expireAt,
+                        hash: res.data.response.hash,
+                    });
+                    setCloseMsg(
+                        messages.pleaseLoginUsingThisCredential.defaultMessage,
+                    );
+                    handleOtpOpenModal();
+                } else if (res.data.code === 1005) {
+                    setRegisterLoading(false);
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.registerFailed,
+                        }),
+                    );
+                    setModalDescription(
+                        props.intl.formatMessage({
+                            ...messages.dupliacteError,
+                        }),
+                    );
+                    setCloseMsg(messages.dupliacteError.defaultMessage);
+                    handleOpenModal();
+                } else {
+                    setRegisterLoading(false);
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.registerFailed,
+                        }),
+                    );
+                    setModalDescription(
+                        props.intl.formatMessage({
+                            ...messages.dbError,
+                        }),
+                    );
+                    setCloseMsg(messages.dbError.defaultMessage);
+                    handleOpenModal();
+                }
+            })
+            .catch(error => {
+                setRegisterLoading(false);
+                setModalTitle(
+                    props.intl.formatMessage({
+                        ...messages.registerFailed,
+                    }),
+                );
+                setModalDescription(
+                    props.intl.formatMessage({
+                        ...messages.networkError,
+                    }),
+                );
+                setCloseMsg(messages.networkError.defaultMessage);
+                handleOpenModal();
+            });
+    };
+
     const handleSubmit = event => {
         event.preventDefault();
         const { id } = event.target;
@@ -184,33 +280,19 @@ export function LoginPage(props) {
                     );
                     setModalDescription(
                         props.intl.formatMessage({
-                            ...messages.pleaseCheckEmailAndPassword,
+                            ...messages.fillAllInputs,
                         }),
                     );
+                    setCloseMsg(messages.fillAllInputs.defaultMessage);
                     handleOpenModal();
                 } else {
                     let body = {
                         email: email,
                         password: password,
                         appVersion: '1.0.0.1',
-                        //appVersion: props.apiManager.appVersion,
                     };
+                    setLoading(true);
                     props.dispatch(loginUser(body, history));
-                    // props.apiManager.callApi(
-                    //     APIURLS.login,
-                    //     'POST',
-                    //     body,
-                    //     res => {
-                    //         console.log(res);
-                    //         if (res.code === 2003) {
-                    //             props.apiManager.saveToken(
-                    //                 res.response.email,
-                    //                 res.response.hash,
-                    //             );
-                    //             history.push(SCREENS.HOME);
-                    //         }
-                    //     },
-                    // );
                 }
 
                 break;
@@ -220,7 +302,10 @@ export function LoginPage(props) {
                     if (
                         newEmail == '' ||
                         newPassword == '' ||
-                        newConfirmPassword == ''
+                        newConfirmPassword == '' ||
+                        newFirstname == '' ||
+                        newLastname == '' ||
+                        newMobileNo == ''
                     ) {
                         setModalTitle(
                             props.intl.formatMessage({
@@ -229,47 +314,27 @@ export function LoginPage(props) {
                         );
                         setModalDescription(
                             props.intl.formatMessage({
-                                ...messages.pleaseCheckEmailAndPassword,
+                                ...messages.fillAllInputs,
                             }),
                         );
+                        setCloseMsg(messages.fillAllInputs.defaultMessage);
                         handleOpenModal();
+                    } else {
+                        let body = {
+                            firstName: newFirstname,
+                            lastName: newLastname,
+                            userName: newUsername,
+                            password: newPassword,
+                            email: newEmail,
+                            phone: newMobileNo,
+                            role: 0,
+                            clientID: 'gfas67zjh9q',
+                            ipAddress: '192.168.11.3',
+                        };
+                        setRegisterLoading(true);
+                        registerUser(body);
                     }
-
-                    // setModalTitle(props.intl.formatMessage({ ...messages.loginFailed }));
-                    // setModalDescription(props.intl.formatMessage({ ...messages.invalidEmailPassword }))
-                    // handleOpenModal();
-                    let body = {
-                        firstName: newFirstname,
-                        lastName: newLastname,
-                        userName: newUsername,
-                        password: newPassword,
-                        email: newEmail,
-                        phone: newMobileNo,
-                        role: 0,
-                    };
-                    props.apiManager.callApi(
-                        APIURLS.register,
-                        'POST',
-                        body,
-                        res => {
-                            console.log(res);
-                            if (res.code === 1006) {
-                                setModalTitle(
-                                    props.intl.formatMessage({
-                                        ...messages.registerSuccessful,
-                                    }),
-                                );
-                                setModalDescription(
-                                    props.intl.formatMessage({
-                                        ...messages.pleaseLoginUsingThisCredential,
-                                    }),
-                                );
-                                handleOpenModal();
-                            }
-                        },
-                    );
                 } else {
-                    console.log(errors);
                     setModalTitle(
                         props.intl.formatMessage({
                             ...messages.validationError,
@@ -277,9 +342,10 @@ export function LoginPage(props) {
                     );
                     setModalDescription(
                         props.intl.formatMessage({
-                            ...messages.pleaseCheckEmailAndPassword,
+                            ...messages.badBodyRequest,
                         }),
                     );
+                    setCloseMsg(messages.badBodyRequest.defaultMessage);
                     handleOpenModal();
                 }
                 break;
@@ -296,11 +362,12 @@ export function LoginPage(props) {
         setIsModalShown(true);
     };
 
-    const handleCloseModal = () => {
+    const handleOtpOpenModal = () => {
+        setIsOtpModalShown(true);
+    };
+
+    const handleCloseModal = message => {
         setIsModalShown(false);
-        if (props.intl.formatMessage({ ...messages.registerSuccessful })) {
-            window.location.reload();
-        }
     };
 
     const goToForgotPasswordScreen = () => {
@@ -320,10 +387,15 @@ export function LoginPage(props) {
             <div className={classes.container}>
                 <CustomModal
                     open={isModalShown}
-                    handleClose={handleCloseModal}
+                    handleClose={() => handleCloseModal(closeMsg)}
                     type="simple"
                     title={modalTitle}
                     description={modalDescription}
+                />
+                <OtpDialogeBox
+                    open={isOtpModalShown}
+                    title={modalTitle}
+                    otpResponse={otpBody}
                 />
                 <div className={classes.rightContainer}>
                     <FormattedMessage {...messages.language} />
@@ -424,14 +496,23 @@ export function LoginPage(props) {
                             </Typography>
                         </Grid>
                     </div>
-
-                    <Button
-                        type="submit"
-                        className={classes.btn}
-                        variant="contained"
-                    >
-                        <FormattedMessage {...messages.login} />
-                    </Button>
+                    {!loading && (
+                        <Button
+                            type="submit"
+                            className={classes.btn}
+                            variant="contained"
+                        >
+                            <FormattedMessage {...messages.login} />
+                        </Button>
+                    )}
+                    {loading && (
+                        <Digital
+                            color="#ffa500"
+                            size={32}
+                            speed={1}
+                            animating={loading}
+                        />
+                    )}
                 </form>
 
                 <Typography
@@ -614,13 +695,23 @@ export function LoginPage(props) {
                         )}
                     </div>
 
-                    <Button
-                        type="submit"
-                        className={classes.btn}
-                        variant="contained"
-                    >
-                        <FormattedMessage {...messages.signUp} />
-                    </Button>
+                    {!registerLoading && (
+                        <Button
+                            type="submit"
+                            className={classes.btn}
+                            variant="contained"
+                        >
+                            <FormattedMessage {...messages.signUp} />
+                        </Button>
+                    )}
+                    {registerLoading && (
+                        <Digital
+                            color="#ffa500"
+                            size={32}
+                            speed={1}
+                            animating={registerLoading}
+                        />
+                    )}
                 </form>
             </div>
         </div>
@@ -633,6 +724,7 @@ LoginPage.propTypes = {
 
 const mapStateToProps = state => {
     return {
+        error: state.auth.error,
         login: selectLogin(state),
         email: makeSelectEmail(state),
         password: makeSelectPassword(state),
