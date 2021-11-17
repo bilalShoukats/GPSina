@@ -31,6 +31,7 @@ import SortDownIcon from '../../../assets/images/icons/sortDown.png';
 import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
+
 import {
     faSortUp,
     faCog,
@@ -190,6 +191,10 @@ class HomePage extends Component {
     };
     goToHomeScreen = () => {
         this.props.history.push(SCREENS.HOME);
+    };
+
+    goToReportScreen = () => {
+        this.props.history.push(SCREENS.Reports);
     };
 
     handleVehicleNoSorting = () => {
@@ -414,6 +419,20 @@ class HomePage extends Component {
 
                                     <ListItem
                                         button
+                                        key="Reports"
+                                        onClick={this.goToReportScreen}
+                                        className={classes.listItemContainer}
+                                    >
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon
+                                                icon={faSatelliteDish}
+                                                size="lg"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Reports" />
+                                    </ListItem>
+                                    <ListItem
+                                        button
                                         key="pointOfInterest"
                                         onClick={this.goToPOIScreen}
                                         className={classes.listItemContainer}
@@ -464,7 +483,6 @@ class HomePage extends Component {
                             deviceName="3353 - M3"
                             type="simple"
                         />
-
                         <Grid
                             container
                             direction="row"

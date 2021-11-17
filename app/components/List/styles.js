@@ -34,6 +34,60 @@ const useStyles = makeStyles(theme => ({
     textWhite: {
         color: '#fff',
     },
+    paper: {
+        position: 'absolute',
+        width: 300,
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        overflow: 'scroll',
+        height: '85%',
+        backgroundColor: 'white',
+    },
+    mainDiv: {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    devider: {
+        marginTop: 10,
+        height: 1,
+        backgroundColor: 'green',
+    },
+    pushDevider: {
+        marginTop: 5,
+        height: 1,
+        backgroundColor: 'green',
+    },
+    pushNotificationText: {
+        marginLeft: 15,
+        fontSize: 15,
+        fontWeight: 'normal',
+        marginTop: 20,
+    },
+    div: {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    div2: {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 30,
+    },
+    div3: {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+
+    switch: {
+        color: 'white',
+    },
 }));
 
 export { useStyles };

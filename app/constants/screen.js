@@ -32,6 +32,12 @@ const SCREENS = {
     VEHICLEDETAIL: '/vehicle-detail',
     ZONE: '/zone',
     ZONEDETAIL: '/zone-detail',
+    Reports: '/Reports',
+    NEW: 'newScreen',
+    HistoryReports: '/HistoryReports',
+    AlarmReports: '/AlarmReports',
+    IdlingReports: '/IdlingReports',
+    IgnitionReports: '/IgnitionReports',
 };
 
 export default SCREENS;

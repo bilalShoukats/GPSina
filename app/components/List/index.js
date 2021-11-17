@@ -7,6 +7,7 @@ import {
     SwipeableList,
     SwipeableListItem,
 } from '@sandstreamdev/react-swipeable-list';
+
 import { FixedSizeList } from 'react-window';
 import Delete from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,6 +24,11 @@ import plusIcon from '../../../assets/images/icons/plus.png';
 import SCREENS from '../../constants/screen';
 import { useStyles } from './styles.js';
 import Img from '../Img';
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
+import { Styles } from '@material-ui/styles';
+
 import {
     Button,
     Grid,
@@ -30,7 +36,23 @@ import {
     Avatar,
     Container,
     Link,
+    Switch,
 } from '@material-ui/core';
+import newScreen from '../../containers/HistoryPage/newScreen';
+import { Text } from 'recharts';
+import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
+
+const style = {
+    width: '100%',
+    maxWidth: 360,
+    bgcolor: 'background.paper',
+};
+
+const scrollTo = ref => {
+    if (ref && ref.current /* + other conditions */) {
+        ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
 
 const CListItem = withStyles({
     root: {
@@ -73,11 +95,37 @@ class Row extends React.PureComponent {
     }
 }
 
+// function rand() {
+//     return Math.round(Math.random() * 20) - 10;
+// }
+
+// function getModalStyle() {
+//     const top = 50 + rand();
+//     const left = 50 + rand();
+
+//     return {
+//         top: `${top}%`,
+//         left: `${left}%`,
+//         transform: `translate(-${top}%, -${left}%)`,
+//     };
+// }
+
 export function List(props) {
     const classes = useStyles(props);
     const history = useHistory();
     const { index, isScrolling, style, data } = props;
     console.log('Vehicle List Props : ', props.data[props.index]);
+    const [modalStyle] = React.useState(getModalStyle);
+    const [open, setOpen] = React.useState(false);
+
+    // const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const goToLocateScreen = vehicle => {
         history.push(SCREENS.LOCATE, { vehicle: vehicle });
@@ -91,6 +139,9 @@ export function List(props) {
         history.push(SCREENS.FENCE);
     };
 
+    // const goTonewScreen = () => {
+    //     history.push(SCREENS.NEW);
+    // };
     const showMoreModal = () => {
         props.onOpenModal();
     };
@@ -98,11 +149,277 @@ export function List(props) {
     const goToAlertScreen = () => {
         history.push(SCREENS.ALERT);
     };
-
     const changeAccStatus = () => {
         //
     };
+    function rand() {
+        return Math.round(Math.random() * 20) - 10;
+    }
+    function getModalStyle() {
+        const top = 50;
+        const left = 50;
+        return {
+            top: `${top}%`,
+            left: `${left}%`,
+            transform: `translate(-${top}%, -${left}%)`,
+        };
+    }
+    const body = (
+        <div style={modalStyle} className={classes.paper}>
+            <div className={classes.mainDiv}>
+                <text>Vibrate</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text>Reg No</text>
+                <TextField
+                    style={{ width: '35%' }}
+                    id="outlined-basic"
+                    label="Reg-no"
+                    variant="outlined"
+                    borderBottom={4}
+                    color={'white'}
+                    size="small"
+                />
+                <div>
+                    <Button
+                        style={{ left: '40%' }}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        save
+                    </Button>
+                </div>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text>Speed</text>
 
+                <TextField
+                    style={{ width: '35%', left: 5 }}
+                    id="outlined-basic"
+                    label="KM/H"
+                    variant="outlined"
+                    size="small"
+                />
+                <div>
+                    <Button
+                        style={{ left: '40%' }}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        save
+                    </Button>
+                </div>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text>Oil Cut</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text>RFID</text>
+                <TextField
+                    style={{ width: '40%', right: '30%' }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+            </div>
+
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                }}
+            >
+                <TextField
+                    style={{ width: '40%', left: '30%' }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+                <div>
+                    <Button
+                        style={{ left: '40%' }}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        save
+                    </Button>
+                </div>
+            </div>
+            <div>
+                <TextField
+                    style={{ width: '40%', left: '30%', marginTop: 10 }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text>SOS</text>
+                <TextField
+                    style={{ width: '40%', right: '30%' }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+            </div>
+            <div className={classes.div}>
+                {/* <text>Speed</text> */}
+                {/* <TextField defaultValue="" /> */}
+                <TextField
+                    style={{ width: '40%', marginLeft: '30%' }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+                <div>
+                    <Button
+                        style={{ left: '40%' }}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        save
+                    </Button>
+                </div>
+            </div>
+            <div>
+                <TextField
+                    style={{
+                        width: '40%',
+                        left: '30%',
+                        top: 10,
+                    }}
+                    id="outlined-basic"
+                    variant="outlined"
+                    size="small"
+                />
+            </div>
+            <div className={classes.div2}>
+                <text>Shared Device</text>
+                {/* <TextField defaultValue="" /> */}
+                <div>
+                    <Button
+                        style={{ left: '40%' }}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        Go
+                    </Button>
+                </div>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <text className={classes.pushNotificationText}>
+                    Push Notification Settings
+                </text>
+            </div>
+            <div className={classes.div3}>
+                <text>Over Speed</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>Vibrate</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>Fence</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>wire cut</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>ACC</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>SOS</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>Oil</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>Low Battery</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>RFID Match</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+            <div className={classes.div3}>
+                <text>Car Alarm</text>
+                <Switch>
+                    checked={props.vibrateChecked}
+                    onChange={props.handleVibrate}
+                    className={classes.switch}
+                </Switch>
+            </div>
+            <Divider className={classes.pushDevider} />
+        </div>
+    );
     return !isScrolling ? (
         <Grid
             divider={true}
@@ -229,7 +546,7 @@ export function List(props) {
                             </Typography>
                         </Grid>
                         <Grid
-                            onClick={showMoreModal}
+                            onClick={handleOpen}
                             className={classes.btnOutline}
                         >
                             <Img
@@ -262,6 +579,14 @@ export function List(props) {
                         </Grid>
                     </Grid>
                 </div>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    {body}
+                </Modal>
             </Grid>
         </Grid>
     ) : (

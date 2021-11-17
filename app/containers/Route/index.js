@@ -41,6 +41,12 @@ import ResetPasswordPage from '../ResetPasswordPage/Loadable';
 import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
 import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
 import ForgotPasswordPage from '../ForgotPasswordPage/Loadable';
+import Reports from '../Reports/index';
+import HistoryReports from '../Reports/HistoryReports/index';
+import AlarmReports from '../Reports/AlarmReports/index';
+import IdlingReports from '../Reports/IdlingReports/index';
+import IgnitionReports from '../Reports/IgnitionReports/index';
+
 import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 import { darkTheme, lightTheme } from '../../theme';
@@ -243,6 +249,38 @@ export function Route(props) {
                         exact
                         path={SCREENS.VEHICLEDETAIL}
                         component={VehicleDetailPage}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.Reports}
+                        component={Reports}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.HistoryReports}
+                        component={HistoryReports}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.AlarmReports}
+                        component={AlarmReports}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.IdlingReports}
+                        component={IdlingReports}
+                        isAuthenticated={props.isAuthenticated}
+                    />
+                    <PrivateRoute
+                        exact
+                        path={SCREENS.IgnitionReports}
+                        component={IgnitionReports}
                         isAuthenticated={props.isAuthenticated}
                     />
 
