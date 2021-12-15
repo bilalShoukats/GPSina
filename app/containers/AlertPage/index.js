@@ -4,14 +4,15 @@
  *
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
-
+import APIURLS from '../../ApiManager/apiUrl';
+import ApiManager from '../../ApiManager/ApiManager';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Grid, Typography } from '@material-ui/core';
@@ -23,43 +24,83 @@ import Header from '../../components/Header';
 import { useStyles } from './styles.js';
 
 export function AlertPage(props) {
-  useInjectReducer({ key: 'alertPage', reducer });
-  useInjectSaga({ key: 'alertPage', saga });
+    const api = ApiManager.getInstance();
+    const [list, setList] = useState([]);
+    const [vehicle, setVehicle] = useState(props.location.state.vehicle);
+    const [pageLoad, setPageLoad] = useState(true);
+    // const [totalPage, setTotalPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+    const [resMsg, setResMsg] = useState('');
+    useInjectReducer({ key: 'alertPage', reducer });
+    useInjectSaga({ key: 'alertPage', saga });
 
-  const classes = useStyles(props);
+    const classes = useStyles(props);
 
-  return (
-    <div>
-      <Helmet>
-        <title>Alert</title>
-      </Helmet>
-      <Header title={<FormattedMessage {...messages.alert} />} showClearBtn />
-      <Grid className={classes.container}>
-        <Typography variant="body1" align="center">
-          <FormattedMessage {...messages.noAlertFound} />
-        </Typography>
-      </Grid>
-    </div>
-  );
+    console.log('vehicle', vehicle);
+
+    const getAllItems = () => {
+        api.send('GET', '/getAllDeviceAlerts', {
+            deviceId: vehicle.deviceID,
+            isRead: 1,
+        })
+            .then(res => {
+                console.log('ALL DEVICES ALERTS', res);
+            })
+            .catch(error => {});
+    };
+
+    useEffect(() => {
+        getAllItems();
+    }, []);
+    // const getAllItems = () => {
+    //     api.send('POST', '/vehicleTravelHistoryDates', {
+    //         deviceId: vehicle.deviceID,
+    //         page: 1,
+    //     })
+    //         .then(res => {
+    //             console.log('ALL DEVICES Dates', res);
+    //         })
+    //         .catch(error => {});
+    // };
+    // useEffect(() => {
+    //     getAllItems();
+    // }, []);
+
+    return (
+        <div>
+            <Helmet>
+                <title>Alert</title>
+            </Helmet>
+            <Header
+                title={<FormattedMessage {...messages.alert} />}
+                showClearBtn
+            />
+            <Grid className={classes.container}>
+                <Typography variant="body1" align="center">
+                    <FormattedMessage {...messages.noAlertFound} />
+                </Typography>
+            </Grid>
+        </div>
+    );
 }
 
 AlertPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  alertPage: makeSelectAlertPage(),
+    alertPage: makeSelectAlertPage(),
 });
 
 function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
+    return {
+        dispatch,
+    };
 }
 
 const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+    mapStateToProps,
+    mapDispatchToProps,
 );
 
 export default compose(withConnect)(AlertPage);

@@ -3,6 +3,8 @@ const width = window.innerWidth + 'px';
 const ASPECT_RATIO = width / height;
 const LATITUDE = 3.205325;
 const LONGITUDE = 101.71088;
+// const LATITUDE = 31.484850366514088;
+// const LONGITUDE = 74.37599640470121;
 const GoogleMapsAPI = 'AIzaSyAbq8yVUGOp7j7rCp2YJfRhYv5326OJZYg';
 const PADDING = { top: 50, bottom: 50, left: 50, right: 50 };
 

@@ -42,8 +42,8 @@ const useStyles = makeStyles(theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
         overflow: 'scroll',
-        height: '85%',
-        backgroundColor: 'white',
+        height: '80%',
+        backgroundColor: 'black',
     },
     mainDiv: {
         alignItems: 'center',
@@ -53,18 +53,19 @@ const useStyles = makeStyles(theme => ({
     devider: {
         marginTop: 10,
         height: 1,
-        backgroundColor: 'green',
+        backgroundColor: '#28ACEA',
     },
     pushDevider: {
         marginTop: 5,
         height: 1,
-        backgroundColor: 'green',
+        backgroundColor: '#28ACEA',
     },
     pushNotificationText: {
         marginLeft: 15,
         fontSize: 15,
         fontWeight: 'normal',
         marginTop: 20,
+        color: 'white',
     },
     div: {
         alignItems: 'center',
@@ -87,6 +88,36 @@ const useStyles = makeStyles(theme => ({
 
     switch: {
         color: 'white',
+    },
+    inputField: {
+        width: '35%',
+        height: 35,
+        borderWidth: 1,
+        borderColor: '#08c3eb',
+    },
+    buttonSave: {
+        left: '40%',
+    },
+    rfidInput: {
+        width: '40%',
+        marginRight: '30%',
+        height: 35,
+        borderWidth: 1,
+        borderColor: '#08c3eb',
+    },
+    rfidInput2: {
+        width: '40%',
+        marginLeft: '30%',
+        height: 35,
+        borderWidth: 1,
+        borderColor: '#08c3eb',
+    },
+    TextColor: {
+        color: 'white',
+    },
+    typography: {
+        color: 'white',
+        fontSize: 17,
     },
 }));
 

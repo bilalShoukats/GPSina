@@ -7,7 +7,6 @@ import {
     SwipeableList,
     SwipeableListItem,
 } from '@sandstreamdev/react-swipeable-list';
-
 import { FixedSizeList } from 'react-window';
 import Delete from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,7 +27,6 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import { Styles } from '@material-ui/styles';
-
 import {
     Button,
     Grid,
@@ -131,8 +129,8 @@ export function List(props) {
         history.push(SCREENS.LOCATE, { vehicle: vehicle });
     };
 
-    const goToHistoryScreen = () => {
-        history.push(SCREENS.HISTORY);
+    const goToHistoryScreen = vehicle => {
+        history.push(SCREENS.HISTORY, { vehicle: vehicle });
     };
 
     const goToFenceScreen = () => {
@@ -146,12 +144,14 @@ export function List(props) {
         props.onOpenModal();
     };
 
-    const goToAlertScreen = () => {
-        history.push(SCREENS.ALERT);
+    const goToAlertScreen = vehicle => {
+        history.push(SCREENS.ALERT, { vehicle: vehicle });
     };
+
     const changeAccStatus = () => {
         //
     };
+
     function rand() {
         return Math.round(Math.random() * 20) - 10;
     }
@@ -167,7 +167,9 @@ export function List(props) {
     const body = (
         <div style={modalStyle} className={classes.paper}>
             <div className={classes.mainDiv}>
-                <text>Vibrate</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.vibrate} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -176,37 +178,11 @@ export function List(props) {
             </div>
             <Divider className={classes.devider} />
             <div className={classes.div}>
-                <text>Reg No</text>
-                <TextField
-                    style={{ width: '35%' }}
-                    id="outlined-basic"
-                    label="Reg-no"
-                    variant="outlined"
-                    borderBottom={4}
-                    color={'white'}
-                    size="small"
-                />
-                <div>
-                    <Button
-                        style={{ left: '40%' }}
-                        variant="contained"
-                        color="secondary"
-                    >
-                        save
-                    </Button>
-                </div>
-            </div>
-            <Divider className={classes.devider} />
-            <div className={classes.div}>
-                <text>Speed</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.regNo} />
+                </Typography>
 
-                <TextField
-                    style={{ width: '35%', left: 5 }}
-                    id="outlined-basic"
-                    label="KM/H"
-                    variant="outlined"
-                    size="small"
-                />
+                <input placeholder="Reg No" className={classes.inputField} />
                 <div>
                     <Button
                         style={{ left: '40%' }}
@@ -219,7 +195,26 @@ export function List(props) {
             </div>
             <Divider className={classes.devider} />
             <div className={classes.div}>
-                <text>Oil Cut</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.speed} />
+                </Typography>
+
+                <input placeholder="KM/H" className={classes.inputField} />
+                <div>
+                    <Button
+                        className={classes.buttonSave}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        save
+                    </Button>
+                </div>
+            </div>
+            <Divider className={classes.devider} />
+            <div className={classes.div}>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.oilCut} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -228,13 +223,11 @@ export function List(props) {
             </div>
             <Divider className={classes.devider} />
             <div className={classes.div}>
-                <text>RFID</text>
-                <TextField
-                    style={{ width: '40%', right: '30%' }}
-                    id="outlined-basic"
-                    variant="outlined"
-                    size="small"
-                />
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.rfid} />
+                </Typography>
+
+                <input className={classes.rfidInput} />
             </div>
 
             <div
@@ -244,15 +237,17 @@ export function List(props) {
                     marginTop: 10,
                 }}
             >
-                <TextField
+                {/* <TextField
                     style={{ width: '40%', left: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                />
+                /> */}
+                <input className={classes.rfidInput2} />
+
                 <div>
                     <Button
-                        style={{ left: '40%' }}
+                        className={classes.buttonSave}
                         variant="contained"
                         color="secondary"
                     >
@@ -260,36 +255,42 @@ export function List(props) {
                     </Button>
                 </div>
             </div>
-            <div>
-                <TextField
+            <div style={{ marginTop: 10 }}>
+                {/* <TextField
                     style={{ width: '40%', left: '30%', marginTop: 10 }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                />
+                /> */}
+                <input className={classes.rfidInput2} />
             </div>
             <Divider className={classes.devider} />
             <div className={classes.div}>
-                <text>SOS</text>
-                <TextField
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.sos} />
+                </Typography>
+                {/* <TextField
                     style={{ width: '40%', right: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                />
+                /> */}
+                <input className={classes.rfidInput} />
             </div>
             <div className={classes.div}>
                 {/* <text>Speed</text> */}
                 {/* <TextField defaultValue="" /> */}
-                <TextField
+                {/* <TextField
                     style={{ width: '40%', marginLeft: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                />
+                /> */}
+                <input className={classes.rfidInput2} />
+
                 <div>
                     <Button
-                        style={{ left: '40%' }}
+                        className={classes.buttonSave}
                         variant="contained"
                         color="secondary"
                     >
@@ -297,8 +298,8 @@ export function List(props) {
                     </Button>
                 </div>
             </div>
-            <div>
-                <TextField
+            <div style={{ marginTop: 10 }}>
+                {/* <TextField
                     style={{
                         width: '40%',
                         left: '30%',
@@ -307,14 +308,17 @@ export function List(props) {
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                />
+                /> */}
+                <input className={classes.rfidInput2} />
             </div>
             <div className={classes.div2}>
-                <text>Shared Device</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.sharedDevices} />
+                </Typography>
                 {/* <TextField defaultValue="" /> */}
                 <div>
                     <Button
-                        style={{ left: '40%' }}
+                        className={classes.buttonSave}
                         variant="contained"
                         color="secondary"
                     >
@@ -324,12 +328,14 @@ export function List(props) {
             </div>
             <Divider className={classes.devider} />
             <div className={classes.div}>
-                <text className={classes.pushNotificationText}>
-                    Push Notification Settings
-                </text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.notification} />
+                </Typography>
             </div>
             <div className={classes.div3}>
-                <text>Over Speed</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.overSpeed} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -338,7 +344,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>Vibrate</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.vibrate} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -347,7 +355,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>Fence</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.fence} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -356,7 +366,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>wire cut</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.wireCut} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -365,7 +377,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>ACC</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.acc} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -374,7 +388,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>SOS</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.sos} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -383,7 +399,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>Oil</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.oil} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -392,7 +410,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>Low Battery</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.lowBattery} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -401,7 +421,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>RFID Match</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.rfid} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -410,7 +432,9 @@ export function List(props) {
             </div>
             <Divider className={classes.pushDevider} />
             <div className={classes.div3}>
-                <text>Car Alarm</text>
+                <Typography className={classes.typography} variant="body2">
+                    <FormattedMessage {...messages.carAlarm} />
+                </Typography>
                 <Switch>
                     checked={props.vibrateChecked}
                     onChange={props.handleVibrate}
@@ -530,7 +554,7 @@ export function List(props) {
                             </Typography>
                         </Grid>
                         <Grid
-                            onClick={goToHistoryScreen}
+                            onClick={() => goToHistoryScreen(data[index])}
                             className={classes.btnOutline}
                         >
                             <Img
@@ -562,7 +586,7 @@ export function List(props) {
                             </Typography>
                         </Grid>
                         <Grid
-                            onClick={goToAlertScreen}
+                            onClick={() => goToAlertScreen(data[index])}
                             className={classes.btnOutline}
                         >
                             <Img

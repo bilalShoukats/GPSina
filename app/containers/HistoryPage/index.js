@@ -32,11 +32,18 @@ import { withStyles, styled } from '@material-ui/styles';
 import ListItemText from '@material-ui/core/ListItemText';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import SampleGPSData from '../../components/Marker/points';
-import { speedData, randomData } from '../../constants/dummy';
+import { randomData, speedData } from '../../constants/dummy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { width, height, LATITUDE, LONGITUDE } from '../../constants/maps';
 import DateTimeRange from '../../components/DatePicker/DateTimeRangePicker';
+import APIURLS from '../../../app/ApiManager/apiUrl';
+import ApiManager from '../../../app/ApiManager/ApiManager';
+import moment from 'moment';
+// import Callout from 'react-callout-component';
+// import Polyline from 'react-google-maps';
 
+// import mapp from '../HistoryPage/mapp';
+// import { Polyline } from 'react-polyline';
 let gps = new SampleGPSData();
 const SpeedoMeterComponent = ({ text }) => (
     <div
@@ -67,7 +74,7 @@ const SpeedoMeterComponent = ({ text }) => (
         />
     </div>
 );
-
+let api = ApiManager.getInstance();
 class HistoryPage extends Component {
     constructor(props) {
         super(props);
@@ -76,35 +83,161 @@ class HistoryPage extends Component {
             slider: 0,
             Gdata: [],
             play: false,
+            pause: true,
             tabValue: 0,
             carWidth: 30,
             carHeight: 16,
             hasNextPage: true,
             isNextPageLoading: false,
             mapType: 'roadmap',
+            selectedId: 0,
+            selectVehicle: 0,
+            historyLatLng: [],
+            polyline: [],
+            polylineData: [],
+            deviceID: 0,
+            historyDetails: [],
+            vehicle: [props.location.state.vehicle],
+            speedData: [],
             coordinate: {
-                lat: LATITUDE,
-                lng: LONGITUDE,
+                lat: [],
+                lng: [],
             },
         };
         this.mapRef = null;
         this.sliderInterval = null;
         this.readDataInterval = null;
     }
+    getVehicleTravelDates = () => {
+        console.log('vehicle:', this.state.vehicle[0].deviceID);
+        api.send('POST', '/vehicleTravelHistoryDates', {
+            deviceID: this.state.vehicle[0].deviceID.toString(),
+            page: 1,
+        })
+            .then(res => {
+                console.log('Travel History Dates', res);
+                if (res.data.code === 6066) {
+                    let startDate = moment(res.data.response[0].dates)
+                        .startOf('day')
+                        .unix();
+                    console.log('startDate', startDate);
+                    let endTime = moment(res.data.response[0].dates)
+                        .endOf('day')
+                        .unix();
+                    console.log('endTime', endTime);
+                    console.log('convertDate', startDate, endTime);
+                    this.setState({
+                        historyDates: res.data.response[0].dates,
+                    });
+                    this.getVehicle(startDate, endTime);
+                }
+                // const now = new Date(res.data.response[0].dates).unix();
+                // let startOfDay = new Date(
+                //     now - (now % res.data.response[0].dates),
+                // );
+                // let endDate = new Date(
+                //     now -
+                //         (now % res.data.response[0].dates) +
+                //         res.data.response[0].dates,
+                // );
+                // var t = new Date(res.data.response[0].dates);
+                // var formatted = moment(t).format('dd.mm.yyyy hh:MM:ss');
+                // console.log('t', t);
+                //                 const now = new Date().getTime();
+                // let startOfDay = new Date(now - (now % 86400000));
+                // let endDate = new Date(now - (now % 86400000) + 86400000);
 
+                // let polylines = res.response.map(item => (
+                //     {latitude: item.gpsLat, longitude: item.gpsLng}
+                // ))
+                // setPolylineData(polylines);
+
+                // const [polylineData, setPolylineData] = useState([]);
+                // <Polyline coordinates={polylineData} strokeWidth={3} />
+            })
+            .catch(error => {});
+    };
+    getVehicle = (startDate, endTime) => {
+        // console.log('selectedId', this.state.vehicle[0].deviceID);
+        api.send('POST', '/vehicleTravelHistoryDetails', {
+            deviceid: this.state.vehicle[0].deviceID.toString(),
+            starttime: startDate,
+            enddate: endTime,
+        })
+            .then(res => {
+                if (res.data.code === 1012) {
+                    console.log('Travel History Details', res.data);
+                    this.setState({ historyDetails: res.data.response });
+                    this.setState({
+                        coordinate: {
+                            lat: res.data.response[0].gpsLat,
+                            lng: res.data.response[0].gpsLng,
+                        },
+                    });
+                    let latlng = res.data.response.map(item => ({
+                        lat: item.gpsLat,
+                        lng: item.gpsLng,
+                        time: new Date(item.time),
+                    }));
+                    this.setState({ polylineData: latlng }, () => {
+                        console.log('LatLng:', this.state.polylineData);
+                    });
+                }
+            })
+            .catch(error => {});
+    };
     componentDidMount = () => {
         this.loadData();
     };
-
+    componentDidMount = () => {
+        this.polyline();
+    };
+    componentDidMount = () => {
+        this.getVehicleTravelDates();
+    };
+    // componentDidMount = () => {
+    //     this.getVehicle();
+    // };
+    // componentDidMount = (() => {
+    //     if (this.selectedId !== null) {
+    //         this.getVehicleTravelDates();
+    //     }
+    // },
+    // [this.state.selectedId]);
+    // drawPollyline = () => {
+    //     const map = new google.maps.Map(document.getElementById('map'), {
+    //         zoom: 3,
+    //         center: { lat: 0, lng: -180 },
+    //         mapTypeId: 'terrain',
+    //     });
+    //     //   const flightPlanCoordinates = [
+    //     //     { lat: 37.772, lng: -122.214 },
+    //     //     { lat: 21.291, lng: -157.821 },
+    //     //     { lat: -18.142, lng: 178.431 },
+    //     //     { lat: -27.467, lng: 153.027 },
+    //     //   ];
+    //     const flightPath = new google.maps.Polyline({
+    //         path: historyDetails,
+    //         geodesic: true,
+    //         strokeColor: '#B12139',
+    //         strokeOpacity: 1.0,
+    //         strokeWeight: 2,
+    //     });
+    //     flightPath.setMap(map);
+    // };
     componentWillUnmount = () => {};
 
     handleApiLoaded = (map, google) => {};
-
+    // callout = () => {
+    //     alert('alert');
+    // };
     playHistory = () => {
         this.sliderPlay();
-        let count = 0;
+        let count = 1;
+
         this.readDataInterval = setInterval(() => {
-            if (count <= speedData.length) {
+            if (count <= this.state.polylineData.length) {
+                // if (count <= speedData.length) {
                 count++;
                 this.socketInit(count);
             } else {
@@ -115,20 +248,23 @@ class HistoryPage extends Component {
     };
 
     socketInit = i => {
-        let point = speedData[i];
+        let point = this.state.polylineData[i];
+        // let point = speedData[i];
+        console.log('point', this.state.polylineData[i]);
         this.calculateHeading(point);
     };
 
     calculateHeading = point => {
         let point1 = this.state.coordinate;
+
         let point2 = point;
         const point1LatLng = new window.google.maps.LatLng(
             point1.lat,
             point1.lng,
         );
         const point2LatLng = new window.google.maps.LatLng(
-            point2.latitude,
-            point2.longitude,
+            point2.lat,
+            point2.lng,
         );
 
         const angle = window.google.maps.geometry.spherical.computeHeading(
@@ -157,7 +293,8 @@ class HistoryPage extends Component {
     sliderPlay = () => {
         this.sliderInterval = setInterval(() => {
             this.setState({ slider: this.state.slider + 1 });
-        }, Math.round(1000 / (100 / speedData.length)));
+        }, Math.round(1000 / (120 / this.state.polylineData.length)));
+        // }, Math.round(1000 / (100 / speedData.length)));
     };
 
     loadData = (page = 1) => {
@@ -172,6 +309,7 @@ class HistoryPage extends Component {
         this.setState({
             hasNextPage: page == 1 ? true : false,
             isNextPageLoading: false,
+            isNextToPageLoading: true,
         });
     };
 
@@ -217,7 +355,7 @@ class HistoryPage extends Component {
                                 this.setState({ tabValue: index })
                             }
                         >
-                            <Tab
+                            {/* <Tab
                                 style={{
                                     color:
                                         this.state.tabValue === 0
@@ -236,7 +374,7 @@ class HistoryPage extends Component {
                                 }}
                                 label="Vehicle Info"
                                 icon={<FontAwesomeIcon icon={faCar} />}
-                            />
+                            /> */}
                         </Tabs>
                         <SwipeableViews
                             axis={'x-reverse'}
@@ -273,7 +411,7 @@ class HistoryPage extends Component {
                         </SwipeableViews>
                     </Grid>
                     <Grid container lg={9} md={9} sm={12} xs={12}>
-                        {/* <Map
+                        <Map
                             zoom={zoom}
                             options={mapOptions}
                             center={coordinate}
@@ -291,8 +429,20 @@ class HistoryPage extends Component {
                                 height={this.state.carHeight}
                                 lat={this.state.coordinate.lat}
                                 lng={this.state.coordinate.lng}
+                                onClick={this.callout}
                             />
-                        </Map> */}
+                            {/* <Polyline
+                                // path={pathCoordinates}
+                                // geodesic={true}
+                                options={{
+                                    path: polylineData,
+                                    geodesic: true,
+                                    strokeColor: '#00a1e1',
+                                    strokeOpacity: 1.0,
+                                    strokeWeight: 4,
+                                }}
+                            /> */}
+                        </Map>
                         <Grid
                             lg={9}
                             md={9}
@@ -301,7 +451,7 @@ class HistoryPage extends Component {
                             container
                             className={classes.player}
                         >
-                            {/* <IOSSlider
+                            <IOSSlider
                                 marks={[]}
                                 defaultValue={0}
                                 valueLabelDisplay="on"
@@ -313,9 +463,10 @@ class HistoryPage extends Component {
                                     }
                                 }}
                             />
-                            <ResponsiveContainer width="100%" height="100%"> 
+                            <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                    data={speedData}
+                                    data={this.state.polylineData}
+                                    // data={speedData}
                                     margin={classes.lineMargin}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -330,7 +481,7 @@ class HistoryPage extends Component {
                                         stroke="#08c3eb"
                                     />
                                 </LineChart>
-                            </ResponsiveContainer>*/}
+                            </ResponsiveContainer>
                             <div
                                 className={classes.playButton}
                                 onClick={() =>

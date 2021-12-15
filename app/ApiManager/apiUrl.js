@@ -34,6 +34,8 @@ const APIURLS = {
     updateVehicle: '/updateVehicle',
     updateZone: '/updateZone',
     validateOtp: 'validateOtp',
+    getAllDeviceAlerts: '/getAllDeviceAlerts',
+    viewVehicles: '/viewVehicles',
 };
 
 export default APIURLS;

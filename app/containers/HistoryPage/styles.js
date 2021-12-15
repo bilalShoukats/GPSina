@@ -145,7 +145,7 @@ const IOSSlider = withStyles({
     },
     track: {
         height: 2,
-        backgroundColor: '#08c3eb',
+        // backgroundColor: '#08c3eb',
     },
     rail: {
         height: 2,

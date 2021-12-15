@@ -105,6 +105,7 @@ class FencePage extends Component {
 
     // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
     handleApiLoaded = (map, google) => {
+        console.log('map: ', map, ' google ', google);
         this.setState({ map });
         this.getAllFence()
             .then(fences => {
