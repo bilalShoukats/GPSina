@@ -27,6 +27,30 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import { Styles } from '@material-ui/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GiBattery75 } from 'react-icons/gi';
+import { FaSolarPanel, FaTemperatureLow } from 'react-icons/fa';
+
+import { FaOilCan } from 'react-icons/fa';
+import Geocode from 'react-geocode';
+
+import {
+    faSortUp,
+    faCog,
+    faPowerOff,
+    faBars,
+    faHome,
+    faFileAlt,
+    faSearchLocation,
+    faUsers,
+    faCarAlt,
+    faCogs,
+    faChartBar,
+    faFilter,
+    faSatelliteDish,
+    faCar,
+    FaAirbnb,
+} from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
     Grid,
@@ -115,6 +139,8 @@ export function List(props) {
     console.log('Vehicle List Props : ', props.data[props.index]);
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = React.useState(false);
+    const [address, setAddress] = React.useState('');
+    const [selectedIndexx, setSelectedIndexx] = React.useState('');
 
     // const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
@@ -147,7 +173,37 @@ export function List(props) {
     const goToAlertScreen = vehicle => {
         history.push(SCREENS.ALERT, { vehicle: vehicle });
     };
-
+    const getLocationAddress = (lat, lng, event, index) => {
+        setSelectedIndexx(index);
+        Geocode.setApiKey('AIzaSyCvlR6R50PN-7o-7UABXDTrdjIAMudbRfM');
+        Geocode.enableDebug();
+        Geocode.fromLatLng(lat, lng).then(
+            response => {
+                // let newList = vehicle[0];
+                // const prevIndex=vehicleInfo.filter(item=>)
+                const address = response.results[0].formatted_address;
+                console.log('address:', address);
+                setAddress(address);
+            },
+            error => {
+                console.error(error);
+            },
+        );
+    };
+    // const enableMoving = () => {
+    //     setIsMoving(!isMoving);
+    //     setIsIdling(false);
+    //     setIsOffline(false);
+    //     setIsParked(false);
+    //     let index = filters.indexOf('isMoving');
+    //     if (isMoving) {
+    //         filters.splice(index, 1);
+    //         applyFilter(filters);
+    //     } else {
+    //         applyFilter(previous => [...previous, 'isMoving']);
+    //         changeFilter(0, vehicles);
+    //     }
+    // };
     const changeAccStatus = () => {
         //
     };
@@ -475,14 +531,34 @@ export function List(props) {
                         className={classes.mutedText}
                         display="inline"
                     >
-                        {data[index].vehicleModel}
+                        {data[index].deviceID}
                     </Typography>
-                    <Typography variant="body2" className={classes.mutedText}>
+                    {/* <Typography variant="body2" className={classes.mutedText}>
                         {moment
                             .unix(data[index].CreatedAt)
                             .add(1, 'y')
                             .format('D MMM YYYY')}
-                    </Typography>
+                    </Typography> */}
+                    <Grid item>
+                        <Typography
+                            variant="body1"
+                            className={classes.description}
+                        >
+                            {`(${moment
+                                .unix(data[index].CreatedAt)
+                                .format('D.MM.YYYY')} - ${moment
+                                .unix(data[index].CreatedAt)
+                                .add(1, 'y')
+                                .format('D.MM.YYYY')})`}
+
+                            <FaTemperatureLow
+                                style={{ marginLeft: 10 }}
+                                size={20}
+                            />
+                            <FaOilCan style={{ marginLeft: 10 }} size={20} />
+                            <GiBattery75 style={{ marginLeft: 10 }} size={20} />
+                        </Typography>
+                    </Grid>
                 </Grid>
                 <Grid item>
                     {data[index].lastVehicleInformation.battery < 50 ? (
@@ -601,6 +677,32 @@ export function List(props) {
                                 <FormattedMessage {...messages.alert} />
                             </Typography>
                         </Grid>
+                        <Typography
+                            // onClick={(event, index) =>
+                            //     getLocationAddress(data[index])
+                            // }
+                            variant="body2"
+                            className={classes.mutedText}
+                            display="inline"
+                            onClick={() => {
+                                getLocationAddress(
+                                    data[index].lastVehicleInformation.gpsLat,
+                                    data[index].lastVehicleInformation.gpsLng,
+                                );
+                            }}
+                        >
+                            {data[index].lastVehicleInformation.gpsLat}
+                            {data[index].lastVehicleInformation.gpsLng}
+                        </Typography>
+                        {/* <span>kiii</span> */}
+                        <span
+                            style={{
+                                fontSize: 12,
+                                color: 'white',
+                            }}
+                        >
+                            <span>{address}</span>
+                        </span>
                     </Grid>
                 </div>
                 <Modal

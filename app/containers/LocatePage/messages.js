@@ -9,12 +9,16 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.LocatePage';
 
 export default defineMessages({
-  locate: {
-    id: `${scope}.locate`,
-    defaultMessage: 'Locate',
-  },
-  kmh: {
-    id: `${scope}.kmh`,
-    defaultMessage: 'km/h',
-  },
+    locate: {
+        id: `${scope}.locate`,
+        defaultMessage: 'Locate',
+    },
+    kmh: {
+        id: `${scope}.kmh`,
+        defaultMessage: 'km/h',
+    },
+    Speed: {
+        id: `${scope}.speed`,
+        defaultMessage: '120',
+    },
 });

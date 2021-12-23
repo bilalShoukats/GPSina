@@ -31,6 +31,9 @@ import SortDownIcon from '../../../assets/images/icons/sortDown.png';
 import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
+import { AiFillAliwangwang } from 'react-icons/ai';
+import SocketComponent from '../LocatePage/socketComponent';
+import { encode, decode } from 'js-base64';
 
 import {
     faSortUp,
@@ -47,6 +50,7 @@ import {
     faFilter,
     faSatelliteDish,
     faCar,
+    FaAirbnb,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -78,6 +82,7 @@ class HomePage extends Component {
             hasNextPage: false,
             isNextPageLoading: false,
             isModalShown: false,
+            // vehicle: [props.location.state.vehicle],
             filter: '',
             coordinate: {
                 lat: LATITUDE,
@@ -89,13 +94,43 @@ class HomePage extends Component {
             sortAsc: false, // true: ascending/ON, false: descending/OFF
             page: 1,
             totalPage: 1,
+            deviceIDs: [],
             isSidebarShown: false,
+
+            deviceUnpackData: [],
+            engineStatus: [],
+            Lat: [],
+            Lng: [],
+            gpsSpeed: [],
+            obdSpeed: [],
+            carTemperature: [],
+            fuelReading: [],
+            rpm: [],
+
+            // deviceIDs: [this.props.lastVehicleInformation.deviceIDs],
         };
         this.api = ApiManager.getInstance();
+        this.socket = new SocketComponent();
     }
 
     componentDidMount = () => {
+        console.log('this.props.token', this.props.token);
+        let user =
+            this.props.auth && this.props.auth.user && this.props.auth.user;
+        let hash = {};
+        hash.clientID = user && user.clientID;
+        hash.email = user && user.email;
+        hash.ipAddress = user && user.ipAddress;
+        hash.token = this.props.token;
+        let encodedHash = encode(JSON.stringify(hash));
         this.getDevices();
+        this.socket.connectSocketServer(
+            encodedHash,
+            ['75034749456'],
+            response => {
+                console.log('socket-response', response);
+            },
+        );
     };
 
     confirmOpen = () => {
@@ -109,14 +144,17 @@ class HomePage extends Component {
     confirmAgree = () => {
         console.log('you agreee the dialog');
     };
-
+    socket = () => {
+        new SocketComponent();
+    };
     getDevices = async () => {
         this.setState({
             isNextPageLoading: true,
         });
         this.api
-            .send('GET', APIURLS.getVehicle, { page: this.state.page })
+            .send('POST', APIURLS.viewVehicles, { page: this.state.page })
             .then(response => {
+                console.log('active vehicles response: ', response);
                 if (response.data.code === 1019) {
                     console.log('Home Device List : ', response.data.response);
                     this.setState({
@@ -221,14 +259,14 @@ class HomePage extends Component {
     changeFilter = e => {
         // 0 => running
         // 1 => idle
-        // 2 => stop
+        // 2 => Parked
         let devices = this.state.deviceList.filter(device => {
             if (
                 e.target.value === 0 &&
                 device.lastVehicleInformation.EngineStatus == 0 &&
                 device.lastVehicleInformation.GpsSpeed > 0
             ) {
-                // moving
+                // running
                 return device;
             } else if (
                 e.target.value === 1 &&
@@ -425,7 +463,7 @@ class HomePage extends Component {
                                     >
                                         <ListItemIcon>
                                             <FontAwesomeIcon
-                                                icon={faSatelliteDish}
+                                                icon={faFileAlt}
                                                 size="lg"
                                             />
                                         </ListItemIcon>
@@ -483,6 +521,7 @@ class HomePage extends Component {
                             deviceName="3353 - M3"
                             type="simple"
                         />
+
                         <Grid
                             container
                             direction="row"
@@ -611,168 +650,232 @@ class HomePage extends Component {
                                         item
                                         className={classes.paginationContainer}
                                     > */}
-                                {/* <Box xs={12}>
-                                            <Select
-                                                style={{
-                                                    minWidth: '75%',
-                                                    marginRight: '15px',
-                                                    backgroundColor: '#fff',
-                                                }}
-                                                id="demo-simple-select"
-                                                value={this.state.filter}
-                                                onChange={this.changeFilter}
-                                            >
-                                                <MenuItem value={0}>
-                                                    Moving
-                                                </MenuItem>
-                                                <MenuItem value={2}>
-                                                    Parked
-                                                </MenuItem>
-                                                <MenuItem value={1}>
-                                                    Idling
-                                                </MenuItem>
-                                                <MenuItem value={3}>
-                                                    Offline
-                                                </MenuItem>
-                                            </Select>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                //href="#contained-buttons"
-                                                onClick={this.clearFilter}
-                                            >
-                                                clear
-                                                <FontAwesomeIcon
-                                                    icon={faFilter}
-                                                    size="sm"
-                                                />
-                                            </Button>
-                                        </Box> */}
-                                {/* <Box flexGrow={1}>
-                                            <TextField
-                                                size="small"
-                                                label="Search"
-                                                variant="filled"
-                                                id="outlined-basic"
-                                                inputRef={textField}
-                                                style={{
-                                                    backgroundColor: '#fff',
-                                                    borderRadius: '5px',
-                                                    marginRight: '5px',
-                                                }}
-                                            />
-                                            <Button
-                                                alignSelf="center"
-                                                variant="contained"
-                                                color="primary"
-                                                //href="#contained-buttons"
-                                                onClick={this.searchVehicle}
-                                            >
-                                                Search
-                                            </Button>
-                                        </Box> */}
-                                {/* <Grid
-                                            container
-                                            direction="row"
-                                            justify="center"
-                                            alignItems="center"
+                                {/* <div
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: 'black',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        <button
+                                            style={{
+                                                borderRadius: 20,
+                                            }}
                                         >
-                                            <Grid
-                                                item
-                                                xs
-                                                className={
-                                                    classes.paginationBtn
-                                                }
-                                                onClick={
-                                                    this.handleVehicleNoSorting
-                                                }
-                                            >
-                                                <Typography
-                                                    variant="body1"
-                                                    style={{
-                                                        color: 'grey',
-                                                        fontSize: '14px',
-                                                    }}
-                                                >
-                                                    <FormattedMessage
-                                                        {...messages.vehicleNo}
-                                                    />
-                                                </Typography>
-                                                {sortBy === 'vehicleNo' ? (
-                                                    sortAsc ? (
-                                                        sortUp
-                                                    ) : (
-                                                        sortDown
-                                                    )
-                                                ) : (
-                                                    <div />
-                                                )}
-                                            </Grid>
+                                            Parked
+                                        </button>
+                                    </div>
+                                </div> */}
+                                {/* <Box xs={12}>
+                                    <Select
+                                        style={{
+                                            minWidth: '75%',
+                                            marginRight: '15px',
+                                            backgroundColor: '#fff',
+                                        }}
+                                        id="demo-simple-select"
+                                        value={this.state.filter}
+                                        onChange={this.changeFilter}
+                                    >
+                                        <MenuItem value={0}>Moving</MenuItem>
+                                        <MenuItem value={2}>Parked</MenuItem>
+                                        <MenuItem value={1}>Idling</MenuItem>
+                                        <MenuItem value={3}>Offline</MenuItem>
+                                    </Select>
+                                <Button
+                                        variant="contained"
+                                        color="primary"
+                                        //href="#contained-buttons"
+                                        onClick={this.clearFilter}
+                                    >
+                                        clear
+                                        <FontAwesomeIcon
+                                            icon={faFilter}
+                                            size="sm"
+                                        />
+                                    </Button>
+                                    
+                                </Box> */}
+                                <div
+                                    style={{
+                                        margin: 10,
+                                        backgroundColor: 'black',
+                                    }}
+                                >
+                                    <button
+                                        value={this.state.filter}
+                                        onChange={this.changeFilter}
+                                        // className={classes.movingbtn}
+                                        size="lg"
+                                        style={{
+                                            margin: 5,
+                                            borderRadius: 15,
+                                            backgroundColor: 'black',
+                                            border: '1px solid #55b44f',
+                                            color: '#55b44f',
+                                        }}
+                                    >
+                                        Moving(0)
+                                    </button>
+                                    <button
+                                        value={this.state.filter}
+                                        onChange={this.changeFilter}
+                                        style={{
+                                            margin: 5,
+                                            borderRadius: 15,
+                                            backgroundColor: 'black',
+                                            border: '1px solid #4da8ee',
+                                            color: '#4da8ee',
+                                        }}
+                                    >
+                                        Parked(0)
+                                    </button>
+                                    <button
+                                        value={this.state.filter}
+                                        onChange={this.changeFilter}
+                                        style={{
+                                            margin: 5,
+                                            borderRadius: 15,
+                                            backgroundColor: 'black',
+                                            border: '1px solid #e5a744',
+                                            color: '#e5a744',
+                                        }}
+                                    >
+                                        Idling(0)
+                                    </button>
+                                    <button
+                                        value={this.state.filter}
+                                        onChange={this.changeFilter}
+                                        style={{
+                                            margin: 5,
+                                            borderRadius: 15,
+                                            backgroundColor: 'black',
+                                            border: '1px solid #cd3020',
+                                            color: '#cd3020',
+                                        }}
+                                    >
+                                        Offline(0)
+                                    </button>
+                                </div>
+                                {/* <Box flexGrow={1}>
+                                    <TextField
+                                        size="small"
+                                        label="Search"
+                                        variant="filled"
+                                        id="outlined-basic"
+                                        inputRef={textField}
+                                        style={{
+                                            backgroundColor: '#fff',
+                                            borderRadius: '5px',
+                                            marginRight: '5px',
+                                        }}
+                                    />
+                                    <Button
+                                        alignSelf="center"
+                                        variant="contained"
+                                        color="primary"
+                                        //href="#contained-buttons"
+                                        onClick={this.searchVehicle}
+                                    >
+                                        Search
+                                    </Button>
+                                </Box> */}
+                                {/* <Grid
+                                    container
+                                    direction="row"
+                                    justify="center"
+                                    alignItems="center"
+                                > */}
+                                {/* <Grid
+                                        item
+                                        xs
+                                        className={classes.paginationBtn}
+                                        onClick={this.handleVehicleNoSorting}
+                                    >
+                                        <Typography
+                                            variant="body1"
+                                            style={{
+                                                color: 'grey',
+                                                fontSize: '14px',
+                                            }}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.vehicleNo}
+                                            />
+                                        </Typography>
+                                        {sortBy === 'vehicleNo' ? (
+                                            sortAsc ? (
+                                                sortUp
+                                            ) : (
+                                                sortDown
+                                            )
+                                        ) : (
+                                            <div />
+                                        )}
+                                    </Grid> */}
 
-                                            <Grid
-                                                item
-                                                xs
-                                                className={
-                                                    classes.paginationBtn
-                                                }
-                                                onClick={
-                                                    this.handleTrackerNoSorting
-                                                }
-                                            >
-                                                <Typography
-                                                    variant="body1"
-                                                    style={{
-                                                        color: 'grey',
-                                                        fontSize: '14px',
-                                                    }}
-                                                >
-                                                    <FormattedMessage
-                                                        {...messages.trackerNo}
-                                                    />
-                                                </Typography>
-                                                {sortBy === 'trackerNo' ? (
-                                                    sortAsc ? (
-                                                        sortUp
-                                                    ) : (
-                                                        sortDown
-                                                    )
-                                                ) : (
-                                                    <div />
-                                                )}
-                                            </Grid>
+                                {/* <Grid
+                                        item
+                                        xs
+                                        className={classes.paginationBtn}
+                                        onClick={this.handleTrackerNoSorting}
+                                    >
+                                        <Typography
+                                            variant="body1"
+                                            style={{
+                                                color: 'grey',
+                                                fontSize: '14px',
+                                            }}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.trackerNo}
+                                            />
+                                        </Typography>
+                                        {sortBy === 'trackerNo' ? (
+                                            sortAsc ? (
+                                                sortUp
+                                            ) : (
+                                                sortDown
+                                            )
+                                        ) : (
+                                            <div />
+                                        )}
+                                    </Grid> */}
 
-                                            <Grid
-                                                item
-                                                xs
-                                                className={
-                                                    classes.paginationBtn
-                                                }
-                                                onClick={
-                                                    this.handleStatusSorting
-                                                }
-                                            >
-                                                <Typography
-                                                    variant="body1"
-                                                    style={{
-                                                        color: 'grey',
-                                                        fontSize: '14px',
-                                                    }}
-                                                >
-                                                    <FormattedMessage
-                                                        {...messages.status}
-                                                    />
-                                                </Typography>
-                                                {sortBy === 'status' ? (
-                                                    sortAsc ? (
-                                                        sortUp
-                                                    ) : (
-                                                        sortDown
-                                                    )
-                                                ) : (
-                                                    <div />
-                                                )}
-                                            </Grid>
-                                        </Grid> */}
+                                {/* <Grid
+                                        item
+                                        xs
+                                        className={classes.paginationBtn}
+                                        onClick={this.handleStatusSorting}
+                                    >
+                                        <Typography
+                                            variant="body1"
+                                            style={{
+                                                color: 'grey',
+                                                fontSize: '14px',
+                                            }}
+                                        >
+                                            <FormattedMessage
+                                                {...messages.status}
+                                            />
+                                        </Typography>
+                                        {sortBy === 'status' ? (
+                                            sortAsc ? (
+                                                sortUp
+                                            ) : (
+                                                sortDown
+                                            )
+                                        ) : (
+                                            <div />
+                                        )}
+                                    </Grid> */}
+                                {/* </Grid> */}
                                 {/* </Grid> */}
 
                                 {/* <Paper
@@ -833,7 +936,7 @@ class HomePage extends Component {
                                 {/* </Grid> */}
                             </Grid>
                             <Grid item xs={8} className={classes.mapContainer}>
-                                {/* <Map center={coordinate} /> */}
+                                <Map center={coordinate} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -857,6 +960,8 @@ HomePage.propTypes = {
     dispatch: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => {
+    console.log('state', state.auth.user);
+
     const { auth } = state;
     return auth;
 };

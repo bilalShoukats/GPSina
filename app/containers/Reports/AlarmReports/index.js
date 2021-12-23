@@ -9,14 +9,21 @@ import Typography from '@material-ui/core/Typography';
 import { useStyles } from '../AlarmReports/styles';
 import { VscFilePdf } from 'react-icons/vsc';
 import Geocode from 'react-geocode';
-
 import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import Header from '../../../components/Header';
+import messages from './messages';
+import moment from 'moment';
 
-export default function SimpleListMenu(props) {
+export function AlarmReports(props) {
     const api = ApiManager.getInstance();
     const [list, setList] = useState(null);
     const classes = useStyles(props);
@@ -29,7 +36,6 @@ export default function SimpleListMenu(props) {
     const [regNo, setRegNo] = React.useState('');
     const [selectedIndexx, setSelectedIndexx] = React.useState('');
     const [address, setAddress] = React.useState('');
-
     const [age, setAge] = React.useState('');
     const getAllItems = () => {
         api.send('post', '/viewVehicles', { page: 1 })
@@ -67,12 +73,6 @@ export default function SimpleListMenu(props) {
     const handleClickListItem = event => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClickListItem2 = (event, index, click) => {
-        // setRegNo(click.registrationNo);
-        // setSelectedIndex(index);
-        // setSelectedId(event.deviceID);
-        // console.log('event', event.deviceID);
-    };
     const handleMenuItemClick = (event, index) => {
         setSelectedIndex(index);
         setAnchorEl(null);
@@ -83,11 +83,9 @@ export default function SimpleListMenu(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     const handleChange = event => {
         setAge(event.target.value);
     };
-
     const getLocationAddress = (lat, lng, event, index) => {
         setSelectedIndexx(index);
         Geocode.setApiKey('AIzaSyCvlR6R50PN-7o-7UABXDTrdjIAMudbRfM');
@@ -109,17 +107,15 @@ export default function SimpleListMenu(props) {
 
     return (
         <div className={classes.root}>
+            <Helmet>
+                <title>{props.intl.formatMessage({ ...messages.Alarm })}</title>
+            </Helmet>
+            <Header title={<FormattedMessage {...messages.Alarm} />} />
+
             <div className={classes.iconDiv}>
                 <VscFilePdf className={classes.topIcon} />
             </div>
-            <h3
-                style={{
-                    color: 'white',
-                    textAlign: 'center',
-                }}
-            >
-                Alarm Reports
-            </h3>
+
             <div className={classes.outerDiv}>
                 <div className={classes.title}>
                     <Typography className={classes.text}>
@@ -132,9 +128,6 @@ export default function SimpleListMenu(props) {
                     />
                 </div>
                 <div className={classes.title2}>
-                    {/* <Typography className={classes.text2}>
-                        {'Alarm Type'}
-                    </Typography> */}
                     <FormControl className={classes.formControl}>
                         <InputLabel id="demo-simple-select-label">
                             Alarm Type
@@ -164,10 +157,6 @@ export default function SimpleListMenu(props) {
                             <MenuItem value={16}>GENERAL</MenuItem>
                         </Select>
                     </FormControl>
-                    {/* <AiFillCaretDown
-                        onClick={handleClickListItem2}
-                        style={{ color: 'white' }}
-                    /> */}
                 </div>
                 <Menu
                     id="lock-menu"
@@ -203,41 +192,6 @@ export default function SimpleListMenu(props) {
                         ))}
                 </Menu>
             </div>
-            {/* {selectedId !== null ? (
-                <div className={classes.dateDiv}>
-                    <div className={classes.maindiv}>
-                        <div>
-                            <text className={classes.nameText}>Name</text>
-                            <text className={classes.nameDate}>Date</text>
-                        </div>
-                        <div>
-                            <text className={classes.nameText1}>PNF 2963</text>
-                            <text className={classes.nameDate1}>
-                                Nov 22, 2021
-                            </text>
-                        </div>
-                        <div>
-                            <text className={classes.nameText}>Speed</text>
-                            <text className={classes.nameDate}>Lat/long</text>
-                        </div>
-                        <div>
-                            <text className={classes.nameText1}>2.7 kmp/h</text>
-                            <text className={classes.nameDate1}>
-                                5.24841167
-                            </text>
-                        </div>
-                        <div>
-                            <text className={classes.nameText}>
-                                Positioning
-                            </text>
-                            <text className={classes.nameDate}>
-                                {' '}
-                                5.24841167
-                            </text>
-                        </div>
-                    </div>
-                </div>
-            ) : null} */}
             {true ? (
                 <div className={classes.dateDiv}>
                     {console.log('regNo', regNo)}
@@ -246,24 +200,22 @@ export default function SimpleListMenu(props) {
                             <MenuItem
                                 key={index}
                                 selected={index === selectedIndex}
-                                // onClick={
-
-                                //     // handleMenuItemClick(event, index)
-                                // }
                             >
                                 <div className={classes.maindiv}>
                                     <div className={classes.mainOuterDiv}>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Name</text>
-                                            <text>Date</text>
+                                            <span>Name</span>
+                                            <span>Date</span>
                                         </div>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>{regNo}</text>
-                                            <text>
-                                                {
+                                            <span>{regNo}</span>
+                                            <span>
+                                                {moment(
                                                     event.deviceInformation
-                                                        .timeStamp
-                                                }
+                                                        .timeStamp,
+                                                ).format(
+                                                    ' MMM DD, YYYY HH:mm A',
+                                                )}
                                                 {/* {
                                                     new Date(
                                                         event.deviceInformation
@@ -275,11 +227,11 @@ export default function SimpleListMenu(props) {
                                                     event.deviceInformation
                                                         .timeStamp,
                                                 )} */}
-                                            </text>
+                                            </span>
                                         </div>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Speed</text>
-                                            <text>Lat/Long</text>
+                                            <span>Speed</span>
+                                            <span>Lat/Long</span>
                                         </div>
                                         <div className={classes.mainInnerDiv}>
                                             {event.CreatedAt}
@@ -295,7 +247,7 @@ export default function SimpleListMenu(props) {
                                                     );
                                                 }}
                                             >
-                                                <text
+                                                <span
                                                     className={classes.gpsLat}
                                                 >
                                                     {
@@ -304,7 +256,7 @@ export default function SimpleListMenu(props) {
                                                         event.deviceInformation
                                                             .gpsLng)
                                                     }
-                                                </text>
+                                                </span>
                                                 {/* <text
                                                     className={classes.gpsLat}
                                                 >
@@ -315,7 +267,7 @@ export default function SimpleListMenu(props) {
                                                 </text> */}
                                             </button>
                                         </div>
-                                        <text
+                                        <span
                                             style={{
                                                 fontSize: 12,
                                             }}
@@ -323,15 +275,15 @@ export default function SimpleListMenu(props) {
                                             {index === selectedIndexx ? (
                                                 <span>{address}</span>
                                             ) : null}
-                                        </text>
+                                        </span>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Positioning</text>
-                                            <text>
+                                            <span>Positioning</span>
+                                            <span>
                                                 {
                                                     event.deviceInformation
                                                         .positioning
                                                 }
-                                            </text>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -342,3 +294,20 @@ export default function SimpleListMenu(props) {
         </div>
     );
 }
+
+AlarmReports.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+};
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    null,
+    mapDispatchToProps,
+);
+
+export default compose(withConnect)(injectIntl(AlarmReports));

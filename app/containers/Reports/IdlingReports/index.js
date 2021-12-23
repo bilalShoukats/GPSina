@@ -12,8 +12,18 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { useStyles } from '../IdlingReports/styles';
 import { VscFilePdf } from 'react-icons/vsc';
+import moment from 'moment';
 import Geocode from 'react-geocode';
-export default function SimpleListMenu(props) {
+
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import Header from '../../../components/Header';
+// import { useStyles } from './styles.js';
+import messages from './messages';
+export function IdlingReports(props) {
     const api = ApiManager.getInstance();
     const [list, setList] = useState(null);
     const classes = useStyles(props);
@@ -135,17 +145,17 @@ export default function SimpleListMenu(props) {
     };
     return (
         <div className={classes.root}>
+            <Helmet>
+                <title>
+                    {props.intl.formatMessage({ ...messages.Idling })}
+                </title>
+            </Helmet>
+            <Header title={<FormattedMessage {...messages.Idling} />} />
+
             <div className={classes.iconDiv}>
                 <VscFilePdf className={classes.topIcon} />
             </div>
-            <h3
-                style={{
-                    color: 'white',
-                    textAlign: 'center',
-                }}
-            >
-                Idling Reports
-            </h3>
+
             <div className={classes.outerDiv}>
                 <div className={classes.title}>
                     <Typography className={classes.text}>
@@ -206,33 +216,37 @@ export default function SimpleListMenu(props) {
                                 <div className={classes.maindiv}>
                                     <div className={classes.mainOuterDiv}>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Name</text>
-                                            <text>Date</text>
+                                            <span>Name</span>
+                                            <span>Date</span>
                                         </div>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>{regNo}</text>
-                                            <text>
+                                            <span>{regNo}</span>
+                                            {moment(
+                                                event.deviceInformation
+                                                    .timeStamp,
+                                            ).format(' MMM DD, YYYY HH:mm A')}
+                                            {/* <text>
                                                 {
                                                     event.deviceInformation
                                                         .timeStamp
-                                                }
-                                                {/* {
+                                                } */}
+                                            {/* {
                                                     new Date(
                                                         event.deviceInformation
                                                             .timeStamp * 1000,
                                                     )
                                                 } */}
-                                                {/* <Moment> */}
-                                                {/* {dateFormate(
+                                            {/* <Moment> */}
+                                            {/* {dateFormate(
                                                     event.deviceInformation
                                                         .timeStamp,
                                                         </Moment>
                                                 )} */}
-                                            </text>
+                                            {/* </text> */}
                                         </div>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Speed</text>
-                                            <text>Lat/Long</text>
+                                            <span>Speed</span>
+                                            <span>Lat/Long</span>
                                         </div>
                                         <div className={classes.mainInnerDiv}>
                                             {event.CreatedAt}
@@ -248,25 +262,25 @@ export default function SimpleListMenu(props) {
                                                     );
                                                 }}
                                             >
-                                                <text
+                                                <span
                                                     className={classes.gpsLat}
                                                 >
                                                     {
                                                         event.deviceInformation
                                                             .gpsLat
                                                     }
-                                                </text>
-                                                <text
+                                                </span>
+                                                <span
                                                     className={classes.gpsLat}
                                                 >
                                                     {
                                                         event.deviceInformation
                                                             .gpsLng
                                                     }
-                                                </text>
+                                                </span>
                                             </button>
                                         </div>
-                                        <text
+                                        <span
                                             style={{
                                                 fontSize: 12,
                                             }}
@@ -274,15 +288,15 @@ export default function SimpleListMenu(props) {
                                             {index === selectedIndexx ? (
                                                 <span>{address}</span>
                                             ) : null}
-                                        </text>
+                                        </span>
                                         <div className={classes.mainInnerDiv}>
-                                            <text>Positioning</text>
-                                            <text>
+                                            <span>Positioning</span>
+                                            <span>
                                                 {
                                                     event.deviceInformation
                                                         .positioning
                                                 }
-                                            </text>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -293,3 +307,19 @@ export default function SimpleListMenu(props) {
         </div>
     );
 }
+IdlingReports.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+};
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    null,
+    mapDispatchToProps,
+);
+
+export default compose(withConnect)(injectIntl(IdlingReports));

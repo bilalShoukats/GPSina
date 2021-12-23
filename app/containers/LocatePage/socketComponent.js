@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from 'react';
 var Protocol = require('bin-protocol');
 import { isNumber } from 'util';
-
 export default class SocketComponent extends Component {
     constructor(props) {
         super(props);

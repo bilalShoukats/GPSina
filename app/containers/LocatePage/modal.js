@@ -12,6 +12,7 @@ import vehicleIcon from '../../../assets/images/icons/vehicle.svg';
 import { faAd, faCar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
+import Geocode from 'react-geocode';
 import {
     Button,
     Dialog,
@@ -21,6 +22,7 @@ import {
     DialogTitle,
     Slide,
 } from '@material-ui/core';
+import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
 
 function rand() {
     return Math.round(Math.random() * 20) - 10;
@@ -31,9 +33,11 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         width: 500,
         backgroundColor: '#000',
-        border: '1px solid #000',
+        border: '2px solid #08c3eb',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(1, 0, 0),
+        marginBottom: 20,
+        borderRadius: 10,
     },
     main: {
         padding: '1.0em 4em',
@@ -41,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         backgroundColor: 'transparent',
-        // marginBottom: '10px',
+        marginBottom: '10px',
     },
     content: {
         // padding: '0 1.5em',
@@ -77,9 +81,33 @@ const useStyles = makeStyles(theme => ({
 export default function SimpleModal(props) {
     const classes = useStyles();
     const history = useHistory();
+    const [selectedIndexx, setSelectedIndexx] = React.useState('');
+
+    const [address, setAddress] = React.useState('');
     const { vehicle } = props;
+    // const [vehicleInfo, setVehicleInfo] = React.useState('');
     const goToHistoryScreen = () => {
-        history.push(SCREENS.HISTORY);
+        history.push(SCREENS.Reports);
+    };
+    const goToTripScreen = () => {
+        history.push(SCREENS.FENCE);
+    };
+    const getLocationAddress = (lat, lng, event, index) => {
+        setSelectedIndexx(index);
+        Geocode.setApiKey('AIzaSyCvlR6R50PN-7o-7UABXDTrdjIAMudbRfM');
+        Geocode.enableDebug();
+        Geocode.fromLatLng(lat, lng).then(
+            response => {
+                let newList = vehicle[0];
+                // const prevIndex=vehicleInfo.filter(item=>)
+                const address = response.results[0].formatted_address;
+                console.log('address:', address);
+                setAddress(address);
+            },
+            error => {
+                console.error(error);
+            },
+        );
     };
     const getStatus = vehicle => {
         // 0 => running
@@ -104,7 +132,7 @@ export default function SimpleModal(props) {
         ) {
             // idle
             console.log('idle');
-            return 'IDLE';
+            return 'IDLE..!';
         } else if (
             (vehicle.lastVehicleInformation.engineStatus == 2 &&
                 vehicle.lastVehicleInformation.gpsSpeed == 0) ||
@@ -113,7 +141,7 @@ export default function SimpleModal(props) {
         ) {
             // parked
             console.log('parked');
-            return 'PARKED';
+            return 'PARKED..!';
         } else if (
             (vehicle.lastVehicleInformation.engineStatus == 3 &&
                 vehicle.lastVehicleInformation.gpsSpeed > 0) ||
@@ -141,9 +169,9 @@ export default function SimpleModal(props) {
                             <Typography
                                 variant="body1"
                                 className={classes.title}
-                                style={{ color: 'gray' }}
+                                style={{ color: 'grey' }}
                             >
-                                {moment().format('MMM Q, YYYY HH:mm A')}
+                                {moment().format('MMM DD , YYYY HH:mm A')}
                             </Typography>
                         </Grid>
                         <Grid item>
@@ -182,22 +210,38 @@ export default function SimpleModal(props) {
                             <Typography
                                 className={classes.description}
                                 style={{
-                                    color: 'blue',
+                                    color: '#08c3eb',
                                     textDecoration: 'underline',
                                     cursor: 'pointer',
                                 }}
+                                onClick={(event, index) => {
+                                    getLocationAddress(
+                                        vehicle.lastVehicleInformation.gpsLat,
+                                        vehicle.lastVehicleInformation.gpsLng,
+                                        event,
+                                        index,
+                                    );
+                                }}
                             >
                                 {vehicle.lastVehicleInformation.gpsLat}
-                                {vehicle.lastVehicleInformation.gpslat},
-                                {vehicle.lastVehicleInformation.gpsLng}
-                                {vehicle.lastVehicleInformation.gpslng}
+                                {/* {vehicle.lastVehicleInformation.gpslat}, */}
+                                {vehicle.lastVehicleInformation.gpsLng},
+                                {/* {vehicle.lastVehicleInformation.gpslng}, */}
                             </Typography>
+                            <span
+                                style={{
+                                    fontSize: 12,
+                                    color: 'white',
+                                }}
+                            >
+                                <span>{address}</span>
+                            </span>
                         </Grid>
                         <Grid item>
                             <Typography
                                 className={classes.description}
                                 style={{
-                                    color: 'blue',
+                                    color: '#08c3eb',
                                     textDecoration: 'underline',
                                     cursor: 'pointer',
                                 }}
@@ -210,7 +254,7 @@ export default function SimpleModal(props) {
                                 variant="body1"
                                 className={classes.description}
                                 style={{
-                                    color: 'green',
+                                    // color: 'green',
                                     fontWeight: 'bold',
                                 }}
                             >
@@ -225,9 +269,7 @@ export default function SimpleModal(props) {
                                 }}
                             >
                                 {vehicle.lastVehicleInformation.gpsSpeed}
-                                {vehicle.lastVehicleInformation.gpsspeed.toFixed(
-                                    2,
-                                )}
+                                {vehicle.lastVehicleInformation.gpsspeed}
                                 {' km/h'}
                             </Typography>
                         </Grid>
@@ -241,7 +283,8 @@ export default function SimpleModal(props) {
                 }}
             >
                 <Button
-                    color="primary"
+                    color="secondary"
+                    onClick={goToTripScreen}
                     style={{
                         fontWeight: 'bold',
                         fontSize: '17px',
@@ -251,7 +294,7 @@ export default function SimpleModal(props) {
                     {'Trip'}
                 </Button>
                 <Button
-                    color="primary"
+                    color="secondary"
                     onClick={goToHistoryScreen}
                     style={{
                         fontWeight: 'bold',

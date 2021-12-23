@@ -39,9 +39,7 @@ import DateTimeRange from '../../components/DatePicker/DateTimeRangePicker';
 import APIURLS from '../../../app/ApiManager/apiUrl';
 import ApiManager from '../../../app/ApiManager/ApiManager';
 import moment from 'moment';
-// import Callout from 'react-callout-component';
 // import Polyline from 'react-google-maps';
-
 // import mapp from '../HistoryPage/mapp';
 // import { Polyline } from 'react-polyline';
 let gps = new SampleGPSData();
@@ -79,6 +77,7 @@ class HistoryPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            vehicle: [],
             zoom: 15,
             slider: 0,
             Gdata: [],
@@ -96,9 +95,11 @@ class HistoryPage extends Component {
             polyline: [],
             polylineData: [],
             deviceID: 0,
+            Speed: [],
             historyDetails: [],
             vehicle: [props.location.state.vehicle],
             speedData: [],
+            gpsSpeed: [],
             coordinate: {
                 lat: [],
                 lng: [],
@@ -179,9 +180,12 @@ class HistoryPage extends Component {
                         lng: item.gpsLng,
                         time: new Date(item.time),
                     }));
+
                     this.setState({ polylineData: latlng }, () => {
-                        console.log('LatLng:', this.state.polylineData);
+                        speed: Math.round(Math.random() * 120),
+                            console.log('LatLng:', this.state.polylineData);
                     });
+                    this.setState({ gpsSpeed: speed });
                 }
             })
             .catch(error => {});
@@ -219,7 +223,7 @@ class HistoryPage extends Component {
     //     const flightPath = new google.maps.Polyline({
     //         path: historyDetails,
     //         geodesic: true,
-    //         strokeColor: '#B12139',
+    //         strokeColor: '#B1210',
     //         strokeOpacity: 1.0,
     //         strokeWeight: 2,
     //     });
@@ -228,9 +232,7 @@ class HistoryPage extends Component {
     componentWillUnmount = () => {};
 
     handleApiLoaded = (map, google) => {};
-    // callout = () => {
-    //     alert('alert');
-    // };
+
     playHistory = () => {
         this.sliderPlay();
         let count = 1;
@@ -293,7 +295,7 @@ class HistoryPage extends Component {
     sliderPlay = () => {
         this.sliderInterval = setInterval(() => {
             this.setState({ slider: this.state.slider + 1 });
-        }, Math.round(1000 / (120 / this.state.polylineData.length)));
+        }, Math.round(1000 / (100 / this.state.polylineData.length)));
         // }, Math.round(1000 / (100 / speedData.length)));
     };
 
@@ -429,7 +431,6 @@ class HistoryPage extends Component {
                                 height={this.state.carHeight}
                                 lat={this.state.coordinate.lat}
                                 lng={this.state.coordinate.lng}
-                                onClick={this.callout}
                             />
                             {/* <Polyline
                                 // path={pathCoordinates}
@@ -466,7 +467,7 @@ class HistoryPage extends Component {
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     data={this.state.polylineData}
-                                    // data={speedData}
+                                    data={speedData}
                                     margin={classes.lineMargin}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -474,7 +475,7 @@ class HistoryPage extends Component {
                                     <Tooltip />
                                     <Line
                                         yAxisId={0}
-                                        dot={false}
+                                        dot={true}
                                         strokeWidth={1}
                                         type="monotone"
                                         dataKey="Speed"

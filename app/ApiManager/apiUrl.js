@@ -23,6 +23,7 @@ const APIURLS = {
     getAllZones: '/getAllZones',
     getUser: '/getUser',
     getVehicle: '/getVehicles',
+    viewVehicles: '/viewVehicles',
     login: '/login',
     register: '/register',
     resendOtp: 'resendOtp',

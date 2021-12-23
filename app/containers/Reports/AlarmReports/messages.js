@@ -1,7 +1,7 @@
 /*
- * ContactUsPage Messages
+ * AlarmRepots Messages
  *
- * This contains all the text for the ContactUsPage container.
+ * This contains all the text for the AlarmRepots container.
  */
 
 import { defineMessages } from 'react-intl';
@@ -9,9 +9,9 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.ContactUsPage';
 
 export default defineMessages({
-    Ignition: {
-        id: `${scope}.Ignition`,
-        defaultMessage: 'Ignition Reports',
+    Alarm: {
+        id: `${scope}.Alarm`,
+        defaultMessage: 'Alarm Reports',
     },
     Name: {
         id: `${scope}.Name`,

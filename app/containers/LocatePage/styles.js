@@ -26,21 +26,23 @@ const useStyles = theme => ({
         backgroundColor: 'white',
     },
     speedIcon: {
-        height: '200px',
-        height: '200px',
+        height: '150px',
+        height: '150px',
         position: 'absolute',
         bottom: '10px',
         left: '10px',
+        borderRadius: 75,
+        border: '2px solid #08c3eb',
     },
     speedText: {
         position: 'absolute',
-        bottom: '100px',
-        left: '80px',
+        bottom: '70px',
+        left: '55px',
     },
     speedMeterText: {
         position: 'absolute',
-        bottom: '80px',
-        left: '95px',
+        bottom: '60px',
+        left: '70px',
         width: 'auto',
     },
     main: {
@@ -62,6 +64,7 @@ const useStyles = theme => ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+
         cursor: 'pointer',
         '&:hover': {
             opacity: 5.0,

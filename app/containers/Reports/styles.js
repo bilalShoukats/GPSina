@@ -14,15 +14,16 @@ const useStyles = makeStyles(theme => ({
         marginLeft: '25%',
         backgroundColor: '#9B9B9B',
     },
-    main: {
-        padding: '1.0em 4em',
-        backgroundColor: 'transparent',
-    },
     IconsDiv: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         display: 'flex',
     },
+    main: {
+        padding: '1.0em 4em',
+        backgroundColor: 'transparent',
+    },
+
     container: {
         backgroundColor: 'gray',
         marginBottom: '10px',

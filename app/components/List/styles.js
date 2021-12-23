@@ -21,7 +21,8 @@ const useStyles = makeStyles(theme => ({
         padding: '0.4em 0.25em',
         textTransform: 'capitalize',
         cursor: 'pointer',
-        minHeight: '70px',
+        minHeight: '80px',
+        // marginLeft: 1,
     },
     logoStyle: {
         width: '30px',
@@ -44,6 +45,7 @@ const useStyles = makeStyles(theme => ({
         overflow: 'scroll',
         height: '80%',
         backgroundColor: 'black',
+        border: '1px solid #08c3eb',
     },
     mainDiv: {
         alignItems: 'center',
@@ -118,6 +120,13 @@ const useStyles = makeStyles(theme => ({
     typography: {
         color: 'white',
         fontSize: 17,
+    },
+    movingbtn: {
+        margin: 10,
+        borderRadius: 12,
+        backgroundColor: 'black',
+        border: '1px solid #28ACEA',
+        color: 'white',
     },
 }));
 

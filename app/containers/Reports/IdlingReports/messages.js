@@ -9,9 +9,9 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.ContactUsPage';
 
 export default defineMessages({
-    Ignition: {
-        id: `${scope}.Ignition`,
-        defaultMessage: 'Ignition Reports',
+    Idling: {
+        id: `${scope}.Idling`,
+        defaultMessage: 'Idling Reports',
     },
     Name: {
         id: `${scope}.Name`,

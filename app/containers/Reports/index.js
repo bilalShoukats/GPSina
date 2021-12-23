@@ -69,11 +69,11 @@ export function Reports(props) {
                                     className={classes.historyicons}
                                 />
 
-                                <text>
+                                <span>
                                     {props.intl.formatMessage({
                                         ...messages.IdlingReport,
                                     })}
-                                </text>
+                                </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
                                     onClick={goToIdlingReportsScreen}
@@ -90,11 +90,11 @@ export function Reports(props) {
                                 <BsFillAlarmFill
                                     className={classes.historyicons}
                                 />
-                                <text>
+                                <span>
                                     {props.intl.formatMessage({
                                         ...messages.AlarmReport,
                                     })}
-                                </text>
+                                </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
                                     onClick={goToAlarmReportsScreen}
@@ -112,11 +112,11 @@ export function Reports(props) {
                                     className={classes.historyicons}
                                 />
 
-                                <text>
+                                <span>
                                     {props.intl.formatMessage({
                                         ...messages.IgnitionReport,
                                     })}
-                                </text>
+                                </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
                                     onClick={goToIgnitionReportsScreen}

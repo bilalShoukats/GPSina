@@ -6,12 +6,7 @@ const useStyles = makeStyles(theme => ({
         // flexDirection: 'row',
         // height: '20%',
     },
-    // outerDiv: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     flexDirection: 'column',
-    // },
+
     title: {
         // textAlign: 'center',
         display: 'flex',
@@ -44,48 +39,6 @@ const useStyles = makeStyles(theme => ({
         marginRight: '370px',
         justifyContent: 'space-between',
     },
-    // maindiv: {
-    //     width: '35%',
-    //     height: 150,
-    //     backgroundColor: 'grey',
-    //     marginLeft: '33%',
-    //     marginTop: '01%',
-    // },
-    // nameText: {
-    //     marginRight: '35%',
-    //     fontSize: 12,
-    //     color: 'black',
-    // },
-    // nameDate: {
-    //     marginLeft: '35%',
-    //     fontSize: 12,
-    //     color: 'black',
-    // },
-    // nameText1: {
-    //     marginRight: '30%',
-
-    //     // color: 'black',
-    // },
-    // nameDate1: {
-    //     marginLeft: '30%',
-
-    //     // color: 'black',
-    // },
-    // dateDiv: {
-    //     textAlign: 'center',
-    //     marginTop: '1%',
-    // },
-    // buttonBackground: {
-    //     backgroundColor: 'grey',
-    // },
-    // topIcon: {
-    //     height: 40,
-    //     width: '5%',
-    //     marginTop: 20,
-    // },
-    // iconDiv: {
-    //     textAlign: 'end',
-    // },
 
     root: {
         flex: 1,
