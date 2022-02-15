@@ -41,6 +41,14 @@ const useStyles = makeStyles(theme => ({
     minHeight: 0,
     marginLeft: '1em',
     minWidth: 0,
+  },
+  iconDiv: {
+    textAlign: 'end',
+  },
+  topIcon: {
+    height: 40,
+    width: '5%',
+    marginTop: 20,
   }
 }));
 

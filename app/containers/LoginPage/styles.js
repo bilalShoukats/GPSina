@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
     },
   },
   logo: {
-    display: 'block',
+    // display: 'block',
+    textAlign: 'center',
   },
   container: {
     marginTop: '2em',
@@ -65,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '0.25em',
   },
   link: {
-    display: 'inline-flex',
+    // display: 'flex-end',
     padding: '0.25em 1em',
     textDecoration: 'none',
     cursor: 'pointer',
@@ -88,6 +89,11 @@ const useStyles = makeStyles(theme => ({
   },
   textStyle: {
     textTransform: 'capitalize',
+  },
+  remmberForgot: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 }));
 

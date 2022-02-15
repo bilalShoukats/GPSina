@@ -38,6 +38,8 @@ import { useInjectReducer } from '../../utils/injectReducer';
 import { OtpDialogeBox } from '../../components/OtpDialougeBox';
 import { Button, Input, Typography, Grid } from '@material-ui/core';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 export function LoginPage(props) {
     useInjectReducer({ key: 'login', reducer });
@@ -74,8 +76,21 @@ export function LoginPage(props) {
     const [isOtpModalShown, setIsOtpModalShown] = useState(false);
     const [registerLoading, setRegisterLoading] = useState(false);
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
+    const [defualtCountry, setDefualtCountry] = useState('MY');
     const classes = useStyles(props);
     const history = useHistory();
+
+    const handlePhone = number => {
+        let error = errors;
+        error.newMobileNo =
+            number.length < 7 || number.length > 15
+                ? props.intl.formatMessage({
+                        ...messages.invalidMobileNo,
+                    })
+                : '';
+
+        setNewMobileNo(number);
+    }
 
     const handleChange = event => {
         event.preventDefault();
@@ -155,17 +170,6 @@ export function LoginPage(props) {
                         : '';
 
                 setNewUsername(value);
-                break;
-
-            case 'newMobileNo':
-                error.newMobileNo =
-                    value.length < 7 || value.length > 15
-                        ? props.intl.formatMessage({
-                              ...messages.invalidMobileNo,
-                          })
-                        : '';
-
-                setNewMobileNo(value);
                 break;
         }
 
@@ -425,7 +429,7 @@ export function LoginPage(props) {
                         </Typography>
                         <Input
                             id="email"
-                            type="text"
+                            type="email"
                             name="email"
                             className={classes.textfield}
                             value={email}
@@ -452,13 +456,8 @@ export function LoginPage(props) {
                             disableUnderline
                         />
 
-                        <Grid
-                            container
-                            justifyContent="space-between"
-                            alignItems="center"
-                            direction="row"
-                        >
-                            <Grid container direction="row" alignItems="center">
+                        <div className={classes.remmberForgot}>
+                            <Grid container alignItems="center">
                                 <CheckBox
                                     checked={rememberMe}
                                     name="rememberMe"
@@ -471,7 +470,8 @@ export function LoginPage(props) {
                                 </Typography>
                             </Grid>
                             <Grid
-                                item
+                                container
+                                justifyContent='flex-end'
                                 className={classes.link}
                                 onClick={goToForgotPasswordScreen}
                             >
@@ -479,7 +479,7 @@ export function LoginPage(props) {
                                     {...messages.forgotPassword}
                                 />
                             </Grid>
-                        </Grid>
+                        </div>
 
                         <Grid container direction="row" alignItems="center">
                             <CheckBox
@@ -544,7 +544,6 @@ export function LoginPage(props) {
                             className={classes.textfieldSignUp}
                             value={newFirstname}
                             onChange={handleChange}
-                            type="email"
                             placeholder="Enter firstname"
                             disableUnderline
                         />
@@ -568,7 +567,6 @@ export function LoginPage(props) {
                             className={classes.textfieldSignUp}
                             value={newLastname}
                             onChange={handleChange}
-                            type="email"
                             placeholder="Enter lastname"
                             disableUnderline
                         />
@@ -587,7 +585,6 @@ export function LoginPage(props) {
                         </Typography>
                         <Input
                             id="newUsername"
-                            type="text"
                             name="newUsername"
                             className={classes.textfieldSignUp}
                             value={newUsername}
@@ -632,7 +629,7 @@ export function LoginPage(props) {
                         >
                             <FormattedMessage {...messages.mobileNo} />
                         </Typography>
-                        <Input
+                        {/* <Input
                             id="newMobileNo"
                             type="number"
                             name="newMobileNo"
@@ -641,6 +638,24 @@ export function LoginPage(props) {
                             onChange={handleChange}
                             placeholder="Enter Mobile No"
                             disableUnderline
+                        /> */}
+                        <PhoneInput
+                            defaultCountry={defualtCountry}
+                            placeholder="Enter phone number"
+                            value={newMobileNo}
+                            smartCaret={false}
+                            height={"100%"}
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                width: '100%',
+                                borderRadius: '5px',
+                                padding: '0.25em 0.5em',
+                                marginBottom: '0.25em',
+                            }}
+                            international={true}
+                            countryCallingCodeEditable={false}
+                            addInternationalOption={false}
+                            onChange={handlePhone}
                         />
                         {errors.newMobileNo.length > 0 && (
                             <span className={classes.error}>

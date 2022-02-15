@@ -37,6 +37,7 @@ const APIURLS = {
     validateOtp: 'validateOtp',
     getAllDeviceAlerts: '/getAllDeviceAlerts',
     viewVehicles: '/viewVehicles',
+    getDashboardInfoDetail: '/getDashBoardDetails',
 };
 
 export default APIURLS;

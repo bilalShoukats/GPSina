@@ -42,10 +42,8 @@ import ExpiredDevicePage from '../ExpiredDevicePage/Loadable';
 import RefundDeliveryPage from '../RefundDeliveryPage/Loadable';
 import ForgotPasswordPage from '../ForgotPasswordPage/Loadable';
 import Reports from '../Reports/index';
-import HistoryReports from '../Reports/HistoryReports/index';
-import AlarmReports from '../Reports/AlarmReports/index';
-import IdlingReports from '../Reports/IdlingReports/index';
-import IgnitionReports from '../Reports/IgnitionReports/index';
+import ReportPage from '../Reports/ReportPage/index';
+import DashboardInfoPage from '../DashboardInfoPage/Loadable';
 
 import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
@@ -261,26 +259,15 @@ export function Route(props) {
 
                     <PrivateRoute
                         exact
-                        path={SCREENS.HistoryReports}
-                        component={HistoryReports}
+                        path={SCREENS.ReportPage}
+                        component={ReportPage}
                         isAuthenticated={props.isAuthenticated}
                     />
+
                     <PrivateRoute
                         exact
-                        path={SCREENS.AlarmReports}
-                        component={AlarmReports}
-                        isAuthenticated={props.isAuthenticated}
-                    />
-                    <PrivateRoute
-                        exact
-                        path={SCREENS.IdlingReports}
-                        component={IdlingReports}
-                        isAuthenticated={props.isAuthenticated}
-                    />
-                    <PrivateRoute
-                        exact
-                        path={SCREENS.IgnitionReports}
-                        component={IgnitionReports}
+                        path={SCREENS.DASHBOARDINFO}
+                        component={DashboardInfoPage}
                         isAuthenticated={props.isAuthenticated}
                     />
 

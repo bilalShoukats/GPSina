@@ -8,6 +8,7 @@ const SCREENS = {
     ADDZONE: '/add-zone',
     CONTACTUS: '/contact-us',
     DASHBOARD: '/dashboard',
+    DASHBOARDINFO: '/dashboard-info',
     DEVICE: '/device',
     DRIVER: '/driver',
     DRIVERDETAIL: '/driver-detail',
@@ -34,10 +35,7 @@ const SCREENS = {
     ZONEDETAIL: '/zone-detail',
     Reports: '/Reports',
     NEW: 'newScreen',
-    HistoryReports: '/HistoryReports',
-    AlarmReports: '/AlarmReports',
-    IdlingReports: '/IdlingReports',
-    IgnitionReports: '/IgnitionReports',
+    ReportPage: '/ReportPage',
 };
 
 export default SCREENS;

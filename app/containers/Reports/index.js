@@ -16,20 +16,15 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import Paper from '@material-ui/core/Paper';
 import { BsFillAlarmFill } from 'react-icons/bs';
 import { BsChevronRight } from 'react-icons/bs';
+
 export function Reports(props) {
+
     const classes = useStyles(props);
-    const goToHistoryReportsScreen = () => {
-        props.history.push(SCREENS.HistoryReports);
+
+    const goToReportsScreen = (pageId) => {
+        props.history.push(SCREENS.ReportPage, pageId);
     };
-    const goToAlarmReportsScreen = () => {
-        props.history.push(SCREENS.AlarmReports);
-    };
-    const goToIdlingReportsScreen = () => {
-        props.history.push(SCREENS.IdlingReports);
-    };
-    const goToIgnitionReportsScreen = () => {
-        props.history.push(SCREENS.IgnitionReports);
-    };
+
     return (
         <Grid>
             <Grid>
@@ -53,7 +48,7 @@ export function Reports(props) {
                                 })}
                                 <BsChevronRight
                                     className={classes.arrowicons}
-                                    onClick={goToHistoryReportsScreen}
+                                    onClick={()=>goToReportsScreen(1)}
                                 />
                             </div>
                         </Paper>
@@ -76,7 +71,7 @@ export function Reports(props) {
                                 </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
-                                    onClick={goToIdlingReportsScreen}
+                                    onClick={()=>goToReportsScreen(2)}
                                 />
                             </div>
                         </Paper>
@@ -97,7 +92,7 @@ export function Reports(props) {
                                 </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
-                                    onClick={goToAlarmReportsScreen}
+                                    onClick={()=>goToReportsScreen(3)}
                                 />
                             </div>
                         </Paper>
@@ -119,7 +114,7 @@ export function Reports(props) {
                                 </span>
                                 <BsChevronRight
                                     className={classes.arrowicons}
-                                    onClick={goToIgnitionReportsScreen}
+                                    onClick={()=>goToReportsScreen(4)}
                                 />
                             </div>
                         </Paper>

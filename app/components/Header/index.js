@@ -14,6 +14,7 @@ import {
     faPencilAlt,
     faPlus,
     faTrashAlt,
+    faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
 import {
     Button,
@@ -33,6 +34,7 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import SCREENS from '../../constants/screen';
 import { useStyles } from './styles.js';
+import { VscFilePdf } from 'react-icons/vsc';
 
 const propTypes = {
     title: PropTypes.string,
@@ -47,6 +49,7 @@ const propTypes = {
     onPressAddPoi: PropTypes.func,
     onPressZone: PropTypes.func,
     isEditMode: PropTypes.bool,
+    showPdfButton: PropTypes.bool
 };
 
 const defaultProps = {
@@ -62,6 +65,7 @@ const defaultProps = {
     onPressAddPoi: () => console.log('onPressAddPoi'),
     onPressZone: () => console.log('onPressZone'),
     isEditMode: false,
+    showPdfButton: false,
 };
 
 const Header = ({ ...props }) => {
@@ -265,7 +269,22 @@ const Header = ({ ...props }) => {
                             </Popper>
                         </Grid>
                     </Grid>
-                ) : (
+                ) : props.showPdfButton ? (
+                    <div>
+                        <Button
+                            className={classes.btnFenceCircleStyle}
+                            size="small"
+                        >
+                            <FontAwesomeIcon
+                                icon={faFilePdf}
+                                color="#FFFFFF"
+                                // style={{ marginRight: '5px' }}
+                                size="lg"
+                            />
+                        </Button>
+                    </div>
+                ) : 
+                (
                     <div className={classes.emptyBtnStyle} />
                 )}
             </Grid>

@@ -1,93 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles, Text } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { AiFillCaretDown } from 'react-icons/ai';
-import APIURLS from '../../../ApiManager/apiUrl';
 import ApiManager from '../../../ApiManager/ApiManager';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { useStyles } from '../IdlingReports/styles';
-import { VscFilePdf } from 'react-icons/vsc';
-import moment from 'moment';
-import Geocode from 'react-geocode';
+import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import Header from '../../../components/Header';
-// import { useStyles } from './styles.js';
+import { useStyles } from './styles.js';
 import messages from './messages';
-import { idlingData, idlingVehicles } from '../../../Locals/ReportSample';
-import IdlingItem from './IdlingItem';
+import ReportItem from './ReportItem';
+import { historyData, idlingData, alarmData, ignitionData, vehiclesList } from '../../../Locals/ReportSample';
 
-export function IdlingReports(props) {
+export function ReportPage(props) {
 
-    const api = ApiManager.getInstance();
-    const [list, setList] = useState(null);
     const classes = useStyles(props);
+    const api = ApiManager.getInstance();
+    const [reportID, setReportID] = useState(props.location.state);
+    const [list, setList] = useState(null);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const [selectedId, setSelectedId] = React.useState(null);
+    const [vehicles, setVehicles] = React.useState(null);
     const [vehicleInfo, setVehicleInfo] = React.useState(null);
+    const [historyDetail, setHistoryDetail] = React.useState(null);
     const [regNo, setRegNo] = React.useState('');
-    const [selectedIndexx, setSelectedIndexx] = React.useState('');
-    const [address, setAddress] = React.useState([]);
+    const [date, setDate] = React.useState('');
 
-    Geocode.setApiKey('AIzaSyCvlR6R50PN-7o-7UABXDTrdjIAMudbRfM');
-    Geocode.enableDebug();
+    let today = new Date();
+    let unixTime = (today / 1000) | 0;
+    let reminder = unixTime % (60 * 60 * 24);
+    let startTime = unixTime - reminder;
+    let endTime = startTime + 60 * 60 * 24;
 
-    console.log("IDLING REPORT DATA: ", idlingData);
-
-    const getAllItems = () => {
+    /* Used for fetching all active vehicles */
+    const getAllActiveVehicles = () => {
         // api.send('post', '/viewVehicles', { page: 1 })
         //     .then(res => {
         //         console.log('ALL DEVICES', res);
         //         if (res.data.code === 1019) {
         //             setList(res.data.response);
+        //             if (res.data.code === 1019) {
+        //                 setData(res.data.response);
+        //             }
         //         }
         //     })
         //     .catch(error => {});
-        
-        //setting it from Sample
-        setList(idlingVehicles);
+        setVehicles(vehiclesList);
     };
 
-    const getSelectedVehicle = () => {
-        // api.send('GET', '/getAllDeviceAlerts', {
-        //     deviceId: selectedId,
-        //     isRead: 1,
+    /* Used for fetching report date based on vehicle, date and other filters like alarm type */
+    const getReportData = () => {
+        // console.log('selectedId', selectedId);
+        // api.send('POST', '/vehicleTravelHistoryDetails', {
+        //     deviceid: '' + selectedId,
+        //     starttime: 1635724800,
+        //     enddate: 1635724800,
         // })
         //     .then(res => {
-        //         console.log('ALL DEVICES ALERTS', res);
-        //         if (res.data.code === 1019) {
+        //         console.log('Travel History Detail', res);
+        //         if (res.data.code === 1012) {
         //             setVehicleInfo(res.data.response);
+        //             if (res.data.code === 1012) {
+        //                 setHistoryDetail(res.data.response);
+        //             }
+        //             let time = res.data.response.map(item => ({
+        //                 time: new Date(item.time),
+        //             }));
+        //             setDate(time);
+        //             console.log('time', time);
         //         }
         //     })
         //     .catch(error => {});
-
-        //setting it from Sample
-        setAddress([]);
-        setVehicleInfo(idlingData);
-        getLocationAddress(idlingData);
+        setVehicleInfo(reportID == 1? historyData:reportID == 2?idlingData:reportID == 3?alarmData:ignitionData);
     };
 
-    console.log('list', list);
-    console.log('selectedId', selectedId);
-
     useEffect(() => {
-        getAllItems();
-    }, []);
-
-    useEffect(() => {
-        if (selectedId !== null) {
-            getSelectedVehicle();
+        if (regNo !== '') {
+            getReportData();
         }
-    }, [selectedId]);
+    }, [regNo]);
+
+    useEffect(() => {
+        getAllActiveVehicles();
+    }, []);
 
     const handleClickListItem = event => {
         setAnchorEl(event.currentTarget);
@@ -97,45 +98,30 @@ export function IdlingReports(props) {
         setSelectedIndex(index);
         setAnchorEl(null);
         setRegNo(event.registrationNo);
-        setSelectedId(event.deviceID);
-        console.log('event', event.deviceID);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const getLocationAddress = (idlingArray) => {
-        idlingArray.map((key, value) =>  {
-            Geocode.fromLatLng(key.lat, key.lng).then(
-                response => {
-                    console.log("what address array: ", address);
-                    var tempAddress = [...address];
-                    console.log("what is tempadd: ",  tempAddress);
-                    tempAddress.push(response.results[0].formatted_address);
-                    console.log("what is tempadd:1: ",  tempAddress);
-                    setAddress(tempAddress);
-                },
-                error => {
-                    console.error(error);
-                },
-            );
-        })
-    };
-
     return (
         <div className={classes.root}>
             <Helmet>
                 <title>
-                    {props.intl.formatMessage({ ...messages.Idling })}
+                    {
+                        reportID == 1 ? props.intl.formatMessage({ ...messages.history }):
+                        reportID == 2 ? props.intl.formatMessage({ ...messages.idling }):
+                        reportID == 3 ? props.intl.formatMessage({ ...messages.alarm }):
+                        props.intl.formatMessage({ ...messages.ignition })
+                    }
                 </title>
             </Helmet>
-            <Header title={<FormattedMessage {...messages.Idling} />} />
-
-            <div className={classes.iconDiv}>
-                <VscFilePdf className={classes.topIcon} />
-            </div>
-
+            <Header title={reportID == 1 ? <FormattedMessage {...messages.history} />:
+                reportID == 2 ? <FormattedMessage {...messages.idling} />:
+                reportID == 3 ? <FormattedMessage {...messages.alarm} />:
+                <FormattedMessage {...messages.ignition} />}
+                showPdfButton
+            />
             <div className={classes.outerDiv}>
                 <div className={classes.title}>
                     <Typography className={classes.text}>
@@ -152,7 +138,10 @@ export function IdlingReports(props) {
                     keepMounted
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
                     transformOrigin={{ horizontal: 'right' }}
                     getContentAnchorEl={null}
                     PaperProps={{
@@ -166,8 +155,8 @@ export function IdlingReports(props) {
                         },
                     }}
                 >
-                    {list &&
-                        list.map((event, index) => (
+                    {vehicles &&
+                        vehicles.map((event, index) => (
                             <MenuItem
                                 key={index}
                                 selected={index === selectedIndex}
@@ -180,14 +169,26 @@ export function IdlingReports(props) {
                         ))}
                 </Menu>
             </div>
+            <div className={classes.dateDiv}>
+                <Button style={{ backgroundColor: 'grey' }} variant="contained">
+                    <TextField
+                        id="date"
+                        type="date"
+                        defaultValue={today}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Button>
+            </div>
             {true ? (
-                <div className={classes.dateDiv}>
-                    {console.log('regNo', regNo)}
+                <div className={classes.itemDiv}>
                     {vehicleInfo &&
                         vehicleInfo.map((event, index) => (
-                            <IdlingItem
+                            <ReportItem
                                 classes={classes}
                                 selected={index === selectedIndex}
+                                reportID={reportID}
                                 index={index}
                                 event={event} 
                             />
@@ -198,7 +199,7 @@ export function IdlingReports(props) {
     );
 }
 
-IdlingReports.propTypes = {
+ReportPage.propTypes = {
     dispatch: PropTypes.func.isRequired,
 };
 
@@ -213,4 +214,4 @@ const withConnect = connect(
     mapDispatchToProps,
 );
 
-export default compose(withConnect)(injectIntl(IdlingReports));
+export default compose(withConnect)(injectIntl(ReportPage));
