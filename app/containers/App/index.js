@@ -15,9 +15,15 @@ import {
     loginUserSuccess,
     changeLoading,
 } from '../../redux/auth/actions';
+import { Grid, Typography } from '@material-ui/core';
+import { useStyles } from './styles.js';
+import { Sentry } from 'react-activity';
+import "react-activity/dist/library.css";
 
 function App(props) {
     let api = ApiManager.getInstance();
+
+    const classes = useStyles(props);
 
     React.useEffect(() => {
         if (props.token === null) {
@@ -84,7 +90,22 @@ function App(props) {
     }, []);
 
     return props.loading ? (
-        <div>loading...</div>
+        <Grid
+            container
+            justifyContent="center"
+            className={classes.loading}
+        >
+            <Grid item xs={3}>
+                <Grid className={classes.activity}>
+                    <Sentry
+                        color="#28ACEA"
+                        size={200}
+                        speed={1}
+                        animating={true}
+                    />
+                </Grid>
+            </Grid>
+        </Grid>
     ) : (
         <>
             <Route />

@@ -22,11 +22,19 @@ import {
     Typography,
     Radio,
 } from '@material-ui/core';
+import CustomModal from '../../components/CustomModal';
+import { Digital } from 'react-activity';
 
 export function AddDevicePage(props) {
+    
     const classes = useStyles(props);
     const api = ApiManager.getInstance();
+
     const [activeDevice, setActiveDevice] = useState('');
+    const [isModalShown, setIsModalShown] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalDescription, setModalDescription] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const validationSchema = yup.object({
         softwareVersion: yup
@@ -44,6 +52,14 @@ export function AddDevicePage(props) {
             .required('tracker number is required'),
     });
 
+    const handleCloseModal = message => {
+        setIsModalShown(false);
+    };
+
+    const handleOpenModal = () => {
+        setIsModalShown(true);
+    };
+
     const formik = useFormik({
         initialValues: {
             trackerNumber: '',
@@ -51,6 +67,7 @@ export function AddDevicePage(props) {
         },
         validationSchema: validationSchema,
         onSubmit: values => {
+            setLoading(true);
             const body = {
                 softwareVer: values.softwareVersion,
                 deviceID: ""+values.trackerNumber,
@@ -58,6 +75,7 @@ export function AddDevicePage(props) {
             };
             api.send('POST', APIURLS.addDevice, body)
                 .then(res => {
+                    setLoading(false);
                     console.log(
                         'Body for add device',
                         body,
@@ -66,10 +84,29 @@ export function AddDevicePage(props) {
                     if (res.data.code === 1008) {
                         props.history.goBack();
                     } else {
+                        setModalTitle(
+                            props.intl.formatMessage({
+                                ...messages.generalError,
+                            }),
+                        );
+                        setModalDescription(res.data.id);
+                        handleOpenModal();
                         console.log('Bad Body ADD DEVICE');
                     }
                 })
                 .catch(error => {
+                    setModalTitle(
+                        props.intl.formatMessage({
+                            ...messages.generalError,
+                        }),
+                    );
+                    setModalDescription(
+                        props.intl.formatMessage({
+                            ...messages.notSuccess,
+                        }),
+                    );
+                    setLoading(false);
+                    handleOpenModal();
                     console.log('Error', error);
                 });
         },
@@ -117,6 +154,13 @@ export function AddDevicePage(props) {
             <Header title={<FormattedMessage {...messages.addDevice} />} />
             <Grid>
                 <Grid item sm={12} md={8} className={classes.root}>
+                    <CustomModal
+                        open={isModalShown}
+                        handleClose={() => handleCloseModal()}
+                        type="simple"
+                        title={modalTitle}
+                        description={modalDescription}
+                    />
                     <Grid
                         container
                         justify="center"
@@ -246,19 +290,29 @@ export function AddDevicePage(props) {
                         alignItems="center"
                         className={classes.btnContainer}
                     >
-                        <Button
-                            form="myForm"
-                            size="medium"
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                            className={classes.btnBlue}
-                            //onSubmit={formik.handleSubmit}
-                        >
-                            <Typography variant="body1">
-                                <FormattedMessage {...messages.submit} />
-                            </Typography>
-                        </Button>
+                        {!loading && (
+                            <Button
+                                form="myForm"
+                                size="medium"
+                                type="submit"
+                                color="primary"
+                                variant="contained"
+                                className={classes.btnBlue}
+                                //onSubmit={formik.handleSubmit}
+                            >
+                                <Typography variant="body1">
+                                    <FormattedMessage {...messages.submit} />
+                                </Typography>
+                            </Button>
+                        )}
+                        {loading && (
+                            <Digital
+                                color="#ffa500"
+                                size={32}
+                                speed={1}
+                                animating={loading}
+                            />
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

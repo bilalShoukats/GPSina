@@ -49,4 +49,12 @@ export default defineMessages({
         id: `${scope}.submit`,
         defaultMessage: 'Submit',
     },
+    generalError: {
+        id: `${scope}.generalError`,
+        defaultMessage: 'Error',
+    },
+    notSuccess: {
+        id: `${scope}.notSuccess`,
+        defaultMessage: 'Add device not successful',
+    }
 });
