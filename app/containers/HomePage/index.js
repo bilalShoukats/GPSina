@@ -32,7 +32,8 @@ import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import defaultProfileImage from '../../../assets/images/icons/defaultProfileImage.png';
 import { AiFillAliwangwang } from 'react-icons/ai';
-import SocketComponent from '../LocatePage/socketComponent';
+// import SocketComponent from '../LocatePage/socketComponent';
+import SocketManager from '../../SocketManager/SocketManager';
 import { encode, decode } from 'js-base64';
 
 import {
@@ -52,6 +53,7 @@ import {
     faCar,
     FaAirbnb,
 } from '@fortawesome/free-solid-svg-icons';
+
 import {
     Button,
     Divider,
@@ -69,13 +71,18 @@ import {
     Box,
     Select,
 } from '@material-ui/core';
+
 import {
     SwipeableList,
     SwipeableListItem,
 } from '@sandstreamdev/react-swipeable-list';
+
 const textField = createRef();
+
 class HomePage extends Component {
+
     constructor(props) {
+        
         super(props);
         this.state = {
             open: false,
@@ -110,28 +117,18 @@ class HomePage extends Component {
             // deviceIDs: [this.props.lastVehicleInformation.deviceIDs],
         };
         this.api = ApiManager.getInstance();
-        this.socket = new SocketComponent();
+        this.socket = SocketManager.getInstance();
     }
 
     componentDidMount = () => {
-        console.log('this.props.token', this.props.token);
-        let user =
-            this.props.auth && this.props.auth.user && this.props.auth.user;
-        let hash = {};
-        hash.clientID = user && user.clientID;
-        hash.email = user && user.email;
-        hash.ipAddress = user && user.ipAddress;
-        hash.token = this.props.token;
-        let encodedHash = encode(JSON.stringify(hash));
-        this.getDevices();
-        this.socket.connectSocketServer(
-            encodedHash,
-            ['75034749456'],
-            response => {
-                console.log('socket-response', response);
-            },
-        );
+        this.socket.connect(this.props.user, this.props.token, this.devicesReceived);
     };
+
+    devicesReceived = (devices) => {
+        console.log("devices from socket: ", devices);
+        this.socket.getLiveGPS([devices[0].deviceID, devices[0].deviceID]);
+        // this.setState({ deviceList: devices });
+    }
 
     confirmOpen = () => {
         this.setState({ open: true });
@@ -144,41 +141,43 @@ class HomePage extends Component {
     confirmAgree = () => {
         console.log('you agreee the dialog');
     };
+
     socket = () => {
         new SocketComponent();
     };
-    getDevices = async () => {
-        this.setState({
-            isNextPageLoading: true,
-        });
-        this.api
-            .send('POST', APIURLS.viewVehicles, { page: this.state.page })
-            .then(response => {
-                console.log('active vehicles response: ', response);
-                if (response.data.code === 1019) {
-                    console.log('Home Device List : ', response.data.response);
-                    this.setState({
-                        deviceList: [
-                            ...this.state.deviceList,
-                            ...response.data.response,
-                        ],
-                        tempDeviceList: [
-                            ...this.state.tempDeviceList,
-                            ...response.data.response,
-                        ],
-                        page: response.data.currentPage + 1,
-                        totalPage: response.data.totalPages,
-                        hasNextPage:
-                            response.data.currentPage < response.data.totalPages
-                                ? true
-                                : false,
-                        isNextPageLoading: false,
-                    });
-                } else {
-                }
-            })
-            .catch(error => console.log('error: ', error));
-    };
+
+    // getDevices = async () => {
+    //     this.setState({
+    //         isNextPageLoading: true,
+    //     });
+    //     this.api
+    //         .send('POST', APIURLS.viewVehicles, { page: this.state.page })
+    //         .then(response => {
+    //             console.log('active vehicles response: ', response);
+    //             if (response.data.code === 1019) {
+    //                 console.log('Home Device List : ', response.data.response);
+    //                 this.setState({
+    //                     deviceList: [
+    //                         ...this.state.deviceList,
+    //                         ...response.data.response,
+    //                     ],
+    //                     tempDeviceList: [
+    //                         ...this.state.tempDeviceList,
+    //                         ...response.data.response,
+    //                     ],
+    //                     page: response.data.currentPage + 1,
+    //                     totalPage: response.data.totalPages,
+    //                     hasNextPage:
+    //                         response.data.currentPage < response.data.totalPages
+    //                             ? true
+    //                             : false,
+    //                     isNextPageLoading: false,
+    //                 });
+    //             } else {
+    //             }
+    //         })
+    //         .catch(error => console.log('error: ', error));
+    // };
 
     // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
     handleApiLoaded = (map, google) => {
@@ -227,8 +226,10 @@ class HomePage extends Component {
     goToVehicleScreen = () => {
         this.props.history.push(SCREENS.VEHICLE);
     };
+
     goToHomeScreen = () => {
-        this.props.history.push(SCREENS.HOME);
+        // this.props.history.push(SCREENS.HOME);
+        this.props.history.push(SCREENS.DASHBOARDINFO);
     };
 
     goToReportScreen = () => {
@@ -903,7 +904,7 @@ class HomePage extends Component {
                                             }
                                             loadNextPage={() => {
                                                 console.log('loadNextPage');
-                                                this.getDevices();
+                                                // this.getDevices();
                                             }}
                                         />
                                     )}

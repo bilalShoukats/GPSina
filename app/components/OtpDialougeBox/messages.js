@@ -11,11 +11,11 @@ export const scope = 'app.components.OtpDialougeBox';
 export default defineMessages({
     verifyOtp: {
         id: `${scope}.verifyOtp`,
-        defaultMessage: 'Verify & Procced',
+        defaultMessage: 'Verify & Proceed',
     },
     title: {
         id: `${scope}.title`,
-        defaultMessage: 'OTP Verifiavtion',
+        defaultMessage: 'OTP Veriifcation',
     },
     resendOtp: {
         id: `${scope}.resendOtp`,
@@ -23,11 +23,11 @@ export default defineMessages({
     },
     resendMessage: {
         id: `${scope}.resendMessage`,
-        defaultMessage: "Didn't Receive the OTP ?",
+        defaultMessage: "Didn't Receive the OTP?",
     },
     pleaseLoginUsingThisCredential: {
         id: `${scope}.pleaseLoginUsingThisCredential`,
-        defaultMessage: 'Please login using this credentials',
+        defaultMessage: 'Please login using your credentials',
     },
     registerSuccessful: {
         id: `${scope}.registerSuccessful`,

@@ -21,9 +21,9 @@ export default defineMessages({
         id: `${scope}.softwareVersion`,
         defaultMessage: 'Software Version',
     },
-    trakerNumber: {
-        id: `${scope}.trakerNumber`,
-        defaultMessage: 'Traker Number',
+    trackerNumber: {
+        id: `${scope}.trackerNumber`,
+        defaultMessage: 'Tracker Number',
     },
     activeDevice: {
         id: `${scope}.activeDevice`,
@@ -33,9 +33,9 @@ export default defineMessages({
         id: `${scope}.enterSoftware`,
         defaultMessage: 'Enter Software Version',
     },
-    enterTraker: {
-        id: `${scope}.enterTraker`,
-        defaultMessage: 'Enter Traker Number',
+    enterTracker: {
+        id: `${scope}.enterTracker`,
+        defaultMessage: 'Enter Tracker Number',
     },
     atLeast5Character: {
         id: `${scope}.atLeast5Character`,

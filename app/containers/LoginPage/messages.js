@@ -77,6 +77,10 @@ export default defineMessages({
         id: `${scope}.invalidEmailPassword`,
         defaultMessage: 'Invalid Email and Password',
     },
+    generalError: {
+        id: `${scope}.generalError`,
+        defaultMessage: 'Error',
+    },
     validationError: {
         id: `${scope}.validationError`,
         defaultMessage: 'Validation Error',

@@ -17,12 +17,12 @@ import satellite from '../../../assets/images/icons/satellite.svg';
 export function DeviceDetailPage(props) {
     const classes = useStyles(props);
     const [softwareVersion, setSoftwareVersion] = useState('');
-    const [trakerNumber, setTrakerNumber] = useState('');
+    const [trackerNumber, setTrackerNumber] = useState('');
     const [activeDevice, setActiveDevice] = useState('');
     const [isEditMode, setisEditmode] = useState(false);
     const [errors, setErrors] = useState({
         softwareVersion: '',
-        trakerNumber: '',
+        trackerNumber: '',
     });
 
     const handleEditMode = e => {
@@ -35,12 +35,12 @@ export function DeviceDetailPage(props) {
 
     const handleSubmit = e => {
         if (validateForm(errors)) {
-            if (softwareVersion == '' || trakerNumber < 9999) {
+            if (softwareVersion == '' || trackerNumber < 9999) {
                 console.log('Required all Feilds');
             } else {
                 const body = {
                     softwareVer: softwareVersion,
-                    deviceID: trakerNumber,
+                    deviceID: ""+trackerNumber,
                     isDumy: true,
                 };
                 const api = ApiManager.getInstance();
@@ -72,14 +72,14 @@ export function DeviceDetailPage(props) {
 
                 setSoftwareVersion(value);
                 break;
-            case 'trakerNumber':
-                error.trakerNumber =
+            case 'trackerNumber':
+                error.trackerNumber =
                     value.length < 5
                         ? props.intl.formatMessage({
                               ...messages.atLeast5Character,
                           })
                         : '';
-                setTrakerNumber(parseInt(value));
+                setTrackerNumber(parseInt(value));
                 break;
         }
         setErrors(error);
@@ -95,7 +95,7 @@ export function DeviceDetailPage(props) {
         console.log('Detail useEffect Device : ', props.location.state);
         const { device } = props.location.state;
         if (device) {
-            setTrakerNumber(device.deviceID);
+            setTrackerNumber(device.deviceID);
             setSoftwareVersion(device.softwareVer);
         } else {
             props.history.goBack();
@@ -165,12 +165,12 @@ export function DeviceDetailPage(props) {
                                 variant="body1"
                                 className={classes.label}
                             >
-                                <FormattedMessage {...messages.trakerNumber} />
+                                <FormattedMessage {...messages.trackerNumber} />
                             </Typography>
                             <Input
                                 className={classes.textInput}
-                                value={trakerNumber}
-                                name="trakerNumber"
+                                value={trackerNumber}
+                                name="trackerNumber"
                                 placeholder={props.intl.formatMessage({
                                     ...messages.enterTraker,
                                 })}
@@ -179,9 +179,9 @@ export function DeviceDetailPage(props) {
                                 onChange={handleChange}
                                 disableUnderline
                             />
-                            {errors.trakerNumber.length > 0 && (
+                            {errors.trackerNumber.length > 0 && (
                                 <span className={classes.error}>
-                                    {errors.trakerNumber}
+                                    {errors.trackerNumber}
                                 </span>
                             )}
                         </Grid>

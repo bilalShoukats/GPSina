@@ -64,6 +64,7 @@ function App(props) {
                 } else {
                     api.send('PUT', '/createSession', { fcmKey: '123' })
                         .then(response => {
+                            console.log("what is create  session api response: ", response);
                             api.setSession(response.data.response.sessionId);
                             props.dispatch(
                                 setSession(response.data.response.sessionId),

@@ -3,6 +3,7 @@ import ApiManager from '../../ApiManager/ApiManager';
 import { Manager } from '../../StorageManager/Storage';
 import { loginUserError, loginUserSuccess } from './actions';
 import { call, all, fork, takeEvery, put } from 'redux-saga/effects';
+import APIURLS from '../../ApiManager/apiUrl';
 
 const api = ApiManager.getInstance();
 export function* watchLoginUser() {
@@ -43,13 +44,13 @@ function* loginToServer({ payload }) {
 
 const asyncLogin = async body =>
     await api
-        .send('POST', '/login', body)
+        .send('POST', APIURLS.login, body)
         .then(response => response)
         .catch(error => error);
 
 const getUser = async () =>
     await api
-        .send('GET', '/getUser', {})
+        .send('GET', APIURLS.getUser, {})
         .then(response => response)
         .catch(error => error);
 

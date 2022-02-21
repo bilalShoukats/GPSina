@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { encode, decode } from 'js-base64';
+import Config from '../constants/config';
 
 export default class ApiManager {
     token = null;
@@ -10,7 +11,7 @@ export default class ApiManager {
 
     constructor() {
         axios.defaults.responseType = 'json';
-        axios.defaults.baseURL = 'http://13.229.0.123:8088/api';
+        axios.defaults.baseURL = Config.et_api_url;
         axios.defaults.headers.put['Content-Type'] = 'application/json';
         axios.defaults.headers.post['Content-Type'] = 'application/json';
     }
@@ -60,7 +61,7 @@ export default class ApiManager {
         return new Promise((resolve, reject) => {
             axios
                 .request(this.setRequestOptions(method, url, payload))
-                .then(response => resolve(response))
+                .then(response => {console.log("response of api: ",response); resolve(response)})
                 .catch(error => reject(error));
         });
     };

@@ -21,8 +21,8 @@ export default defineMessages({
         id: `${scope}.softwareVersion`,
         defaultMessage: 'Software Version',
     },
-    trakerNumber: {
-        id: `${scope}.trakerNumber`,
+    trackerNumber: {
+        id: `${scope}.trackerNumber`,
         defaultMessage: 'Traker Number',
     },
     activeDevice: {

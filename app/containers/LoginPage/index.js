@@ -187,18 +187,22 @@ export function LoginPage(props) {
     useEffect(() => {
         if (loading) {
             setLoading(!props.error);
-            setModalTitle(
-                props.intl.formatMessage({
-                    ...messages.validationError,
-                }),
-            );
-            setModalDescription(
-                props.intl.formatMessage({
-                    ...messages.loginFailed,
-                }),
-            );
-            setCloseMsg(messages.loginFailed.defaultMessage);
-            handleOpenModal();
+            if(props.error) {
+                setModalTitle(
+                    props.intl.formatMessage({
+                        ...messages.generalError,
+                    }),
+                );
+                setModalDescription(
+                    props.error
+                    // props.intl.formatMessage({
+                    //     ...messages.loginFailed,
+                    // }),
+                );
+                // setCloseMsg(messages.loginFailed.defaultMessage);
+                setCloseMsg(props.error);
+                handleOpenModal();
+            }
         }
     }, [props.error]);
 
@@ -294,6 +298,7 @@ export function LoginPage(props) {
                         email: email,
                         password: password,
                         appVersion: '1.0.0.1',
+                        fcmKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.3z_GC3gaHKEPErUGjp4JQKR3mJ9ePVCGE4LCgAUpaMM"
                     };
                     setLoading(true);
                     props.dispatch(loginUser(body, history));
@@ -332,8 +337,8 @@ export function LoginPage(props) {
                             email: newEmail,
                             phone: newMobileNo,
                             role: 0,
-                            clientID: 'gfas67zjh9q',
-                            ipAddress: '192.168.11.3',
+                            // clientID: 'gfas67zjh9q',
+                            // ipAddress: '192.168.11.3',
                         };
                         setRegisterLoading(true);
                         registerUser(body);

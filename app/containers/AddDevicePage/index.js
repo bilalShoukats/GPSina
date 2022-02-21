@@ -31,29 +31,30 @@ export function AddDevicePage(props) {
     const validationSchema = yup.object({
         softwareVersion: yup
             .string('Enter software version')
-            .matches(/^\d{1,2}\.\d{1,2}\.\d{1,2}$/, {
+            // .matches(/^\d{1,2}\.\d{1,2}\.\d{1,2}$/, {
+            .matches(/^[A-Z0-9_]*$/, {
                 excludeEmptyString: true,
                 message: 'please enter valid software version',
             })
             .min(2, 'software version should be of minimum 2 characters length')
             .required('software version is required'),
-        trakerNumber: yup
-            .string('Enter traker number')
-            .min(2, 'traker number should be of minimum 2 characters length')
-            .required('traker number is required'),
+        trackerNumber: yup
+            .string('Enter tracker number')
+            .min(2, 'tracker number should be of minimum 2 characters length')
+            .required('tracker number is required'),
     });
 
     const formik = useFormik({
         initialValues: {
-            trakerNumber: '',
+            trackerNumber: '',
             softwareVersion: '',
         },
         validationSchema: validationSchema,
         onSubmit: values => {
             const body = {
-                softwareVersion: values.softwareVersion,
-                trakerNumber: values.trakerNumber,
-                isDumy: true,
+                softwareVer: values.softwareVersion,
+                deviceID: ""+values.trackerNumber,
+                isDumy: true
             };
             api.send('POST', APIURLS.addDevice, body)
                 .then(res => {
@@ -87,14 +88,14 @@ export function AddDevicePage(props) {
 
                 setSoftwareVersion(value);
                 break;
-            case 'trakerNumber':
-                error.trakerNumber =
+            case 'trackerNumber':
+                error.trackerNumber =
                     value.length < 5
                         ? props.intl.formatMessage({
                               ...messages.atLeast5Character,
                           })
                         : '';
-                setTrakerNumber(parseInt(value));
+                setTrackerNumber(parseInt(value));
                 break;
         }
         setErrors(error);
@@ -171,35 +172,35 @@ export function AddDevicePage(props) {
                                     className={classes.label}
                                 >
                                     <FormattedMessage
-                                        {...messages.trakerNumber}
+                                        {...messages.trackerNumber}
                                     />
                                 </Typography>
                                 <TextField
                                     type="number"
-                                    id="trakerNumber"
-                                    name="trakerNumber"
+                                    id="trackerNumber"
+                                    name="trackerNumber"
                                     className={classes.textInput}
-                                    value={formik.values.trakerNumber}
+                                    value={formik.values.trackerNumber}
                                     InputProps={{
                                         classes: { input: classes.textColor },
                                     }}
                                     placeholder={props.intl.formatMessage({
-                                        ...messages.enterTraker,
+                                        ...messages.enterTracker,
                                     })}
                                     onChange={formik.handleChange}
                                     error={
-                                        formik.touched.trakerNumber &&
-                                        Boolean(formik.errors.trakerNumber)
+                                        formik.touched.trackerNumber &&
+                                        Boolean(formik.errors.trackerNumber)
                                     }
                                     helperText={
-                                        formik.touched.trakerNumber &&
-                                        formik.errors.trakerNumber
+                                        formik.touched.trackerNumber &&
+                                        formik.errors.trackerNumber
                                     }
                                 />
-                                {/* {formik.touched.trakerNumber &&
-                                    Boolean(formik.errors.trakerNumber) && (
+                                {/* {formik.touched.trackerNumber &&
+                                    Boolean(formik.errors.trackerNumber) && (
                                         <span className={classes.error}>
-                                            {errors.trakerNumber}
+                                            {errors.trackerNumber}
                                         </span>
                                     )} */}
                             </Grid>

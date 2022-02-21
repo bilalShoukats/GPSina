@@ -1,6 +1,8 @@
-var Protocol = require('bin-protocol');
 import { isNumber } from 'util';
-var io = require("socket.io-client");
+import io from "socket.io-client";
+import Config from '../constants/config';
+import { decodeAllDevices } from '../NetworkModals/DeviceModal';
+var Protocol = require('bin-protocol');
 
 export default class SocketManager {
     socket = null;
@@ -16,23 +18,31 @@ export default class SocketManager {
         return SocketManager.singleton;
     }
 
-    connect = (token, user) => {
-        console.log("connect with socket");
+    /**
+     * connect
+     * @param user user object.
+     * @param token user hashed token.
+     * Function contains all the socket events
+     */
+    connect = (user, token, callBack) => {
+        console.log("connect with socket: ", token, user);
+
         this.connectSocket().then(object => {
+            console.log("what is socket connect obj: ", object);
             this.socket = object;
 
             //on connection
             this.socket.on('connect', () => {
                 console.log("SOCKET CONNECT RECEIVED");
-                this.sendToSocket('login', token, user);
+                this.sendToSocket('login', user, token);
             })
 
             this.socket.on('login', () => {
-                console.log("SOCKET CONNECT RECEIVED");
+                console.log("SOCKET LOGIN RECEIVED");
             })
 
-            this.socket.on("connect_error", () => {
-                console.log("SOCKET CONNECT ERROR RECEIVED");
+            this.socket.on("connect_error", error => {
+                console.log("SOCKET CONNECT ERROR RECEIVED: ", error);
             })
 
             this.socket.on('message', (data) => {
@@ -43,16 +53,28 @@ export default class SocketManager {
                 console.log("SOCKET DEVICE DATA RECEIVED", data);
             })
 
+            this.socket.on('all-devices', (data) => {
+                callBack(decodeAllDevices(data));
+            });
+
+            this.socket.on('gps-data', (data) => {
+                console.log("GPS DATA FOR DEVICES ARE: ", data);
+            })
+
         }).catch(err => {
             console.log(err);
         });
     }
 
+    /**
+     * Connect Socket
+     * Function will send request on webserver for connection
+     */
     connectSocket = () => {
         return new Promise(function (resolve, reject) {
-            let connection = io('ws://192.168.0.140:8000', { transports: ["websocket"] })
+            let connection = io(Config.et_socket_url, { transports: ["websocket"], extraHeaders: {} });
             if (connection) {
-                console.log("SOCKET SUCCESS");
+                console.log("SOCKET SUCCESS: ", connection);
                 resolve(connection);
             } else {
                 console.log("SOCKET FAILURE");
@@ -61,15 +83,19 @@ export default class SocketManager {
         });
     }
 
-    sendToSocket = (event, token, user) => {
-        console.log("WHAT IS SOCKET EVENT: ", event);
-        console.log("WHAT IS USERR TOKEN: ", token);
-        console.log("WHAT IS USER  USER: ", user.email);
-        console.log("TOKEN AND EMAIL: ",base64.decode(token));
-        // var data = this.encodeData(token, user.email);
-        // console.log("WHAT IS ENCODED DATA: ", data);
-        // data = this.convertStringArrayToByteArray(data);
-        // this.socket.emit(event, data);
+    sendToSocket = (event, user, token) => {
+        console.log("what  is  token: ", token);
+        var encodedToken = this.encodeData(token, user.email);
+        this.socket.emit(event, this.convertStringArrayToByteArray(encodedToken));
+        this.socket.emit('getAllDevices'); //calling get all devices event
+    }
+
+    getLiveGPS = (devices) => {
+        console.log("EMITTING LIVE  GPS FOR DEVICES: ", devices);
+        // console.log("encoded devices areL ",this.encodeDevices(devices));
+        var encodedDevices = this.encodeDevices(devices);
+        console.log("ENCODED DEVICES TO SEND: ", encodedDevices);
+        this.socket.emit('updateGPSDevices', encodedDevices);
     }
 
     /**
@@ -91,18 +117,101 @@ export default class SocketManager {
     }
 
     /**
-     * check length of the data packet
+     * Encode Token and user email
+     * @param token client token.
+     * @param email user email.
+     */
+     encodeData(token, email) {
+        var data;
+        data = this.PackString(email, data);
+        data = this.PackString(token, data);
+        // data = this.PackArrayVarInt64(deviceIds, data);
+        // data = this.PrependLength(data);
+        return data;
+    }
+
+    /**
+     * Encode Token and user email
+     * @param token client token.
+     * @param email user email.
+     */
+     encodeDevices(deviceIds) {
+        var data;
+        var data1 = this.PackVarUInt32(deviceIds.length);
+        console.log("what is var int32: ", data1);
+        data = this.PackArrayStrings(deviceIds);
+        console.log("after pack: ", this.PackVarUInt32(data));
+        data = [...data1, ...data];
+        // this.PrependLength(data);
+        // var encoded = [];
+        // encoded[0] = deviceIds.length;
+        // for(var i=0; i < data.length; i++) {
+        //     encoded[i+1] = data[i];
+        // }
+        return data;
+    }
+
+    /**
+     * Pack array var int 64 bit
+     * @param deviceIds devices list.
+     */
+     PackArrayStrings(deviceIds) {
+        var data = [];
+        var test;
+        length = deviceIds.length;
+        for (var i = 0; i < length; i++) {
+           data = this.PackString(deviceIds[i], data);
+        }
+        
+        // data =  this.convertStringArrayToByteArray(data);
+        
+        return data;
+    }
+
+    /**
+     * Pack array var int 64 bit
      * @param dataArray data array.
      */
-     rightPacket(dataArray) {
+    PrependLength(dataArray) {
+        var length = dataArray.length;
         var protocol = new Protocol();
-        var buffer = protocol.read(dataArray).UVarint().result;
-        dataArray = dataArray.subarray(1);
-        if (buffer === dataArray.length) {
-            return true;
-        } else {
-            return false;
+        var buffer = protocol.write().UVarint(length).result;
+        var combined = [...buffer, ...dataArray];
+        return combined;
+    }
+
+    /**
+     * Pack array var int 64 bit
+     * @param deviceIds devices list.
+     * @param dataArray token array.
+     */
+    PackArrayVarInt64(deviceIds, dataArray) {
+        length = deviceIds.length;
+        if (length > 65535) {
+            return dataArray;
         }
+        dataArray = this.PackVarUInt32(length, dataArray);
+        for (var i = 0; i < length; i++) {
+            dataArray = this.PackVarInt64(deviceIds[i], dataArray);
+        }
+        return dataArray;
+    }
+
+    /**
+     * Pack var int 64 bit
+     * @param numberValue devices list.
+     * @param dataArray token array.
+     */
+    PackVarInt64(numberValue, dataArray) {
+        var protocol = new Protocol();
+        var buffer = protocol.write().SVarint64(numberValue).result;
+        var combined;
+        if (dataArray == null) {faw
+            var combined = buffer;
+        } else {
+            combined = [...dataArray, ...buffer];
+        }
+        return combined;
     }
 
     /**
@@ -131,6 +240,8 @@ export default class SocketManager {
         var length;
         var data = dataArray;
         length = stringVal.length;
+        console.log("what is stringval: ", stringVal);
+        console.log("what is dataArray: ", dataArray);
         if (length > 65535 && length < 0) {
             return dataArray;
         }
@@ -140,151 +251,12 @@ export default class SocketManager {
         if (dataArray == null) {
             var combined = buffer;
         } else {
-            var convertedLength = [...dataArray, ...buffer];
-            combined = [...convertedLength, ...data];
+            // var convertedLength = [...dataArray, ...buffer];
+            // combined = [...convertedLength, ...data];
+            combined = [...dataArray, ...buffer]
         }
         combined = [...combined, ...stringVal.toString(16)];
         return combined;
-    }
-
-    /**
-     * Pack var int 64 bit
-     * @param numberValue devices list.
-     * @param dataArray token array.
-     */
-    PackVarInt64(numberValue, dataArray) {
-        var protocol = new Protocol();
-        var buffer = protocol.write().SVarint64(numberValue).result;
-        var combined;
-        if (dataArray == null) {
-            var combined = buffer;
-        } else {
-            combined = [...dataArray, ...buffer];
-        }
-        return combined;
-    }
-
-    /**
-     * Pack array var int 64 bit
-     * @param deviceIds devices list.
-     * @param dataArray token array.
-     */
-    PackArrayVarInt64(deviceIds, dataArray) {
-        length = deviceIds.length;
-        if (length > 65535) {
-            return dataArray;
-        }
-        dataArray = this.PackVarUInt32(length, dataArray);
-        for (var i = 0; i < length; i++) {
-            dataArray = this.PackVarInt64(deviceIds[i], dataArray);
-        }
-        return dataArray;
-    }
-
-    /**
-     * Pack array var int 64 bit
-     * @param dataArray data array.
-     */
-    PrependLength(dataArray) {
-        var length = dataArray.length;
-        var protocol = new Protocol();
-        var buffer = protocol.write().UVarint(length).result;
-        var combined = [...buffer, ...dataArray];
-        return combined;
-    }
-
-    /**
-     * Un Pack var int 32 bit
-     * @param dataArray data array.
-     */
-    UnPackVarInt32(dataArray) {
-        var protocol = new Protocol();
-        var buffer = protocol.read(dataArray).SVarint().result;
-        var bytes = protocol.write().SVarint(buffer).result;
-        dataArray = dataArray.subarray(1);
-        return [buffer, dataArray];
-    }
-
-    /**
-     * Un Pack int 32 bit bytes
-     * @param dataArray data bytes array.
-     */
-    UnPackInt32(dataArray) {
-        var protocol = new Protocol();
-        console.log('data array for engine: ', dataArray);
-        var engineStatus = protocol.read(dataArray).SVarint().result;
-        console.log('engine status is: ', engineStatus);
-        var bytes = protocol.write().SVarint(engineStatus).result;
-        console.log('engine status bytes are: ', bytes);
-        dataArray = dataArray.slice(bytes.length);
-        console.log('remaining data array: ', dataArray);
-        return [engineStatus, dataArray];
-    }
-
-    /**
-     * Un Pack int 64 bit bytes
-     * @param dataArray data bytes array.
-     */
-    UnPackInt64(dataArray) {
-        var protocol = new Protocol();
-        var deviceId = protocol
-            .read(dataArray)
-            .SVarint64('long')
-            .result.long.toString();
-        var bytes = protocol.write().SVarint64(deviceId).result;
-        dataArray = dataArray.slice(bytes.length);
-        return [deviceId, dataArray];
-    }
-
-    /**
-     * Un Pack var unsigned int 32 bit
-     * @param dataArray data array.
-     */
-    UnPackVarUInt32(dataArray) {
-        var protocol = new Protocol();
-        var buffer = protocol.read(dataArray).UVarint().result;
-        var bytes = protocol.write().UVarint(buffer).result;
-        dataArray = dataArray.subarray(1);
-        return [buffer, dataArray];
-    }
-
-    /**
-     * Un Pack float 32 bit
-     * @param dataArray data array.
-     */
-    UnPackFloat32(dataArray) {
-        var data = dataArray.slice(0, 4);
-        dataArray = dataArray.slice(4);
-        var bits = (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
-        var sign = bits >>> 31 == 0 ? 1.0 : -1.0;
-        var e = (bits >>> 23) & 0xff;
-        var m = e == 0 ? (bits & 0x7fffff) << 1 : (bits & 0x7fffff) | 0x800000;
-        var f = sign * m * Math.pow(2, e - 150);
-        return [f, dataArray]; //return f.toFixed(3)
-    }
-
-    /**
-     * Encode Token and device ids data
-     * @param clientHash client token.
-     * @param deviceIds device ids array.
-     */
-    encodeData(clientHash, deviceIds) {
-        var data;
-        data = this.PackString(clientHash, data);
-        data = this.PackArrayVarInt64(deviceIds, data);
-        data = this.PrependLength(data);
-        return data;
-    }
-
-    /**
-     * check engine status
-     * @param val integer value of enginer status.
-     */
-    Itob(val) {
-        if (val > 0) {
-            return true;
-        }
-        return false;
     }
 
     /**
