@@ -71,7 +71,8 @@ export function AddDevicePage(props) {
             const body = {
                 softwareVer: values.softwareVersion,
                 deviceID: ""+values.trackerNumber,
-                isDumy: true
+                isDumy: true,
+                ownerEmail: props.user.email
             };
             api.send('POST', APIURLS.addDevice, body)
                 .then(res => {
@@ -321,6 +322,15 @@ export function AddDevicePage(props) {
 }
 AddDevicePage.propTypes = {};
 
-const withConnect = connect();
+const mapStateToProps = state => {
+    console.log('state', state.auth.user);
+
+    const { auth } = state;
+    return auth;
+};
+
+const withConnect = connect(
+    mapStateToProps
+);
 
 export default compose(withConnect)(injectIntl(AddDevicePage));
