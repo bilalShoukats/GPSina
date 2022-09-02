@@ -182,6 +182,7 @@
   "app.containers.LoginPage.forgotPassword": "",
   "app.containers.LoginPage.invalidEmailPassword": "",
   "app.containers.LoginPage.invalidMobileNo": "",
+  "app.containers.LoginPage.LogininvalidMobileNo": "",
   "app.containers.LoginPage.language": "",
   "app.containers.LoginPage.languageName": "",
   "app.containers.LoginPage.lastname": "",

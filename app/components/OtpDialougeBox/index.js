@@ -13,6 +13,7 @@ import CustomModal from '../../components/CustomModal';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import defaultProfileImage from '../../../assets/images/icons/otp.svg';
 import { Button, Grid, Modal, Typography, Avatar } from '@material-ui/core';
+import { Manager } from '../../StorageManager/Storage';
 
 export function OtpDialogeBox(props) {
     const history = useHistory();
@@ -27,6 +28,7 @@ export function OtpDialogeBox(props) {
     const [verifyLoading, setVerifyLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
     const [verificationFlag, setVerificationFlag] = useState(false);
+
     const [otpBody, setOtpBody] = useState({
         email: '',
         hash: '',
@@ -62,24 +64,44 @@ export function OtpDialogeBox(props) {
         setModalFlag(false);
         history.push(SCREENS.LOGIN);
     };
-
+    // const reLoadUser = () => {
+    //     Manager.getItem('email', true).then(result => {
+    //       this.setState({ user: result, loaded: true });
+    //     });
+    //   };
     const handleVerify = async () => {
         setVerifyLoading(true);
+        let email=localStorage.getItem('email',email)
+        let hash=localStorage.getItem('hash',hash)
+        let numberr=localStorage.getItem('LoginnewMobileNo')
+        
+      
+        console.log("numberr for api body",numberr)
+
         const body = {
-            email: otpBody.email,
+            email: email,
             code: parseInt(otp),
-            hash: otpBody.hash,
+            hash: hash,
+            type:1,
+            phone:numberr
         };
+        console.log("body>>",body)
         const api = ApiManager.getInstance();
         api.send('POST', APIURLS.validateOtp, body)
             .then(res => {
                 setVerifyLoading(false);
-                if (res.data.code === 6019) {
+                if (res.data.code === 1011) {
+                    localStorage.removeItem('LoginnewMobileNo')
                     setVerificationFlag(true);
                     setTitleMsg(messages.verificationSuccess.defaultMessage);
                     setDescription(
                         messages.pleaseLoginUsingThisCredential.defaultMessage,
                     );
+                    //
+                    
+                   
+                    
+
                 }
             })
             .catch(error => {
@@ -95,6 +117,9 @@ export function OtpDialogeBox(props) {
             hash: otpBody.hash,
             email: otpBody.email,
         };
+    //  const usehash=   localStorage.setItem(hash);
+    //  const useEmail=   localStorage.setItem( email);
+
         setResendLoading(true);
         const api = ApiManager.getInstance();
         api.send('POST', APIURLS.resendOtp, body)
@@ -202,10 +227,10 @@ export function OtpDialogeBox(props) {
                                     onChange={handleChange}
                                     numInputs={6}
                                     isInputNum={true}
-                                    containerStyle={classes.otpBoxStyle}
-                                    inputStyle={classes.otpInputStyle}
-                                    separator={<span>- </span>}
-                                    isDisabled={!timer}
+                                    // containerStyle={classes.otpBoxStyle}
+                                    // inputStyle={classes.otpInputStyle}
+                                    // // separator={<span>- </span>}
+                                   // isDisabled={!timer}
                                 />
                             </div>
 

@@ -109,6 +109,10 @@ export default defineMessages({
         id: `${scope}.invalidMobileNo`,
         defaultMessage: 'invalid mobile no',
     },
+    LogininvalidMobileNo: {
+        id: `${scope}.invalidMobileNumber`,
+        defaultMessage: 'invalid mobile Number',
+    },
     mobileNo: {
         id: `${scope}.mobileNo`,
         defaultMessage: 'mobile no',
@@ -138,7 +142,7 @@ export default defineMessages({
         defaultMessage: 'Network Error',
     },
     fillAllInputs: {
-        id: `${scope}.fillAllInputs`,
+id: `${scope}.fillAllInputs`,
         defaultMessage: 'All Inputs Required',
     },
     dbError: {

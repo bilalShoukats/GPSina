@@ -312,8 +312,8 @@ export function SettingsPage(props) {
                             icon={faCamera}
                             size="1x"
                             onClick={openFileDialog}
-                            style={{ bottom: 1 }}
-                            style={{ cursor: 'pointer' }}
+                            // style={{ bottom: 1 }}
+                            style={{ bottom: 1, cursor: 'pointer' }}
                         />
                     </Grid>
 
@@ -538,7 +538,7 @@ export function SettingsPage(props) {
                             autoFocus
                             color="primary"
                             onClick={() => getCropData(updateProfile)}
-                            color="primary"
+                            // color="primary"
                         >
                             {updating ? (
                                 <Dots color={'#fff'} />

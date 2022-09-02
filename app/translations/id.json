@@ -182,6 +182,7 @@
   "app.containers.LoginPage.forgotPassword": "Lupa kata sandi",
   "app.containers.LoginPage.invalidEmailPassword": "E-mail dan password salah",
   "app.containers.LoginPage.invalidMobileNo": "invalid mobile no",
+  "app.containers.LoginPage.LogininvalidMobileNo": "invalid mobile number",
   "app.containers.LoginPage.language": "Language",
   "app.containers.LoginPage.languageName": "English",
   "app.containers.LoginPage.lastname": "last name",

@@ -12,28 +12,51 @@ export function* watchLoginUser() {
 
 function* loginToServer({ payload }) {
     const { body, history } = payload;
+    console.log("loginToServer body==>",body)
     try {
         const response = yield call(asyncLogin, body);
-        if (response.data.code === 2003) {
-            Manager.setItem('token', response.data.response.hash);
-            yield call(
-                setAuthorization,
-                response.data.response.email,
-                response.data.response.hash,
-            );
-            const userResponse = yield call(getUser);
-            if (userResponse.data.code === 1012) {
-                Manager.setItem('user', userResponse.data.response);
-                yield put(
-                    loginUserSuccess(
-                        response.data.response.hash,
-                        userResponse.data.response,
-                    ),
-                );
-                history.push('/');
-            } else {
-                yield put(loginUserError(userResponse.data.id));
-            }
+        console.log('response.data.code', response.data.code);
+        if (response.data.code === 7011) {
+            // response.data.response.userName = '';
+            console.log('user data response>>1 after success code', response);
+            localStorage.setItem('hash', response.data.response.hash);
+            localStorage.setItem('email', response.data.response.email);
+
+            console.log("loacl",response.data.response.hash,response.data.response.email);
+            // yield call(
+            //     setAuthorization,
+            //     response.data.response.email,
+            //     response.data.response.hash,
+            // );
+
+            // yield put(
+            //     loginUserSuccess(
+            //         response.data.response.hash,
+            //         // userResponse.data.response,
+            //         response.data.response.email,
+            //     ),
+            // );
+
+            // const userResponse = yield call(getUser);
+            // console.log("userResponse.data.code",userResponse.data.code)
+            // console.log("userResponse",userResponse)
+            // if (userResponse.data.code === 1012) {
+            //     console.log('This is after getUser response', userResponse);
+            //     Manager.setItem('user', userResponse.data.response);
+            //     console.log("response.data.response.hash",response.data.response.hash)
+            //     console.log("userResponse.data.response",userResponse.data.response)
+            //     yield put(
+            //         loginUserSuccess(
+            //             response.data.response.hash,
+            //             userResponse.data.response,
+            //             // response.data.response.email,
+            //         ),
+            //     );
+            //     history.push('/');
+            // } else {
+                // yield put(loginUserError(userResponse.data.id));
+            // }
+
         } else {
             yield put(loginUserError(response.data.id));
         }

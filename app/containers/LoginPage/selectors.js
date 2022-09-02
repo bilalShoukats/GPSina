@@ -8,9 +8,9 @@ const makeSelectEmail = createSelector(
     loginState => loginState.email,
 );
 
-const makeSelectPassword = createSelector(
+const makeSelectLoginPhone = createSelector(
     selectLogin,
-    loginState => loginState.password,
+    loginState => loginState.loginPhone,
 );
 
 const makeSelectNewEmail = createSelector(
@@ -18,25 +18,25 @@ const makeSelectNewEmail = createSelector(
     loginState => loginState.newEmail,
 );
 
-const makeSelectNewPassword = createSelector(
-    selectLogin,
-    loginState => loginState.newPassword,
-);
+// const makeSelectNewPassword = createSelector(
+//     selectLogin,
+//     loginState => loginState.newPassword,
+// );
 
-const makeSelectNewConfirmPassword = createSelector(
-    selectLogin,
-    loginState => loginState.newConfirmPassword,
-);
+// const makeSelectNewConfirmPassword = createSelector(
+//     selectLogin,
+//     loginState => loginState.newConfirmPassword,
+// );
 
-const makeSelectRememberMe = createSelector(
-    selectLogin,
-    loginState => loginState.rememberMe,
-);
+// const makeSelectRememberMe = createSelector(
+//     selectLogin,
+//     loginState => loginState.rememberMe,
+// );
 
-const makeSelectAutoLogin = createSelector(
-    selectLogin,
-    loginState => loginState.autoLogin,
-);
+// const makeSelectAutoLogin = createSelector(
+//     selectLogin,
+//     loginState => loginState.autoLogin,
+// );
 
 const makeSelectError = createSelector(
     selectLogin,
@@ -47,10 +47,10 @@ export {
     selectLogin,
     makeSelectError,
     makeSelectEmail,
-    makeSelectPassword,
+    makeSelectLoginPhone,
     makeSelectNewEmail,
-    makeSelectAutoLogin,
-    makeSelectRememberMe,
-    makeSelectNewPassword,
-    makeSelectNewConfirmPassword,
+    // makeSelectAutoLogin,
+    // makeSelectRememberMe,
+    // makeSelectNewPassword,
+    // makeSelectNewConfirmPassword,
 };

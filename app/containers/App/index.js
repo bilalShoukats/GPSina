@@ -19,6 +19,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { useStyles } from './styles.js';
 import { Sentry } from 'react-activity';
 import "react-activity/dist/library.css";
+import Config from '../../constants/config';
 
 function App(props) {
     let api = ApiManager.getInstance();
@@ -68,7 +69,7 @@ function App(props) {
                     //         console.log('session create error: ', error),
                     //     );
                 } else {
-                    api.send('PUT', '/createSession', { fcmKey: '123' })
+                    api.send('PUT', '/createSession', { fcmKey: '123',appID:Config.appID })
                         .then(response => {
                             console.log("what is create  session api response: ", response);
                             api.setSession(response.data.response.sessionId);

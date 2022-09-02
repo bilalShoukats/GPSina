@@ -17,11 +17,11 @@ import {
 export const initialState = {
     email: '',
     newEmail: '',
-    password: '',
-    newPassword: '',
-    autoLogin: false,
-    rememberMe: false,
-    newConfirmPassword: '',
+   // password: '',
+   // newPassword: '',
+   // autoLogin: false,
+   // rememberMe: false,
+   // newConfirmPassword: '',
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -31,24 +31,24 @@ const loginPageReducer = (state = initialState, action) =>
             case CHANGE_EMAIL:
                 draft.email = action.email;
                 break;
-            case CHANGE_PASSWORD:
-                draft.password = action.password;
-                break;
+            // case CHANGE_PASSWORD:
+            //     draft.password = action.password;
+            //     break;
             case CHANGE_NEW_EMAIL:
                 draft.newEmail = action.newEmail;
                 break;
-            case CHANGE_NEW_PASSWORD:
-                draft.newPassword = action.newPassword;
-                break;
-            case CHANGE_NEW_CONFIRM_PASSWORD:
-                draft.newConfirmPassword = action.newConfirmPassword;
-                break;
-            case REMEMBER_ME:
-                draft.rememberMe = action.rememberMe;
-                break;
-            case AUTO_LOGIN:
-                draft.autoLogin = action.autoLogin;
-                break;
+            // case CHANGE_NEW_PASSWORD:
+            //     draft.newPassword = action.newPassword;
+            //     break;
+            // case CHANGE_NEW_CONFIRM_PASSWORD:
+            //     draft.newConfirmPassword = action.newConfirmPassword;
+            //     break;
+            // case REMEMBER_ME:
+            //     draft.rememberMe = action.rememberMe;
+            //     break;
+            // case AUTO_LOGIN:
+            //     draft.autoLogin = action.autoLogin;
+            //     break;
         }
     });
 

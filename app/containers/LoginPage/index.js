@@ -6,7 +6,7 @@
 import {
     selectLogin,
     makeSelectEmail,
-    makeSelectPassword,
+    makeSelectLoginPhone,
     makeSelectNewEmail,
     makeSelectAutoLogin,
     makeSelectRememberMe,
@@ -40,18 +40,20 @@ import { Button, Input, Typography, Grid } from '@material-ui/core';
 import GPSinaLogoGrey from '../../../assets/images/logo/logo-small-gray.png';
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import { Manager } from '../../StorageManager/Storage';
 
 export function LoginPage(props) {
     useInjectReducer({ key: 'login', reducer });
 
     const [errors, setErrors] = useState({
         newEmail: '',
-        newPassword: '',
-        newConfirmPassword: '',
+        // newPassword: '',
+        // newConfirmPassword: '',
         newUsername: '',
         newFirstname: '',
         newLastname: '',
         newMobileNo: '',
+        LoginnewMobileNo: '',
     });
     const [otpBody, setOtpBody] = useState({
         email: '',
@@ -59,7 +61,7 @@ export function LoginPage(props) {
         hash: '',
     });
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [Loginphone, setLoginphone] = useState('');
     const [newEmail, setNewEmail] = useState('');
     const [closeMsg, setCloseMsg] = useState('');
     const [loading, setLoading] = useState(false);
@@ -69,14 +71,20 @@ export function LoginPage(props) {
     const [newLastname, setNewLastname] = useState('');
     const [newUsername, setNewUsername] = useState('');
     const [newMobileNo, setNewMobileNo] = useState('');
+
+    const [LoginnewMobileNo, setLoginnewMobileNo] = useState('');
+    
     const [rememberMe, setRememberMe] = useState(false);
     const [newFirstname, setNewFirstname] = useState('');
     const [isModalShown, setIsModalShown] = useState(false);
-    const [modalDescription, setModalDescription] = useState('');
+    const [LoginisModalShown, setLoginisModalShown] = useState(false);
+    const [modalDescription, setModalDescription] = useState(''); 
+    //const [loginmodalDescription, setmodalDescription] = useState(''); 
     const [isOtpModalShown, setIsOtpModalShown] = useState(false);
     const [registerLoading, setRegisterLoading] = useState(false);
     const [newConfirmPassword, setNewConfirmPassword] = useState('');
     const [defualtCountry, setDefualtCountry] = useState('MY');
+    const [LogindefualtCountry, setLogindefualtCountry] = useState('MY');
     const classes = useStyles(props);
     const history = useHistory();
 
@@ -91,6 +99,20 @@ export function LoginPage(props) {
 
         setNewMobileNo(number);
     }
+    //LoginnewMobileNo
+    const LoginhandlePhone = number => {
+        
+        let error = errors;
+        error.LoginnewMobileNo =
+            number.length < 7 || number.length > 15
+                ? props.intl.formatMessage({
+                        ...messages.LogininvalidMobileNo,
+                    })
+                : '';
+
+        setLoginnewMobileNo(number);
+
+    }
 
     const handleChange = event => {
         event.preventDefault();
@@ -101,13 +123,13 @@ export function LoginPage(props) {
         );
 
         switch (name) {
-            case 'email':
-                setEmail(value);
+            case 'Loginphone':
+                setLoginphone(value);
                 break;
 
-            case 'password':
-                setPassword(value);
-                break;
+            // case 'password':
+            //     setPassword(value);
+            //     break;
 
             case 'newEmail':
                 error.newEmail = validEmailRegex.test(value)
@@ -117,28 +139,28 @@ export function LoginPage(props) {
                 setNewEmail(value);
                 break;
 
-            case 'newPassword':
-                error.newPassword =
-                    value.length < 8 || value.length > 20
-                        ? props.intl.formatMessage({
-                              ...messages.inValidPasswordLength,
-                          })
-                        : '';
-                error.newConfirmPassword = '';
+            // case 'newPassword':
+            //     error.newPassword =
+            //         value.length < 8 || value.length > 20
+            //             ? props.intl.formatMessage({
+            //                   ...messages.inValidPasswordLength,
+            //               })
+            //            : '';
+                // error.newConfirmPassword = '';
 
-                setNewPassword(value);
-                break;
+                // setNewPassword(value);
+                // break;
 
-            case 'newConfirmPassword':
-                error.newConfirmPassword =
-                    value != newPassword && value.length > 0
-                        ? props.intl.formatMessage({
-                              ...messages.mismatchPassword,
-                          })
-                        : '';
+            // case 'newConfirmPassword':
+            //     error.newConfirmPassword =
+            //         value != newPassword && value.length > 0
+            //             ? props.intl.formatMessage({
+            //                   ...messages.mismatchPassword,
+            //               })
+            //             : '';
 
-                setNewConfirmPassword(value);
-                break;
+            //     setNewConfirmPassword(value);
+            //     break;
 
             case 'newFirstname':
                 error.newFirstname =
@@ -176,13 +198,13 @@ export function LoginPage(props) {
         setErrors(error);
     };
 
-    const handleRemeberMe = event => {
-        setRememberMe(event.target.checked);
-    };
+    // const handleRemeberMe = event => {
+    //     setRememberMe(event.target.checked);
+    // };
 
-    const handleAutoLogin = event => {
-        setAutoLogin(event.target.checked);
-    };
+    // const handleAutoLogin = event => {
+    //     setAutoLogin(event.target.checked);
+    // };
 
     useEffect(() => {
         if (loading) {
@@ -202,6 +224,7 @@ export function LoginPage(props) {
                 // setCloseMsg(messages.loginFailed.defaultMessage);
                 setCloseMsg(props.error);
                 handleOpenModal();
+               // LoginhandleOpenModal();
             }
         }
     }, [props.error]);
@@ -280,7 +303,12 @@ export function LoginPage(props) {
 
         switch (id) {
             case 'login':
-                if (email == '' || password == '') {
+                
+                //  if (email == '' || password == '') 
+                console.log("Loginphone",LoginnewMobileNo)
+                let numberr=localStorage.setItem('LoginnewMobileNo',LoginnewMobileNo)
+                console.log("Number=>>",numberr)
+                 if (LoginnewMobileNo == '') {
                     setModalTitle(
                         props.intl.formatMessage({
                             ...messages.validationError,
@@ -293,15 +321,17 @@ export function LoginPage(props) {
                     );
                     setCloseMsg(messages.fillAllInputs.defaultMessage);
                     handleOpenModal();
-                } else {
+                 } else {
                     let body = {
-                        email: email,
-                        password: password,
+                        // email: email,
+                        // password: password,
+                        phone: LoginnewMobileNo   ,
                         appVersion: '1.0.0.1',
                         fcmKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.3z_GC3gaHKEPErUGjp4JQKR3mJ9ePVCGE4LCgAUpaMM"
                     };
                     setLoading(true);
                     props.dispatch(loginUser(body, history));
+                    handleOtpOpenModal();
                 }
 
                 break;
@@ -310,8 +340,8 @@ export function LoginPage(props) {
                 if (validateForm(errors)) {
                     if (
                         newEmail == '' ||
-                        newPassword == '' ||
-                        newConfirmPassword == '' ||
+                        // newPassword == '' ||
+                        // newConfirmPassword == '' ||
                         newFirstname == '' ||
                         newLastname == '' ||
                         newMobileNo == ''
@@ -333,7 +363,7 @@ export function LoginPage(props) {
                             firstName: newFirstname,
                             lastName: newLastname,
                             userName: newUsername,
-                            password: newPassword,
+                           // password: newPassword,
                             email: newEmail,
                             phone: newMobileNo,
                             role: 0,
@@ -370,6 +400,9 @@ export function LoginPage(props) {
     const handleOpenModal = () => {
         setIsModalShown(true);
     };
+    // const LoginhandleOpenModal = () => {
+    //     setLoginisModalShown(true);
+    // };
 
     const handleOtpOpenModal = () => {
         setIsOtpModalShown(true);
@@ -378,6 +411,9 @@ export function LoginPage(props) {
     const handleCloseModal = message => {
         setIsModalShown(false);
     };
+    // const LoginhandleCloseModal = message => {
+    //     setIsModalShown(true);
+    // };
 
     const goToForgotPasswordScreen = () => {
         history.push(SCREENS.FORGOTPASSWORD);
@@ -394,6 +430,24 @@ export function LoginPage(props) {
                 className={classes.logo}
             />
             <div className={classes.container}>
+                 {/*loginOtpModalShown */}
+{/** */}
+                <CustomModal
+                    open={isModalShown}
+                    handleClose={() =>handleCloseModal(closeMsg)}
+                    type="simple"
+                    title={modalTitle}
+                    description={modalDescription}
+                />
+                <OtpDialogeBox
+                    open={isOtpModalShown}
+                    title={modalTitle}
+                    otpResponse={otpBody}
+                />
+               
+
+
+                 {/*signUPOtpModalShown */}
                 <CustomModal
                     open={isModalShown}
                     handleClose={() => handleCloseModal(closeMsg)}
@@ -423,8 +477,38 @@ export function LoginPage(props) {
                     onSubmit={handleSubmit}
                     noValidate
                     autoComplete="off"
-                >
+                    >
                     <div className={classes.content}>
+                    
+                    
+                    {/*Login PhoneInput  */}
+                    <PhoneInput
+                        defaultCountry={LogindefualtCountry}
+                        placeholder="Enter phone number"
+                        value={LoginnewMobileNo}
+                        smartCaret={false}
+                       height={"100%"}
+                       style={{
+                           backgroundColor: '#FFFFFF',
+                           width: '100%',
+                           borderRadius: '5px',
+                           padding: '0.25em 0.5em',
+                           marginBottom: '0.25em',
+                       }}
+                       international={true}
+                       countryCallingCodeEditable={false}
+                       addInternationalOption={false}
+                       onChange={LoginhandlePhone}
+                   />
+                   {errors.LoginnewMobileNo.length > 0 && (
+                       <span className={classes.error}>
+                           {errors.LoginnewMobileNo}
+                       </span>
+                   )}
+
+                  {/*   */}
+                
+                    {/*
                         <Typography
                             variant="body1"
                             color="initial"
@@ -432,75 +516,84 @@ export function LoginPage(props) {
                         >
                             <FormattedMessage {...messages.email} />
                         </Typography>
-                        <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            className={classes.textfield}
-                            value={email}
-                            onChange={handleChange}
-                            placeholder="Enter Email"
-                            disableUnderline
-                        />
 
+                       <Input
+                       id="email"
+                       type="email"
+                       name="email"
+                       className={classes.textfield}
+                       value={email}
+                       onChange={handleChange}
+                       placeholder="Enter Email"
+                       disableUnderline
+                        />
+                        
                         <Typography
-                            variant="body1"
-                            color="initial"
-                            className={classes.textStyle}
+                        variant="body1"
+                        color="initial"
+                        className={classes.textStyle}
                         >
-                            <FormattedMessage {...messages.password} />
+                        <FormattedMessage {...messages.password} />
                         </Typography>
-                        <Input
-                            id="password"
-                            name="password"
-                            type="password"
-                            className={classes.textfield}
-                            value={password}
+                          */} 
+                          
+
+                           {/*
+
+                           <Input
+                           id="password"
+                           name="password"
+                           type="password"
+                           className={classes.textfield}
+                           value={password}
                             onChange={handleChange}
                             placeholder="Enter Password"
                             disableUnderline
-                        />
-
-                        <div className={classes.remmberForgot}>
+                            />
+                            */}
+                            <div className={classes.remmberForgot}>
+                            {/*
                             <Grid container alignItems="center">
-                                <CheckBox
-                                    checked={rememberMe}
-                                    name="rememberMe"
-                                    onChange={handleRemeberMe}
-                                />
-                                <Typography variant="body1" color="initial">
-                                    <FormattedMessage
+                            <CheckBox
+                            checked={rememberMe}
+                            name="rememberMe"
+                            onChange={handleRemeberMe}
+                            />
+                            <Typography variant="body1" color="initial">
+                            <FormattedMessage
                                         {...messages.rememberMe}
                                     />
                                 </Typography>
-                            </Grid>
-                            <Grid
+                                </Grid>
+                                 */}
+                                <Grid
                                 container
                                 justifyContent='flex-end'
                                 className={classes.link}
                                 onClick={goToForgotPasswordScreen}
-                            >
+                                >
                                 <FormattedMessage
                                     {...messages.forgotPassword}
-                                />
-                            </Grid>
-                        </div>
-
-                        <Grid container direction="row" alignItems="center">
+                                    />
+                                    </Grid>
+                                    </div>
+                                {/**   
+                                    <Grid container direction="row" alignItems="center">
                             <CheckBox
                                 checked={autoLogin}
                                 name="autoLogin"
                                 onChange={handleAutoLogin}
-                            />
-                            <Typography
+                                />
+                                <Typography
                                 variant="body1"
                                 color="initial"
                                 className={classes.textStyle}
-                            >
+                                >
                                 <FormattedMessage {...messages.autoLogin} />
                             </Typography>
                         </Grid>
-                    </div>
+                    */} 
+                        </div>
                     {!loading && (
                         <Button
                             type="submit"
@@ -644,11 +737,13 @@ export function LoginPage(props) {
                             placeholder="Enter Mobile No"
                             disableUnderline
                         /> */}
-                        <PhoneInput
-                            defaultCountry={defualtCountry}
-                            placeholder="Enter phone number"
-                            value={newMobileNo}
-                            smartCaret={false}
+                         
+
+                         <PhoneInput
+                             defaultCountry={defualtCountry}
+                             placeholder="Enter phone number"
+                             value={newMobileNo}
+                             smartCaret={false}
                             height={"100%"}
                             style={{
                                 backgroundColor: '#FFFFFF',
@@ -668,13 +763,17 @@ export function LoginPage(props) {
                             </span>
                         )}
 
-                        <Typography
-                            variant="body1"
-                            color="initial"
-                            className={classes.textStyle}
+
+                         {/*   
+                         
+                         <Typography
+                        variant="body1"
+                        color="initial"
+                        className={classes.textStyle}
                         >
-                            <FormattedMessage {...messages.password} />
+                        <FormattedMessage {...messages.password} />
                         </Typography>
+                        
                         <Input
                             id="newPassword"
                             name="newPassword"
@@ -684,16 +783,16 @@ export function LoginPage(props) {
                             onChange={handleChange}
                             placeholder="Enter Password"
                             disableUnderline
-                        />
-                        {errors.newPassword.length > 0 && (
-                            <span className={classes.error}>
+                            />
+                            {errors.newPassword.length > 0 && (
+                                <span className={classes.error}>
                                 {errors.newPassword}
-                            </span>
-                        )}
-
-                        <Typography
-                            variant="body1"
-                            color="initial"
+                                </span>
+                                )}
+                                
+                                <Typography
+                                variant="body1"
+                                color="initial"
                             className={classes.textStyle}
                         >
                             <FormattedMessage {...messages.confirmPassword} />
@@ -707,14 +806,15 @@ export function LoginPage(props) {
                             onChange={handleChange}
                             placeholder="Confirm Password"
                             disableUnderline
-                        />
-                        {errors.newConfirmPassword.length > 0 && (
-                            <span className={classes.error}>
+                            />
+                            {errors.newConfirmPassword.length > 0 && (
+                                <span className={classes.error}>
                                 {errors.newConfirmPassword}
-                            </span>
-                        )}
-                    </div>
-
+                                </span>
+                                )}
+                            */}
+                                </div>
+                                
                     {!registerLoading && (
                         <Button
                             type="submit"
@@ -747,12 +847,12 @@ const mapStateToProps = state => {
         error: state.auth.error,
         login: selectLogin(state),
         email: makeSelectEmail(state),
-        password: makeSelectPassword(state),
+        Loginphone: makeSelectLoginPhone(state),
         newEmail: makeSelectNewEmail(state),
-        autoLogin: makeSelectAutoLogin(state),
-        rememberMe: makeSelectRememberMe(state),
-        newPassword: makeSelectNewPassword(state),
-        confirmPassword: makeSelectNewConfirmPassword(state),
+        // autoLogin: makeSelectAutoLogin(state),
+        // rememberMe: makeSelectRememberMe(state),
+        // newPassword: makeSelectNewPassword(state),
+        // confirmPassword: makeSelectNewConfirmPassword(state),
     };
 };
 
