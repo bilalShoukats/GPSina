@@ -1,7 +1,7 @@
 import { isNumber } from 'util';
 import io from "socket.io-client";
 import Config from '../constants/config';
-import { decodeAllDevices } from '../NetworkModals/DeviceModal';
+// import { decodeData } from '../Models/DeviceModal';
 var Protocol = require('bin-protocol');
 
 export default class SocketManager {
@@ -20,21 +20,18 @@ export default class SocketManager {
 
     /**
      * connect
-     * @param user user object.
+     * @param userEmail user email.
      * @param token user hashed token.
      * Function contains all the socket events
      */
-    connect = (user, token, callBack) => {
-        console.log("connect with socket: ", token, user);
-
-        this.connectSocket().then(object => {
-            console.log("what is socket connect obj: ", object);
+    connect = (userEmail, token, devicesCallBack, gpsCallBack, batteryCallBack, alarmsCallBack, deviceSettingCallBack, deviceStatusCallBack, engineCallBack, deviceSignalCallBack, hideLoader) => {
+        this.connectSocket(userEmail, token, devicesCallBack, gpsCallBack, batteryCallBack, alarmsCallBack, deviceSettingCallBack, deviceStatusCallBack, engineCallBack, deviceSignalCallBack, hideLoader).then(object => {
             this.socket = object;
 
             //on connection
             this.socket.on('connect', () => {
                 console.log("SOCKET CONNECT RECEIVED");
-                this.sendToSocket('login', user, token);
+                this.sendToSocket('login', userEmail, token, hideLoader);
             })
 
             this.socket.on('login', () => {
@@ -47,19 +44,52 @@ export default class SocketManager {
 
             this.socket.on('message', (data) => {
                 console.log("SOCKET MESSAGE RECEIVED", data);
+                if(data.Code === 3){
+                    hideLoader();
+                }
             })
 
             this.socket.on('deviceData', (data) => {
                 console.log("SOCKET DEVICE DATA RECEIVED", data);
             })
 
+            this.socket.on('setting-received', (data) => {
+                console.log("setting-received", data);
+                // engineCallBack(data);
+            });
+            
             this.socket.on('all-devices', (data) => {
-                callBack(decodeAllDevices(data));
+                devicesCallBack(data);
             });
 
             this.socket.on('gps-data', (data) => {
-                console.log("GPS DATA FOR DEVICES ARE: ", data);
-            })
+                gpsCallBack(data);
+            });
+
+            this.socket.on('battery-voltage', (data) => {
+                batteryCallBack(data);
+            });
+
+            this.socket.on('alarm-data', (data) => {
+                alarmsCallBack(data);
+            });
+
+            this.socket.on('device-setting', (data) => {
+                // console.log("device-setting",data);
+                deviceSettingCallBack(data);
+            });
+
+            this.socket.on('device-status-changed', (data) => {
+                deviceStatusCallBack(data);
+            });
+
+            this.socket.on('engine-status', (data) => {
+                engineCallBack(data);
+            });
+
+            this.socket.on('device-signal', (data) => {
+                deviceSignalCallBack(data);
+            });
 
         }).catch(err => {
             console.log(err);
@@ -67,35 +97,57 @@ export default class SocketManager {
     }
 
     /**
+     * disconnect
+     * Function disconnect socket events
+     */
+    disconnect = () => {
+        if(this.socket) this.socket.disconnect();
+    }
+    
+    getGPSData = (devices) => {
+        var devicesArray = [];
+        for(var i=0; i < devices.data.length; i++) {
+            devicesArray.push(devices.data[i].deviceID);
+        }
+        this.socket.emit('updateGPSDevices', devicesArray); //calling UPDATE GPS DEVICES EVENT
+    }
+
+    sendSettings = (DeviceID, Command, Data) => {
+        let singleString = this.encodeSetting(DeviceID, Command, Data)
+        console.log("Strign", singleString);
+        console.log("Data", this.convertStringArrayToByteArray(singleString));
+
+        this.socket.emit('sendSettingToDevice', this.convertStringArrayToByteArray(singleString));
+    }
+    /**
      * Connect Socket
      * Function will send request on webserver for connection
      */
-    connectSocket = () => {
+    connectSocket = (userEmail, token, devicesCallBack, gpsCallBack, batteryCallBack, alarmsCallBack, deviceSettingCallBack, deviceStatusCallBack, engineCallBack, lockCallBack, hideLoader) => {
         return new Promise(function (resolve, reject) {
             let connection = io(Config.et_socket_url, { transports: ["websocket"], extraHeaders: {} });
             if (connection) {
                 console.log("SOCKET SUCCESS: ", connection);
                 resolve(connection);
             } else {
+                if(connection.match("error:websocket: bad handshake")){
+                    connectSocket(userEmail, token, devicesCallBack, gpsCallBack, batteryCallBack, alarmsCallBack, deviceSettingCallBack, deviceStatusCallBack, engineCallBack, lockCallBack, hideLoader)
+                }
+                //err bed hand shake
                 console.log("SOCKET FAILURE");
                 reject('Error: while connecting socket !');
             }
         });
     }
 
-    sendToSocket = (event, user, token) => {
-        console.log("what  is  token: ", token);
-        var encodedToken = this.encodeData(token, user.email);
+    sendToSocket = (event, userEmail, token, hideLoader) => {
+        var encodedToken = this.encodeData(token, userEmail);
         this.socket.emit(event, this.convertStringArrayToByteArray(encodedToken));
         this.socket.emit('getAllDevices'); //calling get all devices event
-    }
-
-    getLiveGPS = (devices) => {
-        console.log("EMITTING LIVE  GPS FOR DEVICES: ", devices);
-        // console.log("encoded devices areL ",this.encodeDevices(devices));
-        var encodedDevices = this.encodeDevices(devices);
-        console.log("ENCODED DEVICES TO SEND: ", encodedDevices);
-        this.socket.emit('updateGPSDevices', encodedDevices);
+        console.log("call getAllDevices");
+        setTimeout(()=>{
+            hideLoader();
+        }, 5000)
     }
 
     /**
@@ -125,110 +177,15 @@ export default class SocketManager {
         var data;
         data = this.PackString(email, data);
         data = this.PackString(token, data);
-        // data = this.PackArrayVarInt64(deviceIds, data);
-        // data = this.PrependLength(data);
         return data;
     }
 
-    /**
-     * Encode Token and user email
-     * @param token client token.
-     * @param email user email.
-     */
-     encodeDevices(deviceIds) {
+    encodeSetting(id, command, values) {
         var data;
-        var data1 = this.PackVarUInt32(deviceIds.length);
-        console.log("what is var int32: ", data1);
-        data = this.PackArrayStrings(deviceIds);
-        console.log("after pack: ", this.PackVarUInt32(data));
-        data = [...data1, ...data];
-        // this.PrependLength(data);
-        // var encoded = [];
-        // encoded[0] = deviceIds.length;
-        // for(var i=0; i < data.length; i++) {
-        //     encoded[i+1] = data[i];
-        // }
+        data = this.PackString(id, data);
+        data = this.PackString(command, data);
+        data = this.PackString(values, data);
         return data;
-    }
-
-    /**
-     * Pack array var int 64 bit
-     * @param deviceIds devices list.
-     */
-     PackArrayStrings(deviceIds) {
-        var data = [];
-        var test;
-        length = deviceIds.length;
-        for (var i = 0; i < length; i++) {
-           data = this.PackString(deviceIds[i], data);
-        }
-        
-        // data =  this.convertStringArrayToByteArray(data);
-        
-        return data;
-    }
-
-    /**
-     * Pack array var int 64 bit
-     * @param dataArray data array.
-     */
-    PrependLength(dataArray) {
-        var length = dataArray.length;
-        var protocol = new Protocol();
-        var buffer = protocol.write().UVarint(length).result;
-        var combined = [...buffer, ...dataArray];
-        return combined;
-    }
-
-    /**
-     * Pack array var int 64 bit
-     * @param deviceIds devices list.
-     * @param dataArray token array.
-     */
-    PackArrayVarInt64(deviceIds, dataArray) {
-        length = deviceIds.length;
-        if (length > 65535) {
-            return dataArray;
-        }
-        dataArray = this.PackVarUInt32(length, dataArray);
-        for (var i = 0; i < length; i++) {
-            dataArray = this.PackVarInt64(deviceIds[i], dataArray);
-        }
-        return dataArray;
-    }
-
-    /**
-     * Pack var int 64 bit
-     * @param numberValue devices list.
-     * @param dataArray token array.
-     */
-    PackVarInt64(numberValue, dataArray) {
-        var protocol = new Protocol();
-        var buffer = protocol.write().SVarint64(numberValue).result;
-        var combined;
-        if (dataArray == null) {faw
-            var combined = buffer;
-        } else {
-            combined = [...dataArray, ...buffer];
-        }
-        return combined;
-    }
-
-    /**
-     * Pack var unsigned int 32 bit
-     * @param numberValue devices list.
-     * @param dataArray token array.
-     */
-    PackVarUInt32(numberValue, dataArray) {
-        var protocol = new Protocol();
-        var buffer = protocol.write().UVarint(numberValue).result;
-        var combined;
-        if (dataArray == null) {
-            var combined = buffer;
-        } else {
-            combined = [...dataArray, ...buffer];
-        }
-        return combined;
     }
 
     /**
@@ -240,8 +197,6 @@ export default class SocketManager {
         var length;
         var data = dataArray;
         length = stringVal.length;
-        console.log("what is stringval: ", stringVal);
-        console.log("what is dataArray: ", dataArray);
         if (length > 65535 && length < 0) {
             return dataArray;
         }

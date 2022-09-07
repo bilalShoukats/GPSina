@@ -121,13 +121,23 @@ class HomePage extends Component {
     }
 
     componentDidMount = () => {
-        this.socket.connect(this.props.user, this.props.token, this.devicesReceived);
+        console.log("WHAT IS MY USER: ", this.props.user)
+        this.socket.connect(this.props.user.email, this.props.token, this.devicesReceived, this.gpsDataReceived, this.batteryDataReceived, this.alarmsDataReceived, this.deviceSettingDataReceived, this.deviceStatusReceived, this.engineReceived, this.deviceSignalReceived, this.hideLoader);
+         this.socket.connect(this.props.user, this.props.token, this.devicesReceived);
     };
 
     devicesReceived = (devices) => {
-        console.log("devices from socket: ", devices);
+        // console.log("DEVICES ARE: ", devices);
+        // setDeviceList(devices.data);
+        // activityLoader({ visible: false });
+        // props.setDevices(devices);//storing devices inside redux
+        // socket.getGPSData(devices);
+
+        // if(deviceList.length > 0) {
+        //     setShowEmpty(false);
+        // }
         this.socket.getLiveGPS([devices[0].deviceID, devices[0].deviceID]);
-        // this.setState({ deviceList: devices });
+        this.setState({ deviceList: devices });
     }
 
     confirmOpen = () => {
@@ -146,38 +156,38 @@ class HomePage extends Component {
         new SocketComponent();
     };
 
-    // getDevices = async () => {
-    //     this.setState({
-    //         isNextPageLoading: true,
-    //     });
-    //     this.api
-    //         .send('POST', APIURLS.viewVehicles, { page: this.state.page })
-    //         .then(response => {
-    //             console.log('active vehicles response: ', response);
-    //             if (response.data.code === 1019) {
-    //                 console.log('Home Device List : ', response.data.response);
-    //                 this.setState({
-    //                     deviceList: [
-    //                         ...this.state.deviceList,
-    //                         ...response.data.response,
-    //                     ],
-    //                     tempDeviceList: [
-    //                         ...this.state.tempDeviceList,
-    //                         ...response.data.response,
-    //                     ],
-    //                     page: response.data.currentPage + 1,
-    //                     totalPage: response.data.totalPages,
-    //                     hasNextPage:
-    //                         response.data.currentPage < response.data.totalPages
-    //                             ? true
-    //                             : false,
-    //                     isNextPageLoading: false,
-    //                 });
-    //             } else {
-    //             }
-    //         })
-    //         .catch(error => console.log('error: ', error));
-    // };
+    getDevices = async () => {
+        this.setState({
+            isNextPageLoading: true,
+        });
+        this.api
+            .send('POST', APIURLS.viewVehicles, { page: this.state.page })
+            .then(response => {
+                console.log('active vehicles response: ', response);
+                if (response.data.code === 1019) {
+                    console.log('Home Device List : ', response.data.response);
+                    this.setState({
+                        deviceList: [
+                            ...this.state.deviceList,
+                            ...response.data.response,
+                        ],
+                        tempDeviceList: [
+                            ...this.state.tempDeviceList,
+                            ...response.data.response,
+                        ],
+                        page: response.data.currentPage + 1,
+                        totalPage: response.data.totalPages,
+                        hasNextPage:
+                            response.data.currentPage < response.data.totalPages
+                                ? true
+                                : false,
+                        isNextPageLoading: false,
+                    });
+                } else {
+                }
+            })
+            .catch(error => console.log('error: ', error));
+    };
 
     // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
     handleApiLoaded = (map, google) => {
@@ -228,7 +238,7 @@ class HomePage extends Component {
     };
 
     goToHomeScreen = () => {
-        // this.props.history.push(SCREENS.HOME);
+         this.props.history.push(SCREENS.HOME);
         this.props.history.push(SCREENS.DASHBOARDINFO);
     };
 
@@ -267,24 +277,24 @@ class HomePage extends Component {
                 device.lastVehicleInformation.EngineStatus == 0 &&
                 device.lastVehicleInformation.GpsSpeed > 0
             ) {
-                // running
+                 running
                 return device;
             } else if (
                 e.target.value === 1 &&
                 device.lastVehicleInformation.EngineStatus == 1 &&
                 device.lastVehicleInformation.GpsSpeed == 0
             ) {
-                // idle
+                 idle
                 return device;
             } else if (
                 e.target.value === 2 &&
                 device.lastVehicleInformation.EngineStatus == 2 &&
                 device.lastVehicleInformation.GpsSpeed == 0
             ) {
-                // parked
+             parked
                 return device;
             } else if (e.target.value === 3) {
-                // offline
+                 offline
             }
         });
         this.setState({ deviceList: devices, filter: e.target.value });
@@ -307,9 +317,9 @@ class HomePage extends Component {
         const { classes } = this.props;
         const mapOptions = {
             panControl: true,
-            // mapTypeControl: false,
-            // fullscreenControl: false,
-            // streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+            streetViewControl: false,
             scrollwheel: true,
             mapTypeId: 'roadmap',
         };
@@ -325,6 +335,13 @@ class HomePage extends Component {
                 className={classes.icon}
             />
         );
+        // const sortD = (
+        //     <Img
+        //         src={SortDownIcon}
+        //         alt="sort down icon"
+        //         className={classes.icon}
+        //     />
+        // );
 
         return (
             <div>
@@ -411,7 +428,7 @@ class HomePage extends Component {
                                         <ListItemText primary="Device" />
                                     </ListItem>
 
-                                    {/* <ListItem
+                                     <ListItem
                                         button
                                         key="genset"
                                         onClick={this.goToGensetScreen}
@@ -424,7 +441,7 @@ class HomePage extends Component {
                                             />
                                         </ListItemIcon>
                                         <ListItemText primary="Genset" />
-                                    </ListItem> */}
+                                    </ListItem> 
 
                                     <ListItem
                                         button
@@ -485,12 +502,12 @@ class HomePage extends Component {
                                         <ListItemText primary="Point Of Interest" />
                                     </ListItem>
 
-                                    {/* <ListItem button key="tnc" onClick={() => console.log('tnc')} className={classes.listItemContainer}>
+                                     <ListItem button key="tnc" onClick={() => console.log('tnc')} className={classes.listItemContainer}>
                                 <ListItemIcon>
                                 <FontAwesomeIcon icon={faFileAlt} size="lg" />
                                 </ListItemIcon>
                                 <ListItemText primary="Terms and Conditions" />
-                            </ListItem> */}
+                            </ListItem> 
 
                                     <ListItem
                                         button
@@ -558,7 +575,7 @@ class HomePage extends Component {
                                 id="item-container"
                                 className={classes.leftContainer}
                             >
-                                {/* <Grid
+                                 <Grid
                                     container
                                     spacing={2}
                                     justify="space-between"
@@ -644,14 +661,14 @@ class HomePage extends Component {
                                             />
                                         </Button>
                                     </Grid>
-                                </Grid> */}
+                                </Grid> 
 
-                                {/* <Grid container direction="column"> */}
-                                {/* <Grid
+                                 <Grid container direction="column"> 
+                                 <Grid
                                         item
                                         className={classes.paginationContainer}
-                                    > */}
-                                {/* <div
+                                    > 
+                                 <div
                                     style={{
                                         flex: 1,
                                         backgroundColor: 'black',
@@ -672,8 +689,8 @@ class HomePage extends Component {
                                             Parked
                                         </button>
                                     </div>
-                                </div> */}
-                                {/* <Box xs={12}>
+                                </div> 
+                                 {/* <Box xs={12}>
                                     <Select
                                         style={{
                                             minWidth: '75%',
@@ -689,10 +706,10 @@ class HomePage extends Component {
                                         <MenuItem value={1}>Idling</MenuItem>
                                         <MenuItem value={3}>Offline</MenuItem>
                                     </Select>
-                                <Button
+                                 <Button
                                         variant="contained"
                                         color="primary"
-                                        //href="#contained-buttons"
+                                        href="#contained-buttons"
                                         onClick={this.clearFilter}
                                     >
                                         clear
@@ -712,7 +729,7 @@ class HomePage extends Component {
                                     <button
                                         value={this.state.filter}
                                         onChange={this.changeFilter}
-                                        // className={classes.movingbtn}
+                                         className={classes.movingbtn}
                                         size="lg"
                                         style={{
                                             margin: 5,
@@ -764,7 +781,7 @@ class HomePage extends Component {
                                         Offline(0)
                                     </button>
                                 </div>
-                                {/* <Box flexGrow={1}>
+                                  {/*<Box flexGrow={1}>
                                     <TextField
                                         size="small"
                                         label="Search"
@@ -787,13 +804,13 @@ class HomePage extends Component {
                                         Search
                                     </Button>
                                 </Box> */}
-                                {/* <Grid
+                                 <Grid
                                     container
                                     direction="row"
                                     justify="center"
                                     alignItems="center"
-                                > */}
-                                {/* <Grid
+                                > 
+                                <Grid
                                         item
                                         xs
                                         className={classes.paginationBtn}
@@ -819,9 +836,9 @@ class HomePage extends Component {
                                         ) : (
                                             <div />
                                         )}
-                                    </Grid> */}
+                                    </Grid> 
 
-                                {/* <Grid
+                                 <Grid
                                         item
                                         xs
                                         className={classes.paginationBtn}
@@ -847,9 +864,9 @@ class HomePage extends Component {
                                         ) : (
                                             <div />
                                         )}
-                                    </Grid> */}
+                                    </Grid> 
 
-                                {/* <Grid
+                                 <Grid
                                         item
                                         xs
                                         className={classes.paginationBtn}
@@ -875,16 +892,16 @@ class HomePage extends Component {
                                         ) : (
                                             <div />
                                         )}
-                                    </Grid> */}
-                                {/* </Grid> */}
-                                {/* </Grid> */}
+                                    </Grid> 
+                                 </Grid> 
+                                 </Grid> 
 
-                                {/* <Paper
+                                 <Paper
                                     elevation={3}
                                     variant="outlined"
                                     className={classes.black}
                                 >
-                                    <Grid item className={classes.list}> */}
+                                    <Grid item className={classes.list}> 
                                 <AutoSizer>
                                     {({ height, width }) => (
                                         <InfiniteList
@@ -909,7 +926,7 @@ class HomePage extends Component {
                                         />
                                     )}
                                 </AutoSizer>
-                                {/* {this.state.deviceList.map(
+                                 {this.state.deviceList.map(
                                                 device => (
                                                     <DeviceList
                                                         swipeAction={
@@ -931,10 +948,10 @@ class HomePage extends Component {
                                                         device={device}
                                                     />
                                                 ),
-                                            )} */}
-                                {/* </Grid>
-                                </Paper> */}
-                                {/* </Grid> */}
+                                            )} 
+                                 </Grid>
+                                </Paper> 
+                                 </Grid> 
                             </Grid>
                             <Grid item xs={8} className={classes.mapContainer}>
                                 <Map center={coordinate} />

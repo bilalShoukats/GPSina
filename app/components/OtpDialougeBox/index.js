@@ -14,6 +14,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import defaultProfileImage from '../../../assets/images/icons/otp.svg';
 import { Button, Grid, Modal, Typography, Avatar } from '@material-ui/core';
 import { Manager } from '../../StorageManager/Storage';
+import { loginPhoneUser } from '../../redux/auth/actions';
+import PropTypes from 'prop-types';
 
 export function OtpDialogeBox(props) {
     const history = useHistory();
@@ -30,9 +32,9 @@ export function OtpDialogeBox(props) {
     const [verificationFlag, setVerificationFlag] = useState(false);
 
     const [otpBody, setOtpBody] = useState({
-        email: '',
-        hash: '',
-        expireAt: 0,
+        email: props.otpResponse.email,
+        hash: props.otpResponse.hash,
+        expireAt: props.otpResponse.expireAt,
     });
 
     let timerId = null;
@@ -71,37 +73,46 @@ export function OtpDialogeBox(props) {
     //   };
     const handleVerify = async () => {
         setVerifyLoading(true);
-        let email=localStorage.getItem('email',email)
-        let hash=localStorage.getItem('hash',hash)
-        let numberr=localStorage.getItem('LoginnewMobileNo')
+        // let email=localStorage.getItem('email',email)
+        // let hash=localStorage.getItem('hash',hash)
+        // let numberr=localStorage.getItem('LoginnewMobileNo')
         
-      
-        console.log("numberr for api body",numberr)
+        
 
         const body = {
-            email: email,
+            email: props.otpResponse.email,
             code: parseInt(otp),
-            hash: hash,
-            type:1,
-            phone:numberr
+            hash: props.otpResponse.hash,
+            type:0,
+            phone:props.otpResponse.phone
         };
-        console.log("body>>",body)
+        console.log("body>>>>>>",body)
         const api = ApiManager.getInstance();
         api.send('POST', APIURLS.validateOtp, body)
             .then(res => {
+                console.log('res  register',res);
                 setVerifyLoading(false);
                 if (res.data.code === 1011) {
+
+                    console.log('user data response>>1 after success code', res);
+                    localStorage.setItem('hash', res.data.response.hash);
+                    localStorage.setItem('email', res.data.response.email);
+        
+                    //successfully log in
                     localStorage.removeItem('LoginnewMobileNo')
                     setVerificationFlag(true);
                     setTitleMsg(messages.verificationSuccess.defaultMessage);
                     setDescription(
                         messages.pleaseLoginUsingThisCredential.defaultMessage,
-                    );
-                    //
+                    )
+                    var phoneBody = {
+                        email: res.data.response.email,
+                        hash: res.data.response.hash,
+                        userName: res.data.response.userName,
+                        phone: props.otpResponse.phone
+                    }
+                    props.prevProps.dispatch(loginPhoneUser(phoneBody, history));
                     
-                   
-                    
-
                 }
             })
             .catch(error => {
@@ -145,10 +156,12 @@ export function OtpDialogeBox(props) {
 
     useEffect(() => {
         if (props.open) {
+            console.log("props params: ", props.otpResponse)
             setOtpBody({
                 hash: props.otpResponse.hash,
                 email: props.otpResponse.email,
                 expireAt: props.otpResponse.expireAt,
+                phone: props.otpResponse.phone
             });
         }
     }, [props.open]);
@@ -312,6 +325,18 @@ export function OtpDialogeBox(props) {
     );
 }
 
-const withConnect = connect();
+OtpDialogeBox.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+};
+
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+    };
+}
+
+const withConnect = connect(
+    mapDispatchToProps,
+);
 
 export default compose(withConnect)(injectIntl(OtpDialogeBox));

@@ -6,6 +6,8 @@ import {
     LOGIN_USER_ERROR,
     SET_SESSION_USER,
     LOGIN_USER_SUCCESS,
+    HANDLE_OTP,
+    LOGIN_PHONE_USER
 } from '../actions';
 
 export const setSession = sessionId => ({
@@ -16,6 +18,16 @@ export const setSession = sessionId => ({
 export const loginUser = (body, history) => ({
     type: LOGIN_USER,
     payload: { body, history },
+});
+
+export const loginPhoneUser = (body, history) => ({
+    type: LOGIN_PHONE_USER,
+    payload: { body, history },
+});
+
+export const handleOtp = (body) => ({
+    type: HANDLE_OTP,
+    payload: { body },
 });
 
 export const loginUserSuccess = (token, user) => ({

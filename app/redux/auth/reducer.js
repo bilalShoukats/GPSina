@@ -6,6 +6,7 @@ import {
     LOGIN_USER_ERROR,
     SET_SESSION_USER,
     LOGIN_USER_SUCCESS,
+    LOGIN_PHONE_USER
 } from '../actions';
 
 const INIT_STATE = {
@@ -31,6 +32,7 @@ export default (state = INIT_STATE, action) => {
                 //loading: true,
             };
         case LOGIN_USER_SUCCESS:
+            console.log('LOGIN_USER_SUCCESS', action.payload)
             return {
                 ...state,
                 error: '',

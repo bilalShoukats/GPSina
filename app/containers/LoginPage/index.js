@@ -30,7 +30,7 @@ import { useHistory } from 'react-router-dom';
 import CheckBox from '../../components/CheckBox';
 import React, { useEffect, useState } from 'react';
 import ApiManager from '../../ApiManager/ApiManager';
-import { loginUser } from '../../redux/auth/actions';
+import { loginUser, handleOtp } from '../../redux/auth/actions';
 import CustomModal from '../../components/CustomModal';
 import UKFlag from '../../../assets/images/flags/uk.png';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -59,6 +59,7 @@ export function LoginPage(props) {
         email: '',
         expireAt: 0,
         hash: '',
+        phone:'',
     });
     const [email, setEmail] = useState('');
     const [Loginphone, setLoginphone] = useState('');
@@ -124,8 +125,14 @@ export function LoginPage(props) {
 
         switch (name) {
             case 'Loginphone':
-                setLoginphone(value);
-                break;
+                error.Loginphone =
+                    number.length < 7 || number.length > 15
+                        ? props.intl.formatMessage({
+                                ...messages.LogininvalidMobileNo,
+                            })
+                        : '';
+                        setLoginphone(value);
+                        break;
 
             // case 'password':
             //     setPassword(value);
@@ -138,7 +145,7 @@ export function LoginPage(props) {
 
                 setNewEmail(value);
                 break;
-
+                
             // case 'newPassword':
             //     error.newPassword =
             //         value.length < 8 || value.length > 20
@@ -233,7 +240,8 @@ export function LoginPage(props) {
         const api = ApiManager.getInstance();
 
         api.send('POST', APIURLS.register, body)
-            .then(res => {
+            .then(res => 
+                 {
                 if (res) setRegisterLoading(false);
                 if (res.data.code === 6011) {
                     setModalTitle(
@@ -241,10 +249,12 @@ export function LoginPage(props) {
                             ...messages.verifyOtp,
                         }),
                     );
+                    console.log("email",res.data.response.email,"expireAt",res.data.response.expireAt,"hash",res.data.response.hash)
                     setOtpBody({
                         email: res.data.response.email,
                         expireAt: res.data.response.expireAt,
                         hash: res.data.response.hash,
+                        phone: newMobileNo
                     });
                     setCloseMsg(
                         messages.pleaseLoginUsingThisCredential.defaultMessage,
@@ -297,6 +307,64 @@ export function LoginPage(props) {
             });
     };
 
+    const callLoginApi = (phoneNo) => {
+        const api = ApiManager.getInstance();
+
+        api.send('POST', APIURLS.login, { phone: phoneNo})
+            .then(res => 
+            
+        {
+            if (res) setLoading(false);
+            if (res.data.code === 7011) {
+                setModalTitle(
+                    props.intl.formatMessage({
+                        ...messages.verifyOtp,
+                    }),
+                );
+                console.log("email",res.data.response.email,"expireAt",res.data.response.expireAt,"hash",res.data.response.hash)
+                setOtpBody({
+                    email: res.data.response.email,
+                    expireAt: res.data.response.expireAt,
+                    hash: res.data.response.hash,
+                    phone: phoneNo
+                });
+                setCloseMsg(
+                    messages.pleaseLoginUsingThisCredential.defaultMessage,
+                );
+                handleOtpOpenModal();
+            } else {
+                setLoading(false);
+                setModalTitle(
+                    props.intl.formatMessage({
+                        ...messages.loginFailed,
+                    }),
+                );
+                setModalDescription(
+                    props.intl.formatMessage({
+                        ...messages.dbError,
+                    }),
+                );
+                setCloseMsg(messages.dbError.defaultMessage);
+                handleOpenModal();
+            }
+        })
+        .catch(error => {
+            setLoading(false);
+            setModalTitle(
+                props.intl.formatMessage({
+                    ...messages.registerFailed,
+                }),
+            );
+            setModalDescription(
+                props.intl.formatMessage({
+                    ...messages.networkError,
+                }),
+            );
+            setCloseMsg(messages.networkError.defaultMessage);
+            handleOpenModal();
+        });
+    }
+
     const handleSubmit = event => {
         event.preventDefault();
         const { id } = event.target;
@@ -306,9 +374,8 @@ export function LoginPage(props) {
                 
                 //  if (email == '' || password == '') 
                 console.log("Loginphone",LoginnewMobileNo)
-                let numberr=localStorage.setItem('LoginnewMobileNo',LoginnewMobileNo)
-                console.log("Number=>>",numberr)
-                 if (LoginnewMobileNo == '') {
+                localStorage.setItem('LoginnewMobileNo',LoginnewMobileNo)
+                if (LoginnewMobileNo == '') {
                     setModalTitle(
                         props.intl.formatMessage({
                             ...messages.validationError,
@@ -320,8 +387,8 @@ export function LoginPage(props) {
                         }),
                     );
                     setCloseMsg(messages.fillAllInputs.defaultMessage);
-                    handleOpenModal();
-                 } else {
+                    LoginhandleOpenModal();
+                } else {
                     let body = {
                         // email: email,
                         // password: password,
@@ -330,8 +397,7 @@ export function LoginPage(props) {
                         fcmKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.3z_GC3gaHKEPErUGjp4JQKR3mJ9ePVCGE4LCgAUpaMM"
                     };
                     setLoading(true);
-                    props.dispatch(loginUser(body, history));
-                    handleOtpOpenModal();
+                    callLoginApi(LoginnewMobileNo);
                 }
 
                 break;
@@ -400,9 +466,9 @@ export function LoginPage(props) {
     const handleOpenModal = () => {
         setIsModalShown(true);
     };
-    // const LoginhandleOpenModal = () => {
-    //     setLoginisModalShown(true);
-    // };
+    const LoginhandleOpenModal = () => {
+        setLoginisModalShown(true);
+    };
 
     const handleOtpOpenModal = () => {
         setIsOtpModalShown(true);
@@ -411,9 +477,9 @@ export function LoginPage(props) {
     const handleCloseModal = message => {
         setIsModalShown(false);
     };
-    // const LoginhandleCloseModal = message => {
-    //     setIsModalShown(true);
-    // };
+    const LoginhandleCloseModal = message => {
+        setLoginisModalShown(true);
+    };
 
     const goToForgotPasswordScreen = () => {
         history.push(SCREENS.FORGOTPASSWORD);
@@ -433,13 +499,14 @@ export function LoginPage(props) {
                  {/*loginOtpModalShown */}
 {/** */}
                 <CustomModal
-                    open={isModalShown}
-                    handleClose={() =>handleCloseModal(closeMsg)}
+                    open={LoginisModalShown}
+                    handleClose={() =>LoginhandleCloseModal(closeMsg)}
                     type="simple"
                     title={modalTitle}
                     description={modalDescription}
                 />
                 <OtpDialogeBox
+                    prevProps={props}
                     open={isOtpModalShown}
                     title={modalTitle}
                     otpResponse={otpBody}
@@ -454,11 +521,6 @@ export function LoginPage(props) {
                     type="simple"
                     title={modalTitle}
                     description={modalDescription}
-                />
-                <OtpDialogeBox
-                    open={isOtpModalShown}
-                    title={modalTitle}
-                    otpResponse={otpBody}
                 />
                 <div className={classes.rightContainer}>
                     <FormattedMessage {...messages.language} />
