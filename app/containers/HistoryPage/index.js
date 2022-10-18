@@ -67,7 +67,7 @@ const SpeedoMeterComponent = ({ text }) => (
             fluidWidth={true}
             textColor={'grey'}
             needleColor={'red'}
-            textColor={'black'}
+            // textColor={'black'}
             startColor={'lightblue'}
         />
     </div>
@@ -77,7 +77,7 @@ class HistoryPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            vehicle: [],
+            devices: [],
             zoom: 15,
             slider: 0,
             Gdata: [],
@@ -97,7 +97,7 @@ class HistoryPage extends Component {
             deviceID: 0,
             Speed: [],
             historyDetails: [],
-            vehicle: [props.location.state.vehicle],
+            devices: [props.devices],
             speedData: [],
             gpsSpeed: [],
             coordinate: {
@@ -112,7 +112,7 @@ class HistoryPage extends Component {
     getVehicleTravelDates = () => {
         console.log('vehicle:', this.state.vehicle[0].deviceID);
         api.send('POST', '/vehicleTravelHistoryDates', {
-            deviceID: this.state.vehicle[0].deviceID.toString(),
+            deviceId: this.state.devices[0].deviceId.toString(),
             page: 1,
         })
             .then(res => {
@@ -132,7 +132,7 @@ class HistoryPage extends Component {
                     });
                     this.getVehicle(startDate, endTime);
                 }
-                // const now = new Date(res.data.response[0].dates).unix();
+                const now = new Date(res.data.response[0].dates).unix();
                 // let startOfDay = new Date(
                 //     now - (now % res.data.response[0].dates),
                 // );
@@ -141,27 +141,27 @@ class HistoryPage extends Component {
                 //         (now % res.data.response[0].dates) +
                 //         res.data.response[0].dates,
                 // );
-                // var t = new Date(res.data.response[0].dates);
-                // var formatted = moment(t).format('dd.mm.yyyy hh:MM:ss');
-                // console.log('t', t);
-                //                 const now = new Date().getTime();
-                // let startOfDay = new Date(now - (now % 86400000));
-                // let endDate = new Date(now - (now % 86400000) + 86400000);
+                var t = new Date(res.data.response[0].dates);
+                var formatted = moment(t).format('dd.mm.yyyy hh:MM:ss');
+                console.log('t', t);
+                                // const now = new Date().getTime();
+                let startOfDay = new Date(now - (now % 86400000));
+                let endDate = new Date(now - (now % 86400000) + 86400000);
 
-                // let polylines = res.response.map(item => (
-                //     {latitude: item.gpsLat, longitude: item.gpsLng}
-                // ))
-                // setPolylineData(polylines);
+                let polylines = res.response.map(item => (
+                    {latitude: item.gpsLat, longitude: item.gpsLng}
+                ))
+                setPolylineData(polylines);
 
-                // const [polylineData, setPolylineData] = useState([]);
-                // <Polyline coordinates={polylineData} strokeWidth={3} />
+                const [polylineData, setPolylineData] = useState([]);
+                <Polyline coordinates={polylineData} strokeWidth={3} />
             })
             .catch(error => {});
     };
     getVehicle = (startDate, endTime) => {
         // console.log('selectedId', this.state.vehicle[0].deviceID);
         api.send('POST', '/vehicleTravelHistoryDetails', {
-            deviceid: this.state.vehicle[0].deviceID.toString(),
+            // deviceid: this.state[0].deviceID.toString(),
             starttime: startDate,
             enddate: endTime,
         })
@@ -199,9 +199,9 @@ class HistoryPage extends Component {
     componentDidMount = () => {
         this.getVehicleTravelDates();
     };
-    // componentDidMount = () => {
-    //     this.getVehicle();
-    // };
+    componentDidMount = () => {
+        this.getVehicle();
+    };
     // componentDidMount = (() => {
     //     if (this.selectedId !== null) {
     //         this.getVehicleTravelDates();
@@ -357,7 +357,7 @@ class HistoryPage extends Component {
                                 this.setState({ tabValue: index })
                             }
                         >
-                            {/* <Tab
+                             <Tab
                                 style={{
                                     color:
                                         this.state.tabValue === 0
@@ -376,7 +376,7 @@ class HistoryPage extends Component {
                                 }}
                                 label="Vehicle Info"
                                 icon={<FontAwesomeIcon icon={faCar} />}
-                            /> */}
+                            /> 
                         </Tabs>
                         <SwipeableViews
                             axis={'x-reverse'}
@@ -426,7 +426,7 @@ class HistoryPage extends Component {
                             }
                         >
                             <Car
-                                key={0}
+                                key={1}
                                 width={this.state.carWidth}
                                 height={this.state.carHeight}
                                 lat={this.state.coordinate.lat}
@@ -467,7 +467,7 @@ class HistoryPage extends Component {
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     data={this.state.polylineData}
-                                    data={speedData}
+                                    // data={speedData}
                                     margin={classes.lineMargin}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />

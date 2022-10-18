@@ -136,7 +136,7 @@ export function List(props) {
     const classes = useStyles(props);
     const history = useHistory();
     const { index, isScrolling, style, data } = props;
-    console.log('Vehicle List Props : ', props.data[props.index]);
+    // console.log('Vehicle List Props : ', props.data[props.index]);
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = React.useState(false);
     const [address, setAddress] = React.useState('');
@@ -146,32 +146,34 @@ export function List(props) {
 
     const handleOpen = () => {
         setOpen(true);
+        console.log(handleOpen,'handleOpen>>>');
     };
     const handleClose = () => {
         setOpen(false);
     };
 
-    const goToLocateScreen = vehicle => {
-        history.push(SCREENS.LOCATE, { vehicle: vehicle });
+    const goToLocateScreen = (lat,lng) => {
+        console.log("hello,2,,")
+        history.push(SCREENS.LOCATE, {  lat:lat,lng:lng  });
     };
 
-    const goToHistoryScreen = vehicle => {
-        history.push(SCREENS.HISTORY, { vehicle: vehicle });
+    const goToHistoryScreen = (lat,lng) => {
+        history.push(SCREENS.HISTORY, { lat:lat,lng:lng });
     };
 
-    const goToFenceScreen = () => {
-        history.push(SCREENS.FENCE);
+    const goToFenceScreen = (lat,lng) => {
+        history.push(SCREENS.FENCE,{lat:lat,lng:lng });
     };
 
     // const goTonewScreen = () => {
     //     history.push(SCREENS.NEW);
     // };
-    const showMoreModal = () => {
-        props.onOpenModal();
-    };
+    // const showMoreModal= () => {
+    //     props.onOpenModal();
+    // };
 
-    const goToAlertScreen = vehicle => {
-        history.push(SCREENS.ALERT, { vehicle: vehicle });
+    const goToAlertScreen = (lat,lng) => {
+        history.push(SCREENS.ALERT, {lat:lat,lng:lng });
     };
     const getLocationAddress = (lat, lng, event, index) => {
         setSelectedIndexx(index);
@@ -293,12 +295,12 @@ export function List(props) {
                     marginTop: 10,
                 }}
             >
-                {/* <TextField
+                 <TextField
                     style={{ width: '40%', left: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                /> */}
+                /> 
                 <input className={classes.rfidInput2} />
 
                 <div>
@@ -312,12 +314,12 @@ export function List(props) {
                 </div>
             </div>
             <div style={{ marginTop: 10 }}>
-                {/* <TextField
+                 <TextField
                     style={{ width: '40%', left: '30%', marginTop: 10 }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                /> */}
+                /> 
                 <input className={classes.rfidInput2} />
             </div>
             <Divider className={classes.devider} />
@@ -325,23 +327,23 @@ export function List(props) {
                 <Typography className={classes.typography} variant="body2">
                     <FormattedMessage {...messages.sos} />
                 </Typography>
-                {/* <TextField
+                 <TextField
                     style={{ width: '40%', right: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                /> */}
+                /> 
                 <input className={classes.rfidInput} />
             </div>
             <div className={classes.div}>
-                {/* <text>Speed</text> */}
-                {/* <TextField defaultValue="" /> */}
-                {/* <TextField
+                <text>Speed</text> 
+                 <TextField defaultValue="" /> 
+                <TextField
                     style={{ width: '40%', marginLeft: '30%' }}
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                /> */}
+                /> 
                 <input className={classes.rfidInput2} />
 
                 <div>
@@ -355,7 +357,7 @@ export function List(props) {
                 </div>
             </div>
             <div style={{ marginTop: 10 }}>
-                {/* <TextField
+                 <TextField
                     style={{
                         width: '40%',
                         left: '30%',
@@ -364,7 +366,7 @@ export function List(props) {
                     id="outlined-basic"
                     variant="outlined"
                     size="small"
-                /> */}
+                /> 
                 <input className={classes.rfidInput2} />
             </div>
             <div className={classes.div2}>
@@ -545,9 +547,9 @@ export function List(props) {
                             className={classes.description}
                         >
                             {`(${moment
-                                .unix(data[index].CreatedAt)
+                                .unix(data[index].activatedTime_)
                                 .format('D.MM.YYYY')} - ${moment
-                                .unix(data[index].CreatedAt)
+                                .unix(data[index].expiredTime_)
                                 .add(1, 'y')
                                 .format('D.MM.YYYY')})`}
 
@@ -561,7 +563,7 @@ export function List(props) {
                     </Grid>
                 </Grid>
                 <Grid item>
-                    {data[index].lastVehicleInformation.battery < 50 ? (
+                    {/*{data[index].lastVehicleInformation.battery < 50 ? (
                         <Img
                             width={'20%'}
                             alt="low battery"
@@ -571,14 +573,14 @@ export function List(props) {
                             }}
                             src={require('../../../assets/images/icons/low_battery.png')}
                         />
-                    ) : null}
+                        ) : null}*/}
                     <Button
                         color="default"
                         className={classes.btn}
                         variant="outlined"
                         onClick={changeAccStatus}
                     >
-                        {data[index].lastVehicleInformation.engineStatus ? (
+                        {/*{data[index].lastVehicleInformation.engineStatus ? (
                             <Typography variant="body2">
                                 <FormattedMessage {...messages.accOn} />
                             </Typography>
@@ -586,7 +588,7 @@ export function List(props) {
                             <Typography variant="body2">
                                 <FormattedMessage {...messages.accOff} />
                             </Typography>
-                        )}
+                        )}*/}
                     </Button>
                 </Grid>
                 <div className={classes.btnContainer}>
@@ -598,7 +600,7 @@ export function List(props) {
                         alignItems="center"
                     >
                         <Grid
-                            onClick={() => goToLocateScreen(data[index])}
+                            onClick={() => goToLocateScreen()}
                             className={classes.btnOutline}
                         >
                             <Img
@@ -649,6 +651,7 @@ export function List(props) {
                             onClick={handleOpen}
                             className={classes.btnOutline}
                         >
+                            {/**{ console.log('handleOpenonClick',handleOpen)} */}
                             <Img
                                 src={plusIcon}
                                 alt="More Icon"
@@ -691,8 +694,8 @@ export function List(props) {
                                 );
                             }}
                         >
-                            {data[index].lastVehicleInformation.gpsLat}
-                            {data[index].lastVehicleInformation.gpsLng}
+                            {/*{data[index].lastVehicleInformation.gpsLat}
+                            {data[index].lastVehicleInformation.gpsLng}*/}
                         </Typography>
                         {/* <span>kiii</span> */}
                         <span
@@ -713,6 +716,7 @@ export function List(props) {
                 >
                     {body}
                 </Modal>
+             {/** {console.log( "body....",body)} */}
             </Grid>
         </Grid>
     ) : (

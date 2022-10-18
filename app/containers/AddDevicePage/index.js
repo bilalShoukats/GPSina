@@ -67,14 +67,26 @@ export function AddDevicePage(props) {
         },
         validationSchema: validationSchema,
         onSubmit: values => {
+            // console.log("onSubmit>>>",onSubmit)
             setLoading(true);
             const body = {
-                softwareVer: values.softwareVersion,
-                deviceID: ""+values.trackerNumber,
-                isDumy: true,
-                ownerEmail: props.user.email
+                device:{
+                    deviceID: ""+values.trackerNumber
+                    ,
+                } ,
+                vehicle: {
+                   registrationNo:"vehicleNo" ,
+                   color: "red",
+                   vehicleType : 2,
+                   fuelType:1,
+                   mileage:"200",
+                   engineNo:"engine",
+                   chassis:"chassis",
+                   vehicleModel:"200",
+                },
             };
             api.send('POST', APIURLS.addDevice, body)
+            console.log("addDevice",addDevice)
                 .then(res => {
                     setLoading(false);
                     console.log(

@@ -106,8 +106,10 @@ export default class SocketManager {
     
     getGPSData = (devices) => {
         var devicesArray = [];
-        for(var i=0; i < devices.data.length; i++) {
-            devicesArray.push(devices.data[i].deviceID);
+        console.log("gps received >",devices);
+        for(var i=0; i < devices.length; i++) {
+          console.log("device data>",devices[i]);  
+          devicesArray.push(devices[i].deviceID);
         }
         this.socket.emit('updateGPSDevices', devicesArray); //calling UPDATE GPS DEVICES EVENT
     }

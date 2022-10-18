@@ -470,9 +470,9 @@ export function HistoryReports(props) {
                             <MenuItem
                                 key={index}
                                 selected={index === selectedIndex}
-                                // onClick={() =>
-                                //     handleMenuItemClick(event, index)
-                                // }
+                                onClick={() =>
+                                    handleMenuItemClick(event, index)
+                                }
                             >
                                 <div className={classes.maindiv}>
                                     <div className={classes.mainOuterDiv}>
@@ -486,7 +486,7 @@ export function HistoryReports(props) {
                                         </div>
                                         <div className={classes.mainInnerDiv}>
                                             <span>{regNo}</span>
-                                            {/* time: new Date(item.time), */}
+                                             time: new Date(item.time), 
                                             {moment(event.time).format(
                                                 ' MMM DD, YYYY HH:mm A',
                                             )}

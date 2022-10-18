@@ -90,14 +90,25 @@ export function OtpDialogeBox(props) {
         const api = ApiManager.getInstance();
         api.send('POST', APIURLS.validateOtp, body)
             .then(res => {
-                console.log('res  register',res);
+                console.log('res  data.code', res.data.code);
                 setVerifyLoading(false);
                 if (res.data.code === 1011) {
 
                     console.log('user data response>>1 after success code', res);
                     localStorage.setItem('hash', res.data.response.hash);
                     localStorage.setItem('email', res.data.response.email);
-        
+                    let tempNumber = localStorage.getItem('LoginnewMobileNo');
+
+                    // console.log('tempNumber==<', tempNumber);
+                    // console.log('props.otpResponse.email==<', props.otpResponse.email);
+                    // console.log('props.otpResponse.hash==<', props.otpResponse.hash);
+
+                    // props.apiManager.saveToken(
+                    //     props.otpResponse.email,
+                    //     props.otpResponse.hash,
+                    // );
+                    // history.push(SCREENS.HOME);
+
                     //successfully log in
                     localStorage.removeItem('LoginnewMobileNo')
                     setVerificationFlag(true);
@@ -112,6 +123,7 @@ export function OtpDialogeBox(props) {
                         phone: props.otpResponse.phone
                     }
                     props.prevProps.dispatch(loginPhoneUser(phoneBody, history));
+                    console.log("props.apiManager",props.apiManager.saveToken());
                     
                 }
             })

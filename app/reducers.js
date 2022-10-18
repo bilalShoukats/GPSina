@@ -7,6 +7,7 @@ import { combineReducers } from 'redux';
 import authUser from './redux/auth/reducer';
 import themeReducer from './redux/theme/reducer';
 import driverReducer from './redux/driver/reducer';
+import soketReducer from './redux/socket/reducer' ;
 import { connectRouter } from 'connected-react-router';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
@@ -18,6 +19,7 @@ export default function createReducer(injectedReducers = {}) {
         auth: authUser,
         theme: themeReducer,
         driver: driverReducer,
+        socket:   soketReducer,
         language: languageProviderReducer,
         router: connectRouter(history),
         ...injectedReducers,

@@ -31,22 +31,41 @@ import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import { faRedoAlt, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import SimpleModal from './modal';
 import SampleGPSData from '../../components/Marker/points';
+import { setDevices, setGPSData,setDeviceStatus,setDeviceSignal,setGotSignal ,setGPSSignals} from '../../redux/socket/actions';
+import { logoutUser } from '../../redux/auth/actions';
 const gps = new SampleGPSData();
 class LocatePage extends Component {
     constructor(props) {
+        {console.log(props.location.state,'props.data')}
         super(props);
         this.state = {
-            gsmStatus: 0,
+            // gsmStatus: this.props.signalData.data.signal/25,
             marker: true,
             carWidth: 30,
             carHeight: 16,
             mapType: 'roadmap',
-            gpsStatus: false,
+            // gpsStatus: this.props.signalData.data.signal/25,
+            vehicle:{
+         lastVehicleInformation:{
 
-            vehicle: props.location.state.vehicle,
+                    engineData:this.props.Status,
+                    gpsData:this.props.Speed,
+                    engineData:this.props.Status,
+                    gpsData:this.props.speed,
+                },
+                //    registrationNo :"props",
+                //    registrationNo :props.location.state.deviceInfo.registrationNo,
+                //    deviceID:props.location.state.deviceInfo.deviceID,
+                //    activatedTime_:props.location.state.deviceInfo.activatedTime_,
+                //    expiredTime_:props.location.state.deviceInfo.expiredTime_,
+                
+            } ,
+            // props.location.state.vehicle,
             coordinate: {
-                lat: LATITUDE,
-                lng: LONGITUDE,
+                // lat: LATITUDE,
+                // lng: LONGITUDE,
+                lat: this.props.gpsData.latitude, //LATITUDE,
+                lng: this.props.gpsData.longitude, //LONGITUDE,
             },
         };
 
@@ -54,6 +73,24 @@ class LocatePage extends Component {
         this.velocity = 100;
         this.initialDate = new Date();
     }
+
+       componentDidMount = () => {
+            //  console.log("this.props.signalData.data.signal",this.props.signalData.data.signal/25)
+
+
+            this.setState({
+            gsmStatus:this.props.signalData.data.signal/25,
+            gpsStatus:this.props.signalData.data.signal/25,
+            registrationNo: (this.props.devices.registrationNo),
+            
+                })
+                      return() => {
+                 this.props.gpsStatus(true)
+                console.log( this.props.gpsStatus,'props.gpsStatus=======')  
+                 }
+      };
+
+    
 
     // Refer to https://github.com/google-map-react/google-map-react#use-google-maps-api
     handleApiLoaded = async (map, google) => {
@@ -155,6 +192,7 @@ class LocatePage extends Component {
             if (marker) {
                 marker.style.transform = `rotate(${actualAngle}deg)`;
             }
+            console.log(coordinate,'coordinate>>>2222gpsData')
             this.setState({
                 coordinate: {
                     lat: point2LatLng.lat(),
@@ -165,13 +203,13 @@ class LocatePage extends Component {
     };
 
     onMapChange = (center, zoom, bounds, marginBounds) => {
-        // const marker = document.querySelector(
-        //     `[src="${require('../../../assets/images/icons/car_green.png')}"]`,
-        // );
-        // if (marker) {
-        //     marker.style.width = `${Math.round((219 * zoom) / 100)}`;
-        //     marker.style.width = `${Math.round((100 * zoom) / 100)}`;
-        // }
+        const marker = document.querySelector(
+            `[src="${require('../../../assets/images/icons/car_green.png')}"]`,
+        );
+        if (marker) {
+            marker.style.width = `${Math.round((219 * zoom) / 100)}`;
+            marker.style.width = `${Math.round((100 * zoom) / 100)}`;
+        }
     };
 
     toggleTrafficLayer = (trafficLayer, map) => {
@@ -196,6 +234,7 @@ class LocatePage extends Component {
 
     render() {
         const { coordinate, gsmStatus, gpsStatus } = this.state;
+        console.log(coordinate,'coordinate>>' );
         const { classes } = this.props;
         const mapOptions = {
             panControl: true,
@@ -234,26 +273,29 @@ class LocatePage extends Component {
                                 <Button className={classes.btn}>
                                     <Img
                                         src={
-                                            gsmStatus == 0
-                                                ? gsmEmptyIcon
-                                                : gsmStatus == 1
-                                                ? gsmOneBarIcon
-                                                : gsmStatus == 2
-                                                ? gsmTwoBarIcon
-                                                : gsmStatus == 3
-                                                ? gsmThreeBarIcon
-                                                : gsmFullBarIcon
-                                        }
+                                              Math.ceil(this.props.signalData.data.signal/25) == 0
+                                            ? gsmEmptyIcon
+                                            : Math.ceil(this.props.signalData.data.signal/25) == 1
+                                            ? gsmOneBarIcon
+                                            : Math.ceil(this.props.signalData.data.signal/25) == 2
+                                            ? gsmTwoBarIcon
+                                            : Math.ceil(this.props.signalData.data.signal/25) == 3
+                                            ? gsmThreeBarIcon
+                                            : gsmFullBarIcon
+                                             }
                                         className={classes.icon}
                                         alt="Gsm Line Speed"
                                     />
+                                    {this.state.gsmStatus}
+                                    {this.props.gpsData.speed}
                                 </Button>
                                 <Button className={classes.btn}>
+                                {console.log("New SignalDaata ",Math.ceil(this.props.signalData.data.signal/25))}
                                     <Img
                                         src={
-                                            gpsStatus
-                                                ? gpsGreenIcon
-                                                : gpsRedIcon
+                                             Math.ceil(this.props.signalData.data.signal/25) == 0
+                                                ? gpsRedIcon
+                                                : gpsGreenIcon
                                         }
                                         className={classes.icon}
                                         alt="Gsm Line Speed"
@@ -315,13 +357,14 @@ class LocatePage extends Component {
                                     this.handleApiLoaded(map, maps)
                                 }
                             >
+                            {console.log("lat=this.props.gpsData.latitude",this.props.gpsData.latitude)}
                                 {this.state.marker && (
                                     <Car
-                                        key={0}
+                                        key={2}
                                         width={this.state.carWidth}
                                         height={this.state.carHeight}
-                                        lat={this.state.coordinate.lat}
-                                        lng={this.state.coordinate.lng}
+                                        lat={this.props.gpsData.latitude}
+                                        lng={this.props.gpsData.longitude}
                                     />
                                 )}
                             </Map>
@@ -335,7 +378,7 @@ class LocatePage extends Component {
                                 variant="h4"
                                 className={classes.speedText}
                             >
-                                <FormattedMessage {...messages.Speed} />
+                                  {this.props.gpsData.speed}
                             </Typography>
                             <Typography
                                 variant="body2"
@@ -355,14 +398,32 @@ LocatePage.propTypes = {
     dispatch: PropTypes.func.isRequired,
 };
 
+
+const mapStateToProps = state => {
+    console.log('what we have in socket gpsdata', state.socket.gpsData);
+    // console.log('what we have in socket setDeviceSignal', state.socket.signalData);
+    // console.log('what we have in socket devices', state.socket.devices);
+    // console.log('what we have in socket gotSignal', state.socket.gotSignal);
+    // console.log('what we have in socket setGPSSignals', state.socket.gpsSignals);
+
+
+    const { socket } = state;
+    return socket;
+};
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
+        setGPSData,
+        setDeviceSignal,
+        setDeviceStatus,
+        setDevices,
+        setGotSignal,
+        setGPSSignals,
     };
 }
 
 const withConnect = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
 );
 

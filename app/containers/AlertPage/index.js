@@ -26,7 +26,7 @@ import { useStyles } from './styles.js';
 export function AlertPage(props) {
     const api = ApiManager.getInstance();
     const [list, setList] = useState([]);
-    const [vehicle, setVehicle] = useState(props.location.state.vehicle);
+    const [vehicle, setVehicle] = useState(props);
     const [pageLoad, setPageLoad] = useState(true);
     // const [totalPage, setTotalPage] = useState(1);
     // const [currentPage, setCurrentPage] = useState(1);
@@ -36,12 +36,12 @@ export function AlertPage(props) {
 
     const classes = useStyles(props);
 
-    console.log('vehicle', vehicle);
 
     const getAllItems = () => {
         api.send('GET', '/getAllDeviceAlerts', {
-            deviceId: vehicle.deviceID,
-            isRead: 1,
+            // deviceId: "data",
+            isRead: 0,
+            page:1,
         })
             .then(res => {
                 console.log('ALL DEVICES ALERTS', res);

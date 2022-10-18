@@ -14,6 +14,13 @@ const useStyles = theme => ({
         display: 'block',
         // padding: '1em',
     },
+      activity: {
+        position: 'absolute',
+        top: '50%',
+        left: ' 50%',
+        transform: 'translate(-50%, -50%)',
+    },
+
     topBar: {
         padding: '1em',
         borderBottom: '1px solid #5f5a5a',
@@ -37,7 +44,7 @@ const useStyles = theme => ({
         margin: '1em 0',
         textTransform: 'capitalize',
         padding: '0.25em 1.5em',
-        backgroundColor: 'grey',
+        backgroundColor: '#28ACEA',
         color: '#FFFFFF',
         textAlign: 'center',
     },

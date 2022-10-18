@@ -89,6 +89,19 @@ function* loginToServer({ payload }) {
                             // response.data.response.email,
                         ),
                     );
+                    // yield call(
+                    //     setAuthorization,
+                    //     response.data.response.email,
+                    //     response.data.response.hash,
+                    // );
+        
+                    // yield put(
+                    //     loginUserSuccess(
+                    //         response.data.response.hash,
+                    //         userResponse.data.response,
+                    //         response.data.response.email,
+                    //     ),
+                    // );
                     history.push('/');
             } else {
                 yield put(loginUserError(userResponse.data.id));

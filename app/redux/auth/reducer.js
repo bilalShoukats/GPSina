@@ -15,6 +15,7 @@ const INIT_STATE = {
     token: null,
     loading: true,
     etSession: '',
+   
 };
 
 export default (state = INIT_STATE, action) => {
@@ -33,6 +34,15 @@ export default (state = INIT_STATE, action) => {
             };
         case LOGIN_USER_SUCCESS:
             console.log('LOGIN_USER_SUCCESS', action.payload)
+            return {
+                ...state,
+                error: '',
+                //loading: false,
+                user: action.payload.user,
+                token: action.payload.token,
+            };
+        case LOGIN_PHONE_USER:
+            console.log('LOGIN_USER_SUCCESS', action.payload);
             return {
                 ...state,
                 error: '',
