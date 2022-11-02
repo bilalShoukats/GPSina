@@ -225,17 +225,17 @@ export  function SimpleModal(props) {
                                 }}
                                 onClick={(event, index) => {
                                     getLocationAddress(
-                                        props.gpsData.Lat,
-                                        props.gpsData.Lng,
+                                        props.gpsData.latitude,
+                                        props.gpsData.longitude,
                                         event,
                                         index,
                                     );
                                 }}
                             >
-                                {props.gpsData.Lat}
-                                {props.gpsData.latitude.toFixed(2)} 
-                                {props.gpsData.Lng},
-                                {props.gpsData.longitude.toFixed(2)}
+                                {props.gpsData.latitude},
+                                {props.gpsData.latitude},
+                                {props.gpsData.longitude},
+                                {props.gpsData.longitude},
                             </Typography>
                             <span
                                 style={{

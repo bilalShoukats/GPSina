@@ -4,14 +4,14 @@
  *
  */
 
-import { Button, Grid, Typography, Avatar } from '@material-ui/core';
+import { Button, Grid, Typography, Avatar,Backdrop,Fade,Box} from '@material-ui/core';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
-
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import Modal from '@material-ui/core/Modal';
 import { useStyles } from './styles.js';
 import Img from '../Img';
 import {
@@ -52,6 +52,17 @@ const defaultProps = {
     modelNumber: '456123789',
     date: '27 May 2021',
 };
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
 const DeviceList = ({ ...props }) => {
     const [updatedData, setUpdatedData] = useState([]);
@@ -59,7 +70,9 @@ const DeviceList = ({ ...props }) => {
     const [address, setAddress] = useState('');
     const [lat, setLat] = useState(0);
     const [lng, setLng] = useState(0);
-
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     // console.log('props of devicelist DATA', props.device.currentState);
     useEffect(() => {
         setUpdatedData(props.device);
@@ -97,8 +110,8 @@ const DeviceList = ({ ...props }) => {
     // const goToLocateScreen = vehicle => {
     //     console.log("hello,1")
 
-    //     history.push(SCREENS.LOCATE,{ vehicle: vehicle });
-    //     console.log('SCREENS.LOCATE',push(SCREENS.LOCATE))
+    //     history.push(SCREENS.LOCATE);
+    //     console.log('SCREENS.LOCATE',history.push(SCREENS.LOCATE))
     // };
 
     const goToHistoryScreen = () => {
@@ -109,11 +122,11 @@ const DeviceList = ({ ...props }) => {
         history.push(SCREENS.FENCE);
     };
 
-    const showMoreModal = () => {
-        props.onOpenModal();
-        console.log('onOpenModal>>>',props.onOpenModal())
+    // const showMoreModal = () => {
+    //     props.onOpenModal();
+    //     console.log('onOpenModal>>>',props.onOpenModal())
 
-    };
+    // };,,,.
 
     const goToAlertScreen = () => {
         history.push(SCREENS.ALERT);
@@ -251,6 +264,22 @@ const DeviceList = ({ ...props }) => {
                                     .format('D MMM YYYY')}
                             </Typography>
                         </Grid>
+                        <Modal
+                        open={open}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                    >
+                    <Fade in={open}>
+         { <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>}
+        </Fade>
+                    </Modal>
                         {/*<Grid item>
                             {props.lastVehicleInformation.Battery < 50 ? (
                                 <Img
@@ -303,7 +332,7 @@ const DeviceList = ({ ...props }) => {
                                 onClick={ goToLocateScreen}
                                 className={classes.btnOutline}
                                 >
-                                {console.log('goToLocateScreen',goToLocateScreen)}
+
                                 <Img
                                     src={locateIcon}
                                     alt="Locate Icon"
@@ -350,10 +379,10 @@ const DeviceList = ({ ...props }) => {
                                 </Typography>
                             </Grid>
                             <Grid
-                                onClick={showMoreModal}
+                                onClick={()=>setOpen(true)}
                                 className={classes.btnOutline}
                                 >
-                                { console.log('showMoreModal',showMoreModal)}
+                                
                                 <Img
                                     src={plusIcon}
                                     alt="More Icon"

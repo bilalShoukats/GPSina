@@ -310,7 +310,7 @@ export function LoginPage(props) {
     const callLoginApi = (phoneNo) => {
         const api = ApiManager.getInstance();
 
-        api.send('POST', APIURLS.login, { phone: phoneNo})
+        api.send('POST', APIURLS.login, { phone: phoneNo,appVersion:""})
             .then(res => 
             
         {
@@ -326,7 +326,8 @@ export function LoginPage(props) {
                     email: res.data.response.email,
                     expireAt: res.data.response.expireAt,
                     hash: res.data.response.hash,
-                    phone: phoneNo
+                    phone: phoneNo,
+                    appVersion:'',
                 });
                 setCloseMsg(
                     messages.pleaseLoginUsingThisCredential.defaultMessage,
@@ -433,6 +434,7 @@ export function LoginPage(props) {
                             email: newEmail,
                             phone: newMobileNo,
                             role: 0,
+                            appVersion: '',
                             // clientID: 'gfas67zjh9q',
                             // ipAddress: '192.168.11.3',
                         };

@@ -15,7 +15,7 @@ import InfiniteList from '../../components/List';
 import SCREENS from '../../constants/screen';
 import APIURLS from '../../ApiManager/apiUrl';
 import { withStyles } from '@material-ui/styles';
-import React, { Component, createRef } from 'react';
+import React, {window, Component, createRef } from 'react';
 import { logoutUser } from '../../redux/auth/actions';
 import UserAvatar from '../../components/UserAvatar';
 import DeviceList from '../../components/DeviceList';
@@ -127,21 +127,35 @@ class HomePage extends Component {
     componentDidMount = () => {
         console.log('WHAT IS M Y USER:', this.props.user);
     this.showLoader();
-    this.socket.connect(this.props.user.email, this.props.token, this.devicesReceived, this.gpsDataReceived, this.batteryDataReceived, this.alarmsDataReceived, this.deviceSettingDataReceived, this.deviceStatusReceived, this.engineReceived, this.deviceSignalReceived, this.hideLoader);
+    this.socket.connect(this.props.user.email, this.props.token, this.devicesReceived, this.gpsDataReceived, this.batteryDataReceived, this.alarmsDataReceived, this.deviceSettingDataReceived, this.deviceStatusReceived, this.engineReceived, this.deviceSignalReceived, this.hideLoader)
 };
+
+// _handleAppStateChange = (nextAppState) => {
+//     window.addEventListener('change', _handleAppStateChange);
+//     if (nextAppState === 'active') {
+      
+    
+//         this.socket.connect(this.props.user.email, this.props.token, this.devicesReceived, this.gpsDataReceived, this.batteryDataReceived, this.alarmsDataReceived, this.deviceSettingDataReceived, this.deviceStatusReceived, this.engineReceived, this.deviceSignalReceived, this.hideLoader)
+//     }
+//     else if (nextAppState.match(/inactive|background/)) {
+//       socket.disconnect();
+
+//       props.setDeviceSetting({})
+//     }
+//   }
     devicesReceived= devices => {
-        console.log('DEVICES ARE: ', devices);
+        console.log('DEVICES ARE: ', devices.data);
         this.setState({
         deviceList: devices.data,
         });
 
         // this.socket.getLiveGPS([devices.data[0].deviceID, devices.data[0].deviceID]);
               this.setState({ deviceList: devices.data,  });
-        //    this.socket.deviceStatusReceived(devices.data);
+           this.socket.deviceStatusReceived(devices.data);
        
         this.props.dispatch(setDevices(devices.data));//storing devices inside redux
         
-            this.socket.getGPSData(devices.data);
+            // this.socket.getGPSData(devices.data);
         
     };
 
@@ -164,9 +178,9 @@ class HomePage extends Component {
                 //     lng: gpsData.data.longitude,
                 // }});
                   this.setState({ deviceList: tempDevices });
-            //console.log("coordinatelat>>>>>",coordinate)
+            console.log("coordinatelat>>>>>",coordinate)
         }
-        this.props.dispatch(setGPSData(gpsData.data));
+                     this.props.dispatch(setGPSData(gpsData.data));
                 };
 
 
@@ -201,7 +215,7 @@ class HomePage extends Component {
 
 
 
-        deviceStatusReceived = deviceStatusData => {
+            deviceStatusReceived = deviceStatusData => {
             
             console.log('DEVICES STATUS', deviceStatusData);
         
@@ -256,7 +270,7 @@ class HomePage extends Component {
             }
 
             this.props.dispatch(setDeviceSignal(signalData));//storing device Signal Received data inside redux
-            //   console.log("setDeviceSignal>>>>" ,setDeviceSignal)
+              console.log("setDeviceSignal>>>>" ,setDeviceSignal)
              };
 
 

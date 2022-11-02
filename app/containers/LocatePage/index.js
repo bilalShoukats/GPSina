@@ -37,9 +37,10 @@ const gps = new SampleGPSData();
 class LocatePage extends Component {
     constructor(props) {
         {console.log(props.location.state,'props.data')}
+        { console.log('props.devices......',props.gpsData.registrationNo)}
         super(props);
         this.state = {
-            // gsmStatus: this.props.signalData.data.signal/25,
+             // gsmStatus: this.props.signalData.data.signal/25,
             marker: true,
             carWidth: 30,
             carHeight: 16,
@@ -53,13 +54,14 @@ class LocatePage extends Component {
                     engineData:this.props.Status,
                     gpsData:this.props.speed,
                 },
-                //    registrationNo :"props",
-                //    registrationNo :props.location.state.deviceInfo.registrationNo,
-                //    deviceID:props.location.state.deviceInfo.deviceID,
-                //    activatedTime_:props.location.state.deviceInfo.activatedTime_,
-                //    expiredTime_:props.location.state.deviceInfo.expiredTime_,
-                
-            } ,
+                            
+                            registration :props.gpsData.registrationNo, 
+                            deviceId:props.gpsData.deviceId,
+                            activatedTime:props.devices.activatedTime_,
+                            expiredTime:props.devices.ImgexpiredTime_,
+                     
+                    } ,
+                    
             // props.location.state.vehicle,
             coordinate: {
                 // lat: LATITUDE,
@@ -75,15 +77,17 @@ class LocatePage extends Component {
     }
 
        componentDidMount = () => {
-            //  console.log("this.props.signalData.data.signal",this.props.signalData.data.signal/25)
-
-
-            this.setState({
-            gsmStatus:this.props.signalData.data.signal/25,
-            gpsStatus:this.props.signalData.data.signal/25,
-            registrationNo: (this.props.devices.registrationNo),
-            
-                })
+             if(this.props.signalData) {
+                this.setState({
+                    gsmStatus:this.props.signalData.data.signal/25,
+                    gpsStatus:this.props.signalData.data.signal/25,
+                    registrationNo: (this.props.devices.registrationNo),
+                    deviceID:(this.props.gpsData.deviceID),
+                    activatedTime:(this.props.devices.activatedTime),
+                    ImgexpiredTime:(this.props.devices.ImgexpiredTime),
+                        })
+             }
+             
                       return() => {
                  this.props.gpsStatus(true)
                 console.log( this.props.gpsStatus,'props.gpsStatus=======')  
@@ -273,13 +277,13 @@ class LocatePage extends Component {
                                 <Button className={classes.btn}>
                                     <Img
                                         src={
-                                              Math.ceil(this.props.signalData.data.signal/25) == 0
+                                              Math.ceil (this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData) == 0
                                             ? gsmEmptyIcon
-                                            : Math.ceil(this.props.signalData.data.signal/25) == 1
+                                            : Math.ceil(this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData) == 1
                                             ? gsmOneBarIcon
-                                            : Math.ceil(this.props.signalData.data.signal/25) == 2
+                                            : Math.ceil(this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData) == 2
                                             ? gsmTwoBarIcon
-                                            : Math.ceil(this.props.signalData.data.signal/25) == 3
+                                            : Math.ceil(this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData) == 3
                                             ? gsmThreeBarIcon
                                             : gsmFullBarIcon
                                              }
@@ -287,13 +291,13 @@ class LocatePage extends Component {
                                         alt="Gsm Line Speed"
                                     />
                                     {this.state.gsmStatus}
-                                    {this.props.gpsData.speed}
+                                    {this.props.gpsData.lastSpeed}
                                 </Button>
                                 <Button className={classes.btn}>
-                                {console.log("New SignalDaata ",Math.ceil(this.props.signalData.data.signal/25))}
+                                {console.log("New SignalDaata...... ",Math.ceil(this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData))}
                                     <Img
                                         src={
-                                             Math.ceil(this.props.signalData.data.signal/25) == 0
+                                             Math.ceil(this.props.signalData?this.props.signalData.data.signal/25:this.props.signalData) == 0
                                                 ? gpsRedIcon
                                                 : gpsGreenIcon
                                         }
@@ -401,10 +405,10 @@ LocatePage.propTypes = {
 
 const mapStateToProps = state => {
     console.log('what we have in socket gpsdata', state.socket.gpsData);
-    // console.log('what we have in socket setDeviceSignal', state.socket.signalData);
-    // console.log('what we have in socket devices', state.socket.devices);
-    // console.log('what we have in socket gotSignal', state.socket.gotSignal);
-    // console.log('what we have in socket setGPSSignals', state.socket.gpsSignals);
+    console.log('what we have in socket setDeviceSignal', state.socket.signalData);
+    console.log('what we have in socket devices', state.socket.devices);
+    console.log('what we have in socket gotSignal', state.socket.gotSignal);
+    console.log('what we have in socket setGPSSignals', state.socket.gpsSignals);
 
 
     const { socket } = state;
