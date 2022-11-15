@@ -4,7 +4,7 @@
  *
  */
 
-import { Button, Grid, Typography, Avatar,Backdrop,Fade,Box} from '@material-ui/core';
+import { Button, Grid, Typography, Avatar,Backdrop,Fade} from '@material-ui/core';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -128,8 +128,8 @@ const DeviceList = ({ ...props }) => {
 
     // };,,,.
 
-    const goToAlertScreen = () => {
-        history.push(SCREENS.ALERT);
+    const goToAlertScreen = (deviceID) => {
+        history.push(SCREENS.ALERT,{deviceID:props.device.deviceID});
     };
 
     const changeAccStatus =()=>{
@@ -270,14 +270,14 @@ const DeviceList = ({ ...props }) => {
                         aria-describedby="simple-modal-description"
                     >
                     <Fade in={open}>
-         { <Box sx={style}>
+        {/* { <Box sx={style}>
             <Typography id="transition-modal-title" variant="h6" component="h2">
               Text in a modal
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
             </Typography>
-          </Box>}
+         </Box>}*/}
         </Fade>
                     </Modal>
                         {/*<Grid item>

@@ -19,6 +19,7 @@ export function ExpiredDevicePage(props) {
   return (
     <div>
       <Helmet>
+      <h1>hello</h1>
         <title>Contact Us</title>
       </Helmet>
       <Header title={<FormattedMessage {...messages.expiredDevices} />} />

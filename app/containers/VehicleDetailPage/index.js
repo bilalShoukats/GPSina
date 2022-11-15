@@ -227,10 +227,7 @@ export function VehicleDetailPage(props) {
 
             <Grid item sm={12} md={8} className={classes.root}>
                 <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    className={classes.avatar}
+                   
                 >
                     <UserAvatar
                         alt="Vehicle Avatar"

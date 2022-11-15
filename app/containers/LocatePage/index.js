@@ -31,7 +31,7 @@ import { height, LATITUDE, LONGITUDE, width } from '../../constants/maps';
 import { faRedoAlt, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import SimpleModal from './modal';
 import SampleGPSData from '../../components/Marker/points';
-import { setDevices, setGPSData,setDeviceStatus,setDeviceSignal,setGotSignal ,setGPSSignals} from '../../redux/socket/actions';
+import { setDevices, setGPSData,setDeviceStatus,setDeviceSignal,setGotSignal ,setGPSSignals,setDeviceSetting} from '../../redux/socket/actions';
 import { logoutUser } from '../../redux/auth/actions';
 const gps = new SampleGPSData();
 class LocatePage extends Component {
@@ -404,7 +404,7 @@ LocatePage.propTypes = {
 
 
 const mapStateToProps = state => {
-    console.log('what we have in socket gpsdata', state.socket.gpsData);
+    // console.log('what we have in socket deviceSettingData', state.socket.deviceSettingData);
     console.log('what we have in socket setDeviceSignal', state.socket.signalData);
     console.log('what we have in socket devices', state.socket.devices);
     console.log('what we have in socket gotSignal', state.socket.gotSignal);
@@ -423,6 +423,7 @@ function mapDispatchToProps(dispatch) {
         setDevices,
         setGotSignal,
         setGPSSignals,
+        setDeviceSetting,
     };
 }
 

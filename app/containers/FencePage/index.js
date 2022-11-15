@@ -144,8 +144,9 @@ class FencePage extends Component {
     getAllFence = () => {
         return new Promise((resolve, reject) => {
             this.api
-                .send('GET', APIURLS.getAllGeoFence, { page: 1 })
+                .send('GET','/getDeviceGeofences', { page: 1 })
                 .then(response => {
+                    console.log('response...getDeviceGeofences',response.data.response)
                     if (response.data.code == '1019') {
                         resolve(response.data.response);
                         this.setState({
@@ -176,8 +177,8 @@ class FencePage extends Component {
                 strokeColor: '#000000',
                 map,
                 center: new google.maps.LatLng(
-                    fence.location.coordinates[1],
-                    fence.location.coordinates[0],
+                    // fence.location.coordinates[1],
+                    // fence.location.coordinates[0],
                 ),
                 radius: fence.fenceRadius,
                 title: fence.fenceName,
@@ -272,6 +273,7 @@ class FencePage extends Component {
                 fenceRadius: this.circle.getRadius(),
             })
             .then(response => {
+                console.log('response addFence',response)
                 this.setState({ fenceModel: false, fenceName: '' });
                 if (response.data.code === 1008) {
                     this.setState({

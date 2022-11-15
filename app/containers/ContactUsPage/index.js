@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -12,12 +12,44 @@ import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import Header from '../../components/Header';
 import { useStyles } from './styles.js';
+import APIURLS from '../../ApiManager/apiUrl';
+import ApiManager from '../../ApiManager/ApiManager';
 
 import messages from './messages';
 import { Grid, Typography } from '@material-ui/core';
 
 export function ContactUsPage(props) {
+  const api = ApiManager.getInstance();
   const classes = useStyles(props);
+  const [ApiData,setApiData]=useState('')
+  const [activationService,setActivationService] =useState([])
+
+
+
+  const getContact = () => {
+    // console.log('ALARMSNOTIF',ALARMSNOTIF);
+     
+        api.send('GET', '/getContactInfo', {
+          companyInfoType:2,
+          appType:0,
+
+        })
+            .then(res => {
+              console.log('res---------.', res);
+              setApiData(res.data.response)
+              setActivationService(res.data.response.activationService);
+              // console.log('res.', res.data.activationService[0].lunchEndTime );
+                  })
+            .catch(error => {});
+    
+};
+// activationService
+console.log('Api data--',ApiData);
+console.log('activationService--',activationService);
+
+useEffect(() => {
+  getContact();
+}, []);
 
   return (
     <div>
@@ -25,6 +57,8 @@ export function ContactUsPage(props) {
         <title>{props.intl.formatMessage({...messages.contactUs})}</title>
       </Helmet>
       <Header title={<FormattedMessage {...messages.contactUs} />} />
+
+      
 
       <div>
         <Grid
@@ -38,7 +72,7 @@ export function ContactUsPage(props) {
             className={classes.container}
           >
             <Typography variant="body1" className={classes.title}>
-              <FormattedMessage {...messages.companyName} />
+              {ApiData.companyName}
             </Typography>
             <Typography variant="body2" className={classes.description}>
               <FormattedMessage {...messages.gpSinaAsiaSdnBhd} />
@@ -54,7 +88,7 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.registrationNumber} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              <FormattedMessage {...messages.registrationNum} />
+            {ApiData.registrationNum}
             </Typography>
           </Grid>
 
@@ -67,7 +101,7 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.emailAddress} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              <a className={classes.link} href="mailto:acc.gpsina@pettorway.com.my">acc.gpsina@pettorway.com.my</a>
+              <a className={classes.link} href="mailto:acc.gpsina@pettorway.com.my">{ApiData.email}</a>
             </Typography>
           </Grid>
 
@@ -80,7 +114,7 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.call} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              +603-2715 1557
+              {ApiData.phone}
             </Typography>
           </Grid>
 
@@ -106,7 +140,7 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.wechat} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              <FormattedMessage {...messages.wechatId} />
+              {ApiData.weChat}
             </Typography>
           </Grid>
 
@@ -119,11 +153,15 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.companyAddress} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              A-20-36, Kompleks Rimbun Scott Garden, No. 289, Jalan Klang Lama, 58100 Kuala Lumpur, Malaysia
+             {ApiData.companyAddress}
             </Typography>
           </Grid>
 
-          <Grid
+          {activationService.map((index)=>{
+            return(
+              <div>
+              
+              <Grid
             container
             direction="column"
             className={classes.container}
@@ -132,12 +170,17 @@ export function ContactUsPage(props) {
               <FormattedMessage {...messages.activationService} />
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              <FormattedMessage {...messages.workingHour} />
+            {index.lunchStartTime},{index.lunchEndTime}
+              
             </Typography>
             <Typography variant="body2" className={classes.description}>
-              <FormattedMessage {...messages.lunchHour} />
+            {index.workingStartTime},{index.workingEndTime}
+             
             </Typography>
           </Grid>
+          </div>
+            )
+          })}
         </Grid>
       </div>
     </div>

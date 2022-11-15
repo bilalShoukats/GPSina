@@ -151,7 +151,7 @@ class HomePage extends Component {
 
         // this.socket.getLiveGPS([devices.data[0].deviceID, devices.data[0].deviceID]);
               this.setState({ deviceList: devices.data,  });
-           this.socket.deviceStatusReceived(devices.data);
+        //    this.socket.deviceStatusReceived(devices.data);
        
         this.props.dispatch(setDevices(devices.data));//storing devices inside redux
         
@@ -208,8 +208,8 @@ class HomePage extends Component {
 
 
           deviceSettingDataReceived = deviceSettingData => {
-            console.log('DEVICE SETTING DATA RECEIVED: ',deviceSettingData);
-            this.props.dispatch(setDeviceSetting(deviceSettingData.data));//storing SettingData data inside redux
+              this.props.dispatch(setDeviceSetting(deviceSettingData.data));//storing SettingData data inside redux
+              console.log('DEVICE SETTING DATA RECEIVED: ',deviceSettingData);
             
        };
 

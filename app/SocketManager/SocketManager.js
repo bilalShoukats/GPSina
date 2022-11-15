@@ -149,7 +149,7 @@ export default class SocketManager {
         console.log("call getAllDevices");
         setTimeout(()=>{
             hideLoader();
-        }, 5000)
+        }, 1000)
     }
 
     /**
