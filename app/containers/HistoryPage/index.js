@@ -159,10 +159,10 @@ class HistoryPage extends Component {
             page: 1,
         })
             .then(res => {
-                console.log('Travel History Dates respons....', res.data.response.data);
+                console.log('Travel History Dates respons....', res.data);
                 //  this.setState.ListData(res.data.response.data);
                 if (res.data.code === 6076) {
-                    this.setState({ ListData: res.data.response.data});
+                    this.setState({ ListData: res.data.response});
 
                     let startDate = moment(res.data.response[0].dates)
                         .startOf('day')
